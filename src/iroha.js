@@ -5,82 +5,8 @@ var sha3 = require('js-sha3');
 
 var iroha = {};
 
-
-iroha.createKeyPair = function(){
-    var seed = supercop.createSeed();
-    var keys = supercop.createKeyPair(seed);
-
-    return {
-        publicKey: keys.publicKey.toString('base64'),
-        privateKey: keys.privateKey.toString('base64')
-    }
-}
-
-var getTimeStanp = function(){
-    var date = new Date();
-    var year = date.getFullYear();
-    var month = ("0" + (date.getMonth() + 1)).slice(-2);
-    var day = ("0" + date.getDate()).slice(-2);
-    var hour = ("0" + date.getHours()).slice(-2);
-    var min = ("0" + date.getMinutes()).slice(-2);
-    var sec = ("0" + date.getSeconds()).slice(-2);
-
-    var dateFormat = year + "-" + month + "-" + day + "T" + hour + ":" + min + ":" + sec; 
-
-    return dateFormat;
-}
-
-
-/**
- * opt = {
- *  accessPoint: ip address,
- *  name: name,
- *  publicKey: public Key
- * }
- *
- **/
-
-iroha.registAccount = function(opt){
-    if(!opt.accessPoint || !opt.name || !opt.publicKey)return false;
-    var accessPoint = opt.accessPoint;
-    var name = opt.name;
-    var publicKey = opt.publicKey;
-
-    var param = {
-        "publicKey": keyPair.publicKey,
-        "screen_name": name,
-        "timestanp": getTimeStanp()
-    }
-
-    postRequest(accessPoint + "/account/register", param).then(function(res){
-        return res;
-    }).catch(function(err){
-        console.err(err);
-    });
-}
-
-/**
- * opt = {
- *  accessPoint: ip address,
- *  uuid: uuid(sha3)
- * }
- *
- **/
-iroha.getAccountInfo = function(opt){
-    if(!opt.accessPoint || !opt.uuid)return false;
-    var accessPoint = opt.accessPoint;
-    var uuid = opt.uuid;
-
-    getRequest(accessPoint + "/account?uuid=" + uuid).then(function(res){
-        return res;
-    }).catch(function(err){
-        console.err(err);
-    });
-}
-
 var verify = function(opt){
 }
-
 
 /**
  * opt = {
@@ -130,15 +56,88 @@ var createSignature = function(opt){
     return sig;
 }
 
-iroha.createAsset = function(){
+
+
+iroha.createKeyPair = function(){
+    var seed = supercop.createSeed();
+    var keys = supercop.createKeyPair(seed);
+
+    return {
+        publicKey: keys.publicKey.toString('base64'),
+        privateKey: keys.privateKey.toString('base64')
+    }
+}
+
+/**
+ * opt = {
+ *  accessPoint: ip address,
+ *  name: name,
+ *  publicKey: public Key
+ * }
+ *
+ **/
+
+iroha.registAccount = function(opt){
+    if(!opt.accessPoint || !opt.name || !opt.publicKey)return false;
+    var accessPoint = opt.accessPoint;
+    var name = opt.name;
+    var publicKey = opt.publicKey;
+    var date = new Date();
+
+    var param = {
+        "publicKey": keyPair.publicKey,
+        "screen_name": name,
+        "timestanp": date.getTime()
+    }
+
+    postRequest(accessPoint + "/account/register", param).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
+}
+
+
+/**
+ * opt = {
+ *  accessPoint: ip address,
+ *  uuid: uuid(sha3)
+ * }
+ *
+ **/
+iroha.getAccountInfo = function(opt){
+    if(!opt.accessPoint || !opt.uuid)return false;
+    var accessPoint = opt.accessPoint;
+    var uuid = opt.uuid;
+
+    getRequest(accessPoint + "/account?uuid=" + uuid).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
+}
+
+
+/**
+ * opt = {
+ *  accessPoint: ip address,
+ *
+ * }
+ *
+ **/
+iroha.registDomain = function(opt){
+}
+
+
+iroha.createAsset = function(opt){
 
 }
 
-iroha.assetTransfer = function(){
+iroha.assetTransfer = function(opt){
 
 }
 
-iroha.getTransaction = function(uuid){
+iroha.getTransaction = function(opt){
 
 }
 
