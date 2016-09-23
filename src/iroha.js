@@ -64,7 +64,7 @@ iroha.createKeyPair = function(){
 
     return {
         publicKey: keys.publicKey.toString('base64'),
-        privateKey: keys.privateKey.toString('base64')
+        privateKey: keys.secretKey.toString('base64')
     }
 }
 
@@ -178,4 +178,4 @@ var postRequest = function(opt){
 }
 
 
-module.export = iroha;
+module.exports = iroha;
