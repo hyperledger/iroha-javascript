@@ -31,7 +31,7 @@ var sign = function(opt){
             new Buffer(sha3Message),
             new Buffer(publicKey, 'base64'),
             new Buffer(privateKey, 'base64')
-    ).toString('base64');
+            ).toString('base64');
 
     return sig;
 }
@@ -157,21 +157,61 @@ iroha.registDomain = function(opt){
 }
 
 
-iroha.getDomainList = function(opt){
+/**
+ *
+ **/
+iroha.getDomainList = function(accessPoint){
+    if(!accessPoint)return false;
+
+    getRequest(accessPoint + "/domain/list").then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
 }
+
+/**
+ * opt = {
+ * }
+ *
+ **/
 
 iroha.createAsset = function(opt){
 }
+
+/**
+ * opt = {
+ * }
+ *
+ **/
 
 iroha.assetTransfer = function(opt){
 
 }
 
+/**
+ * opt = {
+ * }
+ *
+ **/
+
 iroha.getAssetInfo = function(opt){
 }
 
+/**
+ * opt = {
+ * }
+ *
+ **/
+
 iroha.getAssetList = function(opt){
 }
+
+/**
+ * opt = {
+ * }
+ *
+ **/
 
 iroha.getTransaction = function(opt){
 
