@@ -236,20 +236,75 @@ iroha.getAssetList = function(opt){
 
 /**
  * opt = {
+ *  accessPoint: ip address,
+ *  uuid: user's uuid
  * }
  *
  **/
 
-iroha.getAssetList = function(opt){
+iroha.getUserTransaction = function(opt){
+    if(!opt.accessPoint || !opt.uuid)return false;
+
+    getRequest(opt.accessPoint + "/history/transaction/" + opt.uuid).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
 }
 
 /**
  * opt = {
+ *  accessPoint: ip address,
+ *  domainName: domain name,
+ *  assetName: asset name
+ * }
+ *
+ **/
+iroha.getAssetTransaction = function(opt){
+    if(!opt.accessPoint || !opt.domainName || !opt.assetName)return false;
+
+    getRequest(opt.accessPoint + "/histor/" + opt.domainName + "." + opt.assetName).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
+
+}
+
+/**
+ * opt = {
+ *  accessPoint: ip address,
+ *  creatorPublicKey: creator's public Key,
+ *  creatorPrivateKey: creator's private Key,
+ *  receiverKey: receiver'z public Key,
+ *  message: message body
  * }
  *
  **/
 
-iroha.getTransaction = function(opt){
+iroha.postMessage = function(opt){
+    if(!opt.accessPoint || !opt. creatorPublicKey || !opt.creatorPrivateKey || !opt.receiverPublicKey || !opt.message)return false;
+    var timestamp = getTimeStampNow();
+    var sigMessage = ;
+    var sig = createSignature({
+        "publicKey": opt.creatorPublicKey,
+        "privateKey": opt.creatorPrivateKey,
+        "message": sigMessage
+    });
+
+    var param = {
+        "message": opt.message,
+        "creator": opt.creatorPublicKey,
+        "receiver": opt.receiverPublicKey,
+        "signature": sig,
+        "timestamp": timestamp
+    }
+
+    postRequest(accessPoint + "/message", param).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
 
 }
 
