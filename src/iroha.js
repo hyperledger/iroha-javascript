@@ -53,7 +53,7 @@ var createSignature = function(opt){
     var message = opt.message;
 
     var sig = sign({
-        "publickKey": publickKey,
+        "publicKey": publicKey,
         "privateKey": privateKey,
         "message": message
     });
@@ -125,7 +125,7 @@ iroha.getAccountInfo = function(opt){
 /**
  * opt = {
  *  accessPoint: ip address,
- *  name: domain name,
+ *  domainName: domain name,
  *  publicKey: user's public key(base64),
  *  privateKey: user's private Key(base64)
  * }
@@ -172,11 +172,39 @@ iroha.getDomainList = function(accessPoint){
 
 /**
  * opt = {
+ *  accessPoint: ip address,
+ *  assetName: asset name,
+ *  domainName: domain name,
+ *  publicKey: public key,
+ *  privateKey: private key
  * }
- *
  **/
 
 iroha.createAsset = function(opt){
+    if(!opt.accessPoint || !opt.assetName || !opt.domainName || !opt.publicKey || !opt.privateKey)return false;
+    var accessPoint = opt.accessPoint;
+    var timestamp = getTimeStampNow();
+    var message = "name:" + opt.assetName + ",creator:" + opt.publicKey + timestamp.toString();
+    var sig = createSignature({
+        "publicKey": opt.publicKey,
+        "privateKey": opt.privateKey,
+        "message": message
+    });
+
+    var param = {
+        "name": opt.assetName,
+        "domain": domainName,
+        "creator": opt.publicKey,
+        "signature": sig,
+        "timestamp": timestamp
+    }
+
+    postRequest(accessPoint + "/asset/create", param).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
+
 }
 
 /**
