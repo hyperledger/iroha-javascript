@@ -97,7 +97,7 @@ iroha.registAccount = function(opt){
     postRequest(accessPoint + "/account/register", param).then(function(res){
         return res;
     }).catch(function(err){
-        console.err(err);
+        console.erorr(err);
     });
 }
 
@@ -117,7 +117,7 @@ iroha.getAccountInfo = function(opt){
     getRequest(accessPoint + "/account?uuid=" + uuid).then(function(res){
         return res;
     }).catch(function(err){
-        console.err(err);
+        console.error(err);
     });
 }
 
@@ -224,9 +224,9 @@ iroha.operateAsset = function(opt){
     var timestamp = getTimeStampNow();
     var message = "asset-uuid:" + opt.assetUuid + ",params:" + params + ",timestamp:" + timestamp.toString();
 
-    var params = {
+    /*var params = {
         "command":
-    }
+    }*/
 }
 
 
