@@ -126,25 +126,25 @@ iroha.getAccountInfo = function(opt){
  * opt = {
  *  accessPoint: ip address,
  *  domainName: domain name,
- *  publicKey: user's public key(base64),
- *  privateKey: user's private Key(base64)
+ *  ownerPublicKey: user's public key(base64),
+ *  ownerPrivateKey: user's private Key(base64)
  * }
  *
  **/
 iroha.registDomain = function(opt){
-    if(!opt.accessPoint || !opt.name || !opt.publicKey || !opt.privateKey)return false;
+    if(!opt.accessPoint || !opt.name || !opt.ownerPublicKey || !opt.ownerPrivateKey)return false;
     var accessPoint = opt.accessPoint;
     var timestamp = getTimeStampNow();
-    var message = "name:" + opt.name + ",owner:" + opt.publicKey + ",timestamp:" + timestamp.toString();
+    var message = "name:" + opt.name + ",owner:" + opt.ownerPublicKey + ",timestamp:" + timestamp.toString();
     var sig = createSignature({
-        "publicKey": opt.publicKey,
-        "privateKey": opt.privateKey,
+        "publicKey": opt.ownerPublicKey,
+        "privateKey": opt.ownerPrivateKey,
         "message": message
     });
 
     var param = {
         "name": opt.name,
-        "owner": opt.owner,
+        "owner": opt.ownerPublicKey,
         "signature": sig,
         "timestamp": timestamp
     }
@@ -175,26 +175,26 @@ iroha.getDomainList = function(accessPoint){
  *  accessPoint: ip address,
  *  assetName: asset name,
  *  domainName: domain name,
- *  publicKey: public key,
- *  privateKey: private key
+ *  creatorPublicKey: creator's public key,
+ *  creatorPrivateKey: creator's private key
  * }
  **/
 
 iroha.createAsset = function(opt){
-    if(!opt.accessPoint || !opt.assetName || !opt.domainName || !opt.publicKey || !opt.privateKey)return false;
+    if(!opt.accessPoint || !opt.assetName || !opt.domainName || !opt.creatorPublicKey || !opt.creatorPrivateKey)return false;
     var accessPoint = opt.accessPoint;
     var timestamp = getTimeStampNow();
-    var message = "name:" + opt.assetName + ",creator:" + opt.publicKey + timestamp.toString();
+    var message = "name:" + opt.assetName + ",creator:" + opt.creatorPublicKey + timestamp.toString();
     var sig = createSignature({
-        "publicKey": opt.publicKey,
-        "privateKey": opt.privateKey,
+        "publicKey": opt.creatorPublicKey,
+        "privateKey": opt.creatorPrivateKey,
         "message": message
     });
 
     var param = {
         "name": opt.assetName,
         "domain": domainName,
-        "creator": opt.publicKey,
+        "creator": opt.creatorPublicKey,
         "signature": sig,
         "timestamp": timestamp
     }
@@ -209,13 +209,28 @@ iroha.createAsset = function(opt){
 
 /**
  * opt = {
+ *  assetUuid: asset uuid(sha3),
+ *  command: operation command,
+ *  amount: amount,
+ *  senderPublicKey: sender's public key,
+ *  senderPrivateKey: sender's private key,
+ *  receiverPublicKey: receiver's public key
  * }
  *
  **/
 
 iroha.operateAsset = function(opt){
+    if(!opt.assetUuid || !opt.command || !opt.amount || !opt.senderPublicKey || !opt.senderPrivateKey || !opt.receiverPublicKey)return false;
+    var timestamp = getTimeStampNow();
+    var message = "asset-uuid:" + opt.assetUuid + ",params:" + params + ",timestamp:" + timestamp.toString();
 
+    var params = {
+        "command":
+    }
 }
+
+
+
 
 /**
  * opt = {
