@@ -8,6 +8,11 @@ var iroha = {};
 var verify = function(opt){
 }
 
+var getTimeStampNow = function(){
+    var date = new Date();
+    return date.getTime();
+}
+
 /**
  * opt = {
  *  publicKey: public Key,
@@ -82,12 +87,11 @@ iroha.registAccount = function(opt){
     var accessPoint = opt.accessPoint;
     var name = opt.name;
     var publicKey = opt.publicKey;
-    var date = new Date();
 
     var param = {
         "publicKey": keyPair.publicKey,
         "screen_name": name,
-        "timestanp": date.getTime()
+        "timestanp": getTimeStampNow()
     }
 
     postRequest(accessPoint + "/account/register", param).then(function(res){
@@ -126,15 +130,46 @@ iroha.getAccountInfo = function(opt){
  *
  **/
 iroha.registDomain = function(opt){
+    if(!opt.accessPoint || !opt.name || !opt.owner || !opt.publicKey || !opt.privateKey)return false;
+    var accessPoint = opt.accessPoint;
+    var timestamp = getTimeStampNow();
+    var message = "name:" + opt.name + ",owner:" + opt.owner + ",timestamp:" + timestamp.toString();
+    var sig = createSignature({
+        "publicKey": opt.publicKey,
+        "privateKey": opt.privateKey,
+        "message": message
+    });
+
+    var param = {
+        "name": opt.name,
+        "owner": opt.owner,
+        "signature": sig,
+        "timestamp": timestamp
+    }
+
+    postRequest(accessPoint + "/domain/register", param).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
+
 }
 
 
-iroha.createAsset = function(opt){
+iroha.getDomainList = function(opt){
+}
 
+iroha.createAsset = function(opt){
 }
 
 iroha.assetTransfer = function(opt){
 
+}
+
+iroha.getAssetInfo = function(opt){
+}
+
+iroha.getAssetList = function(opt){
 }
 
 iroha.getTransaction = function(opt){
@@ -144,7 +179,7 @@ iroha.getTransaction = function(opt){
 
 var getRequest = function(opt){
     return new Promise(function(resolve, reject){
-        if(!opt.url || !callback)return false;
+        if(!opt.url)return false;
 
         superagent
             .get(opt.url)
