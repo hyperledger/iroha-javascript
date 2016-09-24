@@ -125,15 +125,17 @@ iroha.getAccountInfo = function(opt){
 /**
  * opt = {
  *  accessPoint: ip address,
- *
+ *  name: domain name,
+ *  publicKey: user's public key(base64),
+ *  privateKey: user's private Key(base64)
  * }
  *
  **/
 iroha.registDomain = function(opt){
-    if(!opt.accessPoint || !opt.name || !opt.owner || !opt.publicKey || !opt.privateKey)return false;
+    if(!opt.accessPoint || !opt.name || !opt.publicKey || !opt.privateKey)return false;
     var accessPoint = opt.accessPoint;
     var timestamp = getTimeStampNow();
-    var message = "name:" + opt.name + ",owner:" + opt.owner + ",timestamp:" + timestamp.toString();
+    var message = "name:" + opt.name + ",owner:" + opt.publicKey + ",timestamp:" + timestamp.toString();
     var sig = createSignature({
         "publicKey": opt.publicKey,
         "privateKey": opt.privateKey,
@@ -152,7 +154,6 @@ iroha.registDomain = function(opt){
     }).catch(function(err){
         console.err(err);
     });
-
 }
 
 
