@@ -213,17 +213,25 @@ iroha.createAsset = function(opt){
  *
  **/
 
-iroha.assetTransfer = function(opt){
+iroha.operateAsset = function(opt){
 
 }
 
 /**
  * opt = {
+ *  accessPoint: ip address,
+ *  domainName: domain name
  * }
- *
  **/
 
-iroha.getAssetInfo = function(opt){
+iroha.getAssetList = function(opt){
+    if(!opt.accessPoint || !opt.domainName)return false;
+
+    getRequest(opt.accessPoint + "/domain/list/" + opt.domainName).then(function(res){
+        return res;
+    }).catch(function(err){
+        console.err(err);
+    });
 }
 
 /**
