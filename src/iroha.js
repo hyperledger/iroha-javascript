@@ -184,7 +184,7 @@ iroha.createAsset = function(opt){
     if(!opt.accessPoint || !opt.assetName || !opt.domainName || !opt.creatorPublicKey || !opt.creatorPrivateKey)return false;
     var accessPoint = opt.accessPoint;
     var timestamp = getTimeStampNow();
-    var message = "name:" + opt.assetName + ",creator:" + opt.creatorPublicKey + timestamp.toString();
+    var message = "name:" + opt.assetName + ",creator:" + opt.creatorPublicKey + ",timestamp:" + timestamp.toString();
     var sig = createSignature({
         "publicKey": opt.creatorPublicKey,
         "privateKey": opt.creatorPrivateKey,
@@ -300,7 +300,7 @@ iroha.getAssetTransaction = function(opt){
 iroha.postMessage = function(opt){
     if(!opt.accessPoint || !opt. creatorPublicKey || !opt.creatorPrivateKey || !opt.receiverPublicKey || !opt.message)return false;
     var timestamp = getTimeStampNow();
-    var sigMessage = ;
+    var sigMessage = "message";
     var sig = createSignature({
         "publicKey": opt.creatorPublicKey,
         "privateKey": opt.creatorPrivateKey,
