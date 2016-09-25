@@ -55,13 +55,13 @@ var res = iroha.registAccount({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 {
-  "message": response message,
-  "status": response code,
-  "uuid": uuid(sha3)
+  "message": "response message",
+  "status": "status code",
+  "uuid": "uuid(sha3)"
 }
 
 ```
@@ -85,13 +85,13 @@ var res = iroha.getAccountInfo({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 
 {
-  "status": status code,
-  "alias": alias
+  "status": "status code",
+  "alias": "alias"
 ```
 
 User not found:
@@ -116,7 +116,7 @@ var res = iroha.registDomain({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 {
@@ -132,22 +132,22 @@ var res = iroha.getDomainList(uuid(sha3));
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 
 [
     {
-      "domain" : domain name,
+      "domain" : "domain name",
       "creator" : "base64_public_key",
       "signature" : "b64encoded?_signature",
-      "creationDate" : unixtime
+      "creationDate" : "unixtime"
     },
     {
-      "domain" : domain name,
+      "domain" : "domain name",
       "creator" : "base64_public_key",
       "signature" : "b64encoded?_signature",
-      "creationDate" : unixtime
+      "creationDate" : "unixtime"
     }, ...
 ]
 ```
@@ -167,7 +167,7 @@ var res = iroha.createAsset({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 {
@@ -192,7 +192,7 @@ var res = iroha.operateAsset({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 {
@@ -211,22 +211,22 @@ var res = iroha.getAssetList({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 [
 
     {
-      "name" : asset name,
+      "name" : "asset name",
       "creator" : "base64_public_key",
       "signature" : "b64encoded?_signature",
-      "creationDate" : unixtime
+      "creationDate" : "unixtime"
     },
     {
-      "name" : asset name,
+      "name" : "asset name",
       "creator" : "base64_public_key",
       "signature" : "b64encoded?_signature",
-      "creationDate" : unixtime
+      "creationDate" : "unixtime"
     }, ...
 ]
 
@@ -243,24 +243,24 @@ var res = iroha.getAssetTransaction({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 {
   "uuid":"sha3",
-  "timestamp": unixtime,
+  "timestamp": "unixtime",
   "history":[
     {
       "params":{
         "sender" : "pubkey",
-        "amount" : amount
+        "amount" : "amount"
       }
     },
     {
       "asset-uuid":"sha3",
       "params":{
         "sender" : "pubkey",
-        "amount" : amount
+        "amount" : "amount"
       }
     }, ...
   ]
@@ -278,26 +278,26 @@ var res = iroha.getUserTransaction({
 ```
 
 Return いろは(iroha) response object.  
-**Response**:
+**Response**:  
 Success:
 ```json
 
 {
   "uuid" : "user's_uuid",
-  "timestamp" : unixtime,
+  "timestamp" : "unixtime",
   "history" : [
     {
       "asset-uuid":"sha3",
       "params":{
         "sender" : "pubkey",
-        "amount" : amount
+        "amount" : "amount"
       }
     },
     {
       "asset-uuid":"sha3",
       "params":{
         "sender" : "pubkey",
-        "amount" : amount
+        "amount" : "amount"
       }
     }, ...
   ]
