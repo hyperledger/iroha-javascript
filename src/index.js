@@ -1,0 +1,2 @@
+iroha = require('./iroha.js');
+

@@ -6,7 +6,7 @@ var uglify = require("gulp-uglify");
 
 gulp.task("browserify-iroha", function(){
     browserify({
-        entries: ["src/iroha.js"]
+        entries: ["src/index.js"]
     })
     .bundle()
     .pipe(source("iroha.js"))
