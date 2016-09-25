@@ -19,20 +19,20 @@
 ## Usage
 ### Load
 
-```
+```html
 <script src="/path/to/iroha.js"></script>
 ```
 
 ### API
 #### iroha.createKeyPair
 
-```
+```js
 var keys = iroha.createKeyPair();
 ```
 
 #### iroha.registAccount
 
-```
+```js
 var res = iroha.registAccount({
 				accessPoint: ip address or url,
 				name: account name,
@@ -42,7 +42,7 @@ var res = iroha.registAccount({
 
 #### iroha.getAccountInfo
 
-```
+```js
 var res = iroha.getAccountInfo({
 				accessPoint: ip address or url,
  				uuid: uuid(sha3)
@@ -50,7 +50,7 @@ var res = iroha.getAccountInfo({
 ```
 #### iroha.registDomain
 
-```
+```js
 var res = iroha.registDomain({
 				accessPoint: ip address or url,
  				domainName: domain name,
@@ -61,13 +61,13 @@ var res = iroha.registDomain({
 
 #### iroha.getDomainList
 
-```
+```js
 var res = iroha.getDomainList(uuid(sha3));
 ```
 
 #### iroha.createAsset
 
-```
+```js
 var res = iroha.createAsset({
  				accessPoint: ip address or url,
  				assetName: asset name,
@@ -79,7 +79,7 @@ var res = iroha.createAsset({
 
 #### iroha.operateAsset
 
-```
+```js
 var res = iroha.operateAsset({
 				accessPoint: ip address or url,
  				assetUuid: asset uuid(sha3),
@@ -93,7 +93,7 @@ var res = iroha.operateAsset({
 
 #### iroha.getAssetList
 
-```
+```js
 var res = iroha.getAssetList({
 				 accessPoint: ip address or url,
  				 domainName: domain name
@@ -101,7 +101,8 @@ var res = iroha.getAssetList({
 ```
 
 #### iroha.getAssetList
-```
+
+```js
 var res = iroha.getAssetList({
  				accessPoint: ip address or url,
  				domainName: domain name
@@ -110,7 +111,7 @@ var res = iroha.getAssetList({
 
 #### iroha.getAssetTransaction
 
-```
+```js
 var res = iroha.getAssetTransaction({
  				accessPoint: ip address or url,
  				domainName: domain name,
@@ -120,7 +121,7 @@ var res = iroha.getAssetTransaction({
 
 #### iroha.getUserTransaction
 
-```
+```js
 var res = iroha.getUserTransaction({
 				accessPoint: ip address or url,
  				uuid: user uuid(sha3)
