@@ -5,7 +5,7 @@
 
 ## Description  
 いろはjs(irohajs) is client javascript library for using いろは(iroha).  
-[demo]()
+[demo](https://soramitsu.github.io/IrohaJS/)
 
 ## Requirement  
 * [js-sha3](https://github.com/emn178/js-sha3)
