@@ -148,7 +148,7 @@ Success:
       "creator" : "base64_public_key",
       "signature" : "b64encoded?_signature",
       "creationDate" : "unixtime"
-    }, ...
+    },
 ]
 ```
 
@@ -227,7 +227,7 @@ Success:
       "creator" : "base64_public_key",
       "signature" : "b64encoded?_signature",
       "creationDate" : "unixtime"
-    }, ...
+    },
 ]
 
 ```
@@ -262,7 +262,7 @@ Success:
         "sender" : "pubkey",
         "amount" : "amount"
       }
-    }, ...
+    },
   ]
 }
 ```
@@ -299,7 +299,7 @@ Success:
         "sender" : "pubkey",
         "amount" : "amount"
       }
-    }, ...
+    },
   ]
 }
 
