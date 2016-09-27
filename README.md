@@ -1,11 +1,11 @@
-# いろはjs(irohajs)  
+# いろはjs (irohajs)  
 
 ## What's いろは(iroha)?  
 いろは(iroha) is [this](https://github.com/soramitsu/iroha).
 
 ## Description  
 いろはjs(irohajs) is client javascript library for using いろは(iroha).  
-[demo](https://soramitsu.github.io/IrohaJS/)
+[demo](https://soramitsu.github.io/iroha-javascript/)
 
 ## Requirement  
 * [js-sha3](https://github.com/emn178/js-sha3)
@@ -44,10 +44,10 @@ Return key object. Keys are used other API.
 }
 ```
 
-#### iroha.registAccount
+#### iroha.registerAccount
 
 ```js
-var res = iroha.registAccount({
+var res = iroha.registerAccount({
 				accessPoint: ip address or url,
 				name: account name,
 				publicKey: public key(base64)
@@ -104,10 +104,10 @@ User not found:
 ```
 
 
-#### iroha.registDomain
+#### iroha.registerDomain
 
 ```js
-var res = iroha.registDomain({
+var res = iroha.registerDomain({
 				accessPoint: ip address or url,
  				domainName: domain name,
  				ownerPublicKey: owner public key(base64),
