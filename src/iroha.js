@@ -82,7 +82,7 @@ iroha.createKeyPair = function(){
  *
  **/
 
-iroha.registAccount = function(opt){
+iroha.registerAccount = function(opt){
     if(!opt.accessPoint || !opt.name || !opt.publicKey)return false;
     var accessPoint = opt.accessPoint;
     var name = opt.name;
@@ -131,7 +131,7 @@ iroha.getAccountInfo = function(opt){
  * }
  *
  **/
-iroha.registDomain = function(opt){
+iroha.registerDomain = function(opt){
     if(!opt.accessPoint || !opt.name || !opt.ownerPublicKey || !opt.ownerPrivateKey)return false;
     var accessPoint = opt.accessPoint;
     var timestamp = getTimeStampNow();

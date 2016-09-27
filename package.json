@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/soramitsu/IrohaJS.git"
+    "url": "git+https://github.com/soramitsu/iroha-javascript.git"
   },
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/soramitsu/IrohaJS/issues"
+    "url": "https://github.com/soramitsu/iroha-javascript/issues"
   },
-  "homepage": "https://github.com/soramitsu/IrohaJS#readme",
+  "homepage": "https://github.com/soramitsu/iroha-javascript#readme",
   "devDependencies": {
     "browserify": "^13.1.0",
     "gulp": "^3.9.1",
