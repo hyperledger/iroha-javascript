@@ -51,10 +51,10 @@
         var sha3Message = sha3_256(opt.message);
 
         var sig = supercop.sign(
-                new Buffer(sha3Message),
-                new Buffer(publicKey, 'base64'),
-                new Buffer(privateKey, 'base64')
-                ).toString('base64');
+                sha3Message,
+                publicKey,
+                privateKey
+              ).toString('base64');
 
         return sig;
     };
@@ -62,17 +62,18 @@
     /**
      * opt = {
      *  signature: signature,
-     *  message: message,
+     *  message: message(sha3_256),
      *  publicKey: public Key
      * }
      *
      **/
     iroha.verify = function(opt){
+        if(!opt.publicKey || !opt.message || !opt.signature)return false;
         var valid = supercop.verify(
                 opt.signature,
                 opt.message,
                 opt.publicKey
-                );
+             );
 
         return valid;
 
