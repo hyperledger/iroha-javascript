@@ -21,11 +21,6 @@
     "browserify": "^13.1.0",
     "gulp": "^3.9.1",
     "gulp-uglify": "^2.0.0",
-    "jasmine": "^2.5.2",
-    "js-base64": "^2.1.9",
-    "js-sha3": "^0.5.4",
-    "superagent": "^2.3.0",
-    "supercop.js": "git+https://github.com/GUCCI-swallow/supercop.js.git",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
