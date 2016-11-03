@@ -13,7 +13,7 @@
 
 ## Installation  
 *  Clone this repository.
-*  [Download the latest reelase]().
+*  [Download the latest release]().
 *  [Feature]Install with npm/bower.
 
 ## Usage
