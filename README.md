@@ -22,6 +22,12 @@
 ```html
 <script src="/path/to/iroha.js"></script>
 ```
+or
+
+```js
+import Iroha from 'iroha.js'
+var Iroha = require('iroha.js')
+```
 
 ### API
 #### iroha.createKeyPair
