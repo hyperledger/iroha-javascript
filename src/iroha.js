@@ -44,7 +44,7 @@
      * }
      *
      **/
-    iroha.createSignature = function(opt){
+    iroha.sign = function(opt){
         if(!opt.publicKey || !opt.privateKey || !opt.message)return false;
         var publicKey = opt.publicKey;
         var privateKey = opt.privateKey;
