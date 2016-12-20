@@ -44,7 +44,7 @@ Return key object.
 #### iroha.createSignature
 
 ```js
-var keys = iroha.createSignature();
+var keys = iroha.sign();
 ```
 
 
