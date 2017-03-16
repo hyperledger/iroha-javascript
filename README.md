@@ -1,105 +1,110 @@
-# いろはjs (irohajs)  
+# TypeScript library starter
 
-## What's いろは(iroha)?  
-いろは(iroha) is [this](https://github.com/soramitsu/iroha).
+A starter project that makes creating a TypeScript library extremely easy.
 
-## Description  
-いろはjs(irohajs) is client javascript library for using いろは(iroha).  
-[demo](https://soramitsu.github.io/iroha-javascript/)
+### Usage
 
-## Requirement  
-* [js-sha3](https://github.com/emn178/js-sha3)
-* [supercop.js(GUCCI-swallow)](https://github.com/GUCCI-swallow/supercop.js)
+```bash
+git clone https://github.com/alexjoverm/typescript-library-starter.git YOURFOLDERNAME
+cd YOURFOLDERNAME
 
-## Installation  
-*  Clone this repository.
-*  [Download the latest release]().
-*  [Feature]Install with npm/bower.
-
-## Usage
-### Load
-
-```html
-<script src="/path/to/iroha.js"></script>
-```
-or
-```js
-import Iroha from 'iroha.js'
-var Iroha = require('iroha.js')
+# Run npm install and write your library name when asked. That's all!
+npm install
 ```
 
-### API
-#### iroha.createKeyPair
+**Start coding!** `package.json` and entry files are already set up for you, so don't worry about linking to your main file, typings, etc. Just keep those files with the same names.
 
-```js
-var keys = iroha.createKeyPair();
+### Features
+
+ - Zero-setup. After running `npm install` things will be setup for you :wink:
+ - **[Webpack 2](https://webpack.js.org/)** for UMD bundle, with [Tree-shaking](https://webpack.js.org/guides/tree-shaking/) dead code elimination
+ - Tests, coverage and interactive watch mode using **[Jest](http://facebook.github.io/jest/)**
+ - **[TSLint](https://palantir.github.io/tslint/)** ([standard-config](https://github.com/blakeembrey/tslint-config-standard)) for your code styling
+ - **Docs automatic generation and deployment** to `gh-pages`, using **[TypeDoc](http://typedoc.org/)**
+ - Automatic types `(*.d.ts)` file generation
+ - **[Travis](https://travis-ci.org)** integration and **[Coveralls](https://coveralls.io/)** report
+ - (Optional) **Automatic releases and changelog**, using [Semantic release](https://github.com/semantic-release/semantic-release), [Commitizen](https://github.com/commitizen/cz-cli), [Conventional changelog](https://github.com/conventional-changelog/conventional-changelog) and [Husky](https://github.com/typicode/husky) (for the git hooks)
+
+### NPM scripts
+
+ - `npm t`: Run test suite
+ - `npm run test:watch`: Run test suite in [interactive watch mode](http://facebook.github.io/jest/docs/cli.html#watch)
+ - `npm run test:prod`: Run linting + generate coverage
+ - `npm run build`: Bundles code, create docs and generate typings
+ - `npm run build:dev`: Same than `build`, but code is not minified
+ - `npm run commit`: Commit using conventional commit style ([husky](https://github.com/typicode/husky) will tell you to use it if you haven't :wink:)
+
+### Automatic releases
+
+If you'd like to have automatic releases with Semantic Versioning, follow these simple steps.
+
+_**Prerequisites**: you need to create/login accounts and add your project to:_
+ - npm
+ - Travis
+ - Coveralls
+
+Set up the git hooks (see [Git hooks section](#git-hooks) for more info):
+
+```bash
+node tools/init-hooks
 ```
 
-Return key object.  
-**Response**:
+Install semantic release and run it (answer NO to "Generate travis.yml").
 
-```js
-{
-	publicKey: A 32 byte public key encoded base64,
-	privateKey: A 64 byte private key encoded base64
-}
-```
-#### iroha.sign
-
-```js
-var signature = iroha.sign({
-                	publicKey: A 32 byte public key encoded base64,
-                	privateKey: A 64 byte private key encoded base64,
-                	message: A message
-                });
+```bash
+npm install -g semantic-release-cli
+semantic-release setup
+# IMPORTANT!! Answer NO to "Generate travis.yml" question. Is already prepared for you :P
 ```
 
+From now on, you'll need to use `npm run commit`, which is a convenient way to create conventional commits.
 
+Automatic releases are possible thanks to [semantic release](https://github.com/semantic-release/semantic-release), which publishes your code automatically on github and npm, plus generates automatically a changelog. This setup is highly influenced by [Kent C. Dodds course on egghead.io](https://egghead.io/courses/how-to-write-an-open-source-javascript-library)
 
-Return signature object.  
-**signature**:
+### Git Hooks
 
-```js
-//signature
-{
-	publicKey: A 32 byte public key encoded base64,
-	privateKey: A 64 byte private key encoded base64,
-    message: A message
-}
-```
-**Response**:
+By default, there are 2 disabled git hooks. You can enable them by running `node tools/init-hooks` (which uses [husky](https://github.com/typicode/husky)). They make sure:
+ - You follow a [conventional commit message](https://github.com/conventional-changelog/conventional-changelog)
+ - Your build is not gonna fail in [Travis](https://travis-ci.org) (or your CI server), since it's runned locally before `git push`
 
-signature(A signature string  encoded base64)  
+This makes more sense in combination of [automatic releases](#automatic-releases)
 
-#### iroha.verify
+### FAQ
 
-```js
-var keys = iroha.verify({
- 			            	publicKey: A 32 byte public key encoded base64,
- 			            	signature: A signature,
- 			            	message: A message
- 			            });
-```
+#### Why using TypeScript and Babel?
 
-**Response**:
+In most cases, you can compile TypeScript code to ES5, or even ES3. But in some cases, where you use "functional es2015+ features", such as `Array.prototype.find`, `Map`, `Set`... then you need to set `target` to "es6". This is by design, since TypeScript only provides down-emits on syntactical language features (such as `const`, `class`...), but Babel does. So it's set up in a 2 steps build so you can use es2015+ features.
 
-Return True or False;
+This should be transparent for you and you shouldn't even notice. But if don't need this, you can remove Babel from the build:
+ - Set target to "es5" or "es3" in `tsconfig.json`
+ - Remove `"useBabel": true` from `tsconfig.json`
 
-## Author  
-[GUCCI-swallow](https://github.com/GUCCI-swallow)
+More info in [https://github.com/Microsoft/TypeScript/issues/6945](https://github.com/Microsoft/TypeScript/issues/6945)
 
-## License
+#### What if I don't want git-hooks, automatic releases or semantic-release?
 
-Copyright 2016 Soramitsu Co., Ltd.
+Then you may want to:
+ - Remove `commitmsg`, `postinstall` scripts from `package.json`. That will not use those git hooks to make sure you make a conventional commit
+ - Remove `npm run semantic-release` from `.travis.yml`
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+#### What if I don't want to use coveralls or report my coverage?
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Remove `npm run report-coverage` from `.travis.yml`
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+#### What is `npm install` doing the first time runned?
+
+It runs the script `tools/init` which sets up everything for you. In short, it:
+ - Configures webpack for the build, which creates the umd library, generate docs, etc.
+ - Configures `package.json` (typings file, main file, etc)
+ - Renames main src and test files
+
+## Credits
+
+Made with :heart: by [@alexjoverm](https://twitter.com/alexjoverm) and all these wonderful contributors ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+| [<img src="https://avatars.githubusercontent.com/u/6052309?v=3" width="100px;"/><br /><sub>Ciro</sub>](https://www.linkedin.com/in/ciro-ivan-agulló-guarinos-42109376)<br />[💻](https://github.com/alexjoverm/typescript-library-starter/commits?author=k1r0s) 🔧 | [<img src="https://avatars.githubusercontent.com/u/947523?v=3" width="100px;"/><br /><sub>Marius Schulz</sub>](https://blog.mariusschulz.com)<br />[📖](https://github.com/alexjoverm/typescript-library-starter/commits?author=mariusschulz) | [<img src="https://avatars.githubusercontent.com/u/4152819?v=3" width="100px;"/><br /><sub>Alexander Odell</sub>](https://github.com/alextrastero)<br />[📖](https://github.com/alexjoverm/typescript-library-starter/commits?author=alextrastero) |
+| :---: | :---: | :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!
