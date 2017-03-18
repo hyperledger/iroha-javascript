@@ -1,6 +1,6 @@
 {
-  "projectName": "typescript-library-starter",
-  "projectOwner": "alexjoverm",
+  "projectName": "iroha-javascript",
+  "projectOwner": "GUCCI-swallow",
   "files": [
     "README.md"
   ],
@@ -8,31 +8,39 @@
   "commit": true,
   "contributors": [
     {
-      "login": "k1r0s",
-      "name": "Ciro",
-      "avatar_url": "https://avatars.githubusercontent.com/u/6052309?v=3",
-      "profile": "https://www.linkedin.com/in/ciro-ivan-agulló-guarinos-42109376",
+      "login": "takemiyamakoto",
+      "name": "誠",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20982317?v=3&s=460",
+      "profile": "https://github.com/takemiyamakoto",
       "contributions": [
-        "code",
-        "tool"
+        "code"
       ]
     },
     {
-      "login": "mariusschulz",
-      "name": "Marius Schulz",
-      "avatar_url": "https://avatars.githubusercontent.com/u/947523?v=3",
-      "profile": "https://blog.mariusschulz.com",
+      "login": "luca3104",
+      "name": "Satoshi Kaji",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12592891?v=3&s=460",
+      "profile": "https://github.com/luca3104",
       "contributions": [
         "doc"
       ]
     },
     {
-      "login": "alextrastero",
-      "name": "Alexander Odell",
-      "avatar_url": "https://avatars.githubusercontent.com/u/4152819?v=3",
-      "profile": "https://github.com/alextrastero",
+      "login": "6londe",
+      "name": "6londe",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/11345397?v=3&s=460",
+      "profile": "https://github.com/6londe",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "theofilis",
+      "name": "George Theofilis",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/475517?v=3&s=460",
+      "profile": "https://github.com/theofilis",
+      "contributions": [
+        "code", "test", "tool"
       ]
     }
   ]
