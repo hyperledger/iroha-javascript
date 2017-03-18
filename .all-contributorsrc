@@ -1,0 +1,47 @@
+{
+  "projectName": "iroha-javascript",
+  "projectOwner": "GUCCI-swallow",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "contributors": [
+    {
+      "login": "takemiyamakoto",
+      "name": "誠",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/20982317?v=3&s=460",
+      "profile": "https://github.com/takemiyamakoto",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "luca3104",
+      "name": "Satoshi Kaji",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/12592891?v=3&s=460",
+      "profile": "https://github.com/luca3104",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "6londe",
+      "name": "6londe",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/11345397?v=3&s=460",
+      "profile": "https://github.com/6londe",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "theofilis",
+      "name": "George Theofilis",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/475517?v=3&s=460",
+      "profile": "https://github.com/theofilis",
+      "contributions": [
+        "code", "test", "tool"
+      ]
+    }
+  ]
+}
