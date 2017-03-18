@@ -1,3 +1,10 @@
 {
-  "extends": "tslint-config-standard"
+  "extends": "tslint-config-standard",
+  "rules": { 
+    "quotemark": [
+      true,
+      "double",
+      "avoid-escape"
+    ]
+  }
 }
