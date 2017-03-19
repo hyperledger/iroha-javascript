@@ -11,9 +11,9 @@
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/soramitsu/iroha-javascript/issues"
+    "url": "https://github.com/hyperledger/iroha-javascript/issues"
   },
-  "homepage": "https://github.com/soramitsu/iroha-javascript#readme",
+  "homepage": "https://github.com/hyperledger/iroha-javascript#readme",
   "engines": {
     "node": ">=6.0.0"
   },

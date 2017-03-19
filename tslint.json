@@ -5,6 +5,10 @@
       true,
       "double",
       "avoid-escape"
+    ],
+    "semicolon": [
+      true, 
+      "always"
     ]
   }
 }

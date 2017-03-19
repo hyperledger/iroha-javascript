@@ -1,12 +1,12 @@
-import { join } from "path"
-const { camelCase } = require("lodash")
-const { TsConfigPathsPlugin, CheckerPlugin } = require("awesome-typescript-loader")
-const TypedocWebpackPlugin = require("typedoc-webpack-plugin")
+import { join } from "path";
+const { camelCase } = require("lodash");
+const { TsConfigPathsPlugin, CheckerPlugin } = require("awesome-typescript-loader");
+const TypedocWebpackPlugin = require("typedoc-webpack-plugin");
 
 /**
  * Update this variable if you change your library name
  */
-const libraryName = "irohajs"
+const libraryName = "irohajs";
 
 export default {
   entry: join(__dirname, `src/${libraryName}.ts`),
@@ -51,4 +51,4 @@ export default {
     net: "empty",
     tls: "empty"
   }
-}
+};
