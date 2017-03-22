@@ -2,27 +2,111 @@
   "name": "irohajs",
   "version": "1.0.0",
   "description": "",
-  "main": "src/iroha.js",
+  "keywords": [],
+  "main": "dist/irohajs.js",
+  "typings": "dist/src/irohajs.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/hyperledger/iroha-javascript/issues"
+  },
+  "homepage": "https://github.com/hyperledger/iroha-javascript#readme",
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": ""
+    "lint": "tslint -e **/node_modules/** -e **/dist/** **/*.ts ",
+    "prebuild": "rimraf dist && rimraf docs",
+    "build": "webpack -p",
+    "build:dev": "webpack",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "deploy-docs": "node tools/gh-pages-publish.js",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "commit": "git-cz",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "prepush": "npm run test:prod && npm run build",
+    "commitmsg": "validate-commit-msg"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/soramitsu/iroha-javascript.git"
   },
-  "author": "",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/soramitsu/iroha-javascript/issues"
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    },
+    "validate-commit-msg": {
+      "types": "conventional-commit-types",
+      "helpMessage": "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
+    }
   },
-  "homepage": "https://github.com/soramitsu/iroha-javascript#readme",
+  "jest": {
+    "globals": {
+      "__TS_CONFIG__": {
+        "module": "commonjs"
+      }
+    },
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "modulePathIgnorePatterns": [
+      "/^((?!src).)/"
+    ],
+    "testResultsProcessor": "<rootDir>/node_modules/ts-jest/coverageprocessor.js",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    }
+  },
   "devDependencies": {
-    "browserify": "^13.1.0",
-    "gulp": "^3.9.1",
-    "gulp-uglify": "^2.0.0",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "@types/jest": "^18.1.1",
+    "@types/node": "^7.0.2",
+    "@types/webpack": "^2.2.7",
+    "awesome-typescript-loader": "^3.1.0",
+    "babel-core": "^6.22.1",
+    "babel-preset-env": "^1.2.0",
+    "colors": "^1.1.2",
+    "commitizen": "^2.9.5",
+    "coveralls": "^2.11.15",
+    "cz-conventional-changelog": "^2.0.0",
+    "husky": "^0.13.1",
+    "jest": "^19.0.2",
+    "lodash": "^4.17.4",
+    "prompt": "^1.0.0",
+    "replace-in-file": "^2.3.2",
+    "rimraf": "^2.5.4",
+    "semantic-release": "^6.3.2",
+    "ts-jest": "^19.0.0",
+    "ts-node": "^2.0.0",
+    "tslint": "^4.3.1",
+    "tslint-config-standard": "^4.0.0",
+    "typedoc": "^0.5.7",
+    "typedoc-webpack-plugin": "^1.1.3",
+    "typescript": "^2.1.6",
+    "validate-commit-msg": "^2.10.1",
+    "webpack": "^2.2.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "js-sha3": "^0.5.7",
+    "supercop.js": "^2.0.1"
+  }
 }
