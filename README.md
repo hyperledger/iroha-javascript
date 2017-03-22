@@ -22,6 +22,12 @@
 ```html
 <script src="/path/to/iroha.js"></script>
 ```
+or
+
+```js
+import Iroha from 'iroha.js'
+var Iroha = require('iroha.js')
+```
 
 ### API
 #### iroha.createKeyPair
@@ -29,8 +35,6 @@
 ```js
 var keys = iroha.createKeyPair();
 ```
-
-
 
 Return key object.  
 **Response**:
@@ -44,22 +48,17 @@ Return key object.
 #### iroha.createSignature
 
 ```js
-var keys = iroha.createSignature();
+var keys = iroha.createSignature({
+            publicKey: A 32 byte public key encoded base64,
+            privateKey: A 64 byte private key encoded base64,
+            message: A message
+           });
 ```
 
 
 
 Return key object.  
-**keys**:
 
-```js
-//keys
-{
-	publicKey: A 32 byte public key encoded base64,
-	privateKey: A 64 byte private key encoded base64,
-    message: A message
-}
-```
 **Response**:
 
 signature(A signature string  encoded base64)  
@@ -67,21 +66,16 @@ signature(A signature string  encoded base64)
 #### iroha.verify
 
 ```js
-var keys = iroha.verify();
+var keys = iroha.verify({
+            publicKey: A 32 byte public key encoded base64,
+            signature: A signature,
+            message: A message
+           });
 ```
 
 
 Return key object.  
-**keys**:
 
-```js
-//keys
-{
-	publicKey: A 32 byte public key encoded base64,
-    signature: A signature,
-    message: A message
-}
-```
 **Response**:
 
 Return True or False;
