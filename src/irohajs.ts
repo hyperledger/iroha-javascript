@@ -1,6 +1,9 @@
 const sha3_256 = require("js-sha3").sha3_256;
 const supercop = require("supercop.js");
 
+/**
+ * @returns a key pair.
+ */
 export function createKeyPair (): IKeyPair {
   const seed = supercop.createSeed();
   const keys = supercop.createKeyPair(seed);
@@ -11,6 +14,10 @@ export function createKeyPair (): IKeyPair {
   };
 }
 
+/**
+ * @param opt
+ * @returns signature of given message.
+ */
 export function sign (opt: { publicKey: string, privateKey: string, message: string }): string {
   const publicKey = new Buffer(opt.publicKey, "base64");
   const privateKey = new Buffer(opt.privateKey, "base64");
@@ -25,7 +32,11 @@ export function sign (opt: { publicKey: string, privateKey: string, message: str
   return sig;
 }
 
-export function verify (opt: { publicKey: string, message: string, signature: string }) {
+/**
+ * @param opt
+ * @returns true if signature is valid.
+ */
+export function verify (opt: { publicKey: string, message: string, signature: string }): boolean {
   const valid = supercop.verify(
     new Buffer(opt.signature, "base64"),
     new Buffer(opt.message),
@@ -34,16 +45,25 @@ export function verify (opt: { publicKey: string, message: string, signature: st
   return valid;
 }
 
+/**
+ * Inteface of key pair.
+ */
 export interface IKeyPair {
   privateKey: string;
   publicKey: string;
 }
 
+/**
+ * Inteface of iroha wallet.
+ */
 export interface IWallet {
   privateKey: Buffer;
   publicKey: Buffer;
 }
 
+/**
+ * Iroha wallet.
+ */
 export class Wallet implements IWallet {
   privateKey: Buffer;
   publicKey: Buffer;
