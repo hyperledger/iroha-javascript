@@ -106,7 +106,10 @@
     "webpack": "^2.2.0"
   },
   "dependencies": {
+    "axios": "^0.15.3",
+    "grpc": "^1.2.0",
     "js-sha3": "^0.5.7",
+    "moment": "^2.18.1",
     "supercop.js": "^2.0.1"
   }
 }

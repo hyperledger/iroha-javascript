@@ -1,5 +1,17 @@
-const sha3_256 = require("js-sha3").sha3_256;
-const supercop = require("supercop.js");
+export * from "./api";
+export * from "./client";
+export * from "./wallet";
+
+export const sha3_256 = require("js-sha3").sha3_256;
+export const supercop = require("supercop.js");
+
+/**
+ * Inteface of key pair.
+ */
+export interface IKeyPair {
+  privateKey: string;
+  publicKey: string;
+}
 
 /**
  * @returns a key pair.
@@ -43,48 +55,4 @@ export function verify (opt: { publicKey: string, message: string, signature: st
     new Buffer(opt.publicKey, "base64")
   );
   return valid;
-}
-
-/**
- * Inteface of key pair.
- */
-export interface IKeyPair {
-  privateKey: string;
-  publicKey: string;
-}
-
-/**
- * Inteface of iroha wallet.
- */
-export interface IWallet {
-  privateKey: Buffer;
-  publicKey: Buffer;
-}
-
-/**
- * Iroha wallet.
- */
-export class Wallet implements IWallet {
-  privateKey: Buffer;
-  publicKey: Buffer;
-
-  constructor (keyPair?: IWallet) {
-    const seed = supercop.createSeed();
-    const keys = keyPair || supercop.createKeyPair(seed);
-
-    this.publicKey = keys.publicKey;
-    this.privateKey = (keyPair) ? keyPair.privateKey : keys.secretKey;
-  }
-
-  toJSON (): IKeyPair {
-    return {
-      publicKey: this.publicKey.toString("base64"),
-      privateKey: this.privateKey.toString("base64")
-    };
-  }
-
-  sign (msg: string): string {
-    const message = new Buffer(sha3_256(msg));
-    return supercop.sign(message, this.publicKey, this.privateKey).toString("base64");
-  }
 }
