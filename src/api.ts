@@ -2,32 +2,32 @@
  * ITransactionRepositoryService
  */
 export interface ITransactionRepositoryService {
-  find: (query: IQuery) => ITransactionResponse;
-  fetch: (query: IQuery) => ITransactionResponse;
-  fetchStream: (transaction: ITransaction) => IStatusResponse;
+  find: (query: IQuery, cb: (error: any, response: ITransactionResponse) => any) => any;
+  fetch: (query: IQuery, cb: (error: any, response: ITransactionResponse) => any) => any;
+  fetchStream: (transaction: ITransaction, cb: (error: any, response: IStatusResponse) => any) => any;
 }
 
 /**
  * IAssetRepositoryService
  */
 export interface IAssetRepositoryService {
-  find: (query: IQuery) => IAssetResponse;
-}
-
-/**
- * IzanamiService
- */
-export interface IIzanamiService {
-  Torii: (transaction: ITransaction) => IStatusResponse;
-  Verify: (consensusEvent: IConsensusEvent) => IStatusResponse;
-  Kagami: (query: IQuery) => IStatusResponse;
+  find: (query: IQuery, cb: (error: any, response: IAssetResponse) => any) => any;
 }
 
 /**
  * SumeragiService
  */
 export interface ISumeragiService {
-  Izanagi: (transactionRespose: ITransactionResponse) => IStatusResponse;
+  Torii: (transaction: ITransaction, cb: (error: any, response: IStatusResponse) => any) => any;
+  Verify: (consensusEvent: IConsensusEvent, cb: (error: any, response: IStatusResponse) => any) => any;
+  Kagami: (query: IQuery, cb: (error: any, response: IStatusResponse) => any) => any;
+}
+
+/**
+ * IzanamiService
+ */
+export interface IIzanamiService {
+  Izanagi: (transactionRespose: ITransactionResponse, cb: (error: any, response: IStatusResponse) => any) => any;
 }
 
 /**
@@ -57,7 +57,7 @@ export interface IAssetResponse {
   asset: IAsset;
   simpleAsset: ISimpleAsset;
   domain: IDomain;
-  account: Account;
+  account: IAccount;
   peer: IPeer;
 }
 
@@ -164,7 +164,7 @@ export interface ITransaction {
   asset: IAsset;
   simpleAsset: ISimpleAsset;
   domain: IDomain;
-  account: Account;
+  account: IAccount;
   peer: IPeer;
   receivePubkey: string;
 }
