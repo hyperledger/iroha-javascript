@@ -13,12 +13,10 @@ export interface IIroha {
   Sumeragi: GrpcService<ISumeragiService>;
 }
 
-interface IApi {
+export interface IApi {
   Api: IIroha;
 }
 
-const proto: IApi = grpc.load("src/protos/api.proto");
-
-export const api = proto.Api;
-
+// const proto: IApi = grpc.load("src/protos/api.proto");
+// export const api = proto.Api;
 // const stub = new client.Izanami("0.0.0.0:8888", grpc.credentials.createInsecure());
