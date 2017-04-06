@@ -92,4 +92,16 @@ describe("TEST Iroha javascript", () => {
     });
 
   });
+
+  describe("Iroha protobuf", () => {
+    it("Load protobuf!", () => {
+      const proto: iroha.IApi = iroha.grpc.load("src/protos/api.proto");
+
+      const izanami = new proto.Api.TransactionRepository("localhost:50051", iroha.grpc.credentials.createInsecure());
+
+      console.log(izanami);
+
+      expect(proto).toBeTruthy();
+    });
+  });
 });
