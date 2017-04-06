@@ -2,88 +2,88 @@
  * ITransactionRepositoryService
  */
 export interface ITransactionRepositoryService {
-  find: (query: IQuery, cb: (error: any, response: ITransactionResponse) => any) => any;
-  fetch: (query: IQuery, cb: (error: any, response: ITransactionResponse) => any) => any;
-  fetchStream: (transaction: ITransaction, cb: (error: any, response: IStatusResponse) => any) => any;
+  find: (query: Query, cb: (error: any, response: TransactionResponse) => any) => any;
+  fetch: (query: Query, cb: (error: any, response: TransactionResponse) => any) => any;
+  fetchStream: (transaction: Transaction, cb: (error: any, response: StatusResponse) => any) => any;
 }
 
 /**
  * IAssetRepositoryService
  */
 export interface IAssetRepositoryService {
-  find: (query: IQuery, cb: (error: any, response: IAssetResponse) => any) => any;
+  find: (query: Query, cb: (error: any, response: AssetResponse) => any) => any;
 }
 
 /**
  * SumeragiService
  */
 export interface ISumeragiService {
-  Torii: (transaction: ITransaction, cb: (error: any, response: IStatusResponse) => any) => any;
-  Verify: (consensusEvent: IConsensusEvent, cb: (error: any, response: IStatusResponse) => any) => any;
-  Kagami: (query: IQuery, cb: (error: any, response: IStatusResponse) => any) => any;
+  Torii: (transaction: Transaction, cb: (error: any, response: StatusResponse) => any) => any;
+  Verify: (consensusEvent: ConsensusEvent, cb: (error: any, response: StatusResponse) => any) => any;
+  Kagami: (query: Query, cb: (error: any, response: StatusResponse) => any) => any;
 }
 
 /**
  * IzanamiService
  */
 export interface IIzanamiService {
-  Izanagi: (transactionRespose: ITransactionResponse, cb: (error: any, response: IStatusResponse) => any) => any;
+  Izanagi: (transactionRespose: TransactionResponse, cb: (error: any, response: StatusResponse) => any) => any;
 }
 
 /**
  * TransactionResponse
  */
-export interface ITransactionResponse {
+export class TransactionResponse {
   message: string;
   code: number;
-  transaction: Array<ITransaction>;
+  transaction: Array<Transaction>;
 }
 
 /**
  * RecieverConfirmation
  */
-export interface IRecieverConfirmation {
+export class RecieverConfirmation {
   hash: string;
-  signature: ISignature;
+  signature: Signature;
 }
 
 /**
  * AssetResponse
  */
-export interface IAssetResponse {
+export class AssetResponse {
   message: string;
   code: number;
   timestamp: number;
-  asset: IAsset;
-  simpleAsset: ISimpleAsset;
-  domain: IDomain;
-  account: IAccount;
-  peer: IPeer;
+  asset: Asset;
+  simpleAsset: SimpleAsset;
+  domain: Domain;
+  account: Account;
+  peer: Peer;
 }
 
 /**
  * StatusResponse
  */
-export interface IStatusResponse {
+export class StatusResponse {
   value: string;
   message: string;
   timestamp: number;
-  confirm: IRecieverConfirmation;
+  confirm: RecieverConfirmation;
 }
 
 /**
  * Query
  */
-export interface IQuery {
+export class Query {
   type: string;
-  value: Map<string, IBaseObject>;
+  value: Map<string, BaseObject>;
   senderPubkey: string;
 }
 
 /**
  * BaseObject
  */
-export interface IBaseObject {
+export class BaseObject {
   valueString?: string;
   valueInt?: number;
   valueDouble?: number;
@@ -93,27 +93,27 @@ export interface IBaseObject {
 /**
  * SimpleAsset
  */
-export interface ISimpleAsset {
+export class SimpleAsset {
   domain: string;
   name: string;
-  value: IBaseObject;
+  value: BaseObject;
   smartContractName: string;
 }
 
 /**
  * Asset
  */
-export interface IAsset {
+export class Asset {
   domain: string;
   name: string;
-  value: Map<string, IBaseObject>;
+  value: Map<string, BaseObject>;
   smartContractName: string;
 }
 
 /**
  * Domain
  */
-export interface IDomain {
+export class Domain {
   ownerPublicKey: string;
   name: string;
 }
@@ -121,7 +121,7 @@ export interface IDomain {
 /**
  * Account
  */
-export interface IAccount {
+export class Account {
   publicKey: string;
   name: string;
   assets: Array<string>;
@@ -130,7 +130,7 @@ export interface IAccount {
 /**
  * ITrust
  */
-export interface ITrust {
+export class Trust {
   value: number;
   isOk: boolean;
 }
@@ -138,16 +138,16 @@ export interface ITrust {
 /**
  * Peer
  */
-export interface IPeer {
+export class Peer {
   publicKey: string;
   address: string;
-  trust: ITrust;
+  trust: Trust;
 }
 
 /**
  * Signature
  */
-export interface ISignature {
+export class Signature {
   publicKey: string;
   signature: string;
 }
@@ -155,26 +155,26 @@ export interface ISignature {
 /**
  * Transaction
  */
-export interface ITransaction {
-  txSignatures: Array<ISignature>;
+export class Transaction {
+  txSignatures: Array<Signature>;
   type: string;
   senderPubkey: string;
   hash: string;
   timestamp: number;
-  asset: IAsset;
-  simpleAsset: ISimpleAsset;
-  domain: IDomain;
-  account: IAccount;
-  peer: IPeer;
+  asset: Asset;
+  simpleAsset: SimpleAsset;
+  domain: Domain;
+  account: Account;
+  peer: Peer;
   receivePubkey: string;
 }
 
 /**
  * ConsensusEvent
  */
-export interface IConsensusEvent {
-  eventSignatures: Array<ISignature>;
-  transaction: ITransaction;
+export class ConsensusEvent {
+  eventSignatures: Array<Signature>;
+  transaction: Transaction;
   order: number;
   status: string;
 }
