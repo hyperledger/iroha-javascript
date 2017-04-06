@@ -1,4 +1,6 @@
 import * as iroha from "../src/irohajs";
+import { Transaction } from '../src/api';
+
 const sha3_256 = require("js-sha3").sha3_256;
 const supercop = require("supercop.js");
 
@@ -93,15 +95,78 @@ describe("TEST Iroha javascript", () => {
 
   });
 
-  describe("Iroha protobuf", () => {
+  describe("Load dynamic interface", () => {
+    let proto: iroha.IApi;
     it("Load protobuf!", () => {
-      const proto: iroha.IApi = iroha.grpc.load("src/protos/api.proto");
-
-      const izanami = new proto.Api.TransactionRepository("localhost:50051", iroha.grpc.credentials.createInsecure());
-
-      console.log(izanami);
-
+      proto = iroha.grpc.load("src/protos/api.proto");
       expect(proto).toBeTruthy();
     });
+  });
+
+  describe("TransactionRepository", () => {
+    let proto: iroha.IApi;
+    let client: iroha.ITransactionRepositoryService;
+
+    beforeAll(() => {
+      proto = iroha.grpc.load("src/protos/api.proto");
+      client = new proto.Api.TransactionRepository("localhost:50051", iroha.grpc.credentials.createInsecure());
+    });
+
+    it("find!", () => {
+      const query = new iroha.Query();
+      return new Promise((resolve, reject) => {
+        client.find(query, (err, response) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(response);
+          }
+        });
+      }).then(data => {
+        expect(data).toEqual({
+          code: "0",
+          message: "OK",
+          transaction: []
+        });
+      });
+    });
+
+    it("fetch!", () => {
+      const query = new iroha.Query();
+      return new Promise((resolve, reject) => {
+        client.fetch(query, (err, response) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(response);
+          }
+        });
+      }).then(data => {
+        expect(data).toEqual({
+          code: "0",
+          message: "OK",
+          transaction: []
+        });
+      });
+    });
+
+    // it("fetchStream!", () => {
+    //   const transaction = new iroha.Transaction();
+    //   return new Promise((resolve, reject) => {
+    //     client.fetchStream(transaction, (err, response) => {
+    //       if (err) {
+    //         reject(err);
+    //       } else {
+    //         resolve(response);
+    //       }
+    //     });
+    //   }).then(data => {
+    //     expect(data).toEqual({
+    //       code: "0",
+    //       message: "OK",
+    //       transaction: []
+    //     });
+    //   });
+    // });
   });
 });
