@@ -1,7 +1,6 @@
 import * as iroha from "../src/irohajs";
 import { Transaction } from "../src/api";
 
-
 describe("TEST Iroha javascript", () => {
   beforeEach((done) => {
     done();
