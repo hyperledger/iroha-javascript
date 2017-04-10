@@ -1,7 +1,6 @@
 import * as iroha from "../src/irohajs";
 import { AssetResponse } from "../src/api";
 
-
 describe("TEST Iroha Sumeragi Service", () => {
   beforeEach((done) => {
     done();
@@ -31,10 +30,10 @@ describe("TEST Iroha Sumeragi Service", () => {
           "confirm": {
             "hash": "",
             "signature": {
-              "publicKey": "gpULsIl5+MZLQrxhHvBWQ9bjTDmgSxWKQ0YBI+DejKE=", 
+              "publicKey": "gpULsIl5+MZLQrxhHvBWQ9bjTDmgSxWKQ0YBI+DejKE=",
               "signature": "zg86uNvmXOW11rUq9EYLgSBpIP/s2JA4hSxavuWV16z4ddNN7YC/7Ou6vPyMM0ZlFSdCbXrC9E+t0E9Ca2OABA=="
             }
-          }, 
+          },
           "message": "",
           "timestamp": "0",
           "value": "OK"
@@ -57,10 +56,10 @@ describe("TEST Iroha Sumeragi Service", () => {
           "confirm": {
             "hash": "",
             "signature": {
-              "publicKey": "gpULsIl5+MZLQrxhHvBWQ9bjTDmgSxWKQ0YBI+DejKE=", 
+              "publicKey": "gpULsIl5+MZLQrxhHvBWQ9bjTDmgSxWKQ0YBI+DejKE=",
               "signature": "zg86uNvmXOW11rUq9EYLgSBpIP/s2JA4hSxavuWV16z4ddNN7YC/7Ou6vPyMM0ZlFSdCbXrC9E+t0E9Ca2OABA=="
             }
-          }, 
+          },
           "message": "",
           "timestamp": "0",
           "value": "OK"

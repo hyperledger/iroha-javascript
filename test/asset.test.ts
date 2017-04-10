@@ -1,7 +1,6 @@
 import * as iroha from "../src/irohajs";
 import { AssetResponse } from "../src/api";
 
-
 describe("TEST Iroha Asset Repository", () => {
   beforeEach((done) => {
     done();
