@@ -18,16 +18,16 @@ export interface IAssetRepositoryService {
  * SumeragiService
  */
 export interface ISumeragiService {
-  Torii: (transaction: Transaction, cb: (error: any, response: StatusResponse) => any) => any;
-  Verify: (consensusEvent: ConsensusEvent, cb: (error: any, response: StatusResponse) => any) => any;
-  Kagami: (query: Query, cb: (error: any, response: StatusResponse) => any) => any;
+  torii: (transaction: Transaction, cb: (error: any, response: StatusResponse) => any) => any;
+  verify: (consensusEvent: ConsensusEvent, cb: (error: any, response: StatusResponse) => any) => any;
+  kagami: (query: Query, cb: (error: any, response: StatusResponse) => any) => any;
 }
 
 /**
  * IzanamiService
  */
 export interface IIzanamiService {
-  Izanagi: (transactionRespose: TransactionResponse, cb: (error: any, response: StatusResponse) => any) => any;
+  izanagi: (transactionRespose: TransactionResponse, cb: (error: any, response: StatusResponse) => any) => any;
 }
 
 /**
