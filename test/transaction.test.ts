@@ -20,7 +20,7 @@ describe("TEST Iroha javascript", () => {
 
     beforeAll(() => {
       proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.TransactionRepository("localhost:50051", iroha.grpc.credentials.createInsecure());
+      client = new proto.Api.TransactionRepository("docker-s001.cloudapp.net:50051", iroha.grpc.credentials.createInsecure());
     });
 
     it("find!", () => {

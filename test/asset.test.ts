@@ -12,7 +12,7 @@ describe("TEST Iroha Asset Repository", () => {
 
     beforeAll(() => {
       proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.AssetRepository("localhost:50051", iroha.grpc.credentials.createInsecure());
+      client = new proto.Api.AssetRepository("docker-s001.cloudapp.net:50051", iroha.grpc.credentials.createInsecure());
     });
 
     it("find!", () => {

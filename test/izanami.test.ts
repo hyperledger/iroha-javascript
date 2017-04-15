@@ -12,7 +12,7 @@ describe("TEST Iroha Izanami", () => {
 
     beforeAll(() => {
       proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.Izanami("localhost:50051", iroha.grpc.credentials.createInsecure());
+      client = new proto.Api.Izanami("docker-s001.cloudapp.net:50051", iroha.grpc.credentials.createInsecure());
     });
 
     it("izanagi", () => {
