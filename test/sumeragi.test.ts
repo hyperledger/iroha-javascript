@@ -1,5 +1,6 @@
 import * as iroha from "../src/irohajs";
 import { AssetResponse } from "../src/api";
+import { IROHA_HOST } from "./config";
 
 describe("TEST Iroha Sumeragi Service", () => {
   beforeEach((done) => {
@@ -12,7 +13,7 @@ describe("TEST Iroha Sumeragi Service", () => {
 
     beforeAll(() => {
       proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.Sumeragi("localhost:50051", iroha.grpc.credentials.createInsecure());
+      client = new proto.Api.Sumeragi(IROHA_HOST, iroha.grpc.credentials.createInsecure());
     });
 
     it("torii!", () => {
@@ -26,18 +27,8 @@ describe("TEST Iroha Sumeragi Service", () => {
           }
         });
       }).then((data: iroha.StatusResponse) => {
-        expect(data).toEqual({
-          "confirm": {
-            "hash": "",
-            "signature": {
-              "publicKey": "gpULsIl5+MZLQrxhHvBWQ9bjTDmgSxWKQ0YBI+DejKE=",
-              "signature": "zg86uNvmXOW11rUq9EYLgSBpIP/s2JA4hSxavuWV16z4ddNN7YC/7Ou6vPyMM0ZlFSdCbXrC9E+t0E9Ca2OABA=="
-            }
-          },
-          "message": "",
-          "timestamp": "0",
-          "value": "OK"
-        });
+        expect(data.value).toEqual("OK");
+        expect(data.message).toEqual("");
       });
     });
 
@@ -52,18 +43,8 @@ describe("TEST Iroha Sumeragi Service", () => {
           }
         });
       }).then((data: iroha.StatusResponse) => {
-        expect(data).toEqual({
-          "confirm": {
-            "hash": "",
-            "signature": {
-              "publicKey": "gpULsIl5+MZLQrxhHvBWQ9bjTDmgSxWKQ0YBI+DejKE=",
-              "signature": "zg86uNvmXOW11rUq9EYLgSBpIP/s2JA4hSxavuWV16z4ddNN7YC/7Ou6vPyMM0ZlFSdCbXrC9E+t0E9Ca2OABA=="
-            }
-          },
-          "message": "",
-          "timestamp": "0",
-          "value": "OK"
-        });
+        expect(data.value).toEqual("OK");
+        expect(data.message).toEqual("");
       });
     });
 

@@ -1,26 +1,17 @@
 import * as iroha from "../src/irohajs";
 import { Transaction } from "../src/api";
+import { IROHA_HOST } from "./config";
 
 describe("TEST Iroha javascript", () => {
   beforeEach((done) => {
     done();
   });
 
-  describe("Load dynamic interface", () => {
-    let proto: iroha.IApi;
-    it("Load protobuf!", () => {
-      proto = iroha.grpc.load("src/protos/api.proto");
-      expect(proto).toBeTruthy();
-    });
-  });
-
   describe("TransactionRepository", () => {
-    let proto: iroha.IApi;
     let client: iroha.ITransactionRepositoryService;
-
     beforeAll(() => {
-      proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.TransactionRepository("docker-s001.cloudapp.net:50051", iroha.grpc.credentials.createInsecure());
+      const data = new iroha.IrohaService();
+      client = data.TransactionRepository;
     });
 
     it("find!", () => {
