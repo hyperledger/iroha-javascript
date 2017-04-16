@@ -1,4 +1,11 @@
 /**
+ * IAccountService
+ */
+export interface IAccountService {
+
+}
+
+/**
  * ITransactionRepositoryService
  */
 export interface ITransactionRepositoryService {
