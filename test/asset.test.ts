@@ -1,5 +1,6 @@
 import * as iroha from "../src/irohajs";
 import { AssetResponse } from "../src/api";
+import { IROHA_HOST } from "./config";
 
 describe("TEST Iroha Asset Repository", () => {
   beforeEach((done) => {
@@ -12,7 +13,7 @@ describe("TEST Iroha Asset Repository", () => {
 
     beforeAll(() => {
       proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.AssetRepository("docker-s001.cloudapp.net:50051", iroha.grpc.credentials.createInsecure());
+      client = new proto.Api.AssetRepository(IROHA_HOST, iroha.grpc.credentials.createInsecure());
     });
 
     it("find!", () => {

@@ -1,5 +1,6 @@
 import * as iroha from "../src/irohajs";
 import { AssetResponse } from "../src/api";
+import { IROHA_HOST } from "./config";
 
 describe("TEST Iroha Izanami", () => {
   beforeEach((done) => {
@@ -12,7 +13,7 @@ describe("TEST Iroha Izanami", () => {
 
     beforeAll(() => {
       proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.Izanami("docker-s001.cloudapp.net:50051", iroha.grpc.credentials.createInsecure());
+      client = new proto.Api.Izanami(IROHA_HOST, iroha.grpc.credentials.createInsecure());
     });
 
     it("izanagi", () => {
