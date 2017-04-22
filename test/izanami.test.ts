@@ -1,6 +1,5 @@
 import * as iroha from "../src/irohajs";
-import { AssetResponse } from "../src/api";
-import { IROHA_HOST } from "./config";
+import { request, assertHelper } from "./__mocks__/request";
 
 describe("TEST Iroha Izanami", () => {
   beforeEach((done) => {
@@ -8,29 +7,17 @@ describe("TEST Iroha Izanami", () => {
   });
 
   describe("Izanami", () => {
-    let proto: iroha.IApi;
     let client: iroha.IIzanamiService;
 
     beforeAll(() => {
-      proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.Izanami(IROHA_HOST, iroha.grpc.credentials.createInsecure());
+      const service = new iroha.IrohaService();
+      client = service.Izanami;
     });
 
     it("izanagi", () => {
       const transaction = new iroha.TransactionResponse();
-      return new Promise((resolve, reject) => {
-        client.izanagi(transaction, (err, response) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-      }).then((data: iroha.StatusResponse) => {
-        expect(data.value).toEqual("OK");
-        expect(data.message).toEqual("OK, no problem!");
-        expect(data.confirm).toEqual(null);
-      });
+      return request(client, "izanagi", [transaction])
+        .then(assertHelper(undefined, "OK, no problem!", "OK", null));
     });
   });
 });

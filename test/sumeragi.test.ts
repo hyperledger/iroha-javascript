@@ -1,6 +1,5 @@
 import * as iroha from "../src/irohajs";
-import { AssetResponse } from "../src/api";
-import { IROHA_HOST } from "./config";
+import { request, assertHelper } from "./__mocks__/request";
 
 describe("TEST Iroha Sumeragi Service", () => {
   beforeEach((done) => {
@@ -8,61 +7,29 @@ describe("TEST Iroha Sumeragi Service", () => {
   });
 
   describe("ISumeragiService", () => {
-    let proto: iroha.IApi;
     let client: iroha.ISumeragiService;
 
     beforeAll(() => {
-      proto = iroha.grpc.load("src/protos/api.proto");
-      client = new proto.Api.Sumeragi(IROHA_HOST, iroha.grpc.credentials.createInsecure());
+      const service = new iroha.IrohaService();
+      client = service.Sumeragi;
     });
 
     it("torii!", () => {
       const query = new iroha.Transaction();
-      return new Promise((resolve, reject) => {
-        client.torii(query, (err, response) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-      }).then((data: iroha.StatusResponse) => {
-        expect(data.value).toEqual("OK");
-        expect(data.message).toEqual("");
-      });
+      return request(client, "torii", [query])
+        .then(assertHelper(undefined, "", "OK"));
     });
 
     it("verify!", () => {
       const query = new iroha.ConsensusEvent();
-      return new Promise((resolve, reject) => {
-        client.verify(query, (err, response) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-      }).then((data: iroha.StatusResponse) => {
-        expect(data.value).toEqual("OK");
-        expect(data.message).toEqual("");
-      });
+      return request(client, "verify", [query])
+        .then(assertHelper(undefined, "", "OK"));
     });
 
     it("kagami!", () => {
-      const query = new iroha.Query();
-      return new Promise((resolve, reject) => {
-        client.kagami(query, (err, response) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(response);
-          }
-        });
-      }).then((data: iroha.StatusResponse) => {
-        expect(data.confirm).toEqual(null);
-        expect(data.message).toEqual("OK, no problem!");
-        expect(data.value).toEqual("Alive");
-      });
+      const query = new iroha.ConsensusEvent();
+      return request(client, "kagami", [query])
+        .then(assertHelper(undefined, "OK, no problem!", "Alive"));
     });
   });
 });
