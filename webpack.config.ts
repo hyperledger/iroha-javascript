@@ -8,6 +8,8 @@ const TypedocWebpackPlugin = require("typedoc-webpack-plugin");
  */
 const libraryName = "irohajs";
 
+const nodeModules = ["grpc", "moment", "axios", "js-sha3", "supercop.js"];
+
 export default {
   entry: join(__dirname, `src/${libraryName}.ts`),
   // Currently cheap-module-source-map is broken https://github.com/webpack/webpack/issues/4176
@@ -18,6 +20,7 @@ export default {
     library: camelCase(libraryName),
     filename: `${libraryName}.js`
   },
+  externals: nodeModules,
   resolve: {
     extensions: [".ts", ".js"]
   },
