@@ -98,7 +98,7 @@ describe("TEST Iroha javascript", () => {
   describe("Load dynamic interface", () => {
     let proto: iroha.IApi;
     it("Load protobuf!", () => {
-      proto = iroha.grpc.load("src/protos/api.proto");
+      proto = iroha.grpc.load("src/grpc/protobuff/api.proto");
       expect(proto).toBeTruthy();
     });
   });

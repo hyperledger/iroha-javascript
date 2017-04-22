@@ -1,5 +1,5 @@
-import * as iroha from "../src/irohajs";
-import {request, assertHelperData} from "./__mocks__/request";
+import * as iroha from "../../../src/irohajs";
+import {request, assertHelperData} from "./../../__mocks__/request";
 
 describe("TEST Iroha Asset Repository", () => {
   beforeEach((done) => {

@@ -1,5 +1,5 @@
-import * as iroha from "../src/irohajs";
-import { request, assertHelper } from "./__mocks__/request";
+import * as iroha from "../../../src/irohajs";
+import {request, assertHelper} from "./../../__mocks__/request";
 
 describe("TEST Iroha javascript", () => {
   beforeEach((done) => {
