@@ -2,17 +2,10 @@ export const grpc = require("grpc");
 
 import axios from "axios";
 import * as moment from "moment";
-import { Account } from "./api";
+import { IrohaGrpcFormat, IIrohaGrpc, IGrpcFactory, grpcServiceFactory } from "./grpc/utils";
+import { IKeyPair } from "./irohajs";
 import { ITransactionRepositoryService, IAssetRepositoryService,
-  IIzanamiService, ISumeragiService, IKeyPair } from "./irohajs";
-
-/**
- *
- */
-export enum IrohaGrpcFormat {
-  Protobuf,
-  Flatbuffers
-}
+    IIzanamiService, ISumeragiService } from "./grpc/protobuff/api";
 
 /**
  *
@@ -28,23 +21,6 @@ export interface IrohaConfig {
   };
 }
 
-/**
- *
- */
-export interface GrpcService<T> {
-  new(...args: any[]) : T;
-}
-
-/**
- *
- */
-export interface IIrohaGrpc {
-  TransactionRepository: GrpcService<ITransactionRepositoryService>;
-  AssetRepository: GrpcService<IAssetRepositoryService>;
-  Izanami: GrpcService<IIzanamiService>;
-  Sumeragi: GrpcService<ISumeragiService>;
-}
-
 export interface IIrohaRest {
   // Account: IAccountService;
 }
@@ -56,18 +32,10 @@ export interface IApi {
   Api: IIrohaGrpc;
 }
 
-function grpcServiceFactory<T> (facade: IrohaService, cb: (url: string, auth: any, config?: any) => T): T {
-  if (facade.rpc == null) {
-    throw new Error("Error: gRPC isn't initialized yet!");
-  }
-
-  return cb(facade.getGrpcBaseUrl(), grpc.credentials.createInsecure());
-}
-
 /**
  *
  */
-export class IrohaService {
+export class IrohaService implements IGrpcFactory {
   static DefaultIrohaConfiguration = {
     hostname: "localhost",
     rest: {
@@ -132,7 +100,7 @@ export class IrohaService {
 
   private init (config: IrohaConfig): void {
     if (config.grpc.format === IrohaGrpcFormat.Protobuf) {
-      const proto: IApi = grpc.load("src/protos/api.proto");
+      const proto: IApi = grpc.load(`${__dirname}/grpc/protobuff/api.proto`);
       this.rpc = proto.Api;
     } else {
       throw new Error("Error: Flatbuffers are not supported by gRPC yet!");
