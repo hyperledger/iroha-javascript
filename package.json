@@ -22,6 +22,8 @@
     "prebuild": "rimraf dist && rimraf docs",
     "build": "webpack -p",
     "build:dev": "webpack",
+    "build:web": "webpack -p --target=web",
+    "build:node": "webpack -p --target=node",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",

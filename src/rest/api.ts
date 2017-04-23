@@ -1,0 +1,6 @@
+/**
+ * AccountService
+ */
+export interface IAccountService {
+
+}

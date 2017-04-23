@@ -1,5 +1,5 @@
 /**
- * ITransactionRepositoryService
+ * TransactionRepositoryService
  */
 export interface ITransactionRepositoryService {
   find: (query: Query, cb: (error: any, response: TransactionResponse) => any) => any;
@@ -8,7 +8,7 @@ export interface ITransactionRepositoryService {
 }
 
 /**
- * IAssetRepositoryService
+ * AssetRepositoryService
  */
 export interface IAssetRepositoryService {
   find: (query: Query, cb: (error: any, response: AssetResponse) => any) => any;
@@ -24,7 +24,7 @@ export interface ISumeragiService {
 }
 
 /**
- * IzanamiService
+ * zanamiService
  */
 export interface IIzanamiService {
   izanagi: (transactionRespose: TransactionResponse, cb: (error: any, response: StatusResponse) => any) => any;
@@ -128,7 +128,7 @@ export class Account {
 }
 
 /**
- * ITrust
+ * Trust
  */
 export class Trust {
   value: number;

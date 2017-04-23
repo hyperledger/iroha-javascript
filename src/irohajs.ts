@@ -1,4 +1,4 @@
-export * from "./api";
+export * from "./grpc/protobuff/api";
 export * from "./client";
 export * from "./wallet";
 
