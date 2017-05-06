@@ -1,4 +1,12 @@
-import axios, { AxiosRequestConfig, AxiosPromise } from "axios";
+import axios from "axios";
+
+export class Response<T> {
+  data: T;
+  status: number;
+  statusText: string;
+  headers: any;
+  config: any;
+}
 
 /**
  * BaseService
@@ -18,8 +26,16 @@ export abstract class BaseService {
    *
    * @param path
    */
-  getRequest (path: string): AxiosPromise {
-    return axios.get(`${this.baseUrl}${path}`);
+  getRequest (path: string): Promise<any> {
+    return new Promise<any>((response, reject) => {
+      axios.get(`${this.baseUrl}${path}`)
+        .then((data) => {
+          response(data.data);
+        })
+        .catch((reason) => {
+          reject(reason);
+        });
+    });
   }
 
   /**
@@ -27,15 +43,23 @@ export abstract class BaseService {
    * @param path
    * @param config
    */
-  postRequest (path: string, config: any): AxiosPromise {
-    return axios.post(`${this.baseUrl}${path}`, config);
+  postRequest (path: string, config: any): Promise<Response<any>> {
+    return new Promise<any>((response, reject) => {
+      axios.post(`${this.baseUrl}${path}`, config)
+        .then((data) => {
+          response(data.data);
+        })
+        .catch((reason) => {
+          reject(reason);
+        });
+    });
   }
 
   /**
    *
    * @param result
    */
-  transform<T> (result: Promise<any>): Promise<T> {
+  transform<T> (result: Promise<Response<any>>): Promise<T> {
     return result.then((data) => {
       return data.data as T;
     });

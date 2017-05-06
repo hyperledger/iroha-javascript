@@ -1,4 +1,4 @@
-import * as api from "../../../src/grpc/protobuff/api";
+import * as api from "../src/models";
 
 describe("TEST Iroha Protobuf API", () => {
 

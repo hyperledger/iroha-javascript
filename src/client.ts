@@ -4,8 +4,11 @@ import axios from "axios";
 import * as moment from "moment";
 import { IrohaGrpcFormat, IIrohaGrpc, IGrpcFactory, grpcServiceFactory } from "./grpc/utils";
 import { IKeyPair } from "./irohajs";
-import { ITransactionRepositoryService, IAssetRepositoryService,
-    IIzanamiService, ISumeragiService } from "./grpc/protobuff/api";
+import {
+  ITransactionRepositoryService, IAssetRepositoryService,
+  IIzanamiService, ISumeragiService
+} from "./grpc/protobuff/api";
+import { IrohaRestClient } from "./rest/api";
 
 /**
  *
@@ -19,10 +22,6 @@ export interface IrohaConfig {
     port: number;
     format: IrohaGrpcFormat;
   };
-}
-
-export interface IIrohaRest {
-  // Account: IAccountService;
 }
 
 /**
@@ -54,7 +53,7 @@ export class IrohaService implements IGrpcFactory {
 
   config: IrohaConfig;
   rpc: IIrohaGrpc;
-  http: IIrohaRest;
+  rest: IrohaRestClient;
 
   constructor (config: IrohaConfig = IrohaService.DefaultIrohaConfiguration) {
     this.init(config);
@@ -105,5 +104,7 @@ export class IrohaService implements IGrpcFactory {
     } else {
       throw new Error("Error: Flatbuffers are not supported by gRPC yet!");
     }
+
+    this.rest = new IrohaRestClient(this.getRestBaseUrl());
   }
 }
