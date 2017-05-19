@@ -94,7 +94,7 @@ Return True or False;
 
  - Zero-setup. After running `npm install` things will be setup for you :wink:
  - **[Webpack 2](https://webpack.js.org/)** for UMD bundle, with [Tree-shaking](https://webpack.js.org/guides/tree-shaking/) dead code elimination
- - Tests, coverage and interactive watch mode using **[Jest](http://facebook.github.io/jest/)**
+ - Tests, coverage and interactive watch mode using **[Jest](http://facebook.github.io/jest/)** and **[Karma](https://karma-runner.github.io/)**
  - **[TSLint](https://palantir.github.io/tslint/)** ([standard-config](https://github.com/blakeembrey/tslint-config-standard)) for your code styling
  - **Docs automatic generation and deployment** to `gh-pages`, using **[TypeDoc](http://typedoc.org/)**
  - Automatic types `(*.d.ts)` file generation
@@ -104,6 +104,7 @@ Return True or False;
 #### NPM scripts
 
  - `npm t`: Run test suite
+ - `npm run test:browser`: Run test suite for browser
  - `npm run test:watch`: Run test suite in [interactive watch mode](http://facebook.github.io/jest/docs/cli.html#watch)
  - `npm run test:prod`: Run linting + generate coverage
  - `npm run build`: Bundles code, create docs and generate typings
