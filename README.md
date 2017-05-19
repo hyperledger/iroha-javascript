@@ -104,7 +104,7 @@ Return True or False;
 #### NPM scripts
 
  - `npm t`: Run test suite
- - `npm run test:karma`: Run test suite for browser
+ - `npm run test:browser`: Run test suite for browser
  - `npm run test:watch`: Run test suite in [interactive watch mode](http://facebook.github.io/jest/docs/cli.html#watch)
  - `npm run test:prod`: Run linting + generate coverage
  - `npm run build`: Bundles code, create docs and generate typings
