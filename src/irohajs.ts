@@ -1,6 +1,21 @@
-const sha3_256 = require("js-sha3").sha3_256;
-const supercop = require("supercop.js");
+export * from "./api";
+export * from "./client";
+export * from "./wallet";
 
+export const sha3_256 = require("js-sha3").sha3_256;
+export const supercop = require("supercop.js");
+
+/**
+ * Inteface of key pair.
+ */
+export interface IKeyPair {
+  privateKey: string;
+  publicKey: string;
+}
+
+/**
+ * @returns a key pair.
+ */
 export function createKeyPair (): IKeyPair {
   const seed = supercop.createSeed();
   const keys = supercop.createKeyPair(seed);
@@ -11,6 +26,10 @@ export function createKeyPair (): IKeyPair {
   };
 }
 
+/**
+ * @param opt
+ * @returns signature of given message.
+ */
 export function sign (opt: { publicKey: string, privateKey: string, message: string }): string {
   const publicKey = new Buffer(opt.publicKey, "base64");
   const privateKey = new Buffer(opt.privateKey, "base64");
@@ -25,46 +44,15 @@ export function sign (opt: { publicKey: string, privateKey: string, message: str
   return sig;
 }
 
-export function verify (opt: { publicKey: string, message: string, signature: string }) {
+/**
+ * @param opt
+ * @returns true if signature is valid.
+ */
+export function verify (opt: { publicKey: string, message: string, signature: string }): boolean {
   const valid = supercop.verify(
     new Buffer(opt.signature, "base64"),
     new Buffer(opt.message),
     new Buffer(opt.publicKey, "base64")
   );
   return valid;
-}
-
-export interface IKeyPair {
-  privateKey: string;
-  publicKey: string;
-}
-
-export interface IWallet {
-  privateKey: Buffer;
-  publicKey: Buffer;
-}
-
-export class Wallet implements IWallet {
-  privateKey: Buffer;
-  publicKey: Buffer;
-
-  constructor (keyPair?: IWallet) {
-    const seed = supercop.createSeed();
-    const keys = keyPair || supercop.createKeyPair(seed);
-
-    this.publicKey = keys.publicKey;
-    this.privateKey = (keyPair) ? keyPair.privateKey : keys.secretKey;
-  }
-
-  toJSON (): IKeyPair {
-    return {
-      publicKey: this.publicKey.toString("base64"),
-      privateKey: this.privateKey.toString("base64")
-    };
-  }
-
-  sign (msg: string): string {
-    const message = new Buffer(sha3_256(msg));
-    return supercop.sign(message, this.publicKey, this.privateKey).toString("base64");
-  }
 }

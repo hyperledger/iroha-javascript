@@ -1,5 +1,7 @@
 # いろはjs (irohajs)  
 
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 ## What's いろは(iroha)?  
 いろは(iroha) is [this](https://github.com/soramitsu/iroha).
 
@@ -92,7 +94,7 @@ Return True or False;
 
  - Zero-setup. After running `npm install` things will be setup for you :wink:
  - **[Webpack 2](https://webpack.js.org/)** for UMD bundle, with [Tree-shaking](https://webpack.js.org/guides/tree-shaking/) dead code elimination
- - Tests, coverage and interactive watch mode using **[Jest](http://facebook.github.io/jest/)**
+ - Tests, coverage and interactive watch mode using **[Jest](http://facebook.github.io/jest/)** and **[Karma](https://karma-runner.github.io/)**
  - **[TSLint](https://palantir.github.io/tslint/)** ([standard-config](https://github.com/blakeembrey/tslint-config-standard)) for your code styling
  - **Docs automatic generation and deployment** to `gh-pages`, using **[TypeDoc](http://typedoc.org/)**
  - Automatic types `(*.d.ts)` file generation
@@ -102,6 +104,7 @@ Return True or False;
 #### NPM scripts
 
  - `npm t`: Run test suite
+ - `npm run test:browser`: Run test suite for browser
  - `npm run test:watch`: Run test suite in [interactive watch mode](http://facebook.github.io/jest/docs/cli.html#watch)
  - `npm run test:prod`: Run linting + generate coverage
  - `npm run build`: Bundles code, create docs and generate typings
@@ -177,8 +180,8 @@ It runs the script `tools/init` which sets up everything for you. In short, it:
 Made with :heart: by [GUCCI-swallow](https://github.com/GUCCI-swallow) and all these wonderful contributors ([emoji key](https://github.com/kentcdodds/all-contributors#emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-| [<img src="https://avatars3.githubusercontent.com/u/20982317?v=3&s=460" width="100px;"/><br /><sub>誠</sub>](https://github.com/takemiyamakoto)<br />[💻](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=takemiyamakoto) | [<img src="https://avatars0.githubusercontent.com/u/12592891?v=3&s=460" width="100px;"/><br /><sub>Satoshi Kaji</sub>](https://github.com/luca3104)<br />[📖](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=luca3104) | [<img src="https://avatars0.githubusercontent.com/u/11345397?v=3&s=460" width="100px;"/><br /><sub>6londe</sub>](https://github.com/6londe)<br />[📖](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=6londe) | [<img src="https://avatars3.githubusercontent.com/u/475517?v=3&s=460" width="100px;"/><br /><sub>George Theofilis</sub>](https://github.com/theofilis)<br />[💻](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=theofilis) [⚠️](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=theofilis) 🔧 |
-| :---: | :---: | :---: | :---: |
+| [<img src="https://avatars3.githubusercontent.com/u/20982317?v=3&s=460" width="100px;"/><br /><sub>誠</sub>](https://github.com/takemiyamakoto)<br />[💻](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=takemiyamakoto "Code") | [<img src="https://avatars0.githubusercontent.com/u/12592891?v=3&s=460" width="100px;"/><br /><sub>Satoshi Kaji</sub>](https://github.com/luca3104)<br />[📖](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=luca3104 "Documentation") | [<img src="https://avatars0.githubusercontent.com/u/11345397?v=3&s=460" width="100px;"/><br /><sub>6londe</sub>](https://github.com/6londe)<br />[📖](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=6londe "Documentation") | [<img src="https://avatars3.githubusercontent.com/u/475517?v=3&s=460" width="100px;"/><br /><sub>George Theofilis</sub>](https://github.com/theofilis)<br />[💻](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=theofilis "Code") [⚠️](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=theofilis "Tests") [🔧](#tool-theofilis "Tools") | [<img src="https://avatars3.githubusercontent.com/u/1365915?v=3" width="100px;"/><br /><sub>oimou</sub>](https://github.com/oimou)<br />[💻](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=oimou "Code") [📖](https://github.com/GUCCI-swallow/iroha-javascript/commits?author=oimou "Documentation") |
+| :---: | :---: | :---: | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification. Contributions of any kind welcome!

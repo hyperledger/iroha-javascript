@@ -22,9 +22,10 @@
     "prebuild": "rimraf dist && rimraf docs",
     "build": "webpack -p",
     "build:dev": "webpack",
-    "test": "jest",
+    "test": "jest && test:browser",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "test:browser": "karma start karma.conf.ts",
     "deploy-docs": "node tools/gh-pages-publish.js",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
@@ -55,6 +56,9 @@
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testPathIgnorePatterns": [
+      "/test/browser/"
+    ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -78,7 +82,7 @@
     }
   },
   "devDependencies": {
-    "@types/jest": "^18.1.1",
+    "@types/jest": "^19.2.2",
     "@types/node": "^7.0.2",
     "@types/webpack": "^2.2.7",
     "awesome-typescript-loader": "^3.1.0",
@@ -89,13 +93,20 @@
     "coveralls": "^2.11.15",
     "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.13.1",
+    "jasmine": "^2.5.3",
     "jest": "^19.0.2",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-mocha": "^1.3.0",
+    "karma-sourcemap-loader": "^0.3.7",
     "lodash": "^4.17.4",
+    "mocha": "^3.4.1",
     "prompt": "^1.0.0",
     "replace-in-file": "^2.3.2",
     "rimraf": "^2.5.4",
     "semantic-release": "^6.3.2",
-    "ts-jest": "^19.0.0",
+    "standard-version": "^4.0.0",
+    "ts-jest": "^19.0.8",
     "ts-node": "^2.0.0",
     "tslint": "^4.3.1",
     "tslint-config-standard": "^4.0.0",
@@ -106,7 +117,10 @@
     "webpack": "^2.2.0"
   },
   "dependencies": {
+    "axios": "^0.15.3",
+    "grpc": "^1.2.0",
     "js-sha3": "^0.5.7",
+    "moment": "^2.18.1",
     "supercop.js": "^2.0.1"
   }
 }
