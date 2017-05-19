@@ -1,36 +1,4 @@
 /**
- * ITransactionRepositoryService
- */
-export interface ITransactionRepositoryService {
-  find: (query: Query, cb: (error: any, response: TransactionResponse) => any) => any;
-  fetch: (query: Query, cb: (error: any, response: TransactionResponse) => any) => any;
-  fetchStream: (transaction: Transaction, cb: (error: any, response: StatusResponse) => any) => any;
-}
-
-/**
- * IAssetRepositoryService
- */
-export interface IAssetRepositoryService {
-  find: (query: Query, cb: (error: any, response: AssetResponse) => any) => any;
-}
-
-/**
- * SumeragiService
- */
-export interface ISumeragiService {
-  torii: (transaction: Transaction, cb: (error: any, response: StatusResponse) => any) => any;
-  verify: (consensusEvent: ConsensusEvent, cb: (error: any, response: StatusResponse) => any) => any;
-  kagami: (query: Query, cb: (error: any, response: StatusResponse) => any) => any;
-}
-
-/**
- * IzanamiService
- */
-export interface IIzanamiService {
-  izanagi: (transactionRespose: TransactionResponse, cb: (error: any, response: StatusResponse) => any) => any;
-}
-
-/**
  * TransactionResponse
  */
 export class TransactionResponse {
@@ -128,7 +96,7 @@ export class Account {
 }
 
 /**
- * ITrust
+ * Trust
  */
 export class Trust {
   value: number;

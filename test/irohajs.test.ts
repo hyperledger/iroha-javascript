@@ -1,5 +1,5 @@
 import * as iroha from "../src/irohajs";
-import { Transaction } from "../src/api";
+import { Transaction } from "../src/grpc/protobuff/api";
 
 const sha3_256 = require("js-sha3").sha3_256;
 const supercop = require("supercop.js");
@@ -98,7 +98,7 @@ describe("TEST Iroha javascript", () => {
   describe("Load dynamic interface", () => {
     let proto: iroha.IApi;
     it("Load protobuf!", () => {
-      proto = iroha.grpc.load("src/protos/api.proto");
+      proto = iroha.grpc.load("src/grpc/protobuff/api.proto");
       expect(proto).toBeTruthy();
     });
   });

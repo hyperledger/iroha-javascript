@@ -23,6 +23,8 @@
     "build": "webpack -p",
     "build:dev": "webpack",
     "test": "jest && test:browser",
+    "build:web": "webpack -p --target=web",
+    "build:node": "webpack -p --target=node",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
     "test:browser": "karma start karma.conf.ts",
