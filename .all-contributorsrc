@@ -40,7 +40,19 @@
       "avatar_url": "https://avatars3.githubusercontent.com/u/475517?v=3&s=460",
       "profile": "https://github.com/theofilis",
       "contributions": [
-        "code", "test", "tool"
+        "code",
+        "test",
+        "tool"
+      ]
+    },
+    {
+      "login": "oimou",
+      "name": "oimou",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1365915?v=3",
+      "profile": "https://github.com/oimou",
+      "contributions": [
+        "code",
+        "doc"
       ]
     }
   ]
