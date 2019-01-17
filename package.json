@@ -1,0 +1,48 @@
+{
+  "name": "iroha-helpers",
+  "version": "0.5.1",
+  "description": "Some helpers function for transaction/query generation for Hyperledger Iroha",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/soramitsu/iroha-helpers.git"
+  },
+  "keywords": [
+    "iroha",
+    "hyperledger"
+  ],
+  "contributors": [
+    "Vyacheslav Bikbaev <la.sintez@gmail.com> (https://github.com/lasintez/)",
+    "Robert Sayakhov <roobertdantes@gmail.com> (https://github.com/pobepto/)"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/soramitsu/iroha-helpers/issues"
+  },
+  "homepage": "https://github.com/soramitsu/iroha-helpers#readme",
+  "scripts": {
+    "build": "babel src --out-dir lib"
+  },
+  "dependencies": {
+    "buffer": "^5.2.0",
+    "ed25519.js": "^1.3.0",
+    "google-protobuf": "^3.6.1",
+    "grpc-web-client": "^0.7.0",
+    "js-sha3": "^0.8.0",
+    "lodash.clonedeep": "^4.5.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "eslint": "^5.12.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "grpc": "^1.17.0",
+    "lodash.flow": "^3.5.0"
+  }
+}
