@@ -28,7 +28,8 @@ Promise.all([
     privateKeys: [adminPriv],
     creatorAccountId: 'admin@test',
     quorum: 1,
-    commandService
+    commandService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test',
     key: 'jason',
@@ -37,40 +38,46 @@ Promise.all([
   queries.getAccount({
     privateKey: adminPriv,
     creatorAccountId: 'admin@test',
-    queryService
+    queryService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test'
   }),
   queries.getAccountDetail({
     privateKey: adminPriv,
     creatorAccountId: 'admin@test',
-    queryService
+    queryService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test'
   }),
   queries.getSignatories({
     privateKey: adminPriv,
     creatorAccountId: 'admin@test',
-    queryService
+    queryService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test'
   }),
   queries.getRoles({
     privateKey: adminPriv,
     creatorAccountId: 'admin@test',
-    queryService
+    queryService,
+    timeoutLimit: 5000
   }),
   queries.getAccount({
     privateKey: adminPriv,
     creatorAccountId: 'admin@test',
-    queryService
+    queryService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test'
   }),
   queries.getAccountTransactions({
     privateKey: adminPriv,
     creatorAccountId: 'admin@test',
-    queryService
+    queryService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test',
     pageSize: 5

@@ -4,11 +4,14 @@ import cryptoHelper from './cryptoHelper.js'
 
 import commands from './commands'
 import queries from './queries'
+import { sendTransactions, signWithArrayOfKeys } from './util'
 
 export {
   txHelper,
   queryHelper,
   cryptoHelper,
   commands,
-  queries
+  queries,
+  sendTransactions,
+  signWithArrayOfKeys
 }

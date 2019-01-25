@@ -4,11 +4,11 @@ import queryHelper from '../queryHelper'
 import * as pbResponse from '../proto/qry_responses_pb'
 import { getProtoEnumName } from '../util'
 
-const DEFAULT_TIMEOUT_LIMIT = 5000
 const DEFAULT_OPTIONS = {
   privateKey: '',
   creatorAccountId: '',
-  queryService: null
+  queryService: null,
+  timeoutLimit: 5000
 }
 
 /**
@@ -16,17 +16,16 @@ const DEFAULT_OPTIONS = {
  * @param {Object} queryOptions
  * @param {Object} query
  * @param {Function} onResponse
- * @param {Number} timeoutLimit
  */
 function sendQuery (
   {
     privateKey,
     creatorAccountId,
-    queryService
+    queryService,
+    timeoutLimit
   } = DEFAULT_OPTIONS,
   query,
-  onResponse = function (resolve, reject, responseName, response) {},
-  timeoutLimit = DEFAULT_TIMEOUT_LIMIT
+  onResponse = function (resolve, reject, responseName, response) {}
 ) {
   return new Promise((resolve, reject) => {
     const queryClient = queryService
@@ -168,6 +167,30 @@ function getPendingTransactions (queryOptions) {
       }
 
       const transactions = response.getTransactionsResponse().toObject().transactionsList
+      resolve(transactions)
+    }
+  )
+}
+
+/**
+ * getRawPendingTransactions
+ * @param {Object} queryOptions
+ * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-pending-transactions
+ */
+function getRawPendingTransactions (queryOptions) {
+  return sendQuery(
+    queryOptions,
+    queryHelper.addQuery(
+      queryHelper.emptyQuery(),
+      'getPendingTransactions',
+      {}
+    ),
+    (resolve, reject, responseName, response) => {
+      if (responseName !== 'TRANSACTIONS_RESPONSE') {
+        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}`))
+      }
+
+      const transactions = response.getTransactionsResponse()
       resolve(transactions)
     }
   )
@@ -386,6 +409,7 @@ export default {
   getSignatories,
   getTransactions,
   getPendingTransactions,
+  getRawPendingTransactions,
   getAccountTransactions,
   getAccountAssetTransactions,
   getAccountAssets,

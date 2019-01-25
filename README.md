@@ -50,7 +50,8 @@ Promise.all([
     privateKeys: [adminPriv],
     creatorAccountId: 'admin@test',
     quorum: 1,
-    commandService
+    commandService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test',
     key: 'jason',
@@ -59,7 +60,8 @@ Promise.all([
   queries.getAccountDetail({
     privateKey: adminPriv,
     creatorAccountId: 'admin@test',
-    queryService
+    queryService,
+    timeoutLimit: 5000
   }, {
     accountId: 'admin@test'
   })
@@ -75,7 +77,8 @@ const commandOptions = {
   privateKeys: [''], // Array of private keys in hex format
   creatorAccountId: '', // Account id, ex. admin@test
   quorum: 1,
-  commandService: null
+  commandService: null,
+  timeoutLimit: 5000 // Set timeout limit
 }
 ```
 
@@ -102,7 +105,8 @@ For usage of any query you need to provide `queryOptions` as a first argument.
 const queryOptions = {
   privateKey: '', // Private key in hex format
   creatorAccountId: '', // Account id, ex. admin@test
-  queryService: null
+  queryService: null,
+  timeoutLimit: 5000 // Set timeout limit
 }
 ```
 
