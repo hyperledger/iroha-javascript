@@ -6,7 +6,7 @@ var transaction_pb = require("./transaction_pb");
 var queries_pb = require("./queries_pb");
 var qry_responses_pb = require("./qry_responses_pb");
 var google_protobuf_empty_pb = require("google-protobuf/google/protobuf/empty_pb");
-var grpc = require("grpc-web-client").grpc;
+var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var CommandService_v1 = (function () {
   function CommandService_v1() {}

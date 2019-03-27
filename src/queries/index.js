@@ -83,7 +83,8 @@ function getAccount (queryOptions, { accountId }) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ACCOUNT_RESPONSE') {
-        return reject(new Error(`Query response error: expected=ACCOUNT_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ACCOUNT_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const account = response.getAccountResponse().getAccount().toObject()
@@ -111,7 +112,8 @@ function getSignatories (queryOptions, { accountId }) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'SIGNATORIES_RESPONSE') {
-        return reject(new Error(`Query response error: expected=SIGNATORIES_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=SIGNATORIES_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const account = response.getSignatoriesResponse().toObject().keysList
@@ -124,22 +126,23 @@ function getSignatories (queryOptions, { accountId }) {
  * getTransactions
  * @param {Object} queryOptions
  * @param {Object} args
- * @property {String[]} args.transactionsHashes
+ * @property {String[]} args.txHashesList
  * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-transactions
  */
-function getTransactions (queryOptions, { transactionsHashes }) {
+function getTransactions (queryOptions, { txHashesList }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getTransactions',
       {
-        transactionsHashes
+        txHashesList
       }
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'TRANSACTIONS_RESPONSE') {
-        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const transactions = response.getTransactionsResponse()
@@ -163,7 +166,8 @@ function getPendingTransactions (queryOptions) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'TRANSACTIONS_RESPONSE') {
-        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const transactions = response.getTransactionsResponse().toObject().transactionsList
@@ -187,7 +191,8 @@ function getRawPendingTransactions (queryOptions) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'TRANSACTIONS_RESPONSE') {
-        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const transactions = response.getTransactionsResponse()
@@ -221,7 +226,8 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'TRANSACTIONS_PAGE_RESPONSE') {
-        return reject(new Error(`Query response error: expected=TRANSACTIONS_PAGE_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=TRANSACTIONS_PAGE_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const transactions = response.getTransactionsPageResponse().toObject()
@@ -257,7 +263,8 @@ function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSi
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'TRANSACTIONS_PAGE_RESPONSE') {
-        return reject(new Error(`Query response error: expected=TRANSACTIONS_PAGE_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=TRANSACTIONS_PAGE_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const transactions = response.getTransactionsPageResponse().toObject()
@@ -285,7 +292,8 @@ function getAccountAssets (queryOptions, { accountId }) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ACCOUNT_ASSETS_RESPONSE') {
-        return reject(new Error(`Query response error: expected=ACCOUNT_ASSETS_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ACCOUNT_ASSETS_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const assets = response.getAccountAssetsResponse().toObject().accountAssetsList
@@ -315,7 +323,8 @@ function getAccountDetail (queryOptions, { accountId, key, writerId }) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ACCOUNT_DETAIL_RESPONSE') {
-        return reject(new Error(`Query response error: expected=ACCOUNT_DETAIL_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ACCOUNT_DETAIL_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const transactions = JSON.parse(response.getAccountDetailResponse().toObject().detail)
@@ -343,7 +352,8 @@ function getAssetInfo (queryOptions, { assetId }) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ASSET_RESPONSE') {
-        return reject(new Error(`Query response error: expected=ASSET_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ASSET_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const info = response.getAssetResponse().toObject().asset
@@ -367,7 +377,8 @@ function getRoles (queryOptions) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ROLES_RESPONSE') {
-        return reject(new Error(`Query response error: expected=ROLES_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ROLES_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const roles = response.getRolesResponse().toObject().rolesList
@@ -395,11 +406,41 @@ function getRolePermissions (queryOptions, { roleId }) {
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ROLE_PERMISSIONS_RESPONSE') {
-        return reject(new Error(`Query response error: expected=ROLE_PERMISSIONS_RESPONSE, actual=${responseName}`))
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ROLE_PERMISSIONS_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
       const permissions = response.getRolePermissionsResponse().toObject().permissionsList
       resolve(permissions)
+    }
+  )
+}
+
+/**
+ * getBlock
+ * @param {Object} queryOptions
+ * @param {Object} args
+ * @property {Number} args.height
+ * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-block
+ */
+function getBlock (queryOptions, { height }) {
+  return sendQuery(
+    queryOptions,
+    queryHelper.addQuery(
+      queryHelper.emptyQuery(),
+      'getBlock',
+      {
+        height
+      }
+    ),
+    (resolve, reject, responseName, response) => {
+      if (responseName !== 'BLOCK_RESPONSE') {
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=BLOCK_RESPONSE, actual=${responseName}\nReason: ${error}`))
+      }
+
+      const block = response.getBlockResponse()
+      resolve(block)
     }
   )
 }
@@ -416,5 +457,6 @@ export default {
   getAccountDetail,
   getAssetInfo,
   getRoles,
-  getRolePermissions
+  getRolePermissions,
+  getBlock
 }

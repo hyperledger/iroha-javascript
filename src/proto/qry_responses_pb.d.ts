@@ -427,6 +427,11 @@ export class QueryResponse extends jspb.Message {
   getTransactionsPageResponse(): TransactionsPageResponse | undefined;
   setTransactionsPageResponse(value?: TransactionsPageResponse): void;
 
+  hasBlockResponse(): boolean;
+  clearBlockResponse(): void;
+  getBlockResponse(): BlockResponse | undefined;
+  setBlockResponse(value?: BlockResponse): void;
+
   getQueryHash(): string;
   setQueryHash(value: string): void;
 
@@ -453,6 +458,7 @@ export namespace QueryResponse {
     rolesResponse?: RolesResponse.AsObject,
     rolePermissionsResponse?: RolePermissionsResponse.AsObject,
     transactionsPageResponse?: TransactionsPageResponse.AsObject,
+    blockResponse?: BlockResponse.AsObject,
     queryHash: string,
   }
 
@@ -468,6 +474,7 @@ export namespace QueryResponse {
     ROLES_RESPONSE = 8,
     ROLE_PERMISSIONS_RESPONSE = 9,
     TRANSACTIONS_PAGE_RESPONSE = 11,
+    BLOCK_RESPONSE = 12,
   }
 }
 

@@ -2648,7 +2648,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.iroha.protocol.QueryResponse.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,11]];
+proto.iroha.protocol.QueryResponse.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,11,12]];
 
 /**
  * @enum {number}
@@ -2664,7 +2664,8 @@ proto.iroha.protocol.QueryResponse.ResponseCase = {
   ASSET_RESPONSE: 7,
   ROLES_RESPONSE: 8,
   ROLE_PERMISSIONS_RESPONSE: 9,
-  TRANSACTIONS_PAGE_RESPONSE: 11
+  TRANSACTIONS_PAGE_RESPONSE: 11,
+  BLOCK_RESPONSE: 12
 };
 
 /**
@@ -2713,6 +2714,7 @@ proto.iroha.protocol.QueryResponse.toObject = function(includeInstance, msg) {
     rolesResponse: (f = msg.getRolesResponse()) && proto.iroha.protocol.RolesResponse.toObject(includeInstance, f),
     rolePermissionsResponse: (f = msg.getRolePermissionsResponse()) && proto.iroha.protocol.RolePermissionsResponse.toObject(includeInstance, f),
     transactionsPageResponse: (f = msg.getTransactionsPageResponse()) && proto.iroha.protocol.TransactionsPageResponse.toObject(includeInstance, f),
+    blockResponse: (f = msg.getBlockResponse()) && proto.iroha.protocol.BlockResponse.toObject(includeInstance, f),
     queryHash: jspb.Message.getFieldWithDefault(msg, 10, "")
   };
 
@@ -2799,6 +2801,11 @@ proto.iroha.protocol.QueryResponse.deserializeBinaryFromReader = function(msg, r
       var value = new proto.iroha.protocol.TransactionsPageResponse;
       reader.readMessage(value,proto.iroha.protocol.TransactionsPageResponse.deserializeBinaryFromReader);
       msg.setTransactionsPageResponse(value);
+      break;
+    case 12:
+      var value = new proto.iroha.protocol.BlockResponse;
+      reader.readMessage(value,proto.iroha.protocol.BlockResponse.deserializeBinaryFromReader);
+      msg.setBlockResponse(value);
       break;
     case 10:
       var value = /** @type {string} */ (reader.readString());
@@ -2911,6 +2918,14 @@ proto.iroha.protocol.QueryResponse.serializeBinaryToWriter = function(message, w
       11,
       f,
       proto.iroha.protocol.TransactionsPageResponse.serializeBinaryToWriter
+    );
+  }
+  f = message.getBlockResponse();
+  if (f != null) {
+    writer.writeMessage(
+      12,
+      f,
+      proto.iroha.protocol.BlockResponse.serializeBinaryToWriter
     );
   }
   f = message.getQueryHash();
@@ -3220,6 +3235,36 @@ proto.iroha.protocol.QueryResponse.prototype.clearTransactionsPageResponse = fun
  */
 proto.iroha.protocol.QueryResponse.prototype.hasTransactionsPageResponse = function() {
   return jspb.Message.getField(this, 11) != null;
+};
+
+
+/**
+ * optional BlockResponse block_response = 12;
+ * @return {?proto.iroha.protocol.BlockResponse}
+ */
+proto.iroha.protocol.QueryResponse.prototype.getBlockResponse = function() {
+  return /** @type{?proto.iroha.protocol.BlockResponse} */ (
+    jspb.Message.getWrapperField(this, proto.iroha.protocol.BlockResponse, 12));
+};
+
+
+/** @param {?proto.iroha.protocol.BlockResponse|undefined} value */
+proto.iroha.protocol.QueryResponse.prototype.setBlockResponse = function(value) {
+  jspb.Message.setOneofWrapperField(this, 12, proto.iroha.protocol.QueryResponse.oneofGroups_[0], value);
+};
+
+
+proto.iroha.protocol.QueryResponse.prototype.clearBlockResponse = function() {
+  this.setBlockResponse(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.QueryResponse.prototype.hasBlockResponse = function() {
+  return jspb.Message.getField(this, 12) != null;
 };
 
 
