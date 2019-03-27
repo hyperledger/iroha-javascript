@@ -241,19 +241,19 @@ function detachRole (commandOptions, { accountId, roleName }) {
 }
 
 /**
- * grandPermission
+ * grantPermission
  * @param {Object} commandOptions
  * @param {Object} args
  * @property {String} args.accountId
  * @property {String} args.grantablePermissionName
  * @link https://iroha.readthedocs.io/en/latest/api/commands.html#grant-permission
  */
-function grandPermission (commandOptions, { accountId, grantablePermissionName }) {
+function grantPermission (commandOptions, { accountId, grantablePermissionName }) {
   return command(
     commandOptions,
     txHelper.addCommand(
       txHelper.emptyTransaction(),
-      'grandPermission',
+      'grantPermission',
       {
         accountId,
         grantablePermissionName
@@ -412,7 +412,7 @@ export default {
   createDomain,
   createRole,
   detachRole,
-  grandPermission,
+  grantPermission,
   removeSignatory,
   revokePermission,
   setAccountDetail,

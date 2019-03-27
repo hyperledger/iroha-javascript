@@ -56,6 +56,26 @@ export namespace GetAccount {
   }
 }
 
+export class GetBlock extends jspb.Message {
+  getHeight(): number;
+  setHeight(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetBlock.AsObject;
+  static toObject(includeInstance: boolean, msg: GetBlock): GetBlock.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetBlock, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetBlock;
+  static deserializeBinaryFromReader(message: GetBlock, reader: jspb.BinaryReader): GetBlock;
+}
+
+export namespace GetBlock {
+  export type AsObject = {
+    height: number,
+  }
+}
+
 export class GetSignatories extends jspb.Message {
   getAccountId(): string;
   setAccountId(value: string): void;
@@ -414,6 +434,11 @@ export namespace Query {
     getGetPendingTransactions(): GetPendingTransactions | undefined;
     setGetPendingTransactions(value?: GetPendingTransactions): void;
 
+    hasGetBlock(): boolean;
+    clearGetBlock(): void;
+    getGetBlock(): GetBlock | undefined;
+    setGetBlock(value?: GetBlock): void;
+
     getQueryCase(): Payload.QueryCase;
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Payload.AsObject;
@@ -439,6 +464,7 @@ export namespace Query {
       getRolePermissions?: GetRolePermissions.AsObject,
       getAssetInfo?: GetAssetInfo.AsObject,
       getPendingTransactions?: GetPendingTransactions.AsObject,
+      getBlock?: GetBlock.AsObject,
     }
 
     export enum QueryCase {
@@ -454,6 +480,7 @@ export namespace Query {
       GET_ROLE_PERMISSIONS = 11,
       GET_ASSET_INFO = 12,
       GET_PENDING_TRANSACTIONS = 13,
+      GET_BLOCK = 14,
     }
   }
 }

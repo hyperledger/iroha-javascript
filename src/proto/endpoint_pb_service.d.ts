@@ -6,7 +6,7 @@ import * as transaction_pb from "./transaction_pb";
 import * as queries_pb from "./queries_pb";
 import * as qry_responses_pb from "./qry_responses_pb";
 import * as google_protobuf_empty_pb from "google-protobuf/google/protobuf/empty_pb";
-import {grpc} from "grpc-web-client";
+import {grpc} from "@improbable-eng/grpc-web";
 
 type CommandService_v1Torii = {
   readonly methodName: string;

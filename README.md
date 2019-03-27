@@ -1,5 +1,5 @@
 
-[![npm version](https://img.shields.io/npm/v/iroha-helpers.svg)](https://www.npmjs.com/package/iroha-helpers) [![Iroha 1.0.0-rc2](https://img.shields.io/badge/Iroha-1.0.0--rc2-red.svg)](https://github.com/hyperledger/iroha/releases/tag/1.0.0_rc2)
+[![npm version](https://img.shields.io/npm/v/iroha-helpers.svg)](https://www.npmjs.com/package/iroha-helpers) [![Iroha 1.0.0-rc5](https://img.shields.io/badge/Iroha-1.0.0--rc5-red.svg)](https://github.com/hyperledger/iroha/releases/tag/1.0.0_rc5)
 
 # iroha-helpers
 
@@ -91,7 +91,7 @@ const commandOptions = {
 - [x] [createDomain](https://iroha.readthedocs.io/en/latest/api/commands.html#create-domain)
 - [x] [createRole](https://iroha.readthedocs.io/en/latest/api/commands.html#create-role)
 - [x] [detachRole](https://iroha.readthedocs.io/en/latest/api/commands.html#detach-role)
-- [x] [grandPermission](https://iroha.readthedocs.io/en/latest/api/commands.html#grant-permission)
+- [x] [grantPermission](https://iroha.readthedocs.io/en/latest/api/commands.html#grant-permission)
 - [x] [removeSignatory](https://iroha.readthedocs.io/en/latest/api/commands.html#remove-signatory)
 - [x] [revokePermission](https://iroha.readthedocs.io/en/latest/api/commands.html#revoke-permission)
 - [x] [setAccountDetail](https://iroha.readthedocs.io/en/latest/api/commands.html#set-account-detail)
@@ -121,6 +121,7 @@ const queryOptions = {
 - [x] [getAssetInfo](https://iroha.readthedocs.io/en/latest/api/queries.html#get-asset-info)
 - [x] [getRoles](https://iroha.readthedocs.io/en/latest/api/queries.html#get-roles)
 - [x] [getRolePermissions](https://iroha.readthedocs.io/en/latest/api/queries.html#get-role-permissions)
+- [x] [getBlock](https://iroha.readthedocs.io/en/latest/api/queries.html#get-block)
 
 ## Known issues
  - Please be careful: API might and WILL change.
