@@ -23,6 +23,16 @@ const queryService = new QueryService_v1Client(
   grpc.credentials.createInsecure()
 )
 
+queries.fetchCommits(
+  {
+    privateKey: adminPriv,
+    creatorAccountId: 'admin@test',
+    queryService
+  },
+  (block) => console.log('fetchCommits new block:', block),
+  (error) => console.error('fetchCommits failed:', error.stack)
+)
+
 Promise.all([
   commands.setAccountDetail({
     privateKeys: [adminPriv],

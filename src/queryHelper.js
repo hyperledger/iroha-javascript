@@ -8,6 +8,8 @@ import { capitalize } from './util.js'
 
 const emptyQuery = () => new Queries.Query()
 
+const emptyBlocksQuery = () => new Queries.BlocksQuery()
+
 /**
  * Returns payload from the query or a new one
  * @param {Object} query
@@ -60,11 +62,17 @@ const addMeta = (query, { creatorAccountId, createdTime = Date.now(), queryCount
   meta.setCreatedTime(createdTime)
   meta.setQueryCounter(queryCounter)
 
-  let payload = getOrCreatePayload(query)
-  payload.setMeta(meta)
-
   let queryWithMeta = cloneDeep(query)
-  queryWithMeta.setPayload(payload)
+  if (query instanceof Queries.Query) {
+    let payload = getOrCreatePayload(query)
+    payload.setMeta(meta)
+
+    queryWithMeta.setPayload(payload)
+  } else if (query instanceof Queries.BlocksQuery) {
+    queryWithMeta.setMeta(meta)
+  } else {
+    throw new Error('Unknown query type')
+  }
 
   return queryWithMeta
 }
@@ -78,7 +86,16 @@ const sign = (query, privateKeyHex) => {
   const privateKey = Buffer.from(privateKeyHex, 'hex')
   const publicKey = derivePublicKey(privateKey)
 
-  const payloadHash = Buffer.from(sha3.array(query.getPayload().serializeBinary()))
+  let payload = null
+  if (query instanceof Queries.Query) {
+    payload = query.getPayload()
+  } else if (query instanceof Queries.BlocksQuery) {
+    payload = query.getMeta()
+  } else {
+    throw new Error('Unknown query type')
+  }
+
+  const payloadHash = Buffer.from(sha3.array(payload.serializeBinary()))
 
   const signatory = signQuery(payloadHash, publicKey, privateKey)
 
@@ -96,5 +113,6 @@ export default {
   sign,
   addMeta,
   addQuery,
-  emptyQuery
+  emptyQuery,
+  emptyBlocksQuery
 }

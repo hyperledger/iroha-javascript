@@ -445,6 +445,50 @@ function getBlock (queryOptions, { height }) {
   )
 }
 
+/**
+ * fetchCommits
+ * @param {Object} queryOptions
+ * @param {Function} onBlock
+ * @param {Function} onError
+ * @link https://iroha.readthedocs.io/en/latest/api/queries.html#fetchcommits
+ */
+function fetchCommits (
+  {
+    privateKey,
+    creatorAccountId,
+    queryService
+  } = DEFAULT_OPTIONS,
+  onBlock = function (block) {},
+  // eslint-disable-next-line handle-callback-err
+  onError = function (error) {}
+) {
+  const query = queryHelper.emptyBlocksQuery()
+
+  const queryToSend = flow(
+    (q) => queryHelper.addMeta(q, { creatorAccountId }),
+    (q) => queryHelper.sign(q, privateKey)
+  )(query)
+
+  const stream = queryService.fetchCommits(queryToSend)
+
+  stream.on('data', (response) => {
+    const type = response.getResponseCase()
+    const responseName = getProtoEnumName(
+      pbResponse.BlockQueryResponse.ResponseCase,
+      'iroha.protocol.BlockQueryResponse',
+      type
+    )
+
+    if (responseName !== 'BLOCK_RESPONSE') {
+      const error = JSON.stringify(response.toObject().blockErrorResponse)
+      onError(new Error(`Query response error: expected=BLOCK_RESPONSE, actual=${responseName}\nReason: ${error}`))
+    } else {
+      const block = response.toObject().blockResponse.block
+      onBlock(block)
+    }
+  })
+}
+
 export default {
   getAccount,
   getSignatories,
@@ -458,5 +502,6 @@ export default {
   getAssetInfo,
   getRoles,
   getRolePermissions,
-  getBlock
+  getBlock,
+  fetchCommits
 }
