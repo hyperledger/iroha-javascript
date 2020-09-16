@@ -50,6 +50,26 @@ export namespace AddPeer {
   }
 }
 
+export class RemovePeer extends jspb.Message {
+  getPublicKey(): string;
+  setPublicKey(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RemovePeer.AsObject;
+  static toObject(includeInstance: boolean, msg: RemovePeer): RemovePeer.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RemovePeer, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RemovePeer;
+  static deserializeBinaryFromReader(message: RemovePeer, reader: jspb.BinaryReader): RemovePeer;
+}
+
+export namespace RemovePeer {
+  export type AsObject = {
+    publicKey: string,
+  }
+}
+
 export class AddSignatory extends jspb.Message {
   getAccountId(): string;
   setAccountId(value: string): void;
@@ -319,9 +339,9 @@ export class CreateRole extends jspb.Message {
   setRoleName(value: string): void;
 
   clearPermissionsList(): void;
-  getPermissionsList(): Array<primitive_pb.RolePermission>;
-  setPermissionsList(value: Array<primitive_pb.RolePermission>): void;
-  addPermissions(value: primitive_pb.RolePermission, index?: number): primitive_pb.RolePermission;
+  getPermissionsList(): Array<primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap]>;
+  setPermissionsList(value: Array<primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap]>): void;
+  addPermissions(value: primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap], index?: number): primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap];
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateRole.AsObject;
@@ -336,7 +356,7 @@ export class CreateRole extends jspb.Message {
 export namespace CreateRole {
   export type AsObject = {
     roleName: string,
-    permissionsList: Array<primitive_pb.RolePermission>,
+    permissionsList: Array<primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap]>,
   }
 }
 
@@ -344,8 +364,8 @@ export class GrantPermission extends jspb.Message {
   getAccountId(): string;
   setAccountId(value: string): void;
 
-  getPermission(): primitive_pb.GrantablePermission;
-  setPermission(value: primitive_pb.GrantablePermission): void;
+  getPermission(): primitive_pb.GrantablePermissionMap[keyof primitive_pb.GrantablePermissionMap];
+  setPermission(value: primitive_pb.GrantablePermissionMap[keyof primitive_pb.GrantablePermissionMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GrantPermission.AsObject;
@@ -360,7 +380,7 @@ export class GrantPermission extends jspb.Message {
 export namespace GrantPermission {
   export type AsObject = {
     accountId: string,
-    permission: primitive_pb.GrantablePermission,
+    permission: primitive_pb.GrantablePermissionMap[keyof primitive_pb.GrantablePermissionMap],
   }
 }
 
@@ -368,8 +388,8 @@ export class RevokePermission extends jspb.Message {
   getAccountId(): string;
   setAccountId(value: string): void;
 
-  getPermission(): primitive_pb.GrantablePermission;
-  setPermission(value: primitive_pb.GrantablePermission): void;
+  getPermission(): primitive_pb.GrantablePermissionMap[keyof primitive_pb.GrantablePermissionMap];
+  setPermission(value: primitive_pb.GrantablePermissionMap[keyof primitive_pb.GrantablePermissionMap]): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RevokePermission.AsObject;
@@ -384,7 +404,7 @@ export class RevokePermission extends jspb.Message {
 export namespace RevokePermission {
   export type AsObject = {
     accountId: string,
-    permission: primitive_pb.GrantablePermission,
+    permission: primitive_pb.GrantablePermissionMap[keyof primitive_pb.GrantablePermissionMap],
   }
 }
 
@@ -409,6 +429,160 @@ export namespace SubtractAssetQuantity {
   export type AsObject = {
     assetId: string,
     amount: string,
+  }
+}
+
+export class CompareAndSetAccountDetail extends jspb.Message {
+  getAccountId(): string;
+  setAccountId(value: string): void;
+
+  getKey(): string;
+  setKey(value: string): void;
+
+  getValue(): string;
+  setValue(value: string): void;
+
+  hasOldValue(): boolean;
+  clearOldValue(): void;
+  getOldValue(): string;
+  setOldValue(value: string): void;
+
+  getOptOldValueCase(): CompareAndSetAccountDetail.OptOldValueCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CompareAndSetAccountDetail.AsObject;
+  static toObject(includeInstance: boolean, msg: CompareAndSetAccountDetail): CompareAndSetAccountDetail.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CompareAndSetAccountDetail, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CompareAndSetAccountDetail;
+  static deserializeBinaryFromReader(message: CompareAndSetAccountDetail, reader: jspb.BinaryReader): CompareAndSetAccountDetail;
+}
+
+export namespace CompareAndSetAccountDetail {
+  export type AsObject = {
+    accountId: string,
+    key: string,
+    value: string,
+    oldValue: string,
+  }
+
+  export enum OptOldValueCase {
+    OPT_OLD_VALUE_NOT_SET = 0,
+    OLD_VALUE = 4,
+  }
+}
+
+export class SetSettingValue extends jspb.Message {
+  getKey(): string;
+  setKey(value: string): void;
+
+  getValue(): string;
+  setValue(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SetSettingValue.AsObject;
+  static toObject(includeInstance: boolean, msg: SetSettingValue): SetSettingValue.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: SetSettingValue, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SetSettingValue;
+  static deserializeBinaryFromReader(message: SetSettingValue, reader: jspb.BinaryReader): SetSettingValue;
+}
+
+export namespace SetSettingValue {
+  export type AsObject = {
+    key: string,
+    value: string,
+  }
+}
+
+export class CallEngine extends jspb.Message {
+  getType(): CallEngine.EngineTypeMap[keyof CallEngine.EngineTypeMap];
+  setType(value: CallEngine.EngineTypeMap[keyof CallEngine.EngineTypeMap]): void;
+
+  getCaller(): string;
+  setCaller(value: string): void;
+
+  hasCallee(): boolean;
+  clearCallee(): void;
+  getCallee(): string;
+  setCallee(value: string): void;
+
+  getInput(): string;
+  setInput(value: string): void;
+
+  getOptCalleeCase(): CallEngine.OptCalleeCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CallEngine.AsObject;
+  static toObject(includeInstance: boolean, msg: CallEngine): CallEngine.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CallEngine, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CallEngine;
+  static deserializeBinaryFromReader(message: CallEngine, reader: jspb.BinaryReader): CallEngine;
+}
+
+export namespace CallEngine {
+  export type AsObject = {
+    type: CallEngine.EngineTypeMap[keyof CallEngine.EngineTypeMap],
+    caller: string,
+    callee: string,
+    input: string,
+  }
+
+  export interface EngineTypeMap {
+    KSOLIDITY: 0;
+  }
+
+  export const EngineType: EngineTypeMap;
+
+  export enum OptCalleeCase {
+    OPT_CALLEE_NOT_SET = 0,
+    CALLEE = 3,
+  }
+}
+
+export class CallModel extends jspb.Message {
+  hasPayload(): boolean;
+  clearPayload(): void;
+  getPayload(): CallModel.Payload | undefined;
+  setPayload(value?: CallModel.Payload): void;
+
+  hasDmId(): boolean;
+  clearDmId(): void;
+  getDmId(): primitive_pb.DataModelId | undefined;
+  setDmId(value?: primitive_pb.DataModelId): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CallModel.AsObject;
+  static toObject(includeInstance: boolean, msg: CallModel): CallModel.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CallModel, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CallModel;
+  static deserializeBinaryFromReader(message: CallModel, reader: jspb.BinaryReader): CallModel;
+}
+
+export namespace CallModel {
+  export type AsObject = {
+    payload?: CallModel.Payload.AsObject,
+    dmId?: primitive_pb.DataModelId.AsObject,
+  }
+
+  export class Payload extends jspb.Message {
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Payload.AsObject;
+    static toObject(includeInstance: boolean, msg: Payload): Payload.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Payload, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Payload;
+    static deserializeBinaryFromReader(message: Payload, reader: jspb.BinaryReader): Payload;
+  }
+
+  export namespace Payload {
+    export type AsObject = {
+    }
   }
 }
 
@@ -493,6 +667,31 @@ export class Command extends jspb.Message {
   getTransferAsset(): TransferAsset | undefined;
   setTransferAsset(value?: TransferAsset): void;
 
+  hasRemovePeer(): boolean;
+  clearRemovePeer(): void;
+  getRemovePeer(): RemovePeer | undefined;
+  setRemovePeer(value?: RemovePeer): void;
+
+  hasCompareAndSetAccountDetail(): boolean;
+  clearCompareAndSetAccountDetail(): void;
+  getCompareAndSetAccountDetail(): CompareAndSetAccountDetail | undefined;
+  setCompareAndSetAccountDetail(value?: CompareAndSetAccountDetail): void;
+
+  hasSetSettingValue(): boolean;
+  clearSetSettingValue(): void;
+  getSetSettingValue(): SetSettingValue | undefined;
+  setSetSettingValue(value?: SetSettingValue): void;
+
+  hasCallEngine(): boolean;
+  clearCallEngine(): void;
+  getCallEngine(): CallEngine | undefined;
+  setCallEngine(value?: CallEngine): void;
+
+  hasCallModel(): boolean;
+  clearCallModel(): void;
+  getCallModel(): CallModel | undefined;
+  setCallModel(value?: CallModel): void;
+
   getCommandCase(): Command.CommandCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Command.AsObject;
@@ -522,6 +721,11 @@ export namespace Command {
     setAccountQuorum?: SetAccountQuorum.AsObject,
     subtractAssetQuantity?: SubtractAssetQuantity.AsObject,
     transferAsset?: TransferAsset.AsObject,
+    removePeer?: RemovePeer.AsObject,
+    compareAndSetAccountDetail?: CompareAndSetAccountDetail.AsObject,
+    setSettingValue?: SetSettingValue.AsObject,
+    callEngine?: CallEngine.AsObject,
+    callModel?: CallModel.AsObject,
   }
 
   export enum CommandCase {
@@ -542,6 +746,11 @@ export namespace Command {
     SET_ACCOUNT_QUORUM = 14,
     SUBTRACT_ASSET_QUANTITY = 15,
     TRANSFER_ASSET = 16,
+    REMOVE_PEER = 17,
+    COMPARE_AND_SET_ACCOUNT_DETAIL = 18,
+    SET_SETTING_VALUE = 19,
+    CALL_ENGINE = 20,
+    CALL_MODEL = 21,
   }
 }
 

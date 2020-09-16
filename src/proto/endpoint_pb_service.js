@@ -168,10 +168,10 @@ CommandService_v1Client.prototype.statusStream = function statusStream(requestMe
       });
     },
     onEnd: function (status, statusMessage, trailers) {
-      listeners.end.forEach(function (handler) {
-        handler();
-      });
       listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
         handler({ code: status, details: statusMessage, metadata: trailers });
       });
       listeners = null;
@@ -271,10 +271,10 @@ QueryService_v1Client.prototype.fetchCommits = function fetchCommits(requestMess
       });
     },
     onEnd: function (status, statusMessage, trailers) {
-      listeners.end.forEach(function (handler) {
-        handler();
-      });
       listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
         handler({ code: status, details: statusMessage, metadata: trailers });
       });
       listeners = null;

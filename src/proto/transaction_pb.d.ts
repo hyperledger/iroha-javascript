@@ -61,8 +61,8 @@ export namespace Transaction {
     }
 
     export class BatchMeta extends jspb.Message {
-      getType(): Transaction.Payload.BatchMeta.BatchType;
-      setType(value: Transaction.Payload.BatchMeta.BatchType): void;
+      getType(): Transaction.Payload.BatchMeta.BatchTypeMap[keyof Transaction.Payload.BatchMeta.BatchTypeMap];
+      setType(value: Transaction.Payload.BatchMeta.BatchTypeMap[keyof Transaction.Payload.BatchMeta.BatchTypeMap]): void;
 
       clearReducedHashesList(): void;
       getReducedHashesList(): Array<string>;
@@ -81,14 +81,16 @@ export namespace Transaction {
 
     export namespace BatchMeta {
       export type AsObject = {
-        type: Transaction.Payload.BatchMeta.BatchType,
+        type: Transaction.Payload.BatchMeta.BatchTypeMap[keyof Transaction.Payload.BatchMeta.BatchTypeMap],
         reducedHashesList: Array<string>,
       }
 
-      export enum BatchType {
-        ATOMIC = 0,
-        ORDERED = 1,
+      export interface BatchTypeMap {
+        ATOMIC: 0;
+        ORDERED: 1;
       }
+
+      export const BatchType: BatchTypeMap;
     }
 
     export class ReducedPayload extends jspb.Message {
