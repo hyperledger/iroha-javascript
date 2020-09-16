@@ -4,6 +4,52 @@
 import * as jspb from "google-protobuf";
 import * as primitive_pb from "./primitive_pb";
 
+export class Ordering extends jspb.Message {
+  clearSequenceList(): void;
+  getSequenceList(): Array<Ordering.FieldOrdering>;
+  setSequenceList(value: Array<Ordering.FieldOrdering>): void;
+  addSequence(value?: Ordering.FieldOrdering, index?: number): Ordering.FieldOrdering;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Ordering.AsObject;
+  static toObject(includeInstance: boolean, msg: Ordering): Ordering.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Ordering, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Ordering;
+  static deserializeBinaryFromReader(message: Ordering, reader: jspb.BinaryReader): Ordering;
+}
+
+export namespace Ordering {
+  export type AsObject = {
+    sequenceList: Array<Ordering.FieldOrdering.AsObject>,
+  }
+
+  export class FieldOrdering extends jspb.Message {
+    getField(): FieldMap[keyof FieldMap];
+    setField(value: FieldMap[keyof FieldMap]): void;
+
+    getDirection(): DirectionMap[keyof DirectionMap];
+    setDirection(value: DirectionMap[keyof DirectionMap]): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): FieldOrdering.AsObject;
+    static toObject(includeInstance: boolean, msg: FieldOrdering): FieldOrdering.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: FieldOrdering, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): FieldOrdering;
+    static deserializeBinaryFromReader(message: FieldOrdering, reader: jspb.BinaryReader): FieldOrdering;
+  }
+
+  export namespace FieldOrdering {
+    export type AsObject = {
+      field: FieldMap[keyof FieldMap],
+      direction: DirectionMap[keyof DirectionMap],
+    }
+  }
+}
+
 export class TxPaginationMeta extends jspb.Message {
   getPageSize(): number;
   setPageSize(value: number): void;
@@ -12,6 +58,11 @@ export class TxPaginationMeta extends jspb.Message {
   clearFirstTxHash(): void;
   getFirstTxHash(): string;
   setFirstTxHash(value: string): void;
+
+  hasOrdering(): boolean;
+  clearOrdering(): void;
+  getOrdering(): Ordering | undefined;
+  setOrdering(value?: Ordering): void;
 
   getOptFirstTxHashCase(): TxPaginationMeta.OptFirstTxHashCase;
   serializeBinary(): Uint8Array;
@@ -28,11 +79,44 @@ export namespace TxPaginationMeta {
   export type AsObject = {
     pageSize: number,
     firstTxHash: string,
+    ordering?: Ordering.AsObject,
   }
 
   export enum OptFirstTxHashCase {
     OPT_FIRST_TX_HASH_NOT_SET = 0,
     FIRST_TX_HASH = 2,
+  }
+}
+
+export class AssetPaginationMeta extends jspb.Message {
+  getPageSize(): number;
+  setPageSize(value: number): void;
+
+  hasFirstAssetId(): boolean;
+  clearFirstAssetId(): void;
+  getFirstAssetId(): string;
+  setFirstAssetId(value: string): void;
+
+  getOptFirstAssetIdCase(): AssetPaginationMeta.OptFirstAssetIdCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssetPaginationMeta.AsObject;
+  static toObject(includeInstance: boolean, msg: AssetPaginationMeta): AssetPaginationMeta.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssetPaginationMeta, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssetPaginationMeta;
+  static deserializeBinaryFromReader(message: AssetPaginationMeta, reader: jspb.BinaryReader): AssetPaginationMeta;
+}
+
+export namespace AssetPaginationMeta {
+  export type AsObject = {
+    pageSize: number,
+    firstAssetId: string,
+  }
+
+  export enum OptFirstAssetIdCase {
+    OPT_FIRST_ASSET_ID_NOT_SET = 0,
+    FIRST_ASSET_ID = 2,
   }
 }
 
@@ -178,6 +262,11 @@ export class GetAccountAssets extends jspb.Message {
   getAccountId(): string;
   setAccountId(value: string): void;
 
+  hasPaginationMeta(): boolean;
+  clearPaginationMeta(): void;
+  getPaginationMeta(): AssetPaginationMeta | undefined;
+  setPaginationMeta(value?: AssetPaginationMeta): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetAccountAssets.AsObject;
   static toObject(includeInstance: boolean, msg: GetAccountAssets): GetAccountAssets.AsObject;
@@ -191,6 +280,33 @@ export class GetAccountAssets extends jspb.Message {
 export namespace GetAccountAssets {
   export type AsObject = {
     accountId: string,
+    paginationMeta?: AssetPaginationMeta.AsObject,
+  }
+}
+
+export class AccountDetailPaginationMeta extends jspb.Message {
+  getPageSize(): number;
+  setPageSize(value: number): void;
+
+  hasFirstRecordId(): boolean;
+  clearFirstRecordId(): void;
+  getFirstRecordId(): primitive_pb.AccountDetailRecordId | undefined;
+  setFirstRecordId(value?: primitive_pb.AccountDetailRecordId): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AccountDetailPaginationMeta.AsObject;
+  static toObject(includeInstance: boolean, msg: AccountDetailPaginationMeta): AccountDetailPaginationMeta.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AccountDetailPaginationMeta, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AccountDetailPaginationMeta;
+  static deserializeBinaryFromReader(message: AccountDetailPaginationMeta, reader: jspb.BinaryReader): AccountDetailPaginationMeta;
+}
+
+export namespace AccountDetailPaginationMeta {
+  export type AsObject = {
+    pageSize: number,
+    firstRecordId?: primitive_pb.AccountDetailRecordId.AsObject,
   }
 }
 
@@ -210,6 +326,11 @@ export class GetAccountDetail extends jspb.Message {
   getWriter(): string;
   setWriter(value: string): void;
 
+  hasPaginationMeta(): boolean;
+  clearPaginationMeta(): void;
+  getPaginationMeta(): AccountDetailPaginationMeta | undefined;
+  setPaginationMeta(value?: AccountDetailPaginationMeta): void;
+
   getOptAccountIdCase(): GetAccountDetail.OptAccountIdCase;
   getOptKeyCase(): GetAccountDetail.OptKeyCase;
   getOptWriterCase(): GetAccountDetail.OptWriterCase;
@@ -228,6 +349,7 @@ export namespace GetAccountDetail {
     accountId: string,
     key: string,
     writer: string,
+    paginationMeta?: AccountDetailPaginationMeta.AsObject,
   }
 
   export enum OptAccountIdCase {
@@ -303,6 +425,11 @@ export namespace GetRolePermissions {
 }
 
 export class GetPendingTransactions extends jspb.Message {
+  hasPaginationMeta(): boolean;
+  clearPaginationMeta(): void;
+  getPaginationMeta(): TxPaginationMeta | undefined;
+  setPaginationMeta(value?: TxPaginationMeta): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetPendingTransactions.AsObject;
   static toObject(includeInstance: boolean, msg: GetPendingTransactions): GetPendingTransactions.AsObject;
@@ -314,6 +441,23 @@ export class GetPendingTransactions extends jspb.Message {
 }
 
 export namespace GetPendingTransactions {
+  export type AsObject = {
+    paginationMeta?: TxPaginationMeta.AsObject,
+  }
+}
+
+export class GetPeers extends jspb.Message {
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetPeers.AsObject;
+  static toObject(includeInstance: boolean, msg: GetPeers): GetPeers.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetPeers, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetPeers;
+  static deserializeBinaryFromReader(message: GetPeers, reader: jspb.BinaryReader): GetPeers;
+}
+
+export namespace GetPeers {
   export type AsObject = {
   }
 }
@@ -343,6 +487,26 @@ export namespace QueryPayloadMeta {
     createdTime: number,
     creatorAccountId: string,
     queryCounter: number,
+  }
+}
+
+export class GetEngineReceipts extends jspb.Message {
+  getTxHash(): string;
+  setTxHash(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetEngineReceipts.AsObject;
+  static toObject(includeInstance: boolean, msg: GetEngineReceipts): GetEngineReceipts.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetEngineReceipts, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetEngineReceipts;
+  static deserializeBinaryFromReader(message: GetEngineReceipts, reader: jspb.BinaryReader): GetEngineReceipts;
+}
+
+export namespace GetEngineReceipts {
+  export type AsObject = {
+    txHash: string,
   }
 }
 
@@ -439,6 +603,16 @@ export namespace Query {
     getGetBlock(): GetBlock | undefined;
     setGetBlock(value?: GetBlock): void;
 
+    hasGetPeers(): boolean;
+    clearGetPeers(): void;
+    getGetPeers(): GetPeers | undefined;
+    setGetPeers(value?: GetPeers): void;
+
+    hasGetEngineReceipts(): boolean;
+    clearGetEngineReceipts(): void;
+    getGetEngineReceipts(): GetEngineReceipts | undefined;
+    setGetEngineReceipts(value?: GetEngineReceipts): void;
+
     getQueryCase(): Payload.QueryCase;
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Payload.AsObject;
@@ -465,6 +639,8 @@ export namespace Query {
       getAssetInfo?: GetAssetInfo.AsObject,
       getPendingTransactions?: GetPendingTransactions.AsObject,
       getBlock?: GetBlock.AsObject,
+      getPeers?: GetPeers.AsObject,
+      getEngineReceipts?: GetEngineReceipts.AsObject,
     }
 
     export enum QueryCase {
@@ -481,6 +657,8 @@ export namespace Query {
       GET_ASSET_INFO = 12,
       GET_PENDING_TRANSACTIONS = 13,
       GET_BLOCK = 14,
+      GET_PEERS = 15,
+      GET_ENGINE_RECEIPTS = 16,
     }
   }
 }
@@ -512,4 +690,18 @@ export namespace BlocksQuery {
     signature?: primitive_pb.Signature.AsObject,
   }
 }
+
+export interface FieldMap {
+  KCREATEDTIME: 0;
+  KPOSITION: 1;
+}
+
+export const Field: FieldMap;
+
+export interface DirectionMap {
+  KASCENDING: 0;
+  KDESCENDING: 1;
+}
+
+export const Direction: DirectionMap;
 

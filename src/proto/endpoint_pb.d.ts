@@ -8,8 +8,8 @@ import * as qry_responses_pb from "./qry_responses_pb";
 import * as google_protobuf_empty_pb from "google-protobuf/google/protobuf/empty_pb";
 
 export class ToriiResponse extends jspb.Message {
-  getTxStatus(): TxStatus;
-  setTxStatus(value: TxStatus): void;
+  getTxStatus(): TxStatusMap[keyof TxStatusMap];
+  setTxStatus(value: TxStatusMap[keyof TxStatusMap]): void;
 
   getTxHash(): string;
   setTxHash(value: string): void;
@@ -35,7 +35,7 @@ export class ToriiResponse extends jspb.Message {
 
 export namespace ToriiResponse {
   export type AsObject = {
-    txStatus: TxStatus,
+    txStatus: TxStatusMap[keyof TxStatusMap],
     txHash: string,
     errOrCmdName: string,
     failedCmdIndex: number,
@@ -85,16 +85,18 @@ export namespace TxList {
   }
 }
 
-export enum TxStatus {
-  STATELESS_VALIDATION_FAILED = 0,
-  STATELESS_VALIDATION_SUCCESS = 1,
-  STATEFUL_VALIDATION_FAILED = 2,
-  STATEFUL_VALIDATION_SUCCESS = 3,
-  REJECTED = 4,
-  COMMITTED = 5,
-  MST_EXPIRED = 6,
-  NOT_RECEIVED = 7,
-  MST_PENDING = 8,
-  ENOUGH_SIGNATURES_COLLECTED = 9,
+export interface TxStatusMap {
+  STATELESS_VALIDATION_FAILED: 0;
+  STATELESS_VALIDATION_SUCCESS: 1;
+  STATEFUL_VALIDATION_FAILED: 2;
+  STATEFUL_VALIDATION_SUCCESS: 3;
+  REJECTED: 4;
+  COMMITTED: 5;
+  MST_EXPIRED: 6;
+  NOT_RECEIVED: 7;
+  MST_PENDING: 8;
+  ENOUGH_SIGNATURES_COLLECTED: 9;
 }
+
+export const TxStatus: TxStatusMap;
 
