@@ -43,7 +43,6 @@ const generateKeyPair = (): { publicKey: string; privateKey: string } => {
 
 const derivePublicKey = (privateKeyHex: string): Buffer => {
   const type = libraryCrypto.getAlgorithm()
-  console.log(type)
   if (type === CryptoAlgorithms.ed25519sha3) {
     return ed25519sha3.derivePublicKey(
       BF.from(privateKeyHex, 'hex')
