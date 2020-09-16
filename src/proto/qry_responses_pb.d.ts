@@ -124,6 +124,15 @@ export class AccountAssetResponse extends jspb.Message {
   setAccountAssetsList(value: Array<AccountAsset>): void;
   addAccountAssets(value?: AccountAsset, index?: number): AccountAsset;
 
+  getTotalNumber(): number;
+  setTotalNumber(value: number): void;
+
+  hasNextAssetId(): boolean;
+  clearNextAssetId(): void;
+  getNextAssetId(): string;
+  setNextAssetId(value: string): void;
+
+  getOptNextAssetIdCase(): AccountAssetResponse.OptNextAssetIdCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccountAssetResponse.AsObject;
   static toObject(includeInstance: boolean, msg: AccountAssetResponse): AccountAssetResponse.AsObject;
@@ -137,12 +146,27 @@ export class AccountAssetResponse extends jspb.Message {
 export namespace AccountAssetResponse {
   export type AsObject = {
     accountAssetsList: Array<AccountAsset.AsObject>,
+    totalNumber: number,
+    nextAssetId: string,
+  }
+
+  export enum OptNextAssetIdCase {
+    OPT_NEXT_ASSET_ID_NOT_SET = 0,
+    NEXT_ASSET_ID = 3,
   }
 }
 
 export class AccountDetailResponse extends jspb.Message {
   getDetail(): string;
   setDetail(value: string): void;
+
+  getTotalNumber(): number;
+  setTotalNumber(value: number): void;
+
+  hasNextRecordId(): boolean;
+  clearNextRecordId(): void;
+  getNextRecordId(): primitive_pb.AccountDetailRecordId | undefined;
+  setNextRecordId(value?: primitive_pb.AccountDetailRecordId): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AccountDetailResponse.AsObject;
@@ -157,6 +181,8 @@ export class AccountDetailResponse extends jspb.Message {
 export namespace AccountDetailResponse {
   export type AsObject = {
     detail: string,
+    totalNumber: number,
+    nextRecordId?: primitive_pb.AccountDetailRecordId.AsObject,
   }
 }
 
@@ -234,9 +260,9 @@ export namespace RolesResponse {
 
 export class RolePermissionsResponse extends jspb.Message {
   clearPermissionsList(): void;
-  getPermissionsList(): Array<primitive_pb.RolePermission>;
-  setPermissionsList(value: Array<primitive_pb.RolePermission>): void;
-  addPermissions(value: primitive_pb.RolePermission, index?: number): primitive_pb.RolePermission;
+  getPermissionsList(): Array<primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap]>;
+  setPermissionsList(value: Array<primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap]>): void;
+  addPermissions(value: primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap], index?: number): primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap];
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RolePermissionsResponse.AsObject;
@@ -250,13 +276,13 @@ export class RolePermissionsResponse extends jspb.Message {
 
 export namespace RolePermissionsResponse {
   export type AsObject = {
-    permissionsList: Array<primitive_pb.RolePermission>,
+    permissionsList: Array<primitive_pb.RolePermissionMap[keyof primitive_pb.RolePermissionMap]>,
   }
 }
 
 export class ErrorResponse extends jspb.Message {
-  getReason(): ErrorResponse.Reason;
-  setReason(value: ErrorResponse.Reason): void;
+  getReason(): ErrorResponse.ReasonMap[keyof ErrorResponse.ReasonMap];
+  setReason(value: ErrorResponse.ReasonMap[keyof ErrorResponse.ReasonMap]): void;
 
   getMessage(): string;
   setMessage(value: string): void;
@@ -276,22 +302,24 @@ export class ErrorResponse extends jspb.Message {
 
 export namespace ErrorResponse {
   export type AsObject = {
-    reason: ErrorResponse.Reason,
+    reason: ErrorResponse.ReasonMap[keyof ErrorResponse.ReasonMap],
     message: string,
     errorCode: number,
   }
 
-  export enum Reason {
-    STATELESS_INVALID = 0,
-    STATEFUL_INVALID = 1,
-    NO_ACCOUNT = 2,
-    NO_ACCOUNT_ASSETS = 3,
-    NO_ACCOUNT_DETAIL = 4,
-    NO_SIGNATORIES = 5,
-    NOT_SUPPORTED = 6,
-    NO_ASSET = 7,
-    NO_ROLES = 8,
+  export interface ReasonMap {
+    STATELESS_INVALID: 0;
+    STATEFUL_INVALID: 1;
+    NO_ACCOUNT: 2;
+    NO_ACCOUNT_ASSETS: 3;
+    NO_ACCOUNT_DETAIL: 4;
+    NO_SIGNATORIES: 5;
+    NOT_SUPPORTED: 6;
+    NO_ASSET: 7;
+    NO_ROLES: 8;
   }
+
+  export const Reason: ReasonMap;
 }
 
 export class SignatoriesResponse extends jspb.Message {
@@ -376,6 +404,106 @@ export namespace TransactionsPageResponse {
   }
 }
 
+export class PendingTransactionsPageResponse extends jspb.Message {
+  clearTransactionsList(): void;
+  getTransactionsList(): Array<transaction_pb.Transaction>;
+  setTransactionsList(value: Array<transaction_pb.Transaction>): void;
+  addTransactions(value?: transaction_pb.Transaction, index?: number): transaction_pb.Transaction;
+
+  getAllTransactionsSize(): number;
+  setAllTransactionsSize(value: number): void;
+
+  hasNextBatchInfo(): boolean;
+  clearNextBatchInfo(): void;
+  getNextBatchInfo(): PendingTransactionsPageResponse.BatchInfo | undefined;
+  setNextBatchInfo(value?: PendingTransactionsPageResponse.BatchInfo): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PendingTransactionsPageResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: PendingTransactionsPageResponse): PendingTransactionsPageResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PendingTransactionsPageResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PendingTransactionsPageResponse;
+  static deserializeBinaryFromReader(message: PendingTransactionsPageResponse, reader: jspb.BinaryReader): PendingTransactionsPageResponse;
+}
+
+export namespace PendingTransactionsPageResponse {
+  export type AsObject = {
+    transactionsList: Array<transaction_pb.Transaction.AsObject>,
+    allTransactionsSize: number,
+    nextBatchInfo?: PendingTransactionsPageResponse.BatchInfo.AsObject,
+  }
+
+  export class BatchInfo extends jspb.Message {
+    getFirstTxHash(): string;
+    setFirstTxHash(value: string): void;
+
+    getBatchSize(): number;
+    setBatchSize(value: number): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BatchInfo.AsObject;
+    static toObject(includeInstance: boolean, msg: BatchInfo): BatchInfo.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BatchInfo, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BatchInfo;
+    static deserializeBinaryFromReader(message: BatchInfo, reader: jspb.BinaryReader): BatchInfo;
+  }
+
+  export namespace BatchInfo {
+    export type AsObject = {
+      firstTxHash: string,
+      batchSize: number,
+    }
+  }
+}
+
+export class PeersResponse extends jspb.Message {
+  clearPeersList(): void;
+  getPeersList(): Array<primitive_pb.Peer>;
+  setPeersList(value: Array<primitive_pb.Peer>): void;
+  addPeers(value?: primitive_pb.Peer, index?: number): primitive_pb.Peer;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): PeersResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: PeersResponse): PeersResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: PeersResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): PeersResponse;
+  static deserializeBinaryFromReader(message: PeersResponse, reader: jspb.BinaryReader): PeersResponse;
+}
+
+export namespace PeersResponse {
+  export type AsObject = {
+    peersList: Array<primitive_pb.Peer.AsObject>,
+  }
+}
+
+export class EngineReceiptsResponse extends jspb.Message {
+  clearEngineReceiptsList(): void;
+  getEngineReceiptsList(): Array<primitive_pb.EngineReceipt>;
+  setEngineReceiptsList(value: Array<primitive_pb.EngineReceipt>): void;
+  addEngineReceipts(value?: primitive_pb.EngineReceipt, index?: number): primitive_pb.EngineReceipt;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): EngineReceiptsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: EngineReceiptsResponse): EngineReceiptsResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: EngineReceiptsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): EngineReceiptsResponse;
+  static deserializeBinaryFromReader(message: EngineReceiptsResponse, reader: jspb.BinaryReader): EngineReceiptsResponse;
+}
+
+export namespace EngineReceiptsResponse {
+  export type AsObject = {
+    engineReceiptsList: Array<primitive_pb.EngineReceipt.AsObject>,
+  }
+}
+
 export class QueryResponse extends jspb.Message {
   hasAccountAssetsResponse(): boolean;
   clearAccountAssetsResponse(): void;
@@ -427,10 +555,25 @@ export class QueryResponse extends jspb.Message {
   getTransactionsPageResponse(): TransactionsPageResponse | undefined;
   setTransactionsPageResponse(value?: TransactionsPageResponse): void;
 
+  hasPendingTransactionsPageResponse(): boolean;
+  clearPendingTransactionsPageResponse(): void;
+  getPendingTransactionsPageResponse(): PendingTransactionsPageResponse | undefined;
+  setPendingTransactionsPageResponse(value?: PendingTransactionsPageResponse): void;
+
   hasBlockResponse(): boolean;
   clearBlockResponse(): void;
   getBlockResponse(): BlockResponse | undefined;
   setBlockResponse(value?: BlockResponse): void;
+
+  hasPeersResponse(): boolean;
+  clearPeersResponse(): void;
+  getPeersResponse(): PeersResponse | undefined;
+  setPeersResponse(value?: PeersResponse): void;
+
+  hasEngineReceiptsResponse(): boolean;
+  clearEngineReceiptsResponse(): void;
+  getEngineReceiptsResponse(): EngineReceiptsResponse | undefined;
+  setEngineReceiptsResponse(value?: EngineReceiptsResponse): void;
 
   getQueryHash(): string;
   setQueryHash(value: string): void;
@@ -458,7 +601,10 @@ export namespace QueryResponse {
     rolesResponse?: RolesResponse.AsObject,
     rolePermissionsResponse?: RolePermissionsResponse.AsObject,
     transactionsPageResponse?: TransactionsPageResponse.AsObject,
+    pendingTransactionsPageResponse?: PendingTransactionsPageResponse.AsObject,
     blockResponse?: BlockResponse.AsObject,
+    peersResponse?: PeersResponse.AsObject,
+    engineReceiptsResponse?: EngineReceiptsResponse.AsObject,
     queryHash: string,
   }
 
@@ -474,7 +620,10 @@ export namespace QueryResponse {
     ROLES_RESPONSE = 8,
     ROLE_PERMISSIONS_RESPONSE = 9,
     TRANSACTIONS_PAGE_RESPONSE = 11,
+    PENDING_TRANSACTIONS_PAGE_RESPONSE = 13,
     BLOCK_RESPONSE = 12,
+    PEERS_RESPONSE = 14,
+    ENGINE_RECEIPTS_RESPONSE = 15,
   }
 }
 

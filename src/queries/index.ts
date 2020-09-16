@@ -1,8 +1,8 @@
-
-import flow from 'lodash/fp/flow'
+import flow from 'lodash.flow'
 import queryHelper from '../queryHelper'
 import * as pbResponse from '../proto/qry_responses_pb'
-import { getProtoEnumName } from '../util'
+import { reverseEnum } from '../util'
+import validate from '../validation'
 
 const DEFAULT_OPTIONS = {
   privateKey: '',
@@ -25,12 +25,13 @@ function sendQuery (
     timeoutLimit
   } = DEFAULT_OPTIONS,
   query,
+  // eslint-disable-next-line
   onResponse = function (resolve, reject, responseName, response) {}
 ) {
   return new Promise((resolve, reject) => {
     const queryClient = queryService
 
-    let queryToSend = flow(
+    const queryToSend = flow(
       (q) => queryHelper.addMeta(q, { creatorAccountId }),
       (q) => queryHelper.sign(q, privateKey)
     )(query)
@@ -53,11 +54,9 @@ function sendQuery (
       }
 
       const type = response.getResponseCase()
-      const responseName = getProtoEnumName(
-        pbResponse.QueryResponse.ResponseCase,
-        'iroha.protocol.QueryResponse',
-        type
-      )
+      const responseName = reverseEnum(
+        pbResponse.QueryResponse.ResponseCase
+      )[type]
 
       onResponse(resolve, reject, responseName, response)
     })
@@ -67,19 +66,17 @@ function sendQuery (
 /**
  * getAccount
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String} args.accountId
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-account
+ * @param {Object} params
+ * @property {String} params.accountId
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account
  */
-function getAccount (queryOptions, { accountId }) {
+function getAccount (queryOptions, params) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getAccount',
-      {
-        accountId
-      }
+      validate(params, ['accountId'])
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ACCOUNT_RESPONSE') {
@@ -94,21 +91,46 @@ function getAccount (queryOptions, { accountId }) {
 }
 
 /**
+ * getRawAccount
+ * @param {Object} queryOptions
+ * @param {Object} params
+ * @property {String} params.accountId
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account
+ */
+function getRawAccount (queryOptions, params) {
+  return sendQuery(
+    queryOptions,
+    queryHelper.addQuery(
+      queryHelper.emptyQuery(),
+      'getAccount',
+      validate(params, ['accountId'])
+    ),
+    (resolve, reject, responseName, response) => {
+      if (responseName !== 'ACCOUNT_RESPONSE') {
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ACCOUNT_RESPONSE, actual=${responseName}\nReason: ${error}`))
+      }
+
+      const account = response.getAccountResponse()
+      resolve(account)
+    }
+  )
+}
+
+/**
  * getSignatories
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String} args.accountId
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-signatories
+ * @param {Object} params
+ * @property {String} params.accountId
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-signatories
  */
-function getSignatories (queryOptions, { accountId }) {
+function getSignatories (queryOptions, params) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getSignatories',
-      {
-        accountId
-      }
+      validate(params, ['accountId'])
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'SIGNATORIES_RESPONSE') {
@@ -125,19 +147,17 @@ function getSignatories (queryOptions, { accountId }) {
 /**
  * getTransactions
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String[]} args.txHashesList
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-transactions
+ * @param {Object} params
+ * @property {String[]} params.txHashesList
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-transactions
  */
-function getTransactions (queryOptions, { txHashesList }) {
+function getTransactions (queryOptions, params) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getTransactions',
-      {
-        txHashesList
-      }
+      validate(params, ['txHashesList'])
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'TRANSACTIONS_RESPONSE') {
@@ -154,23 +174,28 @@ function getTransactions (queryOptions, { txHashesList }) {
 /**
  * getPendingTransactions
  * @param {Object} queryOptions
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-pending-transactions
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-pending-transactions
  */
-function getPendingTransactions (queryOptions) {
+function getPendingTransactions (queryOptions, { pageSize, firstTxHash }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getPendingTransactions',
-      {}
+      {
+        paginationMeta: {
+          pageSize,
+          firstTxHash
+        }
+      }
     ),
     (resolve, reject, responseName, response) => {
-      if (responseName !== 'TRANSACTIONS_RESPONSE') {
+      if (responseName !== 'PENDING_TRANSACTIONS_PAGE_RESPONSE') {
         const error = JSON.stringify(response.toObject().errorResponse)
-        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}\nReason: ${error}`))
+        return reject(new Error(`Query response error: expected=PENDING_TRANSACTIONS_PAGE_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
-      const transactions = response.getTransactionsResponse().toObject().transactionsList
+      const transactions = response.getPendingTransactionsPageResponse().toObject().transactionsList
       resolve(transactions)
     }
   )
@@ -179,23 +204,22 @@ function getPendingTransactions (queryOptions) {
 /**
  * getRawPendingTransactions
  * @param {Object} queryOptions
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-pending-transactions
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-pending-transactions
  */
 function getRawPendingTransactions (queryOptions) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
-      'getPendingTransactions',
-      {}
+      'getPendingTransactions'
     ),
     (resolve, reject, responseName, response) => {
-      if (responseName !== 'TRANSACTIONS_RESPONSE') {
+      if (responseName !== 'PENDING_TRANSACTIONS_PAGE_RESPONSE') {
         const error = JSON.stringify(response.toObject().errorResponse)
-        return reject(new Error(`Query response error: expected=TRANSACTIONS_RESPONSE, actual=${responseName}\nReason: ${error}`))
+        return reject(new Error(`Query response error: expected=PENDING_TRANSACTIONS_PAGE_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
-      const transactions = response.getTransactionsResponse()
+      const transactions = response.getPendingTransactionsPageResponse()
       resolve(transactions)
     }
   )
@@ -204,13 +228,13 @@ function getRawPendingTransactions (queryOptions) {
 /**
  * getAccountTransactions
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String} args.accountId
- * @property {Number} args.pageSize
- * @property {String | undefined} args.firstTxHash
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-account-transactions
+ * @param {Object} params
+ * @property {String} params.accountId
+ * @property {Number} params.pageSize
+ * @property {String | undefined} params.firstTxHash
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-transactions
  */
-function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHash }) {
+function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHash = undefined }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
@@ -239,12 +263,12 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
 /**
  * getAccountAssetTransactions
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String} args.accountId
- * @property {String} args.assetId
- * @property {Number} args.pageSize
- * @property {String | undefined} args.firstTxHash
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-account-asset-transactions
+ * @param {Object} params
+ * @property {String} params.accountId
+ * @property {String} params.assetId
+ * @property {Number} params.pageSize
+ * @property {String | undefined} params.firstTxHash
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-asset-transactions
  */
 function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSize, firstTxHash }) {
   return sendQuery(
@@ -276,18 +300,22 @@ function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSi
 /**
  * getAccountAssets
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String} args.accountId
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-account-assets
+ * @param {Object} params
+ * @property {String} params.accountId
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-assets
  */
-function getAccountAssets (queryOptions, { accountId }) {
+function getAccountAssets (queryOptions, { accountId, pageSize, firstAssetId }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getAccountAssets',
       {
-        accountId
+        accountId,
+        paginationMeta: {
+          pageSize,
+          firstAssetId
+        }
       }
     ),
     (resolve, reject, responseName, response) => {
@@ -305,20 +333,29 @@ function getAccountAssets (queryOptions, { accountId }) {
 /**
  * getAccountDetail
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String} args.accountId
- * @property {String} args.key
- * @property {String} args.writerId
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-account-detail
+ * @param {Object} params
+ * @property {String} params.accountId
+ * @property {String} params.key
+ * @property {String} params.writer
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-detail
  */
-function getAccountDetail (queryOptions, { accountId, key, writerId }) {
+function getAccountDetail (queryOptions, { accountId, key, writer, pageSize, paginationWriter, paginationKey }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getAccountDetail',
       {
-        accountId
+        accountId,
+        key,
+        writer,
+        paginationMeta: {
+          pageSize,
+          firstRecordId: {
+            writer: paginationWriter,
+            key: paginationKey
+          }
+        }
       }
     ),
     (resolve, reject, responseName, response) => {
@@ -336,19 +373,17 @@ function getAccountDetail (queryOptions, { accountId, key, writerId }) {
 /**
  * getAssetInfo
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {String} args.assetId
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-asset-info
+ * @param {Object} params
+ * @property {String} params.assetId
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-asset-info
  */
-function getAssetInfo (queryOptions, { assetId }) {
+function getAssetInfo (queryOptions, params) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getAssetInfo',
-      {
-        assetId
-      }
+      validate(params, ['assetId'])
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ASSET_RESPONSE') {
@@ -363,17 +398,40 @@ function getAssetInfo (queryOptions, { assetId }) {
 }
 
 /**
+ * getPeers
+ * @param {Object} queryOptions
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-peers
+ */
+function getPeers (queryOptions) {
+  return sendQuery(
+    queryOptions,
+    queryHelper.addQuery(
+      queryHelper.emptyQuery(),
+      'getPeers'
+    ),
+    (resolve, reject, responseName, response) => {
+      if (responseName !== 'PEERS_RESPONSE') {
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=PEERS_RESPONSE, actual=${responseName}\nReason: ${error}`))
+      }
+
+      const peers = response.getPeersResponse().toObject().peersList
+      resolve(peers)
+    }
+  )
+}
+
+/**
  * getRoles
  * @param {Object} queryOptions
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-roles
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-roles
  */
 function getRoles (queryOptions) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
-      'getRoles',
-      {}
+      'getRoles'
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ROLES_RESPONSE') {
@@ -390,19 +448,17 @@ function getRoles (queryOptions) {
 /**
  * getRolePermissions
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {Number} args.roleId
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-role-permissions
+ * @param {Object} params
+ * @property {Number} params.roleId
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-role-permissions
  */
-function getRolePermissions (queryOptions, { roleId }) {
+function getRolePermissions (queryOptions, params) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getRolePermissions',
-      {
-        roleId
-      }
+      validate(params, ['roleId'])
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'ROLE_PERMISSIONS_RESPONSE') {
@@ -419,19 +475,17 @@ function getRolePermissions (queryOptions, { roleId }) {
 /**
  * getBlock
  * @param {Object} queryOptions
- * @param {Object} args
- * @property {Number} args.height
- * @link https://iroha.readthedocs.io/en/latest/api/queries.html#get-block
+ * @param {Object} params
+ * @property {Number} params.height
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-block
  */
-function getBlock (queryOptions, { height }) {
+function getBlock (queryOptions, params) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
       'getBlock',
-      {
-        height
-      }
+      validate(params, ['height'])
     ),
     (resolve, reject, responseName, response) => {
       if (responseName !== 'BLOCK_RESPONSE') {
@@ -439,14 +493,85 @@ function getBlock (queryOptions, { height }) {
         return reject(new Error(`Query response error: expected=BLOCK_RESPONSE, actual=${responseName}\nReason: ${error}`))
       }
 
-      const block = response.getBlockResponse()
+      const block = response.getBlockResponse().toObject().block.blockV1
       resolve(block)
     }
   )
 }
 
+/**
+ * getEngineReceipts
+ * @param {Object} queryOptions
+ * @param {Object} params
+ * @property {Number} params.txHash
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-block
+ */
+function getEngineReceipts (queryOptions, params) {
+  return sendQuery(
+    queryOptions,
+    queryHelper.addQuery(
+      queryHelper.emptyQuery(),
+      'getEngineReceipts',
+      validate(params, ['txHash'])
+    ),
+    (resolve, reject, responseName, response) => {
+      if (responseName !== 'ENGINE_RECEIPTS_RESPONSE') {
+        const error = JSON.stringify(response.toObject().errorResponse)
+        return reject(new Error(`Query response error: expected=ENGINE_RECEIPTS_RESPONSE, actual=${responseName}\nReason: ${error}`))
+      }
+
+      const block = response.getEngineReceiptsResponse()
+      resolve(block)
+    }
+  )
+}
+
+/**
+ * fetchCommits
+ * @param {Object} queryOptions
+ * @param {Function} onBlock
+ * @param {Function} onError
+ * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#fetchcommits
+ */
+function fetchCommits (
+  {
+    privateKey,
+    creatorAccountId,
+    queryService
+  } = DEFAULT_OPTIONS,
+  // eslint-disable-next-line
+  onBlock = function (block) {},
+  // eslint-disable-next-line
+  onError = function (error) {}
+) {
+  const query = queryHelper.emptyBlocksQuery()
+
+  const queryToSend = flow(
+    (q) => queryHelper.addMeta(q, { creatorAccountId }),
+    (q) => queryHelper.sign(q, privateKey)
+  )(query)
+
+  const stream = queryService.fetchCommits(queryToSend)
+
+  stream.on('data', (response) => {
+    const type = response.getResponseCase()
+    const responseName = reverseEnum(
+      pbResponse.BlockQueryResponse.ResponseCase
+    )[type]
+
+    if (responseName !== 'BLOCK_RESPONSE') {
+      const error = JSON.stringify(response.toObject().blockErrorResponse)
+      onError(new Error(`Query response error: expected=BLOCK_RESPONSE, actual=${responseName}\nReason: ${error}`))
+    } else {
+      const block = response.toObject().blockResponse.block
+      onBlock(block)
+    }
+  })
+}
+
 export default {
   getAccount,
+  getRawAccount,
   getSignatories,
   getTransactions,
   getPendingTransactions,
@@ -456,7 +581,10 @@ export default {
   getAccountAssets,
   getAccountDetail,
   getAssetInfo,
+  getPeers,
   getRoles,
   getRolePermissions,
-  getBlock
+  getBlock,
+  getEngineReceipts,
+  fetchCommits
 }
