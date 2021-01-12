@@ -150,9 +150,10 @@ function callEngine (commandOptions, { type = CallEngine.EngineType.KSOLIDITY, c
  * @property {String} args.key
  * @property {String} args.value
  * @property {String} args.oldValue
+ * @property {boolean} args.checkEmpty
  * @link https://iroha.readthedocs.io/en/master/develop/api/commands.html#compare-and-set-account-detail
  */
-function compareAndSetAccountDetail (commandOptions, { accountId, key, value, oldValue }) {
+function compareAndSetAccountDetail (commandOptions, { accountId, key, value, oldValue, checkEmpty }) {
   return command(
     commandOptions,
     txHelper.addCommand(
@@ -162,7 +163,8 @@ function compareAndSetAccountDetail (commandOptions, { accountId, key, value, ol
         accountId,
         key,
         value,
-        oldValue
+        oldValue,
+        checkEmpty
       }
     )
   )
