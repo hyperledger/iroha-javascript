@@ -447,6 +447,9 @@ export class CompareAndSetAccountDetail extends jspb.Message {
   getOldValue(): string;
   setOldValue(value: string): void;
 
+  getCheckEmpty(): boolean;
+  setCheckEmpty(value: boolean): void;
+
   getOptOldValueCase(): CompareAndSetAccountDetail.OptOldValueCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CompareAndSetAccountDetail.AsObject;
@@ -464,6 +467,7 @@ export namespace CompareAndSetAccountDetail {
     key: string,
     value: string,
     oldValue: string,
+    checkEmpty: boolean,
   }
 
   export enum OptOldValueCase {
