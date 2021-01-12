@@ -176,7 +176,7 @@ function getTransactions (queryOptions, params) {
  * @param {Object} queryOptions
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-pending-transactions
  */
-function getPendingTransactions (queryOptions, { pageSize, firstTxHash }) {
+function getPendingTransactions (queryOptions, { pageSize, firstTxHash, ordering: { field, direction } }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
@@ -185,7 +185,11 @@ function getPendingTransactions (queryOptions, { pageSize, firstTxHash }) {
       {
         paginationMeta: {
           pageSize,
-          firstTxHash
+          firstTxHash,
+          ordering: {
+            field,
+            direction
+          }
         }
       }
     ),
@@ -234,7 +238,7 @@ function getRawPendingTransactions (queryOptions) {
  * @property {String | undefined} params.firstTxHash
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-transactions
  */
-function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHash = undefined }) {
+function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHash, ordering: { field, direction } }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
@@ -244,7 +248,11 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
         accountId,
         paginationMeta: {
           pageSize,
-          firstTxHash
+          firstTxHash,
+          ordering: {
+            field,
+            direction
+          }
         }
       }
     ),
@@ -270,18 +278,22 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
  * @property {String | undefined} params.firstTxHash
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-asset-transactions
  */
-function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSize, firstTxHash }) {
+function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSize, firstTxHash, ordering: { field, direction } }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
       queryHelper.emptyQuery(),
-      'GetAccountAssetTransactions',
+      'getAccountAssetTransactions',
       {
         accountId,
         assetId,
         paginationMeta: {
           pageSize,
-          firstTxHash
+          firstTxHash,
+          ordering: {
+            field,
+            direction
+          }
         }
       }
     ),
