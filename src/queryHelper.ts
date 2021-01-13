@@ -41,7 +41,10 @@ const addQuery = (query, queryName, params = {}) => {
         paginationMeta.setFirstRecordId(firstRecordId)
       } else {
         const queryOrder = new Queries.Ordering()
-        queryOrder.setSequenceList([value.ordering.field, value.ordering.direction])
+        const fieldOrder = new Queries.Ordering.FieldOrdering()
+        fieldOrder.setField(value.ordering.field)
+        fieldOrder.setDirection(value.ordering.direction)
+        queryOrder.addSequence(fieldOrder)
         paginationMeta = new Queries.TxPaginationMeta()
         paginationMeta.setPageSize(value.pageSize)
         paginationMeta.setFirstTxHash(value.firstTxHash)
@@ -49,6 +52,7 @@ const addQuery = (query, queryName, params = {}) => {
       }
 
       payloadQuery[capitalizedKeyName](paginationMeta)
+      console.log(payloadQuery.array[1])
     } else {
       payloadQuery[capitalizedKeyName](value)
     }
