@@ -18,8 +18,6 @@ goog.exportSymbol('proto.iroha.protocol.AddSignatory', null, global);
 goog.exportSymbol('proto.iroha.protocol.AppendRole', null, global);
 goog.exportSymbol('proto.iroha.protocol.CallEngine', null, global);
 goog.exportSymbol('proto.iroha.protocol.CallEngine.EngineType', null, global);
-goog.exportSymbol('proto.iroha.protocol.CallModel', null, global);
-goog.exportSymbol('proto.iroha.protocol.CallModel.Payload', null, global);
 goog.exportSymbol('proto.iroha.protocol.Command', null, global);
 goog.exportSymbol('proto.iroha.protocol.CompareAndSetAccountDetail', null, global);
 goog.exportSymbol('proto.iroha.protocol.CreateAccount', null, global);
@@ -3795,325 +3793,6 @@ proto.iroha.protocol.CallEngine.prototype.setInput = function(value) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.iroha.protocol.CallModel = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
-};
-goog.inherits(proto.iroha.protocol.CallModel, jspb.Message);
-if (goog.DEBUG && !COMPILED) {
-  proto.iroha.protocol.CallModel.displayName = 'proto.iroha.protocol.CallModel';
-}
-
-
-if (jspb.Message.GENERATE_TO_OBJECT) {
-/**
- * Creates an object representation of this proto suitable for use in Soy templates.
- * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
- * For the list of reserved names please see:
- *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
- * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
- *     for transitional soy proto support: http://goto/soy-param-migration
- * @return {!Object}
- */
-proto.iroha.protocol.CallModel.prototype.toObject = function(opt_includeInstance) {
-  return proto.iroha.protocol.CallModel.toObject(opt_includeInstance, this);
-};
-
-
-/**
- * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Whether to include the JSPB
- *     instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @param {!proto.iroha.protocol.CallModel} msg The msg instance to transform.
- * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.iroha.protocol.CallModel.toObject = function(includeInstance, msg) {
-  var f, obj = {
-    payload: (f = msg.getPayload()) && proto.iroha.protocol.CallModel.Payload.toObject(includeInstance, f),
-    dmId: (f = msg.getDmId()) && primitive_pb.DataModelId.toObject(includeInstance, f)
-  };
-
-  if (includeInstance) {
-    obj.$jspbMessageInstance = msg;
-  }
-  return obj;
-};
-}
-
-
-/**
- * Deserializes binary data (in protobuf wire format).
- * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.iroha.protocol.CallModel}
- */
-proto.iroha.protocol.CallModel.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.iroha.protocol.CallModel;
-  return proto.iroha.protocol.CallModel.deserializeBinaryFromReader(msg, reader);
-};
-
-
-/**
- * Deserializes binary data (in protobuf wire format) from the
- * given reader into the given message object.
- * @param {!proto.iroha.protocol.CallModel} msg The message object to deserialize into.
- * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.iroha.protocol.CallModel}
- */
-proto.iroha.protocol.CallModel.deserializeBinaryFromReader = function(msg, reader) {
-  while (reader.nextField()) {
-    if (reader.isEndGroup()) {
-      break;
-    }
-    var field = reader.getFieldNumber();
-    switch (field) {
-    case 1:
-      var value = new proto.iroha.protocol.CallModel.Payload;
-      reader.readMessage(value,proto.iroha.protocol.CallModel.Payload.deserializeBinaryFromReader);
-      msg.setPayload(value);
-      break;
-    case 2:
-      var value = new primitive_pb.DataModelId;
-      reader.readMessage(value,primitive_pb.DataModelId.deserializeBinaryFromReader);
-      msg.setDmId(value);
-      break;
-    default:
-      reader.skipField();
-      break;
-    }
-  }
-  return msg;
-};
-
-
-/**
- * Serializes the message to binary data (in protobuf wire format).
- * @return {!Uint8Array}
- */
-proto.iroha.protocol.CallModel.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
-  proto.iroha.protocol.CallModel.serializeBinaryToWriter(this, writer);
-  return writer.getResultBuffer();
-};
-
-
-/**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.iroha.protocol.CallModel} message
- * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.iroha.protocol.CallModel.serializeBinaryToWriter = function(message, writer) {
-  var f = undefined;
-  f = message.getPayload();
-  if (f != null) {
-    writer.writeMessage(
-      1,
-      f,
-      proto.iroha.protocol.CallModel.Payload.serializeBinaryToWriter
-    );
-  }
-  f = message.getDmId();
-  if (f != null) {
-    writer.writeMessage(
-      2,
-      f,
-      primitive_pb.DataModelId.serializeBinaryToWriter
-    );
-  }
-};
-
-
-
-/**
- * Generated by JsPbCodeGenerator.
- * @param {Array=} opt_data Optional initial data array, typically from a
- * server response, or constructed directly in Javascript. The array is used
- * in place and becomes part of the constructed object. It is not cloned.
- * If no data is provided, the constructed object will be empty, but still
- * valid.
- * @extends {jspb.Message}
- * @constructor
- */
-proto.iroha.protocol.CallModel.Payload = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
-};
-goog.inherits(proto.iroha.protocol.CallModel.Payload, jspb.Message);
-if (goog.DEBUG && !COMPILED) {
-  proto.iroha.protocol.CallModel.Payload.displayName = 'proto.iroha.protocol.CallModel.Payload';
-}
-
-
-if (jspb.Message.GENERATE_TO_OBJECT) {
-/**
- * Creates an object representation of this proto suitable for use in Soy templates.
- * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
- * For the list of reserved names please see:
- *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
- * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
- *     for transitional soy proto support: http://goto/soy-param-migration
- * @return {!Object}
- */
-proto.iroha.protocol.CallModel.Payload.prototype.toObject = function(opt_includeInstance) {
-  return proto.iroha.protocol.CallModel.Payload.toObject(opt_includeInstance, this);
-};
-
-
-/**
- * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Whether to include the JSPB
- *     instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @param {!proto.iroha.protocol.CallModel.Payload} msg The msg instance to transform.
- * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.iroha.protocol.CallModel.Payload.toObject = function(includeInstance, msg) {
-  var f, obj = {
-
-  };
-
-  if (includeInstance) {
-    obj.$jspbMessageInstance = msg;
-  }
-  return obj;
-};
-}
-
-
-/**
- * Deserializes binary data (in protobuf wire format).
- * @param {jspb.ByteSource} bytes The bytes to deserialize.
- * @return {!proto.iroha.protocol.CallModel.Payload}
- */
-proto.iroha.protocol.CallModel.Payload.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.iroha.protocol.CallModel.Payload;
-  return proto.iroha.protocol.CallModel.Payload.deserializeBinaryFromReader(msg, reader);
-};
-
-
-/**
- * Deserializes binary data (in protobuf wire format) from the
- * given reader into the given message object.
- * @param {!proto.iroha.protocol.CallModel.Payload} msg The message object to deserialize into.
- * @param {!jspb.BinaryReader} reader The BinaryReader to use.
- * @return {!proto.iroha.protocol.CallModel.Payload}
- */
-proto.iroha.protocol.CallModel.Payload.deserializeBinaryFromReader = function(msg, reader) {
-  while (reader.nextField()) {
-    if (reader.isEndGroup()) {
-      break;
-    }
-    var field = reader.getFieldNumber();
-    switch (field) {
-    default:
-      reader.skipField();
-      break;
-    }
-  }
-  return msg;
-};
-
-
-/**
- * Serializes the message to binary data (in protobuf wire format).
- * @return {!Uint8Array}
- */
-proto.iroha.protocol.CallModel.Payload.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
-  proto.iroha.protocol.CallModel.Payload.serializeBinaryToWriter(this, writer);
-  return writer.getResultBuffer();
-};
-
-
-/**
- * Serializes the given message to binary data (in protobuf wire
- * format), writing to the given BinaryWriter.
- * @param {!proto.iroha.protocol.CallModel.Payload} message
- * @param {!jspb.BinaryWriter} writer
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.iroha.protocol.CallModel.Payload.serializeBinaryToWriter = function(message, writer) {
-  var f = undefined;
-};
-
-
-/**
- * optional Payload payload = 1;
- * @return {?proto.iroha.protocol.CallModel.Payload}
- */
-proto.iroha.protocol.CallModel.prototype.getPayload = function() {
-  return /** @type{?proto.iroha.protocol.CallModel.Payload} */ (
-    jspb.Message.getWrapperField(this, proto.iroha.protocol.CallModel.Payload, 1));
-};
-
-
-/** @param {?proto.iroha.protocol.CallModel.Payload|undefined} value */
-proto.iroha.protocol.CallModel.prototype.setPayload = function(value) {
-  jspb.Message.setWrapperField(this, 1, value);
-};
-
-
-proto.iroha.protocol.CallModel.prototype.clearPayload = function() {
-  this.setPayload(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.iroha.protocol.CallModel.prototype.hasPayload = function() {
-  return jspb.Message.getField(this, 1) != null;
-};
-
-
-/**
- * optional DataModelId dm_id = 2;
- * @return {?proto.iroha.protocol.DataModelId}
- */
-proto.iroha.protocol.CallModel.prototype.getDmId = function() {
-  return /** @type{?proto.iroha.protocol.DataModelId} */ (
-    jspb.Message.getWrapperField(this, primitive_pb.DataModelId, 2));
-};
-
-
-/** @param {?proto.iroha.protocol.DataModelId|undefined} value */
-proto.iroha.protocol.CallModel.prototype.setDmId = function(value) {
-  jspb.Message.setWrapperField(this, 2, value);
-};
-
-
-proto.iroha.protocol.CallModel.prototype.clearDmId = function() {
-  this.setDmId(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.iroha.protocol.CallModel.prototype.hasDmId = function() {
-  return jspb.Message.getField(this, 2) != null;
-};
-
-
-
-/**
- * Generated by JsPbCodeGenerator.
- * @param {Array=} opt_data Optional initial data array, typically from a
- * server response, or constructed directly in Javascript. The array is used
- * in place and becomes part of the constructed object. It is not cloned.
- * If no data is provided, the constructed object will be empty, but still
- * valid.
- * @extends {jspb.Message}
- * @constructor
- */
 proto.iroha.protocol.Command = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, proto.iroha.protocol.Command.oneofGroups_);
 };
@@ -4129,7 +3808,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.iroha.protocol.Command.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]];
+proto.iroha.protocol.Command.oneofGroups_ = [[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]];
 
 /**
  * @enum {number}
@@ -4155,8 +3834,7 @@ proto.iroha.protocol.Command.CommandCase = {
   REMOVE_PEER: 17,
   COMPARE_AND_SET_ACCOUNT_DETAIL: 18,
   SET_SETTING_VALUE: 19,
-  CALL_ENGINE: 20,
-  CALL_MODEL: 21
+  CALL_ENGINE: 20
 };
 
 /**
@@ -4214,8 +3892,7 @@ proto.iroha.protocol.Command.toObject = function(includeInstance, msg) {
     removePeer: (f = msg.getRemovePeer()) && proto.iroha.protocol.RemovePeer.toObject(includeInstance, f),
     compareAndSetAccountDetail: (f = msg.getCompareAndSetAccountDetail()) && proto.iroha.protocol.CompareAndSetAccountDetail.toObject(includeInstance, f),
     setSettingValue: (f = msg.getSetSettingValue()) && proto.iroha.protocol.SetSettingValue.toObject(includeInstance, f),
-    callEngine: (f = msg.getCallEngine()) && proto.iroha.protocol.CallEngine.toObject(includeInstance, f),
-    callModel: (f = msg.getCallModel()) && proto.iroha.protocol.CallModel.toObject(includeInstance, f)
+    callEngine: (f = msg.getCallEngine()) && proto.iroha.protocol.CallEngine.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -4351,11 +4028,6 @@ proto.iroha.protocol.Command.deserializeBinaryFromReader = function(msg, reader)
       var value = new proto.iroha.protocol.CallEngine;
       reader.readMessage(value,proto.iroha.protocol.CallEngine.deserializeBinaryFromReader);
       msg.setCallEngine(value);
-      break;
-    case 21:
-      var value = new proto.iroha.protocol.CallModel;
-      reader.readMessage(value,proto.iroha.protocol.CallModel.deserializeBinaryFromReader);
-      msg.setCallModel(value);
       break;
     default:
       reader.skipField();
@@ -4544,14 +4216,6 @@ proto.iroha.protocol.Command.serializeBinaryToWriter = function(message, writer)
       20,
       f,
       proto.iroha.protocol.CallEngine.serializeBinaryToWriter
-    );
-  }
-  f = message.getCallModel();
-  if (f != null) {
-    writer.writeMessage(
-      21,
-      f,
-      proto.iroha.protocol.CallModel.serializeBinaryToWriter
     );
   }
 };
@@ -5154,36 +4818,6 @@ proto.iroha.protocol.Command.prototype.clearCallEngine = function() {
  */
 proto.iroha.protocol.Command.prototype.hasCallEngine = function() {
   return jspb.Message.getField(this, 20) != null;
-};
-
-
-/**
- * optional CallModel call_model = 21;
- * @return {?proto.iroha.protocol.CallModel}
- */
-proto.iroha.protocol.Command.prototype.getCallModel = function() {
-  return /** @type{?proto.iroha.protocol.CallModel} */ (
-    jspb.Message.getWrapperField(this, proto.iroha.protocol.CallModel, 21));
-};
-
-
-/** @param {?proto.iroha.protocol.CallModel|undefined} value */
-proto.iroha.protocol.Command.prototype.setCallModel = function(value) {
-  jspb.Message.setOneofWrapperField(this, 21, proto.iroha.protocol.Command.oneofGroups_[0], value);
-};
-
-
-proto.iroha.protocol.Command.prototype.clearCallModel = function() {
-  this.setCallModel(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {!boolean}
- */
-proto.iroha.protocol.Command.prototype.hasCallModel = function() {
-  return jspb.Message.getField(this, 21) != null;
 };
 
 
