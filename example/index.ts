@@ -99,7 +99,11 @@ Promise.all([
   }, {
     accountId: 'admin@test',
     pageSize: 5,
-    firstTxHash: undefined
+    firstTxHash: undefined,
+    ordering: {
+      field: 0,
+      direction: 1
+    }
   })
 ])
   .then(a => console.log(a))
