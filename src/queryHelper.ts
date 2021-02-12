@@ -31,18 +31,24 @@ const addQuery = (query, queryName, params = {}) => {
   for (const [key, value] of Object.entries<any>(params)) {
     const capitalizedKeyName = `set${capitalize(key)}`
     if (capitalizedKeyName === 'setPaginationMeta') {
-      let paginationMeta = null
+      let paginationMeta: Queries.TxPaginationMeta | Queries.AccountDetailPaginationMeta = null
       if (queryName === 'getAccountDetail') {
-        paginationMeta = new Queries.AccountDetailPaginationMeta()
-        paginationMeta.setPageSize(value.pageSize)
         const firstRecordId = new AccountDetailRecordId()
         firstRecordId.setKey(value.firstRecordId.key)
         firstRecordId.setWriter(value.firstRecordId.writer)
+        paginationMeta = new Queries.AccountDetailPaginationMeta()
+        paginationMeta.setPageSize(value.pageSize)
         paginationMeta.setFirstRecordId(firstRecordId)
       } else {
+        const queryOrder = new Queries.Ordering()
+        const fieldOrder = new Queries.Ordering.FieldOrdering()
+        fieldOrder.setField(value.ordering.field)
+        fieldOrder.setDirection(value.ordering.direction)
+        queryOrder.addSequence(fieldOrder)
         paginationMeta = new Queries.TxPaginationMeta()
         paginationMeta.setPageSize(value.pageSize)
         paginationMeta.setFirstTxHash(value.firstTxHash)
+        paginationMeta.setOrdering(queryOrder)
       }
 
       payloadQuery[capitalizedKeyName](paginationMeta)

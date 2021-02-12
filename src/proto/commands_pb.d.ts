@@ -447,6 +447,9 @@ export class CompareAndSetAccountDetail extends jspb.Message {
   getOldValue(): string;
   setOldValue(value: string): void;
 
+  getCheckEmpty(): boolean;
+  setCheckEmpty(value: boolean): void;
+
   getOptOldValueCase(): CompareAndSetAccountDetail.OptOldValueCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CompareAndSetAccountDetail.AsObject;
@@ -464,6 +467,7 @@ export namespace CompareAndSetAccountDetail {
     key: string,
     value: string,
     oldValue: string,
+    checkEmpty: boolean,
   }
 
   export enum OptOldValueCase {
@@ -539,50 +543,6 @@ export namespace CallEngine {
   export enum OptCalleeCase {
     OPT_CALLEE_NOT_SET = 0,
     CALLEE = 3,
-  }
-}
-
-export class CallModel extends jspb.Message {
-  hasPayload(): boolean;
-  clearPayload(): void;
-  getPayload(): CallModel.Payload | undefined;
-  setPayload(value?: CallModel.Payload): void;
-
-  hasDmId(): boolean;
-  clearDmId(): void;
-  getDmId(): primitive_pb.DataModelId | undefined;
-  setDmId(value?: primitive_pb.DataModelId): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): CallModel.AsObject;
-  static toObject(includeInstance: boolean, msg: CallModel): CallModel.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: CallModel, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): CallModel;
-  static deserializeBinaryFromReader(message: CallModel, reader: jspb.BinaryReader): CallModel;
-}
-
-export namespace CallModel {
-  export type AsObject = {
-    payload?: CallModel.Payload.AsObject,
-    dmId?: primitive_pb.DataModelId.AsObject,
-  }
-
-  export class Payload extends jspb.Message {
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): Payload.AsObject;
-    static toObject(includeInstance: boolean, msg: Payload): Payload.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: Payload, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): Payload;
-    static deserializeBinaryFromReader(message: Payload, reader: jspb.BinaryReader): Payload;
-  }
-
-  export namespace Payload {
-    export type AsObject = {
-    }
   }
 }
 
@@ -687,11 +647,6 @@ export class Command extends jspb.Message {
   getCallEngine(): CallEngine | undefined;
   setCallEngine(value?: CallEngine): void;
 
-  hasCallModel(): boolean;
-  clearCallModel(): void;
-  getCallModel(): CallModel | undefined;
-  setCallModel(value?: CallModel): void;
-
   getCommandCase(): Command.CommandCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Command.AsObject;
@@ -725,7 +680,6 @@ export namespace Command {
     compareAndSetAccountDetail?: CompareAndSetAccountDetail.AsObject,
     setSettingValue?: SetSettingValue.AsObject,
     callEngine?: CallEngine.AsObject,
-    callModel?: CallModel.AsObject,
   }
 
   export enum CommandCase {
@@ -750,7 +704,6 @@ export namespace Command {
     COMPARE_AND_SET_ACCOUNT_DETAIL = 18,
     SET_SETTING_VALUE = 19,
     CALL_ENGINE = 20,
-    CALL_MODEL = 21,
   }
 }
 

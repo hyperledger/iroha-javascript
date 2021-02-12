@@ -190,30 +190,6 @@ export namespace EngineReceipt {
   }
 }
 
-export class DataModelId extends jspb.Message {
-  getName(): string;
-  setName(value: string): void;
-
-  getVersion(): string;
-  setVersion(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): DataModelId.AsObject;
-  static toObject(includeInstance: boolean, msg: DataModelId): DataModelId.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: DataModelId, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): DataModelId;
-  static deserializeBinaryFromReader(message: DataModelId, reader: jspb.BinaryReader): DataModelId;
-}
-
-export namespace DataModelId {
-  export type AsObject = {
-    name: string,
-    version: string,
-  }
-}
-
 export interface RolePermissionMap {
   CAN_APPEND_ROLE: 0;
   CAN_CREATE_ROLE: 1;
@@ -234,7 +210,6 @@ export interface RolePermissionMap {
   CAN_ADD_DOMAIN_ASSET_QTY: 43;
   CAN_SUBTRACT_DOMAIN_ASSET_QTY: 44;
   CAN_CALL_ENGINE: 48;
-  CAN_CALL_MODEL: 53;
   CAN_READ_ASSETS: 15;
   CAN_GET_ROLES: 16;
   CAN_GET_MY_ACCOUNT: 17;
