@@ -6,6 +6,11 @@ import * as Queries from './proto/queries_pb'
 import { capitalize } from './util.js'
 import cryptoHelper from './cryptoHelper'
 
+type Pagination =
+  Queries.TxPaginationMeta |
+  Queries.AccountDetailPaginationMeta |
+  Queries.AssetPaginationMeta
+
 const emptyQuery = () => new Queries.Query()
 
 const emptyBlocksQuery = () => new Queries.BlocksQuery()
@@ -31,7 +36,8 @@ const addQuery = (query, queryName, params = {}) => {
   for (const [key, value] of Object.entries<any>(params)) {
     const capitalizedKeyName = `set${capitalize(key)}`
     if (capitalizedKeyName === 'setPaginationMeta') {
-      let paginationMeta: Queries.TxPaginationMeta | Queries.AccountDetailPaginationMeta = null
+      let paginationMeta: Pagination = null
+
       if (queryName === 'getAccountDetail') {
         const firstRecordId = new AccountDetailRecordId()
         firstRecordId.setKey(value.firstRecordId.key)
@@ -39,6 +45,10 @@ const addQuery = (query, queryName, params = {}) => {
         paginationMeta = new Queries.AccountDetailPaginationMeta()
         paginationMeta.setPageSize(value.pageSize)
         paginationMeta.setFirstRecordId(firstRecordId)
+      } else if (queryName === 'getAccountAssets') {
+        paginationMeta = new Queries.AssetPaginationMeta()
+        paginationMeta.setPageSize(value.pageSize)
+        paginationMeta.setFirstAssetId(value.firstAssetId)
       } else {
         const queryOrder = new Queries.Ordering()
         const fieldOrder = new Queries.Ordering.FieldOrdering()
