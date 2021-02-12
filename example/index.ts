@@ -99,7 +99,21 @@ Promise.all([
   }, {
     accountId: 'admin@test',
     pageSize: 5,
-    firstTxHash: undefined
+    firstTxHash: undefined,
+    ordering: {
+      field: undefined,
+      direction: undefined
+    }
+  }),
+  queries.getAccountAssets({
+    privateKey: adminPriv,
+    creatorAccountId: 'admin@test',
+    queryService,
+    timeoutLimit: 5000
+  }, {
+    accountId: 'admin@test',
+    pageSize: 100,
+    firstAssetId: undefined
   })
 ])
   .then(a => console.log(a))
