@@ -1,0 +1,18 @@
+{
+    "name": "@iroha/eslint-config",
+    "version": "0.1.0",
+    "main": "index.js",
+    "dependencies": {
+        "@typescript-eslint/eslint-plugin": "^4.26.0",
+        "@typescript-eslint/parser": "^4.26.0",
+        "eslint": "^7.27.0",
+        "eslint-config-alloy": "^4.1.0",
+        "typescript": "^4.3.2"
+    },
+    "devDependencies": {
+        "@iroha/prettier-config": "workspace:^0.1.0",
+        "prettier": "^2.3.0",
+        "prettier-eslint": "^12.0.0"
+    },
+    "prettier": "@iroha/prettier-config"
+}

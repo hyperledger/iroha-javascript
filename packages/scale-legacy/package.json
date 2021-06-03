@@ -1,0 +1,28 @@
+{
+    "name": "@iroha/scale-codec-legacy",
+    "version": "0.1.0",
+    "type": "module",
+    "main": "src/index.ts",
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "dependencies": {
+        "@polkadot/util": "^6.5.1",
+        "bn.js": "^4.11.9",
+        "type-fest": "^1.1.3"
+    },
+    "devDependencies": {
+        "@iroha/eslint-config": "workspace:^0.1.0",
+        "@iroha/prettier-config": "workspace:^0.1.0",
+        "@types/bn.js": "^4.11.6",
+        "eslint": "^7.27.0",
+        "prettier": "^2.3.0",
+        "prettier-eslint": "^12.0.0"
+    },
+    "prettier": "@iroha/prettier-config",
+    "eslintConfig": {
+        "extends": [
+            "@iroha/eslint-config"
+        ]
+    }
+}
