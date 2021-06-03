@@ -49,6 +49,27 @@ importers:
       prettier: 2.3.0
       prettier-eslint: 12.0.0
 
+  packages/scale-legacy-typegen:
+    specifiers:
+      '@iroha/eslint-config': workspace:^0.1.0
+      '@iroha/prettier-config': workspace:^0.1.0
+      '@iroha/scale-codec-legacy': workspace:^0.1.0
+      '@polkadot/util': ^6.5.1
+      eslint: ^7.27.0
+      prettier: ^2.3.0
+      prettier-eslint: ^12.0.0
+      typescript: ^4.3.2
+    dependencies:
+      '@iroha/scale-codec-legacy': link:../scale-legacy
+      '@polkadot/util': 6.6.1
+    devDependencies:
+      '@iroha/eslint-config': link:../config-eslint
+      '@iroha/prettier-config': link:../config-prettier
+      eslint: 7.27.0
+      prettier: 2.3.0
+      prettier-eslint: 12.0.0
+      typescript: 4.3.2
+
 packages:
 
   /@babel/code-frame/7.12.11:
@@ -1256,7 +1277,6 @@ packages:
     resolution: {integrity: sha512-zZ4hShnmnoVnAHpVHWpTcxdv7dWP60S2FsydQLV8V5PbS3FifjWFFRiHSWpDJahly88PRyV5teTSLoq4eG7mKw==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: false
 
   /uri-js/4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
