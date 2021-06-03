@@ -305,6 +305,7 @@ export function generateTsDefFor(
 
     return [
         `import { ${ImportedBaseTypesNames.join(', ')} } from '${opts.scaleLibName}'`,
+        '/* eslint-disable */',
         generatedDefinitions.join('\n\n'),
         generateInterfacesConstructorDef(generatedDefinitionsNames, opts.constructorDefInterfaceName),
     ].join('\n\n');
