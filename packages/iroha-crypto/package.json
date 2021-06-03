@@ -1,0 +1,23 @@
+{
+  "name": "@iroha/crypto",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "build:wasm": "wasm-pack build -t web ./ursa-wasm"
+  },
+  "devDependencies": {
+    "@iroha/eslint-config": "workspace:^0.1.0",
+    "@iroha/prettier-config": "workspace:^0.1.0",
+    "eslint": "^7.27.0",
+    "prettier": "^2.3.0",
+    "prettier-eslint": "^12.0.0",
+    "typescript": "^4.3.2"
+  },
+  "prettier": "@iroha/prettier-eslint",
+  "eslintConfig": {
+    "extends": [
+      "@iroha/eslint-config"
+    ]
+  }
+}
