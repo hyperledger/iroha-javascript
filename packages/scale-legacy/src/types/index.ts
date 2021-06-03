@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // augment the registry
-import '@polkadot/types/augment';
+// import '@polkadot/types/augment';
 
 export * from '../create/types';
 // export * from './calls';
@@ -14,4 +14,4 @@ export * from './interfaces';
 export * from './registry';
 
 // used inside augmented definitions
-export type { Observable } from '@polkadot/x-rxjs';
+// export type { Observable } from '@polkadot/x-rxjs';

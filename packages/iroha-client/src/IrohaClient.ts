@@ -2,7 +2,6 @@ import { DEFAULT_CODECS, createHelpers, CreateScaleFactory, TypeRegistry } from 
 import { Instruction, IrohaDslConstructorDef, runtimeDefinitions } from '@iroha/data-model';
 import Axios, { AxiosInstance } from 'axios';
 import hexToArrayBuffer from 'hex-to-array-buffer';
-import { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto';
 
 export interface Key {
     digest: string;
@@ -17,6 +16,8 @@ export interface IrohaClientConfiguration {
     publicKey: Key;
     privateKey: Key;
     baseUrl: string;
+    hasher: (payload: Uint8Array) => Uint8Array;
+    signer: (payload: Uint8Array, privateKey: Uint8Array) => Uint8Array;
 }
 
 type AllRuntimeDefinitions = IrohaDslConstructorDef & typeof DEFAULT_CODECS;
@@ -56,14 +57,14 @@ export class IrohaClient {
             instructions: [value],
         });
 
-        const payloadHash = create_blake2b_32_hash(payload.toU8a());
+        const payloadHash = this.config.hasher(payload.toU8a());
 
         const payloadSignature = this.createScale('Signature', {
             publicKey: {
                 digestFunction: 'ed25519',
                 payload: this.createScale('Bytes', [...this.publicKeyBytes]),
             },
-            signature: this.createScale('Bytes', [...sign_with_ed25519_sha512(payloadHash, this.privateKeyBytes)]),
+            signature: this.createScale('Bytes', [...this.config.signer(payloadHash, this.privateKeyBytes)]),
         });
 
         const transation = this.createScale('Transaction', {

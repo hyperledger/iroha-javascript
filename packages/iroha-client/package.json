@@ -1,8 +1,18 @@
 {
     "name": "@iroha/client",
     "version": "0.1.0",
-    "type": "module",
-    "main": "src/index.ts",
+    "scripts": {
+        "build": "vite build"
+    },
+    "main": "./dist/iroha-client.cjs.js",
+    "module": "./dist/iroha-client.es.js",
+    "exports": {
+        ".": {
+            "import": "./dist/iroha-client.es.js",
+            "require": "./dist/iroha-client.cjs.js"
+        }
+    },
+    "types": "src/index.ts",
     "engines": {
         "node": ">=14.0.0"
     },
@@ -18,7 +28,8 @@
         "@iroha/prettier-config": "workspace:^0.1.0",
         "eslint": "^7.27.0",
         "prettier": "^2.3.0",
-        "prettier-eslint": "^12.0.0"
+        "prettier-eslint": "^12.0.0",
+        "vite": "^2.3.6"
     },
     "prettier": "@iroha/prettier-config",
     "eslintConfig": {

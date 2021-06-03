@@ -1,8 +1,18 @@
 {
     "name": "@iroha/scale-codec-legacy",
     "version": "0.1.0",
-    "type": "module",
-    "main": "src/index.ts",
+    "scripts": {
+        "build": "vite build"
+    },
+    "main": "./dist/scale-codec.cjs.js",
+    "module": "./dist/scale-codec.es.js",
+    "exports": {
+        ".": {
+            "import": "./dist/scale-codec.es.js",
+            "require": "./dist/scale-codec.cjs.js"
+        }
+    },
+    "types": "./src/index.ts",
     "engines": {
         "node": ">=14.0.0"
     },
@@ -17,7 +27,9 @@
         "@types/bn.js": "^4.11.6",
         "eslint": "^7.27.0",
         "prettier": "^2.3.0",
-        "prettier-eslint": "^12.0.0"
+        "prettier-eslint": "^12.0.0",
+        "rollup-plugin-polyfill-node": "^0.6.2",
+        "vite": "^2.3.6"
     },
     "prettier": "@iroha/prettier-config",
     "eslintConfig": {
