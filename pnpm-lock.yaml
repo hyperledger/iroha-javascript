@@ -26,6 +26,50 @@ importers:
   packages/config-prettier:
     specifiers: {}
 
+  packages/iroha-client:
+    specifiers:
+      '@iroha/crypto': workspace:^0.1.0
+      '@iroha/data-model': workspace:^0.1.0
+      '@iroha/eslint-config': workspace:^0.1.0
+      '@iroha/prettier-config': workspace:^0.1.0
+      '@iroha/scale-codec-legacy': workspace:^0.1.0
+      axios: ^0.21.1
+      eslint: ^7.27.0
+      hex-to-array-buffer: ^1.1.0
+      prettier: ^2.3.0
+      prettier-eslint: ^12.0.0
+    dependencies:
+      '@iroha/crypto': link:../iroha-crypto
+      '@iroha/data-model': link:../iroha-data-model
+      '@iroha/scale-codec-legacy': link:../scale-legacy
+      axios: 0.21.1
+      hex-to-array-buffer: 1.1.0
+    devDependencies:
+      '@iroha/eslint-config': link:../config-eslint
+      '@iroha/prettier-config': link:../config-prettier
+      eslint: 7.27.0
+      prettier: 2.3.0
+      prettier-eslint: 12.0.0
+
+  packages/iroha-crypto:
+    specifiers:
+      '@iroha/eslint-config': workspace:^0.1.0
+      '@iroha/prettier-config': workspace:^0.1.0
+      eslint: ^7.27.0
+      prettier: ^2.3.0
+      prettier-eslint: ^12.0.0
+      typescript: ^4.3.2
+    devDependencies:
+      '@iroha/eslint-config': link:../config-eslint
+      '@iroha/prettier-config': link:../config-prettier
+      eslint: 7.27.0
+      prettier: 2.3.0
+      prettier-eslint: 12.0.0
+      typescript: 4.3.2
+
+  packages/iroha-crypto/ursa-wasm/pkg:
+    specifiers: {}
+
   packages/iroha-data-model:
     specifiers:
       '@iroha/eslint-config': workspace:^0.1.0
@@ -505,6 +549,14 @@ packages:
     resolution: {integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=}
     dev: false
 
+  /axios/0.21.1:
+    resolution: {integrity: sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==}
+    dependencies:
+      follow-redirects: 1.14.1
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /balanced-match/1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
@@ -841,6 +893,16 @@ packages:
   /flatted/3.1.1:
     resolution: {integrity: sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==}
 
+  /follow-redirects/1.14.1:
+    resolution: {integrity: sha512-HWqDgT7ZEkqRzBvc2s64vSZ/hfOceEol3ac/7tKwzuvEyWx3/4UegXh5oBOIotkGsObyk3xznnSRVADBgWSQVg==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
   /form-data/3.0.1:
     resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
     engines: {node: '>= 6'}
@@ -910,6 +972,10 @@ packages:
   /has-flag/4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
+
+  /hex-to-array-buffer/1.1.0:
+    resolution: {integrity: sha512-vvl3IM8FfT1uOnHtEqyjkDK9Luqz6MQrH82qIvVnjyXxRhkeaEZyRRPiBgf2yym3nweRVEfayxt/1SoTXZYd4Q==}
+    dev: false
 
   /ignore/4.0.6:
     resolution: {integrity: sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==}
