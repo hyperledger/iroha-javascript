@@ -9,8 +9,15 @@ export function generateInterfacesByDefinitions(opts: {
      */
     scaleLibEmbedName: string;
 
+    /**
+     * @description definitions of types
+     */
     definitions: DefinitionsTypes;
 
+    /**
+     * @description name of the interface that will be exported and will be a map of all
+     * generated interfaces - it will be useful for helpers
+     */
     constructorDefInterfaceName: string;
 }): string {
     // const ALL_DEFINITIONS = {
