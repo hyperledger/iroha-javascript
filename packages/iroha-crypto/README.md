@@ -8,6 +8,17 @@ export declare function create_blake2b_32_hash(bytes: Uint8Array): Uint8Array;
 export declare function sign_with_ed25519_sha512(message: Uint8Array, private_key: Uint8Array): Uint8Array;
 ```
 
+### Requirements
+
+-   Rust: https://www.rust-lang.org/tools/install
+-   `wasm-pack`: https://rustwasm.github.io/wasm-pack/installer/
+
+Before local usage package should be compiled with command:
+
+```sh
+pnpm build:wasm
+```
+
 ### Usage
 
 Usage depends on the environment in which the package is being used.

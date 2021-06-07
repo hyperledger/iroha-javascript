@@ -2,10 +2,6 @@
     "name": "@iroha/scale-codec-legacy-typegen",
     "version": "0.1.0",
     "main": "src/index.ts",
-    "scripts": {
-        "test": "ts-eager ./src/index.ts"
-    },
-    "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {

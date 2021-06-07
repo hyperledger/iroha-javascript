@@ -2,6 +2,10 @@
 
 This small package contains logic of conversion the output of the `iroha-introspect` (from Rust) to definitions that can be used by `@iroha/scale-codec-legacy` & `@iroha/scale-codec-legacy-typegen`.
 
+### Build
+
+This package exposes raw typescript code so transpilation and launch is delegated to upstream packages.
+
 ### API
 
 Input Rust JSON:

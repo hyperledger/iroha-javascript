@@ -10,7 +10,7 @@ Implementation of the types and their (de-)serialisation via SCALE codec. On the
 pnpm add @iroha/scale-codec-legacy
 ```
 
-Before usage, make sure that you **builded** this package via the command:
+Before usage, make sure that you have **built** this package via the command:
 
 ```sh
 pnpm build --filter @iroha/scale-codec-legacy

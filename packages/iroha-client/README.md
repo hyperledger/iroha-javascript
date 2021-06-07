@@ -1,5 +1,11 @@
 # @iroha/client
 
+### Build (on local dev)
+
+```sh
+pnpm build
+```
+
 ### Usage example (in browser)
 
 ```ts

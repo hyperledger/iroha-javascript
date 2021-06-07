@@ -2,6 +2,10 @@
 
 This is the cutted and minor re-worked version of `@polkadot/typegen`.
 
+### Build
+
+This package exposes raw typescript code so transpilation and launch is delegated to upstream packages. For example, `@iroha/data-model` uses `ts-eager` for it.
+
 ### Usage
 
 This package exports only one function:

@@ -4,6 +4,8 @@ This package contains generated types and definitions of Iroha Data Model.
 
 ### Usage
 
+> This package exposes raw typescript code so transpilation and launch is delegated to upstream packages.
+
 ```ts
 import {
     // import any type or interface that you need
@@ -33,4 +35,10 @@ const helpers = createHelpers<
 
 ### Regenerate schema
 
-Idea is to put Rust schema's JSON to `./src/input.json` and run `pnpm gen` here to regenerate types (`./src/types.ts`) & definitions (`./src/definitions.json`). That's all.
+To regenerate schema with new JSON-data from Rust code, put new data to `./src/input.json` and run:
+
+```ts
+pnpm gen
+```
+
+After this `./src/types.ts` and `./src/definitions.json` will be updated. You should commit changes after all.

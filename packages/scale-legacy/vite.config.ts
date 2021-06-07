@@ -7,7 +7,6 @@ export default defineConfig({
         lib: {
             entry: path.resolve(__dirname, 'src/index.ts'),
             fileName: 'scale-codec',
-
             formats: ['es', 'cjs'],
         },
         rollupOptions: {
