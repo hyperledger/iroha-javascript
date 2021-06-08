@@ -1,9 +1,0 @@
-!lib
-iroha
-src
-example
-node_modules
-.vscode
-.eslintignore
-.eslintrc.js
-tsconfig.json

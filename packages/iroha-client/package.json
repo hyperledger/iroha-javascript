@@ -1,0 +1,40 @@
+{
+    "name": "@iroha/client",
+    "version": "0.1.0",
+    "scripts": {
+        "build": "vite build"
+    },
+    "main": "./dist/iroha-client.cjs.js",
+    "module": "./dist/iroha-client.es.js",
+    "exports": {
+        ".": {
+            "import": "./dist/iroha-client.es.js",
+            "require": "./dist/iroha-client.cjs.js"
+        }
+    },
+    "types": "src/index.ts",
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "dependencies": {
+        "@iroha/crypto": "workspace:^0.1.0",
+        "@iroha/data-model": "workspace:^0.1.0",
+        "@iroha/scale-codec-legacy": "workspace:^0.1.0",
+        "axios": "^0.21.1",
+        "hex-to-array-buffer": "^1.1.0"
+    },
+    "devDependencies": {
+        "@iroha/eslint-config": "workspace:^0.1.0",
+        "@iroha/prettier-config": "workspace:^0.1.0",
+        "eslint": "^7.27.0",
+        "prettier": "^2.3.0",
+        "prettier-eslint": "^12.0.0",
+        "vite": "^2.3.6"
+    },
+    "prettier": "@iroha/prettier-config",
+    "eslintConfig": {
+        "extends": [
+            "@iroha/eslint-config"
+        ]
+    }
+}
