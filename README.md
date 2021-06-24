@@ -6,6 +6,15 @@ Here is the monorepo with Iroha 2 JavaScript client (includes SCALE codec implem
 
 Monorepository is controlled via `pnpm`.
 
+### Build all for usage
+
+You should pre-build the following packages:
+
+- @iroha/crypto
+- @iroha/scale-codec-legacy
+
+You can find specific instruction in the READMEs of each package.
+
 ### Problems
 
 Questions:
