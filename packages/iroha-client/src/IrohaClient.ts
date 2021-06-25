@@ -1,8 +1,9 @@
-import { CreateScaleFactory, TypeRegistry, Compact, u128, Struct } from '@iroha/scale-codec-legacy';
+import { CreateScaleFactory, TypeRegistry, Compact, U128, Struct } from '@iroha/scale-codec-legacy';
 import { Instruction, QueryBox, Signature, QueryResult } from '@iroha/data-model';
 import Axios, { AxiosInstance, AxiosError } from 'axios';
-import hexToArrayBuffer from 'hex-to-array-buffer';
+import { hexToBytes } from 'hada';
 import { AllRuntimeDefinitions, createDSL } from './dsl';
+import { IrohaEventAPIReturn, IrohaEventsAPIParams, setupEventsWebsocketConnection } from './events';
 
 export interface Key {
     digest: string;
@@ -50,8 +51,8 @@ export class IrohaClient {
     public constructor(config: IrohaClientConfiguration) {
         this.config = config;
 
-        this.privateKeyBytes = new Uint8Array(hexToArrayBuffer(config.privateKey.hex));
-        this.publicKeyBytes = new Uint8Array(hexToArrayBuffer(config.publicKey.hex));
+        this.privateKeyBytes = new Uint8Array(hexToBytes(config.privateKey.hex));
+        this.publicKeyBytes = new Uint8Array(hexToBytes(config.publicKey.hex));
 
         this.axios = Axios.create({
             baseURL: this.config.baseUrl,
@@ -64,6 +65,8 @@ export class IrohaClient {
         const payload = this.createScale('Payload', {
             accountId: this.config.account,
             instructions: [value],
+            creationTime: Date.now(),
+            timeToLiveMs: 100_000,
         });
 
         const payloadHash = this.config.hasher(payload.toU8a());
@@ -90,7 +93,7 @@ export class IrohaClient {
         const timestampMs = Date.now();
 
         // computing hash and signature
-        const bufferForHash = concatBytes(queryBox.toU8a(), new u128(this.reg, timestampMs).toU8a());
+        const bufferForHash = concatBytes(queryBox.toU8a(), new U128(this.reg, timestampMs).toU8a());
         const hash = this.config.hasher(bufferForHash);
         const signature = this.makeSignature(hash);
 
@@ -103,7 +106,7 @@ export class IrohaClient {
                 query: 'QueryBox',
             },
             {
-                timestampMs: new Compact(this.reg, u128, timestampMs),
+                timestampMs: new Compact(this.reg, U128, timestampMs),
                 signature,
                 query: queryBox,
             },
@@ -138,13 +141,23 @@ export class IrohaClient {
         }
     }
 
+    public listenToEvents(params: Pick<IrohaEventsAPIParams, 'eventFilter' | 'on'>): Promise<IrohaEventAPIReturn> {
+        return setupEventsWebsocketConnection({
+            ...params,
+            createScale: this.createScale,
+            baseURL: this.config.baseUrl,
+        });
+    }
+
     private makeSignature(bytes: Uint8Array): Signature {
+        const signatureBytes = this.config.signer(bytes, this.privateKeyBytes);
+
         return this.createScale('Signature', {
             publicKey: {
                 digestFunction: 'ed25519',
                 payload: this.createScale('Bytes', [...this.publicKeyBytes]),
             },
-            signature: this.createScale('Bytes', [...this.config.signer(bytes, this.privateKeyBytes)]),
+            signature: this.createScale('Bytes', [...signatureBytes]),
         });
     }
 }
