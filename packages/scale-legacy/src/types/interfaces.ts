@@ -12,10 +12,10 @@ import type {
 } from './codec';
 
 export interface ICompact<T> extends Codec {
-    toBigInt(): bigint;
-    toBn(): BN;
-    toNumber(): number;
-    unwrap(): T;
+    toBigInt: () => bigint;
+    toBn: () => BN;
+    toNumber: () => number;
+    unwrap: () => T;
 }
 
 // export interface IKeyringPair {
@@ -65,7 +65,7 @@ export interface ICompact<T> extends Codec {
 export type ITuple<Sub extends AnyTuple> = Sub & Codec;
 
 export interface IU8a extends Uint8Array, Codec {
-    bitLength(): number;
-    toHuman(isExtended?: boolean): any;
-    toJSON(): any;
+    bitLength: () => number;
+    toHuman: (isExtended?: boolean) => any;
+    toJSON: () => any;
 }
