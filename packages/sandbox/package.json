@@ -3,16 +3,24 @@
     "version": "0.0.0",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
-        "serve": "vite preview"
+        "node:add-account": "ts-eager node/add_account.ts",
+        "node:add-asset": "ts-eager node/add_asset.ts",
+        "node:mint-asset": "ts-eager node/mint-asset.ts",
+        "node:query": "ts-eager node/query.ts",
+        "node:events": "ts-eager node/events.ts"
     },
     "dependencies": {
         "@iroha/client": "workspace:^0.1.0",
         "@iroha/crypto": "workspace:^0.1.0",
         "@iroha/data-model": "workspace:^0.1.0",
         "@polkadot/types": "^4.12.1",
+        "@types/diff": "^5.0.0",
+        "@types/ws": "^7.4.5",
         "buffer": "^6.0.3",
-        "vue": "^3.0.5"
+        "diff": "^5.0.0",
+        "pretty-string-diff": "^1.0.2",
+        "vue": "^3.0.5",
+        "ws": "^7.5.0"
     },
     "devDependencies": {
         "@babel/core": "^7.14.3",
@@ -26,6 +34,7 @@
         "eslint": "^7.27.0",
         "prettier": "^2.3.0",
         "prettier-eslint": "^12.0.0",
+        "ts-eager": "^2.0.2",
         "typescript": "^4.1.3",
         "vite": "^2.3.5",
         "vue-tsc": "^0.0.24"

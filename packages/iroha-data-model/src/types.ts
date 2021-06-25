@@ -12,20 +12,24 @@ import {
     BTreeSet,
     Tuple,
     Option,
+    Compact,
     u64,
     ITuple,
 } from '@iroha/scale-codec-legacy';
 
 /* eslint-disable */
 
-/** @name _VersionedEventV1 */
-export interface _VersionedEventV1 extends Event {}
+/** @name _VersionedEventSocketMessageV1 */
+export interface _VersionedEventSocketMessageV1 extends EventSocketMessage {}
 
 /** @name _VersionedQueryResultV1 */
 export interface _VersionedQueryResultV1 extends QueryResult {}
 
 /** @name _VersionedRejectedTransactionV1 */
 export interface _VersionedRejectedTransactionV1 extends RejectedTransaction {}
+
+/** @name _VersionedSignedQueryRequestV1 */
+export interface _VersionedSignedQueryRequestV1 extends SignedQueryRequest {}
 
 /** @name _VersionedTransactionV1 */
 export interface _VersionedTransactionV1 extends Transaction {}
@@ -136,6 +140,9 @@ export interface ContextValue extends Struct {
 /** @name DataEvent */
 export interface DataEvent extends ITuple<[]> {}
 
+/** @name DataEventFilter */
+export interface DataEventFilter extends ITuple<[]> {}
+
 /** @name DefinitionId */
 export interface DefinitionId extends Struct {
     readonly name: Text;
@@ -178,6 +185,24 @@ export interface Event extends Enum {
     readonly asPipeline: PipelineEvent;
     readonly isData: boolean;
     readonly asData: DataEvent;
+}
+
+/** @name EventFilter */
+export interface EventFilter extends Enum {
+    readonly isPipeline: boolean;
+    readonly asPipeline: PipelineEventFilter;
+    readonly isData: boolean;
+    readonly asData: DataEventFilter;
+}
+
+/** @name EventSocketMessage */
+export interface EventSocketMessage extends Enum {
+    readonly isSubscriptionRequest: boolean;
+    readonly asSubscriptionRequest: SubscriptionRequest;
+    readonly isSubscriptionAccepted: boolean;
+    readonly isEvent: boolean;
+    readonly asEvent: Event;
+    readonly isEventReceived: boolean;
 }
 
 /** @name Expression */
@@ -526,6 +551,12 @@ export interface PipelineEvent extends Struct {
     readonly hash: Hash;
 }
 
+/** @name PipelineEventFilter */
+export interface PipelineEventFilter extends Struct {
+    readonly entity: Option<EntityType>;
+    readonly hash: Option<Hash>;
+}
+
 /** @name PublicKey */
 export interface PublicKey extends Struct {
     readonly digestFunction: Text;
@@ -640,6 +671,13 @@ export interface SignatureVerificationFail extends Struct {
     readonly reason: Text;
 }
 
+/** @name SignedQueryRequest */
+export interface SignedQueryRequest extends Struct {
+    readonly timestampMs: Compact<u128>;
+    readonly signature: Signature;
+    readonly query: QueryBox;
+}
+
 /** @name Status */
 export interface Status extends Enum {
     readonly isValidating: boolean;
@@ -647,6 +685,9 @@ export interface Status extends Enum {
     readonly asRejected: RejectionReason;
     readonly isCommitted: boolean;
 }
+
+/** @name SubscriptionRequest */
+export interface SubscriptionRequest extends EventFilter {}
 
 /** @name Subtract */
 export interface Subtract extends Struct {
@@ -724,10 +765,10 @@ export interface Value extends Enum {
     readonly asPermissionToken: PermissionToken;
 }
 
-/** @name VersionedEvent */
-export interface VersionedEvent extends Enum {
+/** @name VersionedEventSocketMessage */
+export interface VersionedEventSocketMessage extends Enum {
     readonly isV1: boolean;
-    readonly asV1: _VersionedEventV1;
+    readonly asV1: _VersionedEventSocketMessageV1;
 }
 
 /** @name VersionedQueryResult */
@@ -744,6 +785,13 @@ export interface VersionedRejectedTransaction extends Enum {
     readonly asV1: _VersionedRejectedTransactionV1;
 }
 
+/** @name VersionedSignedQueryRequest */
+export interface VersionedSignedQueryRequest extends Enum {
+    readonly isStubToFillDiscriminant0: boolean;
+    readonly isV1: boolean;
+    readonly asV1: _VersionedSignedQueryRequestV1;
+}
+
 /** @name VersionedTransaction */
 export interface VersionedTransaction extends Enum {
     readonly isStubToFillDiscriminant0: boolean;
@@ -758,9 +806,10 @@ export interface Where extends Struct {
 }
 
 export interface IrohaDslConstructorDef {
-    _VersionedEventV1: _VersionedEventV1;
+    _VersionedEventSocketMessageV1: _VersionedEventSocketMessageV1;
     _VersionedQueryResultV1: _VersionedQueryResultV1;
     _VersionedRejectedTransactionV1: _VersionedRejectedTransactionV1;
+    _VersionedSignedQueryRequestV1: _VersionedSignedQueryRequestV1;
     _VersionedTransactionV1: _VersionedTransactionV1;
     Account: Account;
     AccountId: AccountId;
@@ -779,6 +828,7 @@ export interface IrohaDslConstructorDef {
     ContainsAny: ContainsAny;
     ContextValue: ContextValue;
     DataEvent: DataEvent;
+    DataEventFilter: DataEventFilter;
     DefinitionId: DefinitionId;
     Divide: Divide;
     Domain: Domain;
@@ -786,6 +836,8 @@ export interface IrohaDslConstructorDef {
     Equal: Equal;
     EvaluatesTo: EvaluatesTo;
     Event: Event;
+    EventFilter: EventFilter;
+    EventSocketMessage: EventSocketMessage;
     Expression: Expression;
     FailBox: FailBox;
     FindAccountById: FindAccountById;
@@ -834,6 +886,7 @@ export interface IrohaDslConstructorDef {
     PeerId: PeerId;
     PermissionToken: PermissionToken;
     PipelineEvent: PipelineEvent;
+    PipelineEventFilter: PipelineEventFilter;
     PublicKey: PublicKey;
     QueryBox: QueryBox;
     QueryResult: QueryResult;
@@ -847,7 +900,9 @@ export interface IrohaDslConstructorDef {
     Signature: Signature;
     SignatureCheckCondition: SignatureCheckCondition;
     SignatureVerificationFail: SignatureVerificationFail;
+    SignedQueryRequest: SignedQueryRequest;
     Status: Status;
+    SubscriptionRequest: SubscriptionRequest;
     Subtract: Subtract;
     Transaction: Transaction;
     TransactionRejectionReason: TransactionRejectionReason;
@@ -856,9 +911,10 @@ export interface IrohaDslConstructorDef {
     UnregisterBox: UnregisterBox;
     UnsatisfiedSignatureConditionFail: UnsatisfiedSignatureConditionFail;
     Value: Value;
-    VersionedEvent: VersionedEvent;
+    VersionedEventSocketMessage: VersionedEventSocketMessage;
     VersionedQueryResult: VersionedQueryResult;
     VersionedRejectedTransaction: VersionedRejectedTransaction;
+    VersionedSignedQueryRequest: VersionedSignedQueryRequest;
     VersionedTransaction: VersionedTransaction;
     Where: Where;
 }

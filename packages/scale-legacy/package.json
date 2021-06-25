@@ -2,7 +2,8 @@
     "name": "@iroha/scale-codec-legacy",
     "version": "0.1.0",
     "scripts": {
-        "build": "vite build"
+        "build": "vite build",
+        "ts-check": "tsc --noEmit"
     },
     "main": "./dist/scale-codec.cjs.js",
     "module": "./dist/scale-codec.es.js",
@@ -29,6 +30,7 @@
         "prettier": "^2.3.0",
         "prettier-eslint": "^12.0.0",
         "rollup-plugin-polyfill-node": "^0.6.2",
+        "typescript": "^4.3.4",
         "vite": "^2.3.6"
     },
     "prettier": "@iroha/prettier-config",

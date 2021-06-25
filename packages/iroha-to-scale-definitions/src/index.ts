@@ -100,11 +100,11 @@ function mapRustDef(typeName: string, value: RustTypeDefinitionVariant): Definit
     }
 
     if (isRustStructDef(value)) {
-        const { declarations } = value.NamedStruct;
+        const { declarations } = value.Struct;
         return Object.fromEntries(declarations.map(({ name, ty }) => [stringCamelCase(name), crutchSanitize(ty)]));
     }
     if (isRustUnnamedStructDef(value)) {
-        const { types } = value.UnnamedStruct;
+        const { types } = value.TupleStruct;
 
         return crutchSanitize(`(${types.join(',')})`);
     }

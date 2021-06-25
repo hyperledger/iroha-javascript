@@ -28,11 +28,11 @@ export function isRustOptionDef(v: RustTypeDefinitionVariant): v is RustOptionDe
 }
 
 export function isRustStructDef(v: RustTypeDefinitionVariant): v is RustNamedStructDefinition {
-    return !!(v as RustNamedStructDefinition).NamedStruct;
+    return !!(v as RustNamedStructDefinition).Struct;
 }
 
 export function isRustUnnamedStructDef(v: RustTypeDefinitionVariant): v is RustUnnamedStructDefinition {
-    return !!(v as RustUnnamedStructDefinition).UnnamedStruct;
+    return !!(v as RustUnnamedStructDefinition).TupleStruct;
 }
 
 export function isRustEnumDef(v: RustTypeDefinitionVariant): v is RustEnumDefinition {
