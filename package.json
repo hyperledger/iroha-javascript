@@ -1,0 +1,25 @@
+{
+    "name": "@iroha/monorepo",
+    "version": "0.1.0",
+    "description": "Here is the monorepo with Iroha 2 JavaScript client (includes SCALE codec implementation, Iroha Data Model and Crypto).",
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^4.28.2",
+        "@typescript-eslint/parser": "^4.28.2",
+        "eslint": "^7.30.0",
+        "eslint-config-alloy": "^4.1.0",
+        "prettier": "^2.3.2",
+        "prettier-eslint": "^12.0.0",
+        "typescript": "^4.3.5"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hyperledger/iroha-javascript.git"
+    },
+    "bugs": {
+        "url": "https://github.com/hyperledger/iroha-javascript/issues"
+    },
+    "homepage": "https://github.com/hyperledger/iroha-javascript#readme"
+}
