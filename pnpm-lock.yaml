@@ -103,32 +103,24 @@ importers:
 
   packages/iroha-data-model:
     specifiers:
-      '@iroha/eslint-config': workspace:^0.1.0
-      '@iroha/map-to-scale-definitions': workspace:^0.1.0
-      '@iroha/prettier-config': workspace:^0.1.0
-      '@iroha/scale-codec-legacy': workspace:^0.1.0
-      '@iroha/scale-codec-legacy-typegen': workspace:^0.1.0
-      '@types/prettier': ^2.2.3
-      eslint: ^7.27.0
-      prettier: ^2.3.0
-      prettier-eslint: ^12.0.0
-      ts-eager: ^2.0.2
+      '@scale-codec/namespace': link:../../../scale-codec-js-library/packages/namespace
+      '@scale-codec/namespace-codegen': link:../../../scale-codec-js-library/packages/namespace-codegen
+      '@types/debug': ^4.1.6
+      chalk: ^4.1.1
+      consola: ^2.15.3
+      debug: ^4.3.2
+      esno: ^0.7.3
       type-fest: ^1.2.0
-      typescript: ^4.3.2
     dependencies:
-      '@iroha/map-to-scale-definitions': link:../iroha-to-scale-definitions
-      '@iroha/scale-codec-legacy': link:../scale-legacy
-      '@iroha/scale-codec-legacy-typegen': link:../scale-legacy-typegen
-      prettier: 2.3.0
+      '@scale-codec/namespace': link:../../../scale-codec-js-library/packages/namespace
     devDependencies:
-      '@iroha/eslint-config': link:../config-eslint
-      '@iroha/prettier-config': link:../config-prettier
-      '@types/prettier': 2.2.3
-      eslint: 7.27.0
-      prettier-eslint: 12.0.0
-      ts-eager: 2.0.2
+      '@scale-codec/namespace-codegen': link:../../../scale-codec-js-library/packages/namespace-codegen
+      '@types/debug': 4.1.6
+      chalk: 4.1.1
+      consola: 2.15.3
+      debug: 4.3.2
+      esno: 0.7.3
       type-fest: 1.2.0
-      typescript: 4.3.2
 
   packages/iroha-to-scale-definitions:
     specifiers:
@@ -2164,6 +2156,10 @@ packages:
     dependencies:
       '@types/node': 15.9.0
 
+  /@types/debug/4.1.6:
+    resolution: {integrity: sha512-7fDOJFA/x8B+sO1901BmHlf5dE1cxBU8mRXj8QOEDnn16hhGJv/IHxJtZhvsabZsIMn0eLIyeOKAeqSNJJYTpA==}
+    dev: true
+
   /@types/diff/5.0.0:
     resolution: {integrity: sha512-jrm2K65CokCCX4NmowtA+MfXyuprZC13jbRuwprs6/04z/EcFg/MCwYdsHn+zgV4CQBiATiI7AEq7y1sZCtWKA==}
     dev: false
@@ -2225,10 +2221,6 @@ packages:
 
   /@types/node/15.9.0:
     resolution: {integrity: sha512-AR1Vq1Ei1GaA5FjKL5PBqblTZsL5M+monvGSZwe6sSIdGiuu7Xr/pNwWJY+0ZQuN8AapD/XMB5IzBAyYRFbocA==}
-
-  /@types/prettier/2.2.3:
-    resolution: {integrity: sha512-PijRCG/K3s3w1We6ynUKdxEc5AcuuH3NBmMDP8uvKVp6X43UY7NQlTzczakXP3DJR0F4dfNQIGjU2cUeRYs2AA==}
-    dev: true
 
   /@types/prettier/2.3.0:
     resolution: {integrity: sha512-hkc1DATxFLQo4VxPDpMH1gCkPpBbpOoJ/4nhuXw4n63/0R6bCpQECj4+K226UJ4JO/eJQz+1mC2I7JsWanAdQw==}
@@ -3118,6 +3110,10 @@ packages:
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
 
+  /consola/2.15.3:
+    resolution: {integrity: sha512-9vAdYbHj6x2fLKC4+oPH0kFzY/orMZyG2Aj+kNylHxKGJ/Ed4dpNyAQYwJOdqO4zdM7XpVHmyejQDcQHrnuXbw==}
+    dev: true
+
   /consolidate/0.16.0:
     resolution: {integrity: sha512-Nhl1wzCslqXYTJVDyJCu3ODohy9OfBMB5uD2BiBTzd7w+QY0lBzafkR8y8755yMYHAaMD4NuzbAw03/xzfw+eQ==}
     engines: {node: '>= 0.10.0'}
@@ -3353,8 +3349,27 @@ packages:
     dependencies:
       ansi-colors: 4.1.1
 
+  /esbuild-node-loader/0.1.1:
+    resolution: {integrity: sha512-n24xYzMfKmPupUZgs0QYBr52HUSh1M1vDtBfkEVa6pdENqo5+U5WP+zaj4Iw2MinuYk1axLW8+NVutrBCkrdmA==}
+    dependencies:
+      esbuild: 0.12.15
+    dev: true
+
+  /esbuild-register/2.6.0:
+    resolution: {integrity: sha512-2u4AtnCXP5nivtIxZryiZOUcEQkOzFS7UhAqibUEmaTAThJ48gDLYTBF/Fsz+5r0hbV1jrFE6PQvPDUrKZNt/Q==}
+    dependencies:
+      esbuild: 0.12.15
+      jsonc-parser: 3.0.0
+    dev: true
+
   /esbuild/0.11.23:
     resolution: {integrity: sha512-iaiZZ9vUF5wJV8ob1tl+5aJTrwDczlvGP0JoMmnpC2B0ppiMCu8n8gmy5ZTGl5bcG081XBVn+U+jP+mPFm5T5Q==}
+    hasBin: true
+    requiresBuild: true
+    dev: true
+
+  /esbuild/0.12.15:
+    resolution: {integrity: sha512-72V4JNd2+48eOVCXx49xoSWHgC3/cCy96e7mbXKY+WOWghN00cCmlGnwVLRhRHorvv0dgCyuMYBZlM2xDM5OQw==}
     hasBin: true
     requiresBuild: true
     dev: true
@@ -3534,6 +3549,16 @@ packages:
       v8-compile-cache: 2.3.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /esno/0.7.3:
+    resolution: {integrity: sha512-ONTHZLBipMC9uK9oqASzqYGCrjcqp/N0NXt/Q0WpYw/Ikm9he+rYER2ATx6czaFcMvwrbIXBlNe9hSEiTrNKow==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      esbuild: 0.12.15
+      esbuild-node-loader: 0.1.1
+      esbuild-register: 2.6.0
     dev: true
 
   /espree/6.2.1:
@@ -4692,6 +4717,10 @@ packages:
       minimist: 1.2.5
     dev: true
 
+  /jsonc-parser/3.0.0:
+    resolution: {integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA==}
+    dev: true
+
   /kleur/3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
@@ -5158,6 +5187,7 @@ packages:
     resolution: {integrity: sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w==}
     engines: {node: '>=10.13.0'}
     hasBin: true
+    dev: true
 
   /prettier/2.3.2:
     resolution: {integrity: sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==}
