@@ -1,9 +1,9 @@
-import { CreateScaleFactory, TypeRegistry, Compact, U128, Struct } from '@iroha/scale-codec-legacy';
-import { Instruction, QueryBox, Signature, QueryResult } from '@iroha/data-model';
+import { IrohaTypes, types, Enum } from '@iroha/data-model';
 import Axios, { AxiosInstance, AxiosError } from 'axios';
 import { hexToBytes } from 'hada';
-import { AllRuntimeDefinitions, createDSL } from './dsl';
 import { IrohaEventAPIReturn, IrohaEventsAPIParams, setupEventsWebsocketConnection } from './events';
+import JSBI from 'jsbi';
+import { concatUint8Arrays } from '@scale-codec/util';
 
 export interface Key {
     digest: string;
@@ -22,25 +22,8 @@ export interface IrohaClientConfiguration {
     signer: (payload: Uint8Array, privateKey: Uint8Array) => Uint8Array;
 }
 
-function concatBytes(...parts: Uint8Array[]): Uint8Array {
-    const totalLength = parts.reduce((s, { length }) => s + length, 0);
-    const result = new Uint8Array(totalLength);
-
-    for (let i = 0, offset = 0; i < parts.length; i++) {
-        const part = parts[i];
-        result.set(part, offset);
-        offset += part.length;
-    }
-
-    return result;
-}
-
 export class IrohaClient {
-    public readonly createScale: CreateScaleFactory<AllRuntimeDefinitions>;
-
     private readonly config: IrohaClientConfiguration;
-
-    private readonly reg: TypeRegistry;
 
     private readonly privateKeyBytes: Uint8Array;
 
@@ -57,63 +40,65 @@ export class IrohaClient {
         this.axios = Axios.create({
             baseURL: this.config.baseUrl,
         });
-
-        ({ registry: this.reg, createScale: this.createScale } = createDSL());
     }
 
-    public async submitInstruction(value: Instruction) {
-        const payload = this.createScale('Payload', {
+    public async submitInstruction(instruction: IrohaTypes['iroha_data_model::isi::Instruction']) {
+        const payload: IrohaTypes['iroha_data_model::transaction::Payload'] = {
             accountId: this.config.account,
-            instructions: [value],
-            creationTime: Date.now(),
-            timeToLiveMs: 100_000,
-        });
+            instructions: [instruction],
+            creationTime: JSBI.BigInt(Date.now()),
+            timeToLiveMs: JSBI.BigInt(100_000),
+            metadata: new Map(),
+        };
 
-        const payloadHash = this.config.hasher(payload.toU8a());
+        const payloadHash = this.config.hasher(types.encode('iroha_data_model::transaction::Payload', payload));
 
         const payloadSignature = this.makeSignature(payloadHash);
 
-        const transation = this.createScale('Transaction', {
+        const transation: IrohaTypes['iroha_data_model::transaction::Transaction'] = {
             payload,
             signatures: [payloadSignature],
-        });
+        };
 
-        const versioned = this.createScale('VersionedTransaction', {
-            V1: transation,
-        });
+        const versioned: IrohaTypes['iroha_data_model::transaction::VersionedTransaction'] = Enum.create('V1', [
+            transation,
+        ]);
 
-        await this.axios.post('/instruction', versioned.toU8a());
+        await this.axios.post(
+            '/instruction',
+            types.encode('iroha_data_model::transaction::VersionedTransaction', versioned),
+        );
     }
 
     /**
      * Query API entry point
      */
-    public async request(queryBox: QueryBox): Promise<QueryResult> {
+    public async request(
+        queryBox: IrohaTypes['iroha_data_model::query::QueryBox'],
+    ): Promise<IrohaTypes['iroha_data_model::query::QueryResult']> {
         // timestamp and QueryBox
         const timestampMs = Date.now();
 
         // computing hash and signature
-        const bufferForHash = concatBytes(queryBox.toU8a(), new U128(this.reg, timestampMs).toU8a());
+        const bufferForHash = concatUint8Arrays([
+            types.encode('iroha_data_model::query::QueryBox', queryBox),
+            types.encode('u128', JSBI.BigInt(timestampMs)),
+        ]);
         const hash = this.config.hasher(bufferForHash);
         const signature = this.makeSignature(hash);
 
         // building signed query request
-        const signedQueryRequest = new Struct(
-            this.reg,
-            {
-                timestampMs: 'Compact',
-                signature: 'Signature',
-                query: 'QueryBox',
-            },
-            {
-                timestampMs: new Compact(this.reg, U128, timestampMs),
-                signature,
-                query: queryBox,
-            },
-        );
+        const signedQueryRequest: IrohaTypes['iroha_data_model::query::SignedQueryRequest'] = {
+            timestampMs: JSBI.BigInt(timestampMs),
+            signature,
+            query: queryBox,
+        };
 
-        // encode and add version
-        const versionedBytes = concatBytes(new Uint8Array([1]), signedQueryRequest.toU8a());
+        // versionize
+        const versionedBytes = types.encode(
+            'iroha_data_model::query::VersionedSignedQueryRequest',
+            Enum.create('V1', [signedQueryRequest]),
+        );
 
         // making request
         try {
@@ -125,9 +110,7 @@ export class IrohaClient {
             });
 
             // decoding as QueryResult
-            const result = this.createScale('QueryResult', new Uint8Array(data));
-
-            return result;
+            return types.decode('iroha_data_model::query::QueryResult', new Uint8Array(data));
         } catch (err) {
             if ((err as AxiosError).isAxiosError) {
                 const { response: { status, data } = {} } = err as AxiosError;
@@ -144,20 +127,21 @@ export class IrohaClient {
     public listenToEvents(params: Pick<IrohaEventsAPIParams, 'eventFilter' | 'on'>): Promise<IrohaEventAPIReturn> {
         return setupEventsWebsocketConnection({
             ...params,
-            createScale: this.createScale,
             baseURL: this.config.baseUrl,
         });
     }
 
-    private makeSignature(bytes: Uint8Array): Signature {
+    private makeSignature(bytes: Uint8Array): IrohaTypes['iroha_crypto::Signature'] {
         const signatureBytes = this.config.signer(bytes, this.privateKeyBytes);
 
-        return this.createScale('Signature', {
+        return {
             publicKey: {
                 digestFunction: 'ed25519',
-                payload: this.createScale('Bytes', [...this.publicKeyBytes]),
+                // FIXME non optimal
+                payload: [...this.publicKeyBytes].map((x) => JSBI.BigInt(x)),
             },
-            signature: this.createScale('Bytes', [...signatureBytes]),
-        });
+            // FIXME too
+            signature: [...signatureBytes].map((x) => JSBI.BigInt(x)),
+        };
     }
 }

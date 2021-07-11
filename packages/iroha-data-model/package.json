@@ -5,6 +5,7 @@
         "gen": "esno scripts/generate/main.ts"
     },
     "dependencies": {
+        "@scale-codec/enum": "link:../../../scale-codec-js-library/packages/enum",
         "@scale-codec/namespace": "link:../../../scale-codec-js-library/packages/namespace"
     },
     "devDependencies": {
