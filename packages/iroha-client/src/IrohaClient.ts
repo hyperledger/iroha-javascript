@@ -137,11 +137,9 @@ export class IrohaClient {
         return {
             publicKey: {
                 digestFunction: 'ed25519',
-                // FIXME non optimal
-                payload: [...this.publicKeyBytes].map((x) => JSBI.BigInt(x)),
+                payload: this.publicKeyBytes,
             },
-            // FIXME too
-            signature: [...signatureBytes].map((x) => JSBI.BigInt(x)),
+            signature: signatureBytes,
         };
     }
 }
