@@ -6,7 +6,7 @@ import {
     StdTypes,
     Valuable,
     defAlias,
-    defArray,
+    defBytesArray,
     defEnum,
     defMap,
     defNamespace,
@@ -46,8 +46,7 @@ export type IrohaTypes = StdTypes & {
     'Vec<iroha_data_model::Value>': IrohaTypes['iroha_data_model::Value'][];
     'Vec<iroha_data_model::isi::Instruction>': IrohaTypes['iroha_data_model::isi::Instruction'][];
     'Vec<iroha_data_model::permissions::PermissionToken>': IrohaTypes['iroha_data_model::permissions::PermissionToken'][];
-    'Vec<u8>': IrohaTypes['u8'][];
-    '[u8; 32]': IrohaTypes['u8'][];
+    '[u8; 32]': Uint8Array;
     'iroha_crypto::Hash': [IrohaTypes['[u8; 32]']];
     'iroha_crypto::PublicKey': {
         digestFunction: IrohaTypes['str'];
@@ -595,8 +594,7 @@ export const types = defNamespace<IrohaTypes>({
     'Vec<iroha_data_model::Value>': defVec('iroha_data_model::Value'),
     'Vec<iroha_data_model::isi::Instruction>': defVec('iroha_data_model::isi::Instruction'),
     'Vec<iroha_data_model::permissions::PermissionToken>': defVec('iroha_data_model::permissions::PermissionToken'),
-    'Vec<u8>': defVec('u8'),
-    '[u8; 32]': defArray('u8', 32),
+    '[u8; 32]': defBytesArray(32),
     'iroha_crypto::Hash': defTuple(['[u8; 32]']),
     'iroha_crypto::PublicKey': defStruct([
         ['digestFunction', 'str'],

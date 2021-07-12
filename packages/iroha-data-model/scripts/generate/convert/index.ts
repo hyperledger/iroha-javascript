@@ -40,6 +40,7 @@ const IGNORE_TYPES = new Set<string>([
         .map((bits) => [`i${bits}`, `u${bits}`])
         .flat(),
     'bool',
+    'Vec<u8>',
 ]);
 
 export function convertRustIntrospectOutputToCodegenFormat(params: {
@@ -95,6 +96,16 @@ function transformRustDef(
     }
     if (isRustArrayDef(def)) {
         const { len, ty } = def.Array;
+
+        if (ty === 'u8') {
+            // specially cover case with array of bytes
+            return ok(
+                some<TypeDef>({
+                    t: 'bytes-array',
+                    len,
+                }),
+            );
+        }
 
         return ok(
             some({

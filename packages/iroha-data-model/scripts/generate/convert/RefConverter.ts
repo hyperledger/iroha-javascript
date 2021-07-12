@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-member-accessibility */
-import { NamespaceCodegenDefinition, TypeDef } from '@scale-codec/namespace-codegen';
+import { NamespaceCodegenDefinition } from '@scale-codec/namespace-codegen';
 import debugRoot from 'debug';
 
 const debug = debugRoot('@iroha/data-model:rust-refs-converter');
@@ -34,14 +34,20 @@ export default class {
     }
 
     #parse(ref: string): void {
-        const match = ref.match(/^BTreeSet<(.+)>$/);
-        if (match) {
-            debug('found %o, adding this type', ref);
-            this.#addTypes[ref] = {
-                t: 'set',
-                entry: match[1],
-            };
+        for (const fn of [tryCollectBTreeSet]) {
+            fn(this.#addTypes, ref);
         }
+    }
+}
+
+function tryCollectBTreeSet(acc: NamespaceCodegenDefinition, ref: string): void {
+    const match = ref.match(/^BTreeSet<(.+)>$/);
+    if (match) {
+        debug('collecting BTreeSet: %o', ref);
+        acc[ref] = {
+            t: 'set',
+            entry: match[1],
+        };
     }
 }
 
