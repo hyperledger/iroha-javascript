@@ -12,6 +12,7 @@ var goog = jspb;
 var global = Function('return this')();
 
 var primitive_pb = require('./primitive_pb.js');
+var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 goog.exportSymbol('proto.iroha.protocol.AccountDetailPaginationMeta', null, global);
 goog.exportSymbol('proto.iroha.protocol.AssetPaginationMeta', null, global);
 goog.exportSymbol('proto.iroha.protocol.BlocksQuery', null, global);
@@ -324,7 +325,7 @@ proto.iroha.protocol.Ordering.FieldOrdering.prototype.getField = function() {
 
 /** @param {!proto.iroha.protocol.Field} value */
 proto.iroha.protocol.Ordering.FieldOrdering.prototype.setField = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3EnumField(this, 1, value);
 };
 
 
@@ -339,21 +340,21 @@ proto.iroha.protocol.Ordering.FieldOrdering.prototype.getDirection = function() 
 
 /** @param {!proto.iroha.protocol.Direction} value */
 proto.iroha.protocol.Ordering.FieldOrdering.prototype.setDirection = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3EnumField(this, 2, value);
 };
 
 
 /**
  * repeated FieldOrdering sequence = 1;
- * @return {!Array.<!proto.iroha.protocol.Ordering.FieldOrdering>}
+ * @return {!Array<!proto.iroha.protocol.Ordering.FieldOrdering>}
  */
 proto.iroha.protocol.Ordering.prototype.getSequenceList = function() {
-  return /** @type{!Array.<!proto.iroha.protocol.Ordering.FieldOrdering>} */ (
+  return /** @type{!Array<!proto.iroha.protocol.Ordering.FieldOrdering>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.iroha.protocol.Ordering.FieldOrdering, 1));
 };
 
 
-/** @param {!Array.<!proto.iroha.protocol.Ordering.FieldOrdering>} value */
+/** @param {!Array<!proto.iroha.protocol.Ordering.FieldOrdering>} value */
 proto.iroha.protocol.Ordering.prototype.setSequenceList = function(value) {
   jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
@@ -400,7 +401,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.iroha.protocol.TxPaginationMeta.oneofGroups_ = [[2]];
+proto.iroha.protocol.TxPaginationMeta.oneofGroups_ = [[2],[3],[4],[5],[6]];
 
 /**
  * @enum {number}
@@ -415,6 +416,66 @@ proto.iroha.protocol.TxPaginationMeta.OptFirstTxHashCase = {
  */
 proto.iroha.protocol.TxPaginationMeta.prototype.getOptFirstTxHashCase = function() {
   return /** @type {proto.iroha.protocol.TxPaginationMeta.OptFirstTxHashCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[0]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptFirstTxTimeCase = {
+  OPT_FIRST_TX_TIME_NOT_SET: 0,
+  FIRST_TX_TIME: 3
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptFirstTxTimeCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptFirstTxTimeCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptFirstTxTimeCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[1]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptLastTxTimeCase = {
+  OPT_LAST_TX_TIME_NOT_SET: 0,
+  LAST_TX_TIME: 4
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptLastTxTimeCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptLastTxTimeCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptLastTxTimeCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[2]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptFirstTxHeightCase = {
+  OPT_FIRST_TX_HEIGHT_NOT_SET: 0,
+  FIRST_TX_HEIGHT: 5
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptFirstTxHeightCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptFirstTxHeightCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptFirstTxHeightCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[3]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptLastTxHeightCase = {
+  OPT_LAST_TX_HEIGHT_NOT_SET: 0,
+  LAST_TX_HEIGHT: 6
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptLastTxHeightCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptLastTxHeightCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptLastTxHeightCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[4]));
 };
 
 
@@ -448,6 +509,10 @@ proto.iroha.protocol.TxPaginationMeta.toObject = function(includeInstance, msg) 
   var f, obj = {
     pageSize: jspb.Message.getFieldWithDefault(msg, 1, 0),
     firstTxHash: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    firstTxTime: (f = msg.getFirstTxTime()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    lastTxTime: (f = msg.getLastTxTime()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    firstTxHeight: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    lastTxHeight: jspb.Message.getFieldWithDefault(msg, 6, 0),
     ordering: (f = msg.getOrdering()) && proto.iroha.protocol.Ordering.toObject(includeInstance, f)
   };
 
@@ -494,6 +559,24 @@ proto.iroha.protocol.TxPaginationMeta.deserializeBinaryFromReader = function(msg
       msg.setFirstTxHash(value);
       break;
     case 3:
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setFirstTxTime(value);
+      break;
+    case 4:
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setLastTxTime(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setFirstTxHeight(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setLastTxHeight(value);
+      break;
+    case 7:
       var value = new proto.iroha.protocol.Ordering;
       reader.readMessage(value,proto.iroha.protocol.Ordering.deserializeBinaryFromReader);
       msg.setOrdering(value);
@@ -541,10 +624,40 @@ proto.iroha.protocol.TxPaginationMeta.serializeBinaryToWriter = function(message
       f
     );
   }
-  f = message.getOrdering();
+  f = message.getFirstTxTime();
   if (f != null) {
     writer.writeMessage(
       3,
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = message.getLastTxTime();
+  if (f != null) {
+    writer.writeMessage(
+      4,
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeUint64(
+      5,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeUint64(
+      6,
+      f
+    );
+  }
+  f = message.getOrdering();
+  if (f != null) {
+    writer.writeMessage(
+      7,
       f,
       proto.iroha.protocol.Ordering.serializeBinaryToWriter
     );
@@ -563,7 +676,7 @@ proto.iroha.protocol.TxPaginationMeta.prototype.getPageSize = function() {
 
 /** @param {number} value */
 proto.iroha.protocol.TxPaginationMeta.prototype.setPageSize = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -597,18 +710,136 @@ proto.iroha.protocol.TxPaginationMeta.prototype.hasFirstTxHash = function() {
 
 
 /**
- * optional Ordering ordering = 3;
+ * optional google.protobuf.Timestamp first_tx_time = 3;
+ * @return {?proto.google.protobuf.Timestamp}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getFirstTxTime = function() {
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 3));
+};
+
+
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setFirstTxTime = function(value) {
+  jspb.Message.setOneofWrapperField(this, 3, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[1], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearFirstTxTime = function() {
+  this.setFirstTxTime(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasFirstTxTime = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional google.protobuf.Timestamp last_tx_time = 4;
+ * @return {?proto.google.protobuf.Timestamp}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getLastTxTime = function() {
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 4));
+};
+
+
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setLastTxTime = function(value) {
+  jspb.Message.setOneofWrapperField(this, 4, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[2], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearLastTxTime = function() {
+  this.setLastTxTime(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasLastTxTime = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional uint64 first_tx_height = 5;
+ * @return {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getFirstTxHeight = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {number} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setFirstTxHeight = function(value) {
+  jspb.Message.setOneofField(this, 5, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[3], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearFirstTxHeight = function() {
+  jspb.Message.setOneofField(this, 5, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[3], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasFirstTxHeight = function() {
+  return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional uint64 last_tx_height = 6;
+ * @return {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getLastTxHeight = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setLastTxHeight = function(value) {
+  jspb.Message.setOneofField(this, 6, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[4], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearLastTxHeight = function() {
+  jspb.Message.setOneofField(this, 6, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[4], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasLastTxHeight = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional Ordering ordering = 7;
  * @return {?proto.iroha.protocol.Ordering}
  */
 proto.iroha.protocol.TxPaginationMeta.prototype.getOrdering = function() {
   return /** @type{?proto.iroha.protocol.Ordering} */ (
-    jspb.Message.getWrapperField(this, proto.iroha.protocol.Ordering, 3));
+    jspb.Message.getWrapperField(this, proto.iroha.protocol.Ordering, 7));
 };
 
 
 /** @param {?proto.iroha.protocol.Ordering|undefined} value */
 proto.iroha.protocol.TxPaginationMeta.prototype.setOrdering = function(value) {
-  jspb.Message.setWrapperField(this, 3, value);
+  jspb.Message.setWrapperField(this, 7, value);
 };
 
 
@@ -622,7 +853,7 @@ proto.iroha.protocol.TxPaginationMeta.prototype.clearOrdering = function() {
  * @return {!boolean}
  */
 proto.iroha.protocol.TxPaginationMeta.prototype.hasOrdering = function() {
-  return jspb.Message.getField(this, 3) != null;
+  return jspb.Message.getField(this, 7) != null;
 };
 
 
@@ -801,7 +1032,7 @@ proto.iroha.protocol.AssetPaginationMeta.prototype.getPageSize = function() {
 
 /** @param {number} value */
 proto.iroha.protocol.AssetPaginationMeta.prototype.setPageSize = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -972,7 +1203,7 @@ proto.iroha.protocol.GetAccount.prototype.getAccountId = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.GetAccount.prototype.setAccountId = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1114,7 +1345,7 @@ proto.iroha.protocol.GetBlock.prototype.getHeight = function() {
 
 /** @param {number} value */
 proto.iroha.protocol.GetBlock.prototype.setHeight = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -1256,7 +1487,7 @@ proto.iroha.protocol.GetSignatories.prototype.getAccountId = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.GetSignatories.prototype.setAccountId = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1412,7 +1643,7 @@ proto.iroha.protocol.GetAccountTransactions.prototype.getAccountId = function() 
 
 /** @param {string} value */
 proto.iroha.protocol.GetAccountTransactions.prototype.setAccountId = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1610,7 +1841,7 @@ proto.iroha.protocol.GetAccountAssetTransactions.prototype.getAccountId = functi
 
 /** @param {string} value */
 proto.iroha.protocol.GetAccountAssetTransactions.prototype.setAccountId = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -1625,7 +1856,7 @@ proto.iroha.protocol.GetAccountAssetTransactions.prototype.getAssetId = function
 
 /** @param {string} value */
 proto.iroha.protocol.GetAccountAssetTransactions.prototype.setAssetId = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -1795,14 +2026,14 @@ proto.iroha.protocol.GetTransactions.serializeBinaryToWriter = function(message,
 
 /**
  * repeated string tx_hashes = 1;
- * @return {!Array.<string>}
+ * @return {!Array<string>}
  */
 proto.iroha.protocol.GetTransactions.prototype.getTxHashesList = function() {
-  return /** @type {!Array.<string>} */ (jspb.Message.getRepeatedField(this, 1));
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 1));
 };
 
 
-/** @param {!Array.<string>} value */
+/** @param {!Array<string>} value */
 proto.iroha.protocol.GetTransactions.prototype.setTxHashesList = function(value) {
   jspb.Message.setField(this, 1, value || []);
 };
@@ -1974,7 +2205,7 @@ proto.iroha.protocol.GetAccountAssets.prototype.getAccountId = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.GetAccountAssets.prototype.setAccountId = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -2160,7 +2391,7 @@ proto.iroha.protocol.AccountDetailPaginationMeta.prototype.getPageSize = functio
 
 /** @param {number} value */
 proto.iroha.protocol.AccountDetailPaginationMeta.prototype.setPageSize = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -2669,7 +2900,7 @@ proto.iroha.protocol.GetAssetInfo.prototype.getAssetId = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.GetAssetInfo.prototype.setAssetId = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -2927,7 +3158,7 @@ proto.iroha.protocol.GetRolePermissions.prototype.getRoleId = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.GetRolePermissions.prototype.setRoleId = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -3368,7 +3599,7 @@ proto.iroha.protocol.QueryPayloadMeta.prototype.getCreatedTime = function() {
 
 /** @param {number} value */
 proto.iroha.protocol.QueryPayloadMeta.prototype.setCreatedTime = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -3383,7 +3614,7 @@ proto.iroha.protocol.QueryPayloadMeta.prototype.getCreatorAccountId = function()
 
 /** @param {string} value */
 proto.iroha.protocol.QueryPayloadMeta.prototype.setCreatorAccountId = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -3398,7 +3629,7 @@ proto.iroha.protocol.QueryPayloadMeta.prototype.getQueryCounter = function() {
 
 /** @param {number} value */
 proto.iroha.protocol.QueryPayloadMeta.prototype.setQueryCounter = function(value) {
-  jspb.Message.setField(this, 3, value);
+  jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
@@ -3540,7 +3771,7 @@ proto.iroha.protocol.GetEngineReceipts.prototype.getTxHash = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.GetEngineReceipts.prototype.setTxHash = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 

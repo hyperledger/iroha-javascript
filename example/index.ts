@@ -100,6 +100,10 @@ Promise.all([
     accountId: 'admin@test',
     pageSize: 5,
     firstTxHash: undefined,
+    firstTxTime: undefined,
+    lastTxTime: undefined,
+    firstTxHeight: undefined,
+    lastTxHeight: undefined,
     ordering: {
       field: undefined,
       direction: undefined

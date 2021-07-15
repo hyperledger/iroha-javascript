@@ -61,6 +61,10 @@ queries.getAccountTransactions({
   accountId: 'admin@test',
   firstTxHash: null,
   pageSize: 100,
+  firstTxTime: null,
+  lastTxTime: null,
+  firstTxHeight: null,
+  lastTxHeight: null,
   ordering: {
     field: 0,
     direction: 1

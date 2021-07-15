@@ -59,12 +59,36 @@ export class TxPaginationMeta extends jspb.Message {
   getFirstTxHash(): string;
   setFirstTxHash(value: string): void;
 
+  hasFirstTxTime(): boolean;
+  clearFirstTxTime(): void;
+  getFirstTxTime(): Timestamp;
+  setFirstTxTime(value: Timestamp): void;
+
+  hasLastTxTime(): boolean;
+  clearLastTxTime(): void;
+  getLastTxTime(): Timestamp;
+  setLastTxTime(value: Timestamp): void;
+
+  hasFirstTxHeight(): boolean;
+  clearFirstTxHeight(): void;
+  getFirstTxHeight(): number;
+  setFirstTxHeight(value: number): void;
+
+  hasLastTxHeight(): boolean;
+  clearLastTxHeight(): void;
+  getLastTxHeight(): number;
+  setLastTxHeight(value: number): void;
+
   hasOrdering(): boolean;
   clearOrdering(): void;
   getOrdering(): Ordering | undefined;
   setOrdering(value?: Ordering): void;
 
   getOptFirstTxHashCase(): TxPaginationMeta.OptFirstTxHashCase;
+  getOptFirstTxTimeCase(): TxPaginationMeta.OptFirstTxTimeCase;
+  getOptLastTxTimeCase(): TxPaginationMeta.OptLastTxTimeCase;
+  getOptFirstTxHeightCase(): TxPaginationMeta.OptFirstTxHeightCase;
+  getOptLastTxHeightCase(): TxPaginationMeta.OptLastTxHeightCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TxPaginationMeta.AsObject;
   static toObject(includeInstance: boolean, msg: TxPaginationMeta): TxPaginationMeta.AsObject;
@@ -79,12 +103,35 @@ export namespace TxPaginationMeta {
   export type AsObject = {
     pageSize: number,
     firstTxHash: string,
+    firstTxTime: Timestamp,
+    lastTxTime: Timestamp,
+    firstTxHeight: number,
+    lastTxHeight: number,
     ordering?: Ordering.AsObject,
   }
 
   export enum OptFirstTxHashCase {
     OPT_FIRST_TX_HASH_NOT_SET = 0,
     FIRST_TX_HASH = 2,
+  }
+
+  export enum OptFirstTxTimeCase {
+    OPT_FIRST_TX_TIME_NOT_SET = 0,
+    FIRST_TX_TIME = 2,
+  }
+
+  export enum OptLastTxTimeCase {
+    OPT_LAST_TX_TIME_NOT_SET = 0,
+    LAST_TX_TIME = 2,
+  }
+  export enum OptFirstTxHeightCase {
+    OPT_FIRST_TX_HEIGHT_NOT_SET = 0,
+    FIRST_TX_HEIGHT = 2,
+  }
+
+  export enum OptLastTxHeightCase {
+    OPT_LAST_TX_HEIGHT_NOT_SET = 0,
+    LAST_TX_HEIGHT = 2,
   }
 }
 
