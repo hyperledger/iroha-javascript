@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import grpc from 'grpc'
-import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
+import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb'
 import {
   QueryService_v1Client as QueryService,
   CommandService_v1Client as CommandService
@@ -25,8 +25,6 @@ const queryService = new QueryService(
   grpc.credentials.createInsecure()
 )
 
-
-
 const firstTx = new TxBuilder()
   .createAccount({
     accountName: 'user1',
@@ -35,7 +33,6 @@ const firstTx = new TxBuilder()
   })
   .addMeta('admin@test', 1)
   .tx
-
 
 const secondTx = new TxBuilder()
   .createAccount({
