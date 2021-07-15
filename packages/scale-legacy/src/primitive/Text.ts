@@ -1,7 +1,6 @@
 // Copyright 2017-2021 @polkadot/types authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type { CodecHash, Hash } from '../interfaces/runtime';
 import type { AnyU8a, Codec, Registry } from '../types';
 
 import {
@@ -63,8 +62,6 @@ function decodeText(value?: null | Text | string | AnyU8a | { toString: () => st
 export class Text extends String implements Codec {
     public readonly registry: Registry;
 
-    public createdAtHash?: Hash;
-
     #override: string | null = null;
 
     constructor(registry: Registry, value?: null | Text | string | AnyU8a | { toString: () => string }) {
@@ -80,12 +77,12 @@ export class Text extends String implements Codec {
         return this.toU8a().length;
     }
 
-    /**
-     * @description returns a hash of the contents
-     */
-    public get hash(): CodecHash {
-        return this.registry.hash(this.toU8a());
-    }
+    // /**
+    //  * @description returns a hash of the contents
+    //  */
+    // public get hash(): CodecHash {
+    //     return this.registry.hash(this.toU8a());
+    // }
 
     /**
      * @description Checks if the value is an empty value
