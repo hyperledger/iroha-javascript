@@ -1,11 +1,6 @@
-import { IrohaTypes, types } from '@iroha/data-model';
+import { Enum, IrohaTypes, types } from '@iroha/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
-
-interface Message<T> {
-    version: '1';
-    content: T;
-}
 
 export interface IrohaEventsAPIParams {
     eventFilter: IrohaTypes['iroha_data_model::events::EventFilter'];
@@ -21,12 +16,12 @@ export interface IrohaEventsAPIListeners {
     /**
      * When connection is closed
      */
-    close?: (e: CloseEvent) => void;
+    close?: (closeEvent: CloseEvent) => void;
 
     /**
      * When some socket error occured
      */
-    error?: (err: ErrorEvent) => void;
+    error?: (errorEvent: ErrorEvent) => void;
 
     /**
      * When socket connected and handshake acquired
@@ -36,7 +31,7 @@ export interface IrohaEventsAPIListeners {
     /**
      * Main callback with event payload
      */
-    event: (event: IrohaTypes['iroha_data_model::events::Event']) => void;
+    event: (irohaEvent: IrohaTypes['iroha_data_model::events::Event']) => void;
 }
 
 export interface IrohaEventAPIReturn {
@@ -83,24 +78,13 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
         // }, 1000);
     }
 
-    /**
-     * TODO scale
-     */
-    function sendMessage(content: any) {
-        const msg: Message<any> = {
-            version: '1',
-            content,
-        };
-
-        socket.send(JSON.stringify(msg));
+    function sendMessage(msg: IrohaTypes['iroha_data_model::events::EventSocketMessage']) {
+        const encoded = types.encode('iroha_data_model::events::VersionedEventSocketMessage', Enum.create('V1', [msg]));
+        socket.send(encoded);
     }
 
     socket.onopen = () => {
-        // Sending handshake message
-        // TODO
-        // sendMessage({
-        //     SubscriptionRequest: params.eventFilter.toHuman(),
-        // });
+        sendMessage(Enum.create('SubscriptionRequest', [params.eventFilter]));
     };
 
     socket.onclose = (event) => {
@@ -114,27 +98,26 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
     let listeningForSubscriptionAccepted = false;
 
     socket.onmessage = ({ data }) => {
-        // TODO
-        // if (typeof data !== 'string') {
-        //     console.error('unknown data:', data);
-        //     return;
-        // }
-        // const {
-        //     content,
-        // }: Message<
-        //     | 'SubscriptionAccepted'
-        //     | {
-        //           Event: any;
-        //       }
-        // > = JSON.parse(data);
-        // if (content === 'SubscriptionAccepted') {
-        //     if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
-        //     ee.emit('subscription_accepted');
-        // } else {
-        //     const event = params.createScale('Event', content.Event);
-        //     ee.emit('event', event);
-        //     sendMessage('EventReceived');
-        // }
+        if (typeof data === 'string') {
+            console.error(data);
+            throw new Error('Unexpected string data');
+        }
+        if (Array.isArray(data)) {
+            console.error(data);
+            throw new Error('Unexpected array data');
+        }
+
+        const event = types
+            .decode('iroha_data_model::events::VersionedEventSocketMessage', new Uint8Array(data))
+            .as('V1')[0];
+
+        if (event.is('SubscriptionAccepted')) {
+            if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
+            ee.emit('subscription_accepted');
+        } else {
+            ee.emit('event', event.as('Event'));
+            sendMessage(Enum.create('EventReceived'));
+        }
     };
 
     await new Promise<void>((resolve, reject) => {

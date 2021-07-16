@@ -1,14 +1,16 @@
 {
     "name": "@iroha/monorepo",
     "version": "0.1.0",
-    "description": "Here is the monorepo with Iroha 2 JavaScript client (includes SCALE codec implementation, Iroha Data Model and Crypto).",
     "devDependencies": {
+        "@rollup/plugin-node-resolve": "^13.0.0",
         "@typescript-eslint/eslint-plugin": "^4.28.2",
         "@typescript-eslint/parser": "^4.28.2",
         "eslint": "^7.30.0",
         "eslint-config-alloy": "^4.1.0",
         "prettier": "^2.3.2",
         "prettier-eslint": "^12.0.0",
+        "rollup": "^2.53.1",
+        "rollup-plugin-esbuild": "^4.5.0",
         "typescript": "^4.3.5"
     },
     "scripts": {

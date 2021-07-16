@@ -23,10 +23,10 @@ pnpm build:wasm
 
 Usage depends on the environment in which the package is being used.
 
-In **Node.JS** you can simply import this functions and use them from the `@iroha/crypto/common`:
+In **Node.JS** you can simply import this functions and use them from the `@iroha/crypto/cjs`:
 
 ```js
-const { create_blake2b_32_hash } = require('@iroha/crypto/common');
+const { create_blake2b_32_hash } = require('@iroha/crypto/cjs');
 
 create_blake2b_32_hash(new UInt8Array([1, 2, 3]));
 ```
