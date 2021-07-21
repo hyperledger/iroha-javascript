@@ -1199,10 +1199,10 @@
   dependencies:
     "type-fest" "^0.8.1"
 
-"google-protobuf@^3.17.3", "google-protobuf@^3.2.0", "google-protobuf@^3.6.1":
-  "integrity" "sha512-OVPzcSWIAJ+d5yiHyeaLrdufQtrvaBrF4JQg+z8ynTkbO3uFcujqXszTumqg1cGsAsjkWnI+M5B1xZ19yR4Wyg=="
-  "resolved" "https://registry.npmjs.org/google-protobuf/-/google-protobuf-3.17.3.tgz"
-  "version" "3.17.3"
+"google-protobuf@^3.2.0", "google-protobuf@^3.6.1", "google-protobuf@^3.9.1":
+  "integrity" "sha512-tkz7SVwBktFbqFK3teXFUY/VM57+mbUgV9bSD+sZH1ocHJ7uk7BfEWMRdU24dd0ciUDokreA7ghH2fYFIczQdw=="
+  "resolved" "https://registry.npmjs.org/google-protobuf/-/google-protobuf-3.9.1.tgz"
+  "version" "3.9.1"
 
 "graceful-fs@^4.1.2":
   "integrity" "sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw=="
