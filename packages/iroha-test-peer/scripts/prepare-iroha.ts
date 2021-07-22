@@ -1,6 +1,5 @@
 import consola from 'consola';
 import execa from 'execa';
-import pathExists from 'path-exists';
 import path from 'path';
 import { TMP_IROHA_DEPLOY_DIR, TMP_IROHA_INSTALL_DIR } from '../const';
 
