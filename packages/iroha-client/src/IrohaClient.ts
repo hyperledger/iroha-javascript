@@ -3,7 +3,6 @@ import Axios, { AxiosInstance, AxiosError } from 'axios';
 import { hexToBytes } from 'hada';
 import { IrohaEventAPIReturn, IrohaEventsAPIParams, setupEventsWebsocketConnection } from './events';
 import JSBI from 'jsbi';
-import { concatUint8Arrays } from '@scale-codec/util';
 
 export interface Key {
     digest: string;
