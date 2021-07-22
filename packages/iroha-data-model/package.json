@@ -3,7 +3,8 @@
     "version": "0.1.0",
     "main": "src/lib.ts",
     "scripts": {
-        "gen": "node -r esbuild-register scripts/generate/main"
+        "gen": "node -r esbuild-register scripts/generate/main",
+        "update-json": "node -r esbuild-register scripts/update-json"
     },
     "dependencies": {
         "@scale-codec/enum": "^0.1.0",
@@ -16,6 +17,8 @@
         "consola": "^2.15.3",
         "debug": "^4.3.2",
         "esbuild-register": "^2.6.0",
+        "execa": "^5.1.1",
+        "ora": "^5.4.1",
         "type-fest": "^1.2.0"
     }
 }
