@@ -416,6 +416,11 @@ export type IrohaTypes = StdTypes & {
         name: IrohaTypes['str'];
         params: IrohaTypes['BTreeMap<String, iroha_data_model::Value>'];
     };
+    'iroha_data_model::query::Payload': {
+        timestampMs: IrohaTypes['iroha_schema::Compact<u128>'];
+        query: IrohaTypes['iroha_data_model::query::QueryBox'];
+        accountId: IrohaTypes['iroha_data_model::account::Id'];
+    };
     'iroha_data_model::query::QueryBox': Enum<{
         FindAllAccounts: Valuable<IrohaTypes['iroha_data_model::query::account::FindAllAccounts']>;
         FindAccountById: Valuable<IrohaTypes['iroha_data_model::query::account::FindAccountById']>;
@@ -455,9 +460,8 @@ export type IrohaTypes = StdTypes & {
     }>;
     'iroha_data_model::query::QueryResult': [IrohaTypes['iroha_data_model::Value']];
     'iroha_data_model::query::SignedQueryRequest': {
-        timestampMs: IrohaTypes['iroha_schema::Compact<u128>'];
+        payload: IrohaTypes['iroha_data_model::query::Payload'];
         signature: IrohaTypes['iroha_crypto::Signature'];
-        query: IrohaTypes['iroha_data_model::query::QueryBox'];
     };
     'iroha_data_model::query::VersionedQueryResult': Enum<{
         V1: Valuable<IrohaTypes['iroha_data_model::query::_VersionedQueryResultV1']>;
@@ -783,7 +787,7 @@ export const types = defNamespace<IrohaTypes>({
     'iroha_data_model::events::SubscriptionRequest': defTuple(['iroha_data_model::events::EventFilter']),
     'iroha_data_model::events::VersionedEventSocketMessage': defEnum(
         new EnumSchema({
-            V1: { discriminant: 0 },
+            V1: { discriminant: 1 },
         }),
         {
             V1: 'iroha_data_model::events::_VersionedEventSocketMessageV1',
@@ -1087,6 +1091,11 @@ export const types = defNamespace<IrohaTypes>({
         ['name', 'str'],
         ['params', 'BTreeMap<String, iroha_data_model::Value>'],
     ]),
+    'iroha_data_model::query::Payload': defStruct([
+        ['timestampMs', 'iroha_schema::Compact<u128>'],
+        ['query', 'iroha_data_model::query::QueryBox'],
+        ['accountId', 'iroha_data_model::account::Id'],
+    ]),
     'iroha_data_model::query::QueryBox': defEnum(
         new EnumSchema({
             FindAllAccounts: { discriminant: 0 },
@@ -1139,9 +1148,8 @@ export const types = defNamespace<IrohaTypes>({
     ),
     'iroha_data_model::query::QueryResult': defTuple(['iroha_data_model::Value']),
     'iroha_data_model::query::SignedQueryRequest': defStruct([
-        ['timestampMs', 'iroha_schema::Compact<u128>'],
+        ['payload', 'iroha_data_model::query::Payload'],
         ['signature', 'iroha_crypto::Signature'],
-        ['query', 'iroha_data_model::query::QueryBox'],
     ]),
     'iroha_data_model::query::VersionedQueryResult': defEnum(
         new EnumSchema({

@@ -532,7 +532,7 @@
       "variants": [
         {
           "name": "V1",
-          "discriminant": 0,
+          "discriminant": 1,
           "ty": "iroha_data_model::events::_VersionedEventSocketMessageV1"
         }
       ]
@@ -1462,6 +1462,24 @@
       ]
     }
   },
+  "iroha_data_model::query::Payload": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "timestamp_ms",
+          "ty": "iroha_schema::Compact<u128>"
+        },
+        {
+          "name": "query",
+          "ty": "iroha_data_model::query::QueryBox"
+        },
+        {
+          "name": "account_id",
+          "ty": "iroha_data_model::account::Id"
+        }
+      ]
+    }
+  },
   "iroha_data_model::query::QueryBox": {
     "Enum": {
       "variants": [
@@ -1584,16 +1602,12 @@
     "Struct": {
       "declarations": [
         {
-          "name": "timestamp_ms",
-          "ty": "iroha_schema::Compact<u128>"
+          "name": "payload",
+          "ty": "iroha_data_model::query::Payload"
         },
         {
           "name": "signature",
           "ty": "iroha_crypto::Signature"
-        },
-        {
-          "name": "query",
-          "ty": "iroha_data_model::query::QueryBox"
         }
       ]
     }

@@ -1,6 +1,7 @@
 {
     "name": "@iroha/data-model",
     "version": "0.1.0",
+    "main": "src/lib.ts",
     "scripts": {
         "gen": "esno scripts/generate/main.ts"
     },

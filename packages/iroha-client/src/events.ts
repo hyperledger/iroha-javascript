@@ -35,7 +35,7 @@ export interface IrohaEventsAPIListeners {
 }
 
 export interface IrohaEventAPIReturn {
-    close: () => void;
+    close: () => Promise<void>;
 }
 
 /**
@@ -56,11 +56,27 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
 
     const socket = new WebSocket(`${params.baseURL}/events`);
 
-    function close() {
+    socket.onopen = () => {
+        sendMessage(Enum.create('SubscriptionRequest', [params.eventFilter]));
+    };
+
+    socket.onclose = (event) => {
+        ee.emit('close', event);
+    };
+
+    socket.onerror = (err) => {
+        ee.emit('error', err);
+    };
+
+    async function close(): Promise<void> {
+        if (socket.readyState === socket.CLOSED) return;
+
         // At the moment Iroha does not support gracefull connection closing, so
         // forced termination
         // Iroha issue: https://jira.hyperledger.org/browse/IR-1174
         socket.terminate();
+
+        return ee.once('close').then(() => {});
 
         // let closed = false;
 
@@ -82,18 +98,6 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
         const encoded = types.encode('iroha_data_model::events::VersionedEventSocketMessage', Enum.create('V1', [msg]));
         socket.send(encoded);
     }
-
-    socket.onopen = () => {
-        sendMessage(Enum.create('SubscriptionRequest', [params.eventFilter]));
-    };
-
-    socket.onclose = (event) => {
-        ee.emit('close', event);
-    };
-
-    socket.onerror = (err) => {
-        ee.emit('error', err);
-    };
 
     let listeningForSubscriptionAccepted = false;
 

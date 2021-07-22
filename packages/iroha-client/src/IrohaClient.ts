@@ -1,4 +1,4 @@
-import { IrohaTypes, types, Enum } from '@iroha/data-model';
+import { IrohaTypes, types, Enum, Result } from '@iroha/data-model';
 import Axios, { AxiosInstance, AxiosError } from 'axios';
 import { hexToBytes } from 'hada';
 import { IrohaEventAPIReturn, IrohaEventsAPIParams, setupEventsWebsocketConnection } from './events';
@@ -23,7 +23,7 @@ export interface IrohaClientConfiguration {
 }
 
 export class IrohaClient {
-    private readonly config: IrohaClientConfiguration;
+    public readonly config: IrohaClientConfiguration;
 
     private readonly privateKeyBytes: Uint8Array;
 
@@ -73,25 +73,28 @@ export class IrohaClient {
     /**
      * Query API entry point
      */
-    public async request(
+    public async query(
         queryBox: IrohaTypes['iroha_data_model::query::QueryBox'],
-    ): Promise<IrohaTypes['iroha_data_model::query::QueryResult']> {
+    ): Promise<Result<IrohaTypes['iroha_data_model::Value'], Error>> {
         // timestamp and QueryBox
         const timestampMs = Date.now();
 
+        // building payload
+        const payload: IrohaTypes['iroha_data_model::query::Payload'] = {
+            timestampMs: JSBI.BigInt(timestampMs),
+            query: queryBox,
+            accountId: this.config.account,
+        };
+
         // computing hash and signature
-        const bufferForHash = concatUint8Arrays([
-            types.encode('iroha_data_model::query::QueryBox', queryBox),
-            types.encode('u128', JSBI.BigInt(timestampMs)),
-        ]);
+        const bufferForHash = types.encode('iroha_data_model::query::Payload', payload);
         const hash = this.config.hasher(bufferForHash);
         const signature = this.makeSignature(hash);
 
         // building signed query request
         const signedQueryRequest: IrohaTypes['iroha_data_model::query::SignedQueryRequest'] = {
-            timestampMs: JSBI.BigInt(timestampMs),
+            payload,
             signature,
-            query: queryBox,
         };
 
         // versionize
@@ -110,13 +113,13 @@ export class IrohaClient {
             });
 
             // decoding as QueryResult
-            return types.decode('iroha_data_model::query::QueryResult', new Uint8Array(data));
+            return Enum.create('Ok', types.decode('iroha_data_model::query::QueryResult', new Uint8Array(data))[0]);
         } catch (err) {
             if ((err as AxiosError).isAxiosError) {
                 const { response: { status, data } = {} } = err as AxiosError;
 
                 if (status === 500) {
-                    console.error('Request failed with message from Iroha:\n%s', data);
+                    return Enum.create('Err', new Error(`Request failed with message from Iroha: ${data}`));
                 }
             }
 
@@ -129,6 +132,21 @@ export class IrohaClient {
             ...params,
             baseURL: this.config.baseUrl,
         });
+    }
+
+    /**
+     * Check Iroha health
+     */
+    public async health(): Promise<Result<null, Error>> {
+        try {
+            const { data } = await this.axios.get<'Healthy'>('/health');
+            if (data !== 'Healthy') {
+                throw new Error('Peer is not healthy');
+            }
+            return Enum.create('Ok', null);
+        } catch (err) {
+            return Enum.create('Err', err);
+        }
     }
 
     private makeSignature(bytes: Uint8Array): IrohaTypes['iroha_crypto::Signature'] {

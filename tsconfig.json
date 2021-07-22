@@ -18,9 +18,10 @@
         "resolveJsonModule": true,
         "paths": {
             "@iroha/client": ["./packages/iroha-client/src/lib.ts"],
-            "@iroha/crypto/cjs": ["./packages/iroha-crypto/cjs.js"],
-            "@iroha/crypto/esm": ["./packages/iroha-crypto/esm.js"],
-            "@iroha/data-model": ["./packages/iroha-data-model/src/lib.ts"]
+            "@iroha/crypto/cjs": ["./packages/iroha-crypto/cjs"],
+            "@iroha/crypto/esm": ["./packages/iroha-crypto/esm"],
+            "@iroha/data-model": ["./packages/iroha-data-model/src/lib.ts"],
+            "@iroha/test-peer": ["./packages/iroha-test-peer/src/lib.ts"]
         }
     },
     "include": ["packages"],
