@@ -2,6 +2,7 @@
     "name": "@iroha/monorepo",
     "version": "0.0.0",
     "scripts": {
+        "preinstall": "npx only-allow pnpm",
         "test:e2e": "jest --runInBand iroha-client/e2e/tests"
     },
     "devDependencies": {
@@ -11,17 +12,11 @@
         "@types/rimraf": "^3.0.1",
         "@typescript-eslint/eslint-plugin": "^4.28.2",
         "@typescript-eslint/parser": "^4.28.2",
-        "consola": "^2.15.3",
-        "emittery": "^0.9.2",
-        "esbuild-register": "^2.6.0",
         "eslint": "^7.30.0",
         "eslint-config-alloy": "^4.1.0",
-        "execa": "^5.1.1",
         "jest": "^27.0.6",
-        "path-exists": "^4.0.0",
         "prettier": "^2.3.2",
         "prettier-eslint": "^12.0.0",
-        "rimraf": "^3.0.2",
         "rollup": "^2.53.1",
         "rollup-plugin-esbuild": "^4.5.0",
         "ts-jest": "^27.0.3",

@@ -3,19 +3,19 @@
     "version": "0.1.0",
     "main": "src/lib.ts",
     "scripts": {
-        "gen": "esno scripts/generate/main.ts"
+        "gen": "node -r esbuild-register scripts/generate/main"
     },
     "dependencies": {
-        "@scale-codec/enum": "link:../../../scale-codec-js-library/packages/enum",
-        "@scale-codec/namespace": "link:../../../scale-codec-js-library/packages/namespace"
+        "@scale-codec/enum": "^0.1.0",
+        "@scale-codec/namespace": "^0.1.0"
     },
     "devDependencies": {
-        "@scale-codec/namespace-codegen": "link:../../../scale-codec-js-library/packages/namespace-codegen",
+        "@scale-codec/namespace-codegen": "^0.1.0",
         "@types/debug": "^4.1.6",
         "chalk": "^4.1.1",
         "consola": "^2.15.3",
         "debug": "^4.3.2",
-        "esno": "^0.7.3",
+        "esbuild-register": "^2.6.0",
         "type-fest": "^1.2.0"
     }
 }

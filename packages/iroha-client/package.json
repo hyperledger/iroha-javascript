@@ -8,7 +8,7 @@
     "dependencies": {
         "@iroha/crypto": "workspace:^0.1.0",
         "@iroha/data-model": "workspace:^0.1.0",
-        "@scale-codec/util": "link:../../../scale-codec-js-library/packages/util",
+        "@scale-codec/util": "^0.1.0",
         "axios": "^0.21.1",
         "emittery": "^0.9.2",
         "hada": "^0.0.8",

@@ -10,7 +10,6 @@
         "cac": "^6.7.3",
         "consola": "^2.15.3",
         "esbuild-register": "^2.6.0",
-        "execa": "^5.1.1",
-        "path-exists": "^4.0.0"
+        "execa": "^5.1.1"
     }
 }
