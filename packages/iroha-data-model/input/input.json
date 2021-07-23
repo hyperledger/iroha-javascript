@@ -1544,48 +1544,43 @@
           "ty": "iroha_data_model::query::asset::FindAssetsByDomainName"
         },
         {
-          "name": "FindAssetsByAccountIdAndAssetDefinitionId",
-          "discriminant": 12,
-          "ty": "iroha_data_model::query::asset::FindAssetsByAccountIdAndAssetDefinitionId"
-        },
-        {
           "name": "FindAssetsByDomainNameAndAssetDefinitionId",
-          "discriminant": 13,
+          "discriminant": 12,
           "ty": "iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId"
         },
         {
           "name": "FindAssetQuantityById",
-          "discriminant": 14,
+          "discriminant": 13,
           "ty": "iroha_data_model::query::asset::FindAssetQuantityById"
         },
         {
           "name": "FindAssetKeyValueByIdAndKey",
-          "discriminant": 15,
+          "discriminant": 14,
           "ty": "iroha_data_model::query::asset::FindAssetKeyValueByIdAndKey"
         },
         {
           "name": "FindAllDomains",
-          "discriminant": 16,
+          "discriminant": 15,
           "ty": "iroha_data_model::query::domain::FindAllDomains"
         },
         {
           "name": "FindDomainByName",
-          "discriminant": 17,
+          "discriminant": 16,
           "ty": "iroha_data_model::query::domain::FindDomainByName"
         },
         {
           "name": "FindAllPeers",
-          "discriminant": 18,
+          "discriminant": 17,
           "ty": "iroha_data_model::query::peer::FindAllPeers"
         },
         {
           "name": "FindTransactionsByAccountId",
-          "discriminant": 19,
+          "discriminant": 18,
           "ty": "iroha_data_model::query::transaction::FindTransactionsByAccountId"
         },
         {
           "name": "FindPermissionTokensByAccountId",
-          "discriminant": 20,
+          "discriminant": 19,
           "ty": "iroha_data_model::query::permissions::FindPermissionTokensByAccountId"
         }
       ]
@@ -1747,20 +1742,6 @@
         {
           "name": "account_id",
           "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>"
-        }
-      ]
-    }
-  },
-  "iroha_data_model::query::asset::FindAssetsByAccountIdAndAssetDefinitionId": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "account_id",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>"
-        },
-        {
-          "name": "asset_definition_id",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>"
         }
       ]
     }

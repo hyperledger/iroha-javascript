@@ -438,9 +438,6 @@ export type IrohaTypes = StdTypes & {
             IrohaTypes['iroha_data_model::query::asset::FindAssetsByAssetDefinitionId']
         >;
         FindAssetsByDomainName: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAssetsByDomainName']>;
-        FindAssetsByAccountIdAndAssetDefinitionId: Valuable<
-            IrohaTypes['iroha_data_model::query::asset::FindAssetsByAccountIdAndAssetDefinitionId']
-        >;
         FindAssetsByDomainNameAndAssetDefinitionId: Valuable<
             IrohaTypes['iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId']
         >;
@@ -501,10 +498,6 @@ export type IrohaTypes = StdTypes & {
     };
     'iroha_data_model::query::asset::FindAssetsByAccountId': {
         accountId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
-    };
-    'iroha_data_model::query::asset::FindAssetsByAccountIdAndAssetDefinitionId': {
-        accountId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
-        assetDefinitionId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'];
     };
     'iroha_data_model::query::asset::FindAssetsByAssetDefinitionId': {
         assetDefinitionId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'];
@@ -1110,15 +1103,14 @@ export const types = defNamespace<IrohaTypes>({
             FindAssetsByAccountId: { discriminant: 9 },
             FindAssetsByAssetDefinitionId: { discriminant: 10 },
             FindAssetsByDomainName: { discriminant: 11 },
-            FindAssetsByAccountIdAndAssetDefinitionId: { discriminant: 12 },
-            FindAssetsByDomainNameAndAssetDefinitionId: { discriminant: 13 },
-            FindAssetQuantityById: { discriminant: 14 },
-            FindAssetKeyValueByIdAndKey: { discriminant: 15 },
-            FindAllDomains: { discriminant: 16 },
-            FindDomainByName: { discriminant: 17 },
-            FindAllPeers: { discriminant: 18 },
-            FindTransactionsByAccountId: { discriminant: 19 },
-            FindPermissionTokensByAccountId: { discriminant: 20 },
+            FindAssetsByDomainNameAndAssetDefinitionId: { discriminant: 12 },
+            FindAssetQuantityById: { discriminant: 13 },
+            FindAssetKeyValueByIdAndKey: { discriminant: 14 },
+            FindAllDomains: { discriminant: 15 },
+            FindDomainByName: { discriminant: 16 },
+            FindAllPeers: { discriminant: 17 },
+            FindTransactionsByAccountId: { discriminant: 18 },
+            FindPermissionTokensByAccountId: { discriminant: 19 },
         }),
         {
             FindAllAccounts: 'iroha_data_model::query::account::FindAllAccounts',
@@ -1133,8 +1125,6 @@ export const types = defNamespace<IrohaTypes>({
             FindAssetsByAccountId: 'iroha_data_model::query::asset::FindAssetsByAccountId',
             FindAssetsByAssetDefinitionId: 'iroha_data_model::query::asset::FindAssetsByAssetDefinitionId',
             FindAssetsByDomainName: 'iroha_data_model::query::asset::FindAssetsByDomainName',
-            FindAssetsByAccountIdAndAssetDefinitionId:
-                'iroha_data_model::query::asset::FindAssetsByAccountIdAndAssetDefinitionId',
             FindAssetsByDomainNameAndAssetDefinitionId:
                 'iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId',
             FindAssetQuantityById: 'iroha_data_model::query::asset::FindAssetQuantityById',
@@ -1199,10 +1189,6 @@ export const types = defNamespace<IrohaTypes>({
     ]),
     'iroha_data_model::query::asset::FindAssetsByAccountId': defStruct([
         ['accountId', 'iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'],
-    ]),
-    'iroha_data_model::query::asset::FindAssetsByAccountIdAndAssetDefinitionId': defStruct([
-        ['accountId', 'iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'],
-        ['assetDefinitionId', 'iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'],
     ]),
     'iroha_data_model::query::asset::FindAssetsByAssetDefinitionId': defStruct([
         ['assetDefinitionId', 'iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'],
