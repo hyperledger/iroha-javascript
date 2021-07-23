@@ -1,7 +1,9 @@
-import { DEFAULT_CODECS, createHelpers, CreateScaleFactory, TypeRegistry } from '@iroha/scale-codec-legacy';
-import { Instruction, IrohaDslConstructorDef, runtimeDefinitions } from '@iroha/data-model';
-import Axios, { AxiosInstance } from 'axios';
-import hexToArrayBuffer from 'hex-to-array-buffer';
+import { CreateScaleFactory, TypeRegistry, Compact, U128, Struct } from '@iroha/scale-codec-legacy';
+import { Instruction, QueryBox, Signature, QueryResult } from '@iroha/data-model';
+import Axios, { AxiosInstance, AxiosError } from 'axios';
+import { hexToBytes } from 'hada';
+import { AllRuntimeDefinitions, createDSL } from './dsl';
+import { IrohaEventAPIReturn, IrohaEventsAPIParams, setupEventsWebsocketConnection } from './events';
 
 export interface Key {
     digest: string;
@@ -20,52 +22,56 @@ export interface IrohaClientConfiguration {
     signer: (payload: Uint8Array, privateKey: Uint8Array) => Uint8Array;
 }
 
-type AllRuntimeDefinitions = IrohaDslConstructorDef & typeof DEFAULT_CODECS;
+function concatBytes(...parts: Uint8Array[]): Uint8Array {
+    const totalLength = parts.reduce((s, { length }) => s + length, 0);
+    const result = new Uint8Array(totalLength);
+
+    for (let i = 0, offset = 0; i < parts.length; i++) {
+        const part = parts[i];
+        result.set(part, offset);
+        offset += part.length;
+    }
+
+    return result;
+}
 
 export class IrohaClient {
     public readonly createScale: CreateScaleFactory<AllRuntimeDefinitions>;
 
     private readonly config: IrohaClientConfiguration;
 
+    private readonly reg: TypeRegistry;
+
     private readonly privateKeyBytes: Uint8Array;
 
     private readonly publicKeyBytes: Uint8Array;
 
-    private readonly http: AxiosInstance;
+    private readonly axios: AxiosInstance;
 
     public constructor(config: IrohaClientConfiguration) {
         this.config = config;
 
-        this.privateKeyBytes = new Uint8Array(hexToArrayBuffer(config.privateKey.hex));
-        this.publicKeyBytes = new Uint8Array(hexToArrayBuffer(config.publicKey.hex));
+        this.privateKeyBytes = new Uint8Array(hexToBytes(config.privateKey.hex));
+        this.publicKeyBytes = new Uint8Array(hexToBytes(config.publicKey.hex));
 
-        this.http = Axios.create({
+        this.axios = Axios.create({
             baseURL: this.config.baseUrl,
         });
 
-        const registry = new TypeRegistry();
-        registry.register(DEFAULT_CODECS);
-        registry.register(runtimeDefinitions);
-
-        const { createScale } = createHelpers<AllRuntimeDefinitions>({ runtime: registry });
-        this.createScale = createScale;
+        ({ registry: this.reg, createScale: this.createScale } = createDSL());
     }
 
     public async submitInstruction(value: Instruction) {
         const payload = this.createScale('Payload', {
             accountId: this.config.account,
             instructions: [value],
+            creationTime: Date.now(),
+            timeToLiveMs: 100_000,
         });
 
         const payloadHash = this.config.hasher(payload.toU8a());
 
-        const payloadSignature = this.createScale('Signature', {
-            publicKey: {
-                digestFunction: 'ed25519',
-                payload: this.createScale('Bytes', [...this.publicKeyBytes]),
-            },
-            signature: this.createScale('Bytes', [...this.config.signer(payloadHash, this.privateKeyBytes)]),
-        });
+        const payloadSignature = this.makeSignature(payloadHash);
 
         const transation = this.createScale('Transaction', {
             payload,
@@ -76,6 +82,82 @@ export class IrohaClient {
             V1: transation,
         });
 
-        await this.http.post(this.config.baseUrl + '/instruction', versioned.toU8a());
+        await this.axios.post('/instruction', versioned.toU8a());
+    }
+
+    /**
+     * Query API entry point
+     */
+    public async request(queryBox: QueryBox): Promise<QueryResult> {
+        // timestamp and QueryBox
+        const timestampMs = Date.now();
+
+        // computing hash and signature
+        const bufferForHash = concatBytes(queryBox.toU8a(), new U128(this.reg, timestampMs).toU8a());
+        const hash = this.config.hasher(bufferForHash);
+        const signature = this.makeSignature(hash);
+
+        // building signed query request
+        const signedQueryRequest = new Struct(
+            this.reg,
+            {
+                timestampMs: 'Compact',
+                signature: 'Signature',
+                query: 'QueryBox',
+            },
+            {
+                timestampMs: new Compact(this.reg, U128, timestampMs),
+                signature,
+                query: queryBox,
+            },
+        );
+
+        // encode and add version
+        const versionedBytes = concatBytes(new Uint8Array([1]), signedQueryRequest.toU8a());
+
+        // making request
+        try {
+            const { data }: { data: ArrayBuffer } = await this.axios({
+                url: '/query',
+                method: 'GET',
+                data: versionedBytes,
+                responseType: 'arraybuffer',
+            });
+
+            // decoding as QueryResult
+            const result = this.createScale('QueryResult', new Uint8Array(data));
+
+            return result;
+        } catch (err) {
+            if ((err as AxiosError).isAxiosError) {
+                const { response: { status, data } = {} } = err as AxiosError;
+
+                if (status === 500) {
+                    console.error('Request failed with message from Iroha:\n%s', data);
+                }
+            }
+
+            throw err;
+        }
+    }
+
+    public listenToEvents(params: Pick<IrohaEventsAPIParams, 'eventFilter' | 'on'>): Promise<IrohaEventAPIReturn> {
+        return setupEventsWebsocketConnection({
+            ...params,
+            createScale: this.createScale,
+            baseURL: this.config.baseUrl,
+        });
+    }
+
+    private makeSignature(bytes: Uint8Array): Signature {
+        const signatureBytes = this.config.signer(bytes, this.privateKeyBytes);
+
+        return this.createScale('Signature', {
+            publicKey: {
+                digestFunction: 'ed25519',
+                payload: this.createScale('Bytes', [...this.publicKeyBytes]),
+            },
+            signature: this.createScale('Bytes', [...signatureBytes]),
+        });
     }
 }

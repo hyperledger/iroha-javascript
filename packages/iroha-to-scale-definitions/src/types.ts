@@ -38,7 +38,7 @@ export interface RustOptionDefinition {
 }
 
 export interface RustNamedStructDefinition {
-    NamedStruct: {
+    Struct: {
         declarations: Array<{
             name: string;
             ty: TypePath;
@@ -47,7 +47,7 @@ export interface RustNamedStructDefinition {
 }
 
 export interface RustUnnamedStructDefinition {
-    UnnamedStruct: {
+    TupleStruct: {
         types: Array<TypePath>;
     };
 }

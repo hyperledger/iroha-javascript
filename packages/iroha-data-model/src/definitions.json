@@ -1,7 +1,8 @@
 {
-    "_VersionedEventV1": "Event",
+    "_VersionedEventSocketMessageV1": "EventSocketMessage",
     "_VersionedQueryResultV1": "QueryResult",
     "_VersionedRejectedTransactionV1": "RejectedTransaction",
+    "_VersionedSignedQueryRequestV1": "SignedQueryRequest",
     "_VersionedTransactionV1": "Transaction",
     "Account": {
         "id": "AccountId",
@@ -78,6 +79,7 @@
         "valueName": "Text"
     },
     "DataEvent": "()",
+    "DataEventFilter": "()",
     "DefinitionId": {
         "name": "Text",
         "domainName": "Text"
@@ -108,6 +110,20 @@
         "_enum": {
             "Pipeline": "PipelineEvent",
             "Data": "DataEvent"
+        }
+    },
+    "EventFilter": {
+        "_enum": {
+            "Pipeline": "PipelineEventFilter",
+            "Data": "DataEventFilter"
+        }
+    },
+    "EventSocketMessage": {
+        "_enum": {
+            "SubscriptionRequest": "SubscriptionRequest",
+            "SubscriptionAccepted": null,
+            "Event": "Event",
+            "EventReceived": null
         }
     },
     "Expression": {
@@ -323,6 +339,10 @@
         "status": "Status",
         "hash": "Hash"
     },
+    "PipelineEventFilter": {
+        "entity": "Option<EntityType>",
+        "hash": "Option<Hash>"
+    },
     "PublicKey": {
         "digestFunction": "Text",
         "payload": "Bytes"
@@ -392,6 +412,11 @@
         "signature": "Signature",
         "reason": "Text"
     },
+    "SignedQueryRequest": {
+        "timestampMs": "Compact<u128>",
+        "signature": "Signature",
+        "query": "QueryBox"
+    },
     "Status": {
         "_enum": {
             "Validating": null,
@@ -399,6 +424,7 @@
             "Committed": null
         }
     },
+    "SubscriptionRequest": "EventFilter",
     "Subtract": {
         "left": "EvaluatesTo",
         "right": "EvaluatesTo"
@@ -448,9 +474,9 @@
             "PermissionToken": "PermissionToken"
         }
     },
-    "VersionedEvent": {
+    "VersionedEventSocketMessage": {
         "_enum": {
-            "V1": "_VersionedEventV1"
+            "V1": "_VersionedEventSocketMessageV1"
         }
     },
     "VersionedQueryResult": {
@@ -463,6 +489,12 @@
         "_enum": {
             "STUB_TO_FILL_DISCRIMINANT_0": null,
             "V1": "_VersionedRejectedTransactionV1"
+        }
+    },
+    "VersionedSignedQueryRequest": {
+        "_enum": {
+            "STUB_TO_FILL_DISCRIMINANT_0": null,
+            "V1": "_VersionedSignedQueryRequestV1"
         }
     },
     "VersionedTransaction": {
