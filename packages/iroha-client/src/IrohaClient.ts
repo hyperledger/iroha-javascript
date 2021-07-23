@@ -35,7 +35,7 @@ export default class IrohaClient {
         this.publicKeyParsed = new Uint8Array(hexToBytes(config.publicKey.hex));
 
         this.axios = Axios.create({
-            baseURL: config.baseURL,
+            baseURL: config.toriiURL,
         });
     }
 
@@ -127,7 +127,7 @@ export default class IrohaClient {
     public listenToEvents(params: Pick<IrohaEventsAPIParams, 'eventFilter' | 'on'>): Promise<IrohaEventAPIReturn> {
         return setupEventsWebsocketConnection({
             ...params,
-            baseURL: this.config.baseURL,
+            baseURL: this.config.toriiURL,
         });
     }
 

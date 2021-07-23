@@ -16,7 +16,7 @@ export interface IrohaClientConfiguration {
     };
     publicKey: Key;
     privateKey: Key;
-    baseURL: string;
+    toriiURL: string;
 }
 
 export interface IrohaClientInitParams {
