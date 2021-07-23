@@ -1,42 +1,7 @@
 import { Enum, IrohaTypes, types } from '@iroha/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
-
-export interface IrohaEventsAPIParams {
-    eventFilter: IrohaTypes['iroha_data_model::events::EventFilter'];
-    baseURL: string;
-
-    /**
-     * Event listeners
-     */
-    on: IrohaEventsAPIListeners;
-}
-
-export interface IrohaEventsAPIListeners {
-    /**
-     * When connection is closed
-     */
-    close?: (closeEvent: CloseEvent) => void;
-
-    /**
-     * When some socket error occured
-     */
-    error?: (errorEvent: ErrorEvent) => void;
-
-    /**
-     * When socket connected and handshake acquired
-     */
-    ready?: () => void;
-
-    /**
-     * Main callback with event payload
-     */
-    event: (irohaEvent: IrohaTypes['iroha_data_model::events::Event']) => void;
-}
-
-export interface IrohaEventAPIReturn {
-    close: () => Promise<void>;
-}
+import { IrohaEventsAPIParams, IrohaEventAPIReturn } from './types';
 
 /**
  * Promise resolved when connection handshake is acquired
@@ -73,9 +38,8 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
 
         // At the moment Iroha does not support gracefull connection closing, so
         // forced termination
-        // Iroha issue: https://jira.hyperledger.org/browse/IR-1174
+        // Iroha issue: https://github.com/hyperledger/iroha/issues/1195
         socket.terminate();
-
         return ee.once('close').then(() => {});
 
         // let closed = false;

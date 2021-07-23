@@ -41,9 +41,9 @@ async function addAccount(client: IrohaClient, accountId: IrohaTypes['iroha_data
 
 describe('e2e tests', () => {
     const testClient = new IrohaClient({
-        ...client_config,
-        hasher: create_blake2b_32_hash,
-        signer: sign_with_ed25519_sha512,
+        config: client_config,
+        hashFn: create_blake2b_32_hash,
+        signFn: sign_with_ed25519_sha512,
     });
 
     let startedPeer: StartPeerReturn | null = null;

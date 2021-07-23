@@ -1,5 +1,5 @@
 {
-    "baseUrl": "http://localhost:8080",
+    "baseURL": "http://localhost:8080",
     "account": {
         "name": "alice",
         "domainName": "wonderland"

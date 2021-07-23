@@ -1,43 +1,41 @@
 import { IrohaTypes, types, Enum, Result } from '@iroha/data-model';
 import Axios, { AxiosInstance, AxiosError } from 'axios';
 import { hexToBytes } from 'hada';
-import { IrohaEventAPIReturn, IrohaEventsAPIParams, setupEventsWebsocketConnection } from './events';
+import { setupEventsWebsocketConnection } from './events';
 import JSBI from 'jsbi';
 
-export interface Key {
-    digest: string;
-    hex: string;
-}
+import {
+    IrohaClientConfiguration,
+    IrohaClientInitParams,
+    HashFn,
+    SignFn,
+    IrohaEventAPIReturn,
+    IrohaEventsAPIParams,
+} from './types';
 
-export interface IrohaClientConfiguration {
-    account: {
-        name: string;
-        domainName: string;
-    };
-    publicKey: Key;
-    privateKey: Key;
-    baseUrl: string;
-    hasher: (payload: Uint8Array) => Uint8Array;
-    signer: (payload: Uint8Array, privateKey: Uint8Array) => Uint8Array;
-}
+export default class IrohaClient {
+    private readonly config: IrohaClientConfiguration;
 
-export class IrohaClient {
-    public readonly config: IrohaClientConfiguration;
+    private readonly hashFn: HashFn;
 
-    private readonly privateKeyBytes: Uint8Array;
+    private readonly signFn: SignFn;
 
-    private readonly publicKeyBytes: Uint8Array;
+    private readonly privateKeyParsed: Uint8Array;
+
+    private readonly publicKeyParsed: Uint8Array;
 
     private readonly axios: AxiosInstance;
 
-    public constructor(config: IrohaClientConfiguration) {
-        this.config = config;
+    public constructor(params: IrohaClientInitParams) {
+        const { config, hashFn, signFn } = params;
 
-        this.privateKeyBytes = new Uint8Array(hexToBytes(config.privateKey.hex));
-        this.publicKeyBytes = new Uint8Array(hexToBytes(config.publicKey.hex));
+        [this.config, this.signFn, this.hashFn] = [config, signFn, hashFn];
+
+        this.privateKeyParsed = new Uint8Array(hexToBytes(config.privateKey.hex));
+        this.publicKeyParsed = new Uint8Array(hexToBytes(config.publicKey.hex));
 
         this.axios = Axios.create({
-            baseURL: this.config.baseUrl,
+            baseURL: config.baseURL,
         });
     }
 
@@ -50,7 +48,7 @@ export class IrohaClient {
             metadata: new Map(),
         };
 
-        const payloadHash = this.config.hasher(types.encode('iroha_data_model::transaction::Payload', payload));
+        const payloadHash = this.hashFn(types.encode('iroha_data_model::transaction::Payload', payload));
 
         const payloadSignature = this.makeSignature(payloadHash);
 
@@ -87,7 +85,7 @@ export class IrohaClient {
 
         // computing hash and signature
         const bufferForHash = types.encode('iroha_data_model::query::Payload', payload);
-        const hash = this.config.hasher(bufferForHash);
+        const hash = this.hashFn(bufferForHash);
         const signature = this.makeSignature(hash);
 
         // building signed query request
@@ -129,7 +127,7 @@ export class IrohaClient {
     public listenToEvents(params: Pick<IrohaEventsAPIParams, 'eventFilter' | 'on'>): Promise<IrohaEventAPIReturn> {
         return setupEventsWebsocketConnection({
             ...params,
-            baseURL: this.config.baseUrl,
+            baseURL: this.config.baseURL,
         });
     }
 
@@ -148,15 +146,15 @@ export class IrohaClient {
         }
     }
 
-    private makeSignature(bytes: Uint8Array): IrohaTypes['iroha_crypto::Signature'] {
-        const signatureBytes = this.config.signer(bytes, this.privateKeyBytes);
+    private makeSignature(payload: Uint8Array): IrohaTypes['iroha_crypto::Signature'] {
+        const signature = this.signFn(payload, this.privateKeyParsed);
 
         return {
             publicKey: {
                 digestFunction: 'ed25519',
-                payload: this.publicKeyBytes,
+                payload: this.publicKeyParsed,
             },
-            signature: signatureBytes,
+            signature,
         };
     }
 }
