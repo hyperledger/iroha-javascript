@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "lib": ["esnext", "DOM"],
+        "esModuleInterop": true,
+        // "declaration": true,
+        // "removeComments": false,
+        // "stripInternal": true,
+        // since 2.3
+        // "strict": true,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "paths": {
+            "@iroha/client": ["./packages/iroha-client/src/lib.ts"],
+            "@iroha/crypto/cjs": ["./packages/iroha-crypto/cjs"],
+            "@iroha/crypto/esm": ["./packages/iroha-crypto/esm"],
+            "@iroha/data-model": ["./packages/iroha-data-model/src/lib.ts"],
+            "@iroha/test-peer": ["./packages/iroha-test-peer/src/lib.ts"]
+        }
+    },
+    "include": ["packages"],
+    "exclude": ["**/dist"]
+}

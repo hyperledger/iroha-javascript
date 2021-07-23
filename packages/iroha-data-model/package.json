@@ -1,34 +1,24 @@
 {
     "name": "@iroha/data-model",
     "version": "0.1.0",
-    "description": "",
-    "main": "src/index.ts",
+    "main": "src/lib.ts",
     "scripts": {
-        "gen": "ts-eager ./src/generate"
+        "gen": "node -r esbuild-register scripts/generate/main",
+        "update-json": "node -r esbuild-register scripts/update-json"
     },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
     "dependencies": {
-        "@iroha/map-to-scale-definitions": "workspace:^0.1.0",
-        "@iroha/scale-codec-legacy": "workspace:^0.1.0",
-        "@iroha/scale-codec-legacy-typegen": "workspace:^0.1.0",
-        "prettier": "^2.3.0"
+        "@scale-codec/enum": "^0.1.0",
+        "@scale-codec/namespace": "^0.1.0"
     },
     "devDependencies": {
-        "@iroha/eslint-config": "workspace:^0.1.0",
-        "@iroha/prettier-config": "workspace:^0.1.0",
-        "@types/prettier": "^2.2.3",
-        "eslint": "^7.27.0",
-        "prettier-eslint": "^12.0.0",
-        "ts-eager": "^2.0.2",
-        "type-fest": "^1.2.0",
-        "typescript": "^4.3.2"
-    },
-    "prettier": "@iroha/prettier-config",
-    "eslintConfig": {
-        "extends": [
-            "@iroha/eslint-config"
-        ]
+        "@scale-codec/namespace-codegen": "^0.1.0",
+        "@types/debug": "^4.1.6",
+        "chalk": "^4.1.1",
+        "consola": "^2.15.3",
+        "debug": "^4.3.2",
+        "esbuild-register": "^2.6.0",
+        "execa": "^5.1.1",
+        "ora": "^5.4.1",
+        "type-fest": "^1.2.0"
     }
 }
