@@ -1,119 +1,104 @@
-import { CreateScaleFactory, TypeRegistry, Compact, U128, Struct } from '@iroha/scale-codec-legacy';
-import { Instruction, QueryBox, Signature, QueryResult } from '@iroha/data-model';
+import { IrohaTypes, types, Enum, Result } from '@iroha/data-model';
 import Axios, { AxiosInstance, AxiosError } from 'axios';
 import { hexToBytes } from 'hada';
-import { AllRuntimeDefinitions, createDSL } from './dsl';
-import { IrohaEventAPIReturn, IrohaEventsAPIParams, setupEventsWebsocketConnection } from './events';
+import { setupEventsWebsocketConnection } from './events';
+import JSBI from 'jsbi';
 
-export interface Key {
-    digest: string;
-    hex: string;
-}
+import {
+    IrohaClientConfiguration,
+    IrohaClientInitParams,
+    HashFn,
+    SignFn,
+    IrohaEventAPIReturn,
+    IrohaEventsAPIParams,
+} from './types';
 
-export interface IrohaClientConfiguration {
-    account: {
-        name: string;
-        domainName: string;
-    };
-    publicKey: Key;
-    privateKey: Key;
-    baseUrl: string;
-    hasher: (payload: Uint8Array) => Uint8Array;
-    signer: (payload: Uint8Array, privateKey: Uint8Array) => Uint8Array;
-}
-
-function concatBytes(...parts: Uint8Array[]): Uint8Array {
-    const totalLength = parts.reduce((s, { length }) => s + length, 0);
-    const result = new Uint8Array(totalLength);
-
-    for (let i = 0, offset = 0; i < parts.length; i++) {
-        const part = parts[i];
-        result.set(part, offset);
-        offset += part.length;
-    }
-
-    return result;
-}
-
-export class IrohaClient {
-    public readonly createScale: CreateScaleFactory<AllRuntimeDefinitions>;
-
+export default class IrohaClient {
     private readonly config: IrohaClientConfiguration;
 
-    private readonly reg: TypeRegistry;
+    private readonly hashFn: HashFn;
 
-    private readonly privateKeyBytes: Uint8Array;
+    private readonly signFn: SignFn;
 
-    private readonly publicKeyBytes: Uint8Array;
+    private readonly privateKeyParsed: Uint8Array;
+
+    private readonly publicKeyParsed: Uint8Array;
 
     private readonly axios: AxiosInstance;
 
-    public constructor(config: IrohaClientConfiguration) {
-        this.config = config;
+    public constructor(params: IrohaClientInitParams) {
+        const { config, hashFn, signFn } = params;
 
-        this.privateKeyBytes = new Uint8Array(hexToBytes(config.privateKey.hex));
-        this.publicKeyBytes = new Uint8Array(hexToBytes(config.publicKey.hex));
+        [this.config, this.signFn, this.hashFn] = [config, signFn, hashFn];
+
+        this.privateKeyParsed = new Uint8Array(hexToBytes(config.privateKey.hex));
+        this.publicKeyParsed = new Uint8Array(hexToBytes(config.publicKey.hex));
 
         this.axios = Axios.create({
-            baseURL: this.config.baseUrl,
+            baseURL: config.toriiURL,
         });
-
-        ({ registry: this.reg, createScale: this.createScale } = createDSL());
     }
 
-    public async submitInstruction(value: Instruction) {
-        const payload = this.createScale('Payload', {
+    public async submitInstruction(instruction: IrohaTypes['iroha_data_model::isi::Instruction']) {
+        const payload: IrohaTypes['iroha_data_model::transaction::Payload'] = {
             accountId: this.config.account,
-            instructions: [value],
-            creationTime: Date.now(),
-            timeToLiveMs: 100_000,
-        });
+            instructions: [instruction],
+            creationTime: JSBI.BigInt(Date.now()),
+            timeToLiveMs: JSBI.BigInt(100_000),
+            metadata: new Map(),
+        };
 
-        const payloadHash = this.config.hasher(payload.toU8a());
+        const payloadHash = this.hashFn(types.encode('iroha_data_model::transaction::Payload', payload));
 
         const payloadSignature = this.makeSignature(payloadHash);
 
-        const transation = this.createScale('Transaction', {
+        const transation: IrohaTypes['iroha_data_model::transaction::Transaction'] = {
             payload,
             signatures: [payloadSignature],
-        });
+        };
 
-        const versioned = this.createScale('VersionedTransaction', {
-            V1: transation,
-        });
+        const versioned: IrohaTypes['iroha_data_model::transaction::VersionedTransaction'] = Enum.create('V1', [
+            transation,
+        ]);
 
-        await this.axios.post('/instruction', versioned.toU8a());
+        await this.axios.post(
+            '/instruction',
+            types.encode('iroha_data_model::transaction::VersionedTransaction', versioned),
+        );
     }
 
     /**
      * Query API entry point
      */
-    public async request(queryBox: QueryBox): Promise<QueryResult> {
+    public async query(
+        queryBox: IrohaTypes['iroha_data_model::query::QueryBox'],
+    ): Promise<Result<IrohaTypes['iroha_data_model::Value'], Error>> {
         // timestamp and QueryBox
         const timestampMs = Date.now();
 
+        // building payload
+        const payload: IrohaTypes['iroha_data_model::query::Payload'] = {
+            timestampMs: JSBI.BigInt(timestampMs),
+            query: queryBox,
+            accountId: this.config.account,
+        };
+
         // computing hash and signature
-        const bufferForHash = concatBytes(queryBox.toU8a(), new U128(this.reg, timestampMs).toU8a());
-        const hash = this.config.hasher(bufferForHash);
+        const bufferForHash = types.encode('iroha_data_model::query::Payload', payload);
+        const hash = this.hashFn(bufferForHash);
         const signature = this.makeSignature(hash);
 
         // building signed query request
-        const signedQueryRequest = new Struct(
-            this.reg,
-            {
-                timestampMs: 'Compact',
-                signature: 'Signature',
-                query: 'QueryBox',
-            },
-            {
-                timestampMs: new Compact(this.reg, U128, timestampMs),
-                signature,
-                query: queryBox,
-            },
-        );
+        const signedQueryRequest: IrohaTypes['iroha_data_model::query::SignedQueryRequest'] = {
+            payload,
+            signature,
+        };
 
-        // encode and add version
-        const versionedBytes = concatBytes(new Uint8Array([1]), signedQueryRequest.toU8a());
+        // versionize
+        const versionedBytes = types.encode(
+            'iroha_data_model::query::VersionedSignedQueryRequest',
+            Enum.create('V1', [signedQueryRequest]),
+        );
 
         // making request
         try {
@@ -125,15 +110,13 @@ export class IrohaClient {
             });
 
             // decoding as QueryResult
-            const result = this.createScale('QueryResult', new Uint8Array(data));
-
-            return result;
+            return Enum.create('Ok', types.decode('iroha_data_model::query::QueryResult', new Uint8Array(data))[0]);
         } catch (err) {
             if ((err as AxiosError).isAxiosError) {
                 const { response: { status, data } = {} } = err as AxiosError;
 
                 if (status === 500) {
-                    console.error('Request failed with message from Iroha:\n%s', data);
+                    return Enum.create('Err', new Error(`Request failed with message from Iroha: ${data}`));
                 }
             }
 
@@ -144,20 +127,34 @@ export class IrohaClient {
     public listenToEvents(params: Pick<IrohaEventsAPIParams, 'eventFilter' | 'on'>): Promise<IrohaEventAPIReturn> {
         return setupEventsWebsocketConnection({
             ...params,
-            createScale: this.createScale,
-            baseURL: this.config.baseUrl,
+            baseURL: this.config.toriiURL,
         });
     }
 
-    private makeSignature(bytes: Uint8Array): Signature {
-        const signatureBytes = this.config.signer(bytes, this.privateKeyBytes);
+    /**
+     * Check Iroha health
+     */
+    public async health(): Promise<Result<null, Error>> {
+        try {
+            const { data } = await this.axios.get<'Healthy'>('/health');
+            if (data !== 'Healthy') {
+                throw new Error('Peer is not healthy');
+            }
+            return Enum.create('Ok', null);
+        } catch (err) {
+            return Enum.create('Err', err);
+        }
+    }
 
-        return this.createScale('Signature', {
+    private makeSignature(payload: Uint8Array): IrohaTypes['iroha_crypto::Signature'] {
+        const signature = this.signFn(payload, this.privateKeyParsed);
+
+        return {
             publicKey: {
                 digestFunction: 'ed25519',
-                payload: this.createScale('Bytes', [...this.publicKeyBytes]),
+                payload: this.publicKeyParsed,
             },
-            signature: this.createScale('Bytes', [...signatureBytes]),
-        });
+            signature,
+        };
     }
 }

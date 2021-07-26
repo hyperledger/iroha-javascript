@@ -1,140 +1,124 @@
 # @iroha/client
 
-### Instruction example (browser)
+## Usage
+
+### Client creation
 
 ```ts
-import { IrohaClient } from '@iroha/client';
-import init, { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/esm';
+import { IrohaClient, IrohaClientConfiguration } from '@iroha/client';
+import { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/cjs';
 
-const client = new IrohaClient({
+const config: IrohaClientConfiguration = {
+    toriiURL: 'http://localhost:8080',
+    account: {
+        name: 'alice',
+        domainName: 'wonderland',
+    },
     publicKey: {
-        digest: 'ed0120',
+        digest: 'ed25519',
         hex: 'e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
     },
     privateKey: {
         digest: 'ed25519',
         hex: 'de757bcb79f4c63e8fa0795edc26f86dfdba189b846e903d0b732bb644607720e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
     },
-    baseUrl: 'http://localhost:3000',
-    account: {
-        name: 'alice',
-        domainName: 'wonderland',
-    },
-    hasher: create_blake2b_32_hash,
-    signer: sign_with_ed25519_sha512,
+};
+
+const client = new IrohaClient({
+    config,
+    hashFn: create_blake2b_32_hash,
+    signFn: sign_with_ed25519_sha512,
 });
+```
 
-const { createScale } = client;
+> If you import crypto-functions from `@iroha/crypto/cjs`, then you can use client immediately, but if from `@iroha/crypto/esm` (in browser), then you should initialize crypto first with `init()`:
+>
+> ```ts
+> import init, { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/esm';
+>
+> init().then(() => {
+>     // now you can use client
+> });
+> ```
 
-(async function () {
-    // This item can be removed in node.js (with the import, of course)
-    await init();
+### Submit instruction
 
-    const normal_account_id = createScale('AccountId');
+Let's add new account:
 
-    const createAccountInstruction = createScale('Instruction', {
-        Register: {
-            object: {
-                expression: {
-                    Raw: {
-                        Identifiable: {
-                            NewAccount: {
-                                id: normal_account_id,
-                            },
-                        },
+```ts
+import { IrohaTypes, Enum } from '@iroha/data-model';
+
+const accountId: IrohaTypes['iroha_data_model::account::Id'] = {
+    name: 'Alice',
+    domainName: 'Wonderland',
+};
+
+const registerBox: IrohaTypes['iroha_data_model::isi::RegisterBox'] = {
+    object: {
+        expression: Enum.create(
+            'Raw',
+            Enum.create(
+                'Identifiable',
+                Enum.create('NewAccount', {
+                    id: accountId,
+                    signatories: [],
+                    metadata: {
+                        map: new Map(),
                     },
-                },
-            },
-        },
-    });
+                }),
+            ),
+        ),
+    },
+};
 
-    await client.submitInstruction(createAccountInstruction);
-})();
+client.submitInstruction(Enum.create('Register', registerBox)).then(() => {
+    console.log('Submitted!');
+});
 ```
 
-### Query example (node)
+### Query
 
 ```ts
-import { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/common';
-import { IrohaClient } from '@iroha/client';
+import { IrohaTypes, Enum } from '@iroha/data-model';
 
-const client = new IrohaClient({
-    publicKey: {
-        digest: 'ed0120',
-        hex: 'e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
-    },
-    privateKey: {
-        digest: 'ed25519',
-        hex: 'de757bcb79f4c63e8fa0795edc26f86dfdba189b846e903d0b732bb644607720e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
-    },
-    baseUrl: 'http://localhost:8080',
-    account: {
-        name: 'alice',
-        domainName: 'wonderland',
-    },
-    hasher: create_blake2b_32_hash,
-    signer: sign_with_ed25519_sha512,
+client.query(Enum.create('FindAllAccounts', {})).then((queryResult) => {
+    const existingAccounts: IrohaTypes['iroha_data_model::account::Id'][] = queryResult
+        .as('Ok')
+        .as('Vec')
+        .map((val) => val.as('Identifiable').as('Account').id);
+
+    console.log("Existing account's ids:", existingAccounts);
 });
-
-(async function () {
-    const result = await client.request(
-        client.createScale('QueryBox', {
-            FindAllAccounts: {},
-        }),
-    );
-
-    for (const i of result.asVec) {
-        const {
-            id: { domainName, name },
-        } = i.asIdentifiable.asAccount;
-
-        console.log('Account: %s -> %s', domainName.toString(), name.toString());
-    }
-})();
 ```
 
-Output:
-
-```
-Account: genesis -> genesis
-Account: wonderland -> alice
-```
-
-### Events example (node)
+### Listening for events
 
 ```ts
-import { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/common';
-import { IrohaClient } from '@iroha/client';
-import keys from '../config/keys';
+import { Enum } from '@iroha/data-model';
 
-const client = new IrohaClient({
-    ...keys,
-    baseUrl: 'http://localhost:8080',
-    account: {
-        name: 'alice',
-        domainName: 'wonderland',
-    },
-    hasher: create_blake2b_32_hash,
-    signer: sign_with_ed25519_sha512,
-});
-
-(async function () {
-    const { close } = await client.listenToEvents({
-        eventFilter: client.createScale('EventFilter', {
-            Pipeline: {},
-        }),
+client
+    .listenToEvents({
+        eventFilter: Enum.create('Pipeline', pipelineFilter),
         on: {
             event: (event) => {
-                console.log('Yay!', event.toHuman());
+                event.match({
+                    Pipeline({ entityType, status }) {
+                        if (entityType.is('Transaction') && status.is('Committed')) {
+                            console.log('New transaction has committed!');
+                        }
+                    },
+                    Data() {},
+                });
             },
         },
+    })
+    .then(({ close }) => {
+        console.log('Connection opened');
+
+        // Closing connection after 10 seconds
+        setTimeout(close, 10_000);
+    })
+    .catch((err) => {
+        console.error('Connection failed:', err);
     });
-
-    // wait 20 sec and close connection
-    await new Promise<void>((r) => setTimeout(r, 20_000));
-
-    close();
-})().catch((err) => {
-    console.error(err);
-});
 ```

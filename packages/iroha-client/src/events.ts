@@ -1,50 +1,7 @@
-import { EventFilter, Event as WebsocketEvent } from '@iroha/data-model';
+import { Enum, IrohaTypes, types } from '@iroha/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
-import { CreateScaleFactory } from '@iroha/scale-codec-legacy';
-import { AllRuntimeDefinitions } from './dsl';
-
-interface Message<T> {
-    version: '1';
-    content: T;
-}
-
-export interface IrohaEventsAPIParams {
-    createScale: CreateScaleFactory<AllRuntimeDefinitions>;
-    eventFilter: EventFilter;
-    baseURL: string;
-
-    /**
-     * Event listeners
-     */
-    on: IrohaEventsAPIListeners;
-}
-
-export interface IrohaEventsAPIListeners {
-    /**
-     * When connection is closed
-     */
-    close?: (e: CloseEvent) => void;
-
-    /**
-     * When some socket error occured
-     */
-    error?: (err: ErrorEvent) => void;
-
-    /**
-     * When socket connected and handshake acquired
-     */
-    ready?: () => void;
-
-    /**
-     * Main callback with event payload
-     */
-    event: (event: WebsocketEvent) => void;
-}
-
-export interface IrohaEventAPIReturn {
-    close: () => void;
-}
+import { IrohaEventsAPIParams, IrohaEventAPIReturn } from './types';
 
 /**
  * Promise resolved when connection handshake is acquired
@@ -54,7 +11,7 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
         error: ErrorEvent;
         close: CloseEvent;
         subscription_accepted: undefined;
-        event: WebsocketEvent;
+        event: IrohaTypes['iroha_data_model::events::Event'];
     }>();
 
     ee.on('close', (e) => params.on.close?.(e));
@@ -64,11 +21,26 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
 
     const socket = new WebSocket(`${params.baseURL}/events`);
 
-    function close() {
+    socket.onopen = () => {
+        sendMessage(Enum.create('SubscriptionRequest', [params.eventFilter]));
+    };
+
+    socket.onclose = (event) => {
+        ee.emit('close', event);
+    };
+
+    socket.onerror = (err) => {
+        ee.emit('error', err);
+    };
+
+    async function close(): Promise<void> {
+        if (socket.readyState === socket.CLOSED) return;
+
         // At the moment Iroha does not support gracefull connection closing, so
         // forced termination
-        // Iroha issue: https://jira.hyperledger.org/browse/IR-1174
+        // Iroha issue: https://github.com/hyperledger/iroha/issues/1195
         socket.terminate();
+        return ee.once('close').then(() => {});
 
         // let closed = false;
 
@@ -86,56 +58,33 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
         // }, 1000);
     }
 
-    function sendMessage(content: any) {
-        const msg: Message<any> = {
-            version: '1',
-            content,
-        };
-
-        socket.send(JSON.stringify(msg));
+    function sendMessage(msg: IrohaTypes['iroha_data_model::events::EventSocketMessage']) {
+        const encoded = types.encode('iroha_data_model::events::VersionedEventSocketMessage', Enum.create('V1', [msg]));
+        socket.send(encoded);
     }
-
-    socket.onopen = () => {
-        // Sending handshake message
-        sendMessage({
-            SubscriptionRequest: params.eventFilter.toHuman(),
-        });
-    };
-
-    socket.onclose = (event) => {
-        ee.emit('close', event);
-    };
-
-    socket.onerror = (err) => {
-        ee.emit('error', err);
-    };
 
     let listeningForSubscriptionAccepted = false;
 
     socket.onmessage = ({ data }) => {
-        if (typeof data !== 'string') {
-            console.error('unknown data:', data);
-            return;
+        if (typeof data === 'string') {
+            console.error(data);
+            throw new Error('Unexpected string data');
+        }
+        if (Array.isArray(data)) {
+            console.error(data);
+            throw new Error('Unexpected array data');
         }
 
-        const {
-            content,
-        }: Message<
-            | 'SubscriptionAccepted'
-            | {
-                  Event: any;
-              }
-        > = JSON.parse(data);
+        const event = types
+            .decode('iroha_data_model::events::VersionedEventSocketMessage', new Uint8Array(data))
+            .as('V1')[0];
 
-        if (content === 'SubscriptionAccepted') {
+        if (event.is('SubscriptionAccepted')) {
             if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
             ee.emit('subscription_accepted');
         } else {
-            const event = params.createScale('Event', content.Event);
-
-            ee.emit('event', event);
-
-            sendMessage('EventReceived');
+            ee.emit('event', event.as('Event'));
+            sendMessage(Enum.create('EventReceived'));
         }
     };
 
