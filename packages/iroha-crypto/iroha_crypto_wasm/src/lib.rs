@@ -20,7 +20,7 @@ use iroha_crypto_core::{
 
 use alloc::vec::Vec;
 
-#[wasm_bindgen(js_name = Algorithm)]
+#[wasm_bindgen]
 #[derive(Clone, Copy, Debug)]
 pub enum JsAlgorithm {
     /// Ed25519
@@ -45,7 +45,7 @@ impl Into<Algorithm> for JsAlgorithm {
 }
 
 /// Configuration of key generation
-#[wasm_bindgen(js_name = KeyGenConfiguration)]
+#[wasm_bindgen]
 #[derive(Default, Clone, Debug)]
 pub struct JsKeyGenConfiguration {
     val: KeyGenConfiguration,
@@ -54,6 +54,13 @@ pub struct JsKeyGenConfiguration {
 #[wasm_bindgen]
 #[allow(clippy::missing_const_for_fn)]
 impl JsKeyGenConfiguration {
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> JsKeyGenConfiguration {
+        JsKeyGenConfiguration {
+            val: KeyGenConfiguration::default(),
+        }
+    }
+
     /// Use seed
     pub fn use_seed(mut self, seed: Vec<u8>) -> JsKeyGenConfiguration {
         self.val = self.val.use_seed(seed);
@@ -79,7 +86,7 @@ impl Into<KeyGenConfiguration> for JsKeyGenConfiguration {
     }
 }
 
-#[wasm_bindgen(js_name = PrivateKey)]
+#[wasm_bindgen]
 pub struct JsPrivateKey {
     val: PrivateKey,
 }
@@ -109,7 +116,7 @@ impl JsPrivateKey {
     }
 }
 
-#[wasm_bindgen(js_name = PublicKey)]
+#[wasm_bindgen]
 #[derive(Clone)]
 pub struct JsPublicKey {
     val: PublicKey,
@@ -133,6 +140,7 @@ impl JsPublicKey {
         self.val.payload.clone()
     }
 
+    #[wasm_bindgen]
     pub fn from_multihash(JsMultihash { val }: &JsMultihash) -> Result<JsPublicKey, JsValue> {
         PublicKey::try_from(val)
             .map_err(|err| err.to_string().into())
@@ -146,7 +154,7 @@ impl JsPublicKey {
     }
 }
 
-#[wasm_bindgen(js_name = KeyPair)]
+#[wasm_bindgen]
 pub struct JsKeyPair {
     val: KeyPair,
 }
@@ -172,7 +180,7 @@ impl JsKeyPair {
     }
 }
 
-#[wasm_bindgen(js_name = MultihashDigestFunction)]
+#[wasm_bindgen(js_name = "MultihashDigestFunction")]
 pub enum JsMultihashDigestFunction {
     /// Ed25519
     Ed25519Pub,
@@ -215,7 +223,7 @@ impl JsMultihashDigestFunction {
     }
 }
 
-#[wasm_bindgen(js_name = Multihash)]
+#[wasm_bindgen]
 pub struct JsMultihash {
     val: Multihash,
 }

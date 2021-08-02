@@ -6,9 +6,10 @@ const config = {
         '**/packages/**/*.spec.ts',
         '**/packages/**/__tests__/**/*.ts',
         '**/packages/iroha-client/e2e/tests/**/*.ts',
+        '**/packages/iroha-crypto/test/node/**/*.ts',
     ],
     roots: ['<rootDir>/packages'],
-    testPathIgnorePatterns: ['/node_modules/', '/dist/', '/iroha-crypto/ursa-wasm/'],
+    testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     modulePathIgnorePatterns: ['/dist/'],
     moduleNameMapper: {
         '^@iroha/crypto/esm': '<rootDir>/packages/iroha-crypto/esm.js',
