@@ -1,5 +1,7 @@
 # @iroha/crypto
 
+**This package is Work-In-Progress.**
+
 This package contains tiny WASM-compiled `ursa` bindings.
 
 ```ts
