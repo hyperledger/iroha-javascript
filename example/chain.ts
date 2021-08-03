@@ -13,7 +13,7 @@ import queries from '../lib/queries'
 const IROHA_ADDRESS = 'localhost:50051'
 
 const adminPriv =
-  'f5c8a59e998d5e215881ed5f90d134acbf36fea44c06c18377131e2f5145b2db'
+  'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70'
 
 const commandService = new CommandService(
   IROHA_ADDRESS,
@@ -25,9 +25,11 @@ const queryService = new QueryService(
   grpc.credentials.createInsecure()
 )
 
+
+
 const firstTx = new TxBuilder()
   .createAccount({
-    accountName: 'user1',
+    accountName: 'usera',
     domainId: 'test',
     publicKey: '0000000000000000000000000000000000000000000000000000000000000000'
   })
@@ -36,7 +38,7 @@ const firstTx = new TxBuilder()
 
 const secondTx = new TxBuilder()
   .createAccount({
-    accountName: 'user2',
+    accountName: 'userb',
     domainId: 'test',
     publicKey: '0000000000000000000000000000000000000000000000000000000000000000'
   })
@@ -53,11 +55,7 @@ new BatchBuilder([
   .send(commandService)
   .then(res => console.log(res))
   .catch(err => console.error(err))
-// set timestamps to correct values
-const firstTxTime = new Timestamp()
-firstTxTime.fromDate(new Date(1626342627382))
-const lastTxTime = new Timestamp()
-lastTxTime.fromDate(new Date(1626350943490))
+
 Promise.all([
   queries.getAccountTransactions({
     privateKey: adminPriv,
@@ -66,16 +64,16 @@ Promise.all([
     timeoutLimit: 5000
   }, {
     accountId: 'admin@test',
-    pageSize: 5,
-    firstTxHash: null,
-    firstTxTime: firstTxTime,
-    lastTxTime: lastTxTime,
-    firstTxHeight: null,
-    lastTxHeight: null,
+    pageSize: 10,
+    firstTxHash: undefined,
     ordering: {
       field: undefined,
       direction: undefined
-    }
+    },
+    firstTxTime: undefined,
+    lastTxTime: undefined,
+    firstTxHeight: 1,
+    lastTxHeight: 3
   })
 ])
   .then(a => console.log(a))

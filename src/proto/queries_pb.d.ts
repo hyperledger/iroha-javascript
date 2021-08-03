@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as primitive_pb from "./primitive_pb";
+import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 
 export class Ordering extends jspb.Message {
   clearSequenceList(): void;
@@ -59,15 +60,20 @@ export class TxPaginationMeta extends jspb.Message {
   getFirstTxHash(): string;
   setFirstTxHash(value: string): void;
 
+  hasOrdering(): boolean;
+  clearOrdering(): void;
+  getOrdering(): Ordering | undefined;
+  setOrdering(value?: Ordering): void;
+
   hasFirstTxTime(): boolean;
   clearFirstTxTime(): void;
-  getFirstTxTime(): Timestamp;
-  setFirstTxTime(value: Timestamp): void;
+  getFirstTxTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setFirstTxTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   hasLastTxTime(): boolean;
   clearLastTxTime(): void;
-  getLastTxTime(): Timestamp;
-  setLastTxTime(value: Timestamp): void;
+  getLastTxTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setLastTxTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   hasFirstTxHeight(): boolean;
   clearFirstTxHeight(): void;
@@ -78,11 +84,6 @@ export class TxPaginationMeta extends jspb.Message {
   clearLastTxHeight(): void;
   getLastTxHeight(): number;
   setLastTxHeight(value: number): void;
-
-  hasOrdering(): boolean;
-  clearOrdering(): void;
-  getOrdering(): Ordering | undefined;
-  setOrdering(value?: Ordering): void;
 
   getOptFirstTxHashCase(): TxPaginationMeta.OptFirstTxHashCase;
   getOptFirstTxTimeCase(): TxPaginationMeta.OptFirstTxTimeCase;
@@ -103,11 +104,11 @@ export namespace TxPaginationMeta {
   export type AsObject = {
     pageSize: number,
     firstTxHash: string,
-    firstTxTime: Timestamp,
-    lastTxTime: Timestamp,
+    ordering?: Ordering.AsObject,
+    firstTxTime?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    lastTxTime?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     firstTxHeight: number,
     lastTxHeight: number,
-    ordering?: Ordering.AsObject,
   }
 
   export enum OptFirstTxHashCase {
@@ -117,21 +118,22 @@ export namespace TxPaginationMeta {
 
   export enum OptFirstTxTimeCase {
     OPT_FIRST_TX_TIME_NOT_SET = 0,
-    FIRST_TX_TIME = 2,
+    FIRST_TX_TIME = 4,
   }
 
   export enum OptLastTxTimeCase {
     OPT_LAST_TX_TIME_NOT_SET = 0,
-    LAST_TX_TIME = 2,
+    LAST_TX_TIME = 5,
   }
+
   export enum OptFirstTxHeightCase {
     OPT_FIRST_TX_HEIGHT_NOT_SET = 0,
-    FIRST_TX_HEIGHT = 2,
+    FIRST_TX_HEIGHT = 6,
   }
 
   export enum OptLastTxHeightCase {
     OPT_LAST_TX_HEIGHT_NOT_SET = 0,
-    LAST_TX_HEIGHT = 2,
+    LAST_TX_HEIGHT = 7,
   }
 }
 

@@ -176,7 +176,7 @@ function getTransactions (queryOptions, params) {
  * @param {Object} queryOptions
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-pending-transactions
  */
-function getPendingTransactions (queryOptions, { pageSize, firstTxHash, ordering: { field, direction } }) {
+function getPendingTransactions (queryOptions, { pageSize, firstTxHash, ordering: { field, direction }, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
@@ -189,7 +189,11 @@ function getPendingTransactions (queryOptions, { pageSize, firstTxHash, ordering
           ordering: {
             field,
             direction
-          }
+          },
+          firstTxTime,
+          lastTxTime,
+          firstTxHeight,
+          lastTxHeight
         }
       }
     ),
@@ -238,7 +242,7 @@ function getRawPendingTransactions (queryOptions) {
  * @property {String | undefined} params.firstTxHash
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-transactions
  */
-function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHash, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight, ordering: { field, direction } }) {
+function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHash, ordering: { field, direction }, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
@@ -249,14 +253,14 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
         paginationMeta: {
           pageSize,
           firstTxHash,
-          firstTxTime,
-          lastTxTime,
-          firstTxHeight,
-          lastTxHeight,
           ordering: {
             field,
             direction
-          }
+          },
+          firstTxTime,
+          lastTxTime,
+          firstTxHeight,
+          lastTxHeight       
         }
       }
     ),
@@ -282,7 +286,7 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
  * @property {String | undefined} params.firstTxHash
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-asset-transactions
  */
-function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSize, firstTxHash, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight, ordering: { field, direction } }) {
+function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSize, firstTxHash, ordering: { field, direction }, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight }) {
   return sendQuery(
     queryOptions,
     queryHelper.addQuery(
@@ -294,14 +298,14 @@ function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSi
         paginationMeta: {
           pageSize,
           firstTxHash,
-          firstTxTime,
-          lastTxTime,
-          firstTxHeight,
-          lastTxHeight,
           ordering: {
             field,
             direction
-          }
+          },
+          firstTxTime,
+          lastTxTime,
+          firstTxHeight,
+          lastTxHeight
         }
       }
     ),
