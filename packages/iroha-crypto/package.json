@@ -2,8 +2,8 @@
     "name": "@iroha/crypto",
     "version": "0.1.0",
     "scripts": {
-        "build:wasm": "pnpm build:wasm-web && pnpm build:wasm-node",
-        "build:wasm-web": "wasm-pack build -d pkg-web -t web ./ursa-wasm",
-        "build:wasm-node": "wasm-pack build -d pkg-node -t nodejs ./ursa-wasm"
+        "build-wasm": "pnpm build-wasm:web && pnpm build-wasm:node",
+        "build-wasm:web": "wasm-pack build -d pkg-web -t web ./iroha_crypto_wasm",
+        "build-wasm:node": "wasm-pack build -d pkg-node -t nodejs ./iroha_crypto_wasm"
     }
 }

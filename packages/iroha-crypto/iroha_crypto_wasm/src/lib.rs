@@ -3,6 +3,7 @@ extern crate alloc;
 
 mod utils;
 
+use alloc::string::String;
 use core::{convert::TryFrom, str::FromStr};
 
 use wasm_bindgen::prelude::*;
@@ -14,15 +15,49 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 use iroha_crypto_core::{
-    multihash::{DigestFunction, Multihash},
-    Algorithm, KeyGenConfiguration, KeyPair, PrivateKey, PublicKey,
+    multihash::{DigestFunction as CoreMultihashDigestFunction, Multihash as CoreMultihash},
+    Algorithm as CoreAlgorithm, Hash as CoreHash, KeyGenConfiguration as CoreKeyGenConfiguration,
+    KeyPair as CoreKeyPair, PrivateKey as CorePrivateKey, PublicKey as CorePublicKey,
+    Signature as CoreSignature,
 };
 
 use alloc::vec::Vec;
 
 #[wasm_bindgen]
+pub struct Signature {
+    inner: CoreSignature,
+}
+
+#[wasm_bindgen]
+impl Signature {
+    #[wasm_bindgen(constructor)]
+    pub fn new(key_pair: KeyPair, payload: &[u8]) -> Result<Signature, JsValue> {
+        CoreSignature::new(key_pair.inner, payload)
+            .map_err(|err| err.to_string().into())
+            .map(|val| Signature { inner: val })
+    }
+
+    #[wasm_bindgen]
+    pub fn verify(&self, payload: &[u8]) -> Result<(), JsValue> {
+        self.inner
+            .verify(payload)
+            .map_err(|err| err.to_string().into())
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn public_key(&self) -> PublicKey {
+        PublicKey::wrap(self.inner.public_key.clone())
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn signature(&self) -> Vec<u8> {
+        self.inner.signature.clone()
+    }
+}
+
+#[wasm_bindgen]
 #[derive(Clone, Copy, Debug)]
-pub enum JsAlgorithm {
+pub enum Algorithm {
     /// Ed25519
     Ed25519,
     /// Secp256k1
@@ -33,13 +68,13 @@ pub enum JsAlgorithm {
     BlsNormal,
 }
 
-impl Into<Algorithm> for JsAlgorithm {
-    fn into(self) -> Algorithm {
+impl Into<CoreAlgorithm> for Algorithm {
+    fn into(self) -> CoreAlgorithm {
         match self {
-            JsAlgorithm::BlsNormal => Algorithm::BlsNormal,
-            JsAlgorithm::Ed25519 => Algorithm::Ed25519,
-            JsAlgorithm::Secp256k1 => Algorithm::Secp256k1,
-            JsAlgorithm::BlsSmall => Algorithm::BlsSmall,
+            Algorithm::BlsNormal => CoreAlgorithm::BlsNormal,
+            Algorithm::Ed25519 => CoreAlgorithm::Ed25519,
+            Algorithm::Secp256k1 => CoreAlgorithm::Secp256k1,
+            Algorithm::BlsSmall => CoreAlgorithm::BlsSmall,
         }
     }
 }
@@ -47,141 +82,139 @@ impl Into<Algorithm> for JsAlgorithm {
 /// Configuration of key generation
 #[wasm_bindgen]
 #[derive(Default, Clone, Debug)]
-pub struct JsKeyGenConfiguration {
-    val: KeyGenConfiguration,
+pub struct KeyGenConfiguration {
+    inner: CoreKeyGenConfiguration,
 }
 
 #[wasm_bindgen]
 #[allow(clippy::missing_const_for_fn)]
-impl JsKeyGenConfiguration {
+impl KeyGenConfiguration {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> JsKeyGenConfiguration {
-        JsKeyGenConfiguration {
-            val: KeyGenConfiguration::default(),
+    pub fn new() -> KeyGenConfiguration {
+        KeyGenConfiguration {
+            inner: CoreKeyGenConfiguration::default(),
         }
     }
 
     /// Use seed
-    pub fn use_seed(mut self, seed: Vec<u8>) -> JsKeyGenConfiguration {
-        self.val = self.val.use_seed(seed);
+    pub fn use_seed(mut self, seed: Vec<u8>) -> KeyGenConfiguration {
+        self.inner = self.inner.use_seed(seed);
         self
     }
 
     /// Use private key
-    pub fn use_private_key(mut self, private_key: JsPrivateKey) -> JsKeyGenConfiguration {
-        self.val = self.val.use_private_key(private_key.into());
+    pub fn use_private_key(mut self, private_key: PrivateKey) -> KeyGenConfiguration {
+        self.inner = self.inner.use_private_key(private_key.into());
         self
     }
 
     /// with algorithm
-    pub fn with_algorithm(mut self, algorithm: JsAlgorithm) -> JsKeyGenConfiguration {
-        self.val = self.val.with_algorithm(algorithm.into());
+    pub fn with_algorithm(mut self, algorithm: Algorithm) -> KeyGenConfiguration {
+        self.inner = self.inner.with_algorithm(algorithm.into());
         self
     }
 }
 
-impl Into<KeyGenConfiguration> for JsKeyGenConfiguration {
-    fn into(self) -> KeyGenConfiguration {
-        self.val
+impl Into<CoreKeyGenConfiguration> for KeyGenConfiguration {
+    fn into(self) -> CoreKeyGenConfiguration {
+        self.inner
     }
 }
 
 #[wasm_bindgen]
-pub struct JsPrivateKey {
-    val: PrivateKey,
+pub struct PrivateKey {
+    inner: CorePrivateKey,
 }
 
-impl Into<PrivateKey> for JsPrivateKey {
-    fn into(self) -> PrivateKey {
-        self.val
+impl Into<CorePrivateKey> for PrivateKey {
+    fn into(self) -> CorePrivateKey {
+        self.inner
     }
 }
 
 #[wasm_bindgen]
-impl JsPrivateKey {
+impl PrivateKey {
     #[wasm_bindgen(getter)]
-    pub fn digest_function(&self) -> JsValue {
-        self.val.digest_function.clone().into()
+    pub fn digest_function(&self) -> String {
+        self.inner.digest_function.clone()
     }
 
     #[wasm_bindgen(getter)]
     pub fn payload(&self) -> Vec<u8> {
-        self.val.payload.clone()
+        self.inner.payload.clone()
     }
 }
 
-impl JsPrivateKey {
-    fn wrap(val: PrivateKey) -> Self {
-        Self { val }
+impl PrivateKey {
+    fn wrap(val: CorePrivateKey) -> Self {
+        Self { inner: val }
     }
 }
 
 #[wasm_bindgen]
 #[derive(Clone)]
-pub struct JsPublicKey {
-    val: PublicKey,
+pub struct PublicKey {
+    inner: CorePublicKey,
 }
 
-impl Into<PublicKey> for JsPublicKey {
-    fn into(self) -> PublicKey {
-        self.val
+impl Into<CorePublicKey> for PublicKey {
+    fn into(self) -> CorePublicKey {
+        self.inner
     }
 }
 
 #[wasm_bindgen]
-impl JsPublicKey {
+impl PublicKey {
     #[wasm_bindgen(getter)]
-    pub fn digest_function(&self) -> JsValue {
-        self.val.digest_function.clone().into()
+    pub fn digest_function(&self) -> String {
+        self.inner.digest_function.clone()
     }
 
     #[wasm_bindgen(getter)]
     pub fn payload(&self) -> Vec<u8> {
-        self.val.payload.clone()
+        self.inner.payload.clone()
     }
 
     #[wasm_bindgen]
-    pub fn from_multihash(JsMultihash { val }: &JsMultihash) -> Result<JsPublicKey, JsValue> {
-        PublicKey::try_from(val)
+    pub fn from_multihash(multihash: &Multihash) -> Result<PublicKey, JsValue> {
+        CorePublicKey::try_from(&multihash.inner)
             .map_err(|err| err.to_string().into())
-            .map(|val| JsPublicKey { val })
+            .map(|val| PublicKey { inner: val })
     }
 }
 
-impl JsPublicKey {
-    fn wrap(val: PublicKey) -> Self {
-        Self { val }
+impl PublicKey {
+    fn wrap(val: CorePublicKey) -> Self {
+        Self { inner: val }
     }
 }
 
 #[wasm_bindgen]
-pub struct JsKeyPair {
-    val: KeyPair,
+pub struct KeyPair {
+    inner: CoreKeyPair,
 }
 
 #[wasm_bindgen]
-impl JsKeyPair {
+impl KeyPair {
     #[wasm_bindgen(getter)]
-    pub fn public_key(&self) -> JsPublicKey {
-        JsPublicKey::wrap(self.val.public_key.clone())
+    pub fn public_key(&self) -> PublicKey {
+        PublicKey::wrap(self.inner.public_key.clone())
     }
 
     #[wasm_bindgen(getter)]
-    pub fn private_key(&self) -> JsPrivateKey {
-        JsPrivateKey::wrap(self.val.private_key.clone())
+    pub fn private_key(&self) -> PrivateKey {
+        PrivateKey::wrap(self.inner.private_key.clone())
     }
 
-    pub fn generate_with_configuration(
-        config: JsKeyGenConfiguration,
-    ) -> Result<JsKeyPair, JsValue> {
-        KeyPair::generate_with_configuration(config.into())
-            .map(|val| JsKeyPair { val })
+    pub fn generate_with_configuration(config: KeyGenConfiguration) -> Result<KeyPair, JsValue> {
+        CoreKeyPair::generate_with_configuration(config.into())
+            .map(|val| KeyPair { inner: val })
             .map_err(|err| err.to_string().into())
     }
 }
 
-#[wasm_bindgen(js_name = "MultihashDigestFunction")]
-pub enum JsMultihashDigestFunction {
+#[wasm_bindgen]
+pub enum MultihashDigestFunction {
     /// Ed25519
     Ed25519Pub,
     /// Secp256k1
@@ -192,57 +225,78 @@ pub enum JsMultihashDigestFunction {
     Bls12381G2Pub,
 }
 
-impl JsMultihashDigestFunction {
-    fn from_core(val: DigestFunction) -> Self {
+impl MultihashDigestFunction {
+    fn from_core(val: CoreMultihashDigestFunction) -> Self {
         match val {
-            DigestFunction::Bls12381G1Pub => JsMultihashDigestFunction::Bls12381G1Pub,
-            DigestFunction::Bls12381G2Pub => JsMultihashDigestFunction::Bls12381G2Pub,
-            DigestFunction::Ed25519Pub => JsMultihashDigestFunction::Ed25519Pub,
-            DigestFunction::Secp256k1Pub => JsMultihashDigestFunction::Secp256k1Pub,
+            CoreMultihashDigestFunction::Bls12381G1Pub => MultihashDigestFunction::Bls12381G1Pub,
+            CoreMultihashDigestFunction::Bls12381G2Pub => MultihashDigestFunction::Bls12381G2Pub,
+            CoreMultihashDigestFunction::Ed25519Pub => MultihashDigestFunction::Ed25519Pub,
+            CoreMultihashDigestFunction::Secp256k1Pub => MultihashDigestFunction::Secp256k1Pub,
         }
     }
 }
 
-impl Into<DigestFunction> for JsMultihashDigestFunction {
-    fn into(self) -> DigestFunction {
+impl Into<CoreMultihashDigestFunction> for MultihashDigestFunction {
+    fn into(self) -> CoreMultihashDigestFunction {
         match self {
-            JsMultihashDigestFunction::Bls12381G1Pub => DigestFunction::Bls12381G1Pub,
-            JsMultihashDigestFunction::Bls12381G2Pub => DigestFunction::Bls12381G2Pub,
-            JsMultihashDigestFunction::Ed25519Pub => DigestFunction::Ed25519Pub,
-            JsMultihashDigestFunction::Secp256k1Pub => DigestFunction::Secp256k1Pub,
+            MultihashDigestFunction::Bls12381G1Pub => CoreMultihashDigestFunction::Bls12381G1Pub,
+            MultihashDigestFunction::Bls12381G2Pub => CoreMultihashDigestFunction::Bls12381G2Pub,
+            MultihashDigestFunction::Ed25519Pub => CoreMultihashDigestFunction::Ed25519Pub,
+            MultihashDigestFunction::Secp256k1Pub => CoreMultihashDigestFunction::Secp256k1Pub,
         }
     }
 }
 
 #[wasm_bindgen]
-impl JsMultihashDigestFunction {
-    pub fn from_string(val: JsValue) -> Result<JsMultihashDigestFunction, JsValue> {
-        DigestFunction::from_str(&val.as_string().unwrap())
-            .map(|val| JsMultihashDigestFunction::from_core(val))
-            .map_err(|err| err.to_string().into())
-    }
+pub struct Multihash {
+    inner: CoreMultihash,
 }
 
 #[wasm_bindgen]
-pub struct JsMultihash {
-    val: Multihash,
-}
-
-#[wasm_bindgen]
-impl JsMultihash {
+impl Multihash {
     pub fn to_bytes(&self) -> Result<Vec<u8>, JsValue> {
-        Vec::try_from(&self.val).map_err(|err| err.to_string().into())
+        Vec::try_from(&self.inner).map_err(|err| err.to_string().into())
     }
 
-    pub fn from_bytes(bytes: Vec<u8>) -> Result<JsMultihash, JsValue> {
-        Multihash::try_from(bytes)
+    pub fn from_bytes(bytes: Vec<u8>) -> Result<Multihash, JsValue> {
+        CoreMultihash::try_from(bytes)
             .map_err(|err| err.to_string().into())
-            .map(|val| JsMultihash { val })
+            .map(|val| Multihash { inner: val })
     }
 
-    pub fn from_public_key(JsPublicKey { val }: &JsPublicKey) -> Result<JsMultihash, JsValue> {
-        Multihash::try_from(val)
+    pub fn from_public_key(public_key: &PublicKey) -> Result<Multihash, JsValue> {
+        CoreMultihash::try_from(&public_key.inner)
             .map_err(|err| err.to_string().into())
-            .map(|val| JsMultihash { val })
+            .map(|val| Multihash { inner: val })
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn digest_function(&self) -> MultihashDigestFunction {
+        MultihashDigestFunction::from_core(self.inner.digest_function)
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn payload(&self) -> Vec<u8> {
+        self.inner.payload.clone()
+    }
+}
+
+#[wasm_bindgen]
+pub struct Hash {
+    inner: CoreHash,
+}
+
+#[wasm_bindgen]
+impl Hash {
+    #[wasm_bindgen(constructor)]
+    pub fn new(input: &[u8]) -> Hash {
+        Hash {
+            inner: CoreHash::new(input),
+        }
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn bytes(&self) -> Vec<u8> {
+        self.inner.0.into()
     }
 }

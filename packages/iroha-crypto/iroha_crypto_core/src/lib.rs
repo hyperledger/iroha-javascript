@@ -448,7 +448,7 @@ pub struct Signature {
     /// public-key of an approved authority.
     pub public_key: PublicKey,
     /// Ed25519 signature is placed here.
-    signature: Vec<u8>,
+    pub signature: Vec<u8>,
 }
 
 impl Signature {

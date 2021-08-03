@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function __wbg_jssignature_free(a: number): void;
+export function jssignature_new(a: number, b: number, c: number): number;
+export function jssignature_verify(a: number, b: number, c: number): void;
 export function __wbg_jskeygenconfiguration_free(a: number): void;
 export function jskeygenconfiguration_new(): number;
 export function jskeygenconfiguration_use_seed(a: number, b: number, c: number): number;
