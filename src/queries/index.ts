@@ -174,6 +174,10 @@ function getTransactions (queryOptions, params) {
 /**
  * getPendingTransactions
  * @param {Object} queryOptions
+ * @property {Integer | undefined} params.firstTxTime
+ * @property {Integer | undefined} params.lastTxTime
+ * @property {Integer | undefined} params.firstTxHeight
+ * @property {Integer | undefined} params.lastTxHeight
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-pending-transactions
  */
 function getPendingTransactions (queryOptions, { pageSize, firstTxHash, ordering: { field, direction }, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight }) {
@@ -240,6 +244,10 @@ function getRawPendingTransactions (queryOptions) {
  * @property {String} params.accountId
  * @property {Number} params.pageSize
  * @property {String | undefined} params.firstTxHash
+ * @property {Integer | undefined} params.firstTxTime
+ * @property {Integer | undefined} params.lastTxTime
+ * @property {Integer | undefined} params.firstTxHeight
+ * @property {Integer | undefined} params.lastTxHeight
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-transactions
  */
 function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHash, ordering: { field, direction }, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight }) {
@@ -260,7 +268,7 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
           firstTxTime,
           lastTxTime,
           firstTxHeight,
-          lastTxHeight       
+          lastTxHeight
         }
       }
     ),
@@ -284,6 +292,10 @@ function getAccountTransactions (queryOptions, { accountId, pageSize, firstTxHas
  * @property {String} params.assetId
  * @property {Number} params.pageSize
  * @property {String | undefined} params.firstTxHash
+ * @property {Integer | undefined} params.firstTxTime
+ * @property {Integer | undefined} params.lastTxTime
+ * @property {Integer | undefined} params.firstTxHeight
+ * @property {Integer | undefined} params.lastTxHeight
  * @link https://iroha.readthedocs.io/en/master/develop/api/queries.html#get-account-asset-transactions
  */
 function getAccountAssetTransactions (queryOptions, { accountId, assetId, pageSize, firstTxHash, ordering: { field, direction }, firstTxTime, lastTxTime, firstTxHeight, lastTxHeight }) {

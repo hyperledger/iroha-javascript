@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
 import grpc from 'grpc'
-import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb'
 import {
   QueryService_v1Client as QueryService,
   CommandService_v1Client as CommandService
@@ -24,8 +23,6 @@ const queryService = new QueryService(
   IROHA_ADDRESS,
   grpc.credentials.createInsecure()
 )
-
-
 
 const firstTx = new TxBuilder()
   .createAccount({
