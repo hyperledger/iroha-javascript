@@ -169,7 +169,7 @@ proto.iroha.protocol.Signature.prototype.getPublicKey = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.Signature.prototype.setPublicKey = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -184,7 +184,7 @@ proto.iroha.protocol.Signature.prototype.getSignature = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.Signature.prototype.setSignature = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -375,7 +375,7 @@ proto.iroha.protocol.Peer.prototype.getAddress = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.Peer.prototype.setAddress = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -390,7 +390,7 @@ proto.iroha.protocol.Peer.prototype.getPeerKey = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.Peer.prototype.setPeerKey = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -573,7 +573,7 @@ proto.iroha.protocol.AccountDetailRecordId.prototype.getWriter = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.AccountDetailRecordId.prototype.setWriter = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -588,7 +588,7 @@ proto.iroha.protocol.AccountDetailRecordId.prototype.getKey = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.AccountDetailRecordId.prototype.setKey = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -761,7 +761,7 @@ proto.iroha.protocol.EngineLog.prototype.getAddress = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.EngineLog.prototype.setAddress = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -776,7 +776,7 @@ proto.iroha.protocol.EngineLog.prototype.getData = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.EngineLog.prototype.setData = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -959,7 +959,7 @@ proto.iroha.protocol.CallResult.prototype.getCallee = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.CallResult.prototype.setCallee = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -974,7 +974,7 @@ proto.iroha.protocol.CallResult.prototype.getResultData = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.CallResult.prototype.setResultData = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -1202,7 +1202,7 @@ proto.iroha.protocol.EngineReceipt.prototype.getCommandIndex = function() {
 
 /** @param {number} value */
 proto.iroha.protocol.EngineReceipt.prototype.setCommandIndex = function(value) {
-  jspb.Message.setField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -1217,7 +1217,7 @@ proto.iroha.protocol.EngineReceipt.prototype.getCaller = function() {
 
 /** @param {string} value */
 proto.iroha.protocol.EngineReceipt.prototype.setCaller = function(value) {
-  jspb.Message.setField(this, 2, value);
+  jspb.Message.setProto3StringField(this, 2, value);
 };
 
 

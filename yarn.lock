@@ -1199,7 +1199,7 @@
   dependencies:
     "type-fest" "^0.8.1"
 
-"google-protobuf@^3.2.0", "google-protobuf@^3.6.1", "google-protobuf@^3.9.1":
+"google-protobuf@^3.2.0", "google-protobuf@^3.5.1", "google-protobuf@^3.6.1", "google-protobuf@^3.9.1":
   "integrity" "sha512-tkz7SVwBktFbqFK3teXFUY/VM57+mbUgV9bSD+sZH1ocHJ7uk7BfEWMRdU24dd0ciUDokreA7ghH2fYFIczQdw=="
   "resolved" "https://registry.npmjs.org/google-protobuf/-/google-protobuf-3.9.1.tgz"
   "version" "3.9.1"
