@@ -14,6 +14,7 @@
         "@typescript-eslint/parser": "^4.28.2",
         "eslint": "^7.30.0",
         "eslint-config-alloy": "^4.1.0",
+        "eslint-plugin-cypress": "^2.11.3",
         "jest": "^27.0.6",
         "prettier": "^2.3.2",
         "prettier-eslint": "^12.0.0",

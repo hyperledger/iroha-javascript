@@ -1,5 +1,11 @@
 import { hexToBytes } from 'hada';
-import { JsKeyGenConfiguration, JsKeyPair, JsMultihash } from '../../iroha_crypto_wasm/pkg-node';
+import init, { KeyGenConfiguration, KeyPair, Multihash } from '@iroha/crypto';
+import fs from 'fs/promises';
+
+beforeAll(async () => {
+    const buffer = await fs.readFile(require.resolve('@iroha/crypto/wasm/iroha_crypto_bg.wasm'));
+    await init(buffer);
+});
 
 test('Generates KeyPair from seed as expected', () => {
     // given
@@ -11,10 +17,10 @@ test('Generates KeyPair from seed as expected', () => {
     const seedBytes = [49, 50, 51, 52];
 
     // when
-    const config = new JsKeyGenConfiguration().use_seed(Uint8Array.from(seedBytes));
-    const keyPair = JsKeyPair.generate_with_configuration(config);
+    const config = new KeyGenConfiguration().use_seed(Uint8Array.from(seedBytes));
+    const keyPair = KeyPair.generate_with_configuration(config);
 
     // then
     expect(keyPair.private_key.payload).toEqual(Uint8Array.from(privKeyBytes));
-    expect(JsMultihash.from_public_key(keyPair.public_key).to_bytes()).toEqual(Uint8Array.from(pubKeyMultihashBytes));
+    expect(Multihash.from_public_key(keyPair.public_key).to_bytes()).toEqual(Uint8Array.from(pubKeyMultihashBytes));
 });

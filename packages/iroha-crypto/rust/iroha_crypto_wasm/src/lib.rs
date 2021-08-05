@@ -1,9 +1,10 @@
 #![no_std]
+#[macro_use]
 extern crate alloc;
 
 mod utils;
 
-use alloc::string::String;
+use alloc::string::{String, ToString};
 use core::{convert::TryFrom, str::FromStr};
 
 use wasm_bindgen::prelude::*;
@@ -23,6 +24,11 @@ use iroha_crypto_core::{
 
 use alloc::vec::Vec;
 
+#[wasm_bindgen(start)]
+pub fn main() {
+    utils::set_panic_hook()
+}
+
 #[wasm_bindgen]
 pub struct Signature {
     inner: CoreSignature,
@@ -37,7 +43,6 @@ impl Signature {
             .map(|val| Signature { inner: val })
     }
 
-    #[wasm_bindgen]
     pub fn verify(&self, payload: &[u8]) -> Result<(), JsValue> {
         self.inner
             .verify(payload)
@@ -56,25 +61,37 @@ impl Signature {
 }
 
 #[wasm_bindgen]
-#[derive(Clone, Copy, Debug)]
-pub enum Algorithm {
-    /// Ed25519
-    Ed25519,
-    /// Secp256k1
-    Secp256k1,
-    /// BlsSmall
-    BlsSmall,
-    /// BlsNormal
-    BlsNormal,
+pub struct Algorithm {
+    inner: CoreAlgorithm,
 }
 
-impl Into<CoreAlgorithm> for Algorithm {
-    fn into(self) -> CoreAlgorithm {
-        match self {
-            Algorithm::BlsNormal => CoreAlgorithm::BlsNormal,
-            Algorithm::Ed25519 => CoreAlgorithm::Ed25519,
-            Algorithm::Secp256k1 => CoreAlgorithm::Secp256k1,
-            Algorithm::BlsSmall => CoreAlgorithm::BlsSmall,
+#[wasm_bindgen]
+impl Algorithm {
+    #[wasm_bindgen]
+    pub fn bls_normal() -> Algorithm {
+        Algorithm {
+            inner: CoreAlgorithm::BlsNormal,
+        }
+    }
+
+    #[wasm_bindgen]
+    pub fn bls_small() -> Algorithm {
+        Algorithm {
+            inner: CoreAlgorithm::BlsSmall,
+        }
+    }
+
+    #[wasm_bindgen]
+    pub fn secp256k1() -> Algorithm {
+        Algorithm {
+            inner: CoreAlgorithm::Secp256k1,
+        }
+    }
+
+    #[wasm_bindgen]
+    pub fn ed25519() -> Algorithm {
+        Algorithm {
+            inner: CoreAlgorithm::Ed25519,
         }
     }
 }
@@ -110,7 +127,7 @@ impl KeyGenConfiguration {
 
     /// with algorithm
     pub fn with_algorithm(mut self, algorithm: Algorithm) -> KeyGenConfiguration {
-        self.inner = self.inner.with_algorithm(algorithm.into());
+        self.inner = self.inner.with_algorithm(algorithm.inner);
         self
     }
 }
@@ -214,36 +231,63 @@ impl KeyPair {
 }
 
 #[wasm_bindgen]
-pub enum MultihashDigestFunction {
-    /// Ed25519
-    Ed25519Pub,
-    /// Secp256k1
-    Secp256k1Pub,
-    /// Bls12381G1
-    Bls12381G1Pub,
-    /// Bls12381G2
-    Bls12381G2Pub,
+pub struct MultihashDigestFunction {
+    inner: CoreMultihashDigestFunction,
 }
 
+#[wasm_bindgen]
 impl MultihashDigestFunction {
-    fn from_core(val: CoreMultihashDigestFunction) -> Self {
-        match val {
-            CoreMultihashDigestFunction::Bls12381G1Pub => MultihashDigestFunction::Bls12381G1Pub,
-            CoreMultihashDigestFunction::Bls12381G2Pub => MultihashDigestFunction::Bls12381G2Pub,
-            CoreMultihashDigestFunction::Ed25519Pub => MultihashDigestFunction::Ed25519Pub,
-            CoreMultihashDigestFunction::Secp256k1Pub => MultihashDigestFunction::Secp256k1Pub,
+    #[wasm_bindgen]
+    pub fn ed25519pub() -> MultihashDigestFunction {
+        MultihashDigestFunction {
+            inner: CoreMultihashDigestFunction::Ed25519Pub,
         }
     }
-}
 
-impl Into<CoreMultihashDigestFunction> for MultihashDigestFunction {
-    fn into(self) -> CoreMultihashDigestFunction {
-        match self {
-            MultihashDigestFunction::Bls12381G1Pub => CoreMultihashDigestFunction::Bls12381G1Pub,
-            MultihashDigestFunction::Bls12381G2Pub => CoreMultihashDigestFunction::Bls12381G2Pub,
-            MultihashDigestFunction::Ed25519Pub => CoreMultihashDigestFunction::Ed25519Pub,
-            MultihashDigestFunction::Secp256k1Pub => CoreMultihashDigestFunction::Secp256k1Pub,
+    #[wasm_bindgen]
+    pub fn secp256k1pub() -> MultihashDigestFunction {
+        MultihashDigestFunction {
+            inner: CoreMultihashDigestFunction::Secp256k1Pub,
         }
+    }
+
+    #[wasm_bindgen]
+    pub fn bls12381g1pub() -> MultihashDigestFunction {
+        MultihashDigestFunction {
+            inner: CoreMultihashDigestFunction::Bls12381G1Pub,
+        }
+    }
+
+    #[wasm_bindgen]
+    pub fn bls12381g2pub() -> MultihashDigestFunction {
+        MultihashDigestFunction {
+            inner: CoreMultihashDigestFunction::Bls12381G2Pub,
+        }
+    }
+
+    #[wasm_bindgen]
+    pub fn to_string(&self) -> String {
+        format!("{}", self.inner)
+    }
+
+    #[wasm_bindgen]
+    pub fn to_u64(&self) -> u64 {
+        let val = &self.inner;
+        val.into()
+    }
+
+    #[wasm_bindgen]
+    pub fn from_string(val: String) -> Result<MultihashDigestFunction, JsValue> {
+        CoreMultihashDigestFunction::from_str(&val[..])
+            .map_err(|err| err.to_string().into())
+            .map(|val| MultihashDigestFunction { inner: val })
+    }
+
+    #[wasm_bindgen]
+    pub fn from_u64(val: u64) -> Result<MultihashDigestFunction, JsValue> {
+        CoreMultihashDigestFunction::try_from(val)
+            .map_err(|err| err.to_string().into())
+            .map(|val| MultihashDigestFunction { inner: val })
     }
 }
 
@@ -272,7 +316,9 @@ impl Multihash {
 
     #[wasm_bindgen(getter)]
     pub fn digest_function(&self) -> MultihashDigestFunction {
-        MultihashDigestFunction::from_core(self.inner.digest_function)
+        MultihashDigestFunction {
+            inner: self.inner.digest_function,
+        }
     }
 
     #[wasm_bindgen(getter)]

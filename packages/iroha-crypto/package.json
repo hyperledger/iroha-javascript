@@ -1,9 +1,26 @@
 {
     "name": "@iroha/crypto",
     "version": "0.1.0",
+    "module": "lib.js",
+    "main": "lib.js",
+    "types": "lib.d.ts",
+    "files": [
+        "wasm",
+        "lib.js",
+        "lib.d.ts"
+    ],
     "scripts": {
-        "build-wasm": "pnpm build-wasm:web && pnpm build-wasm:node",
-        "build-wasm:web": "wasm-pack build -d pkg-web -t web ./iroha_crypto_wasm",
-        "build-wasm:node": "wasm-pack build -d pkg-node -t nodejs ./iroha_crypto_wasm"
+        "build-wasm": "esno scripts/build-wasm",
+        "test": "esno scripts/test"
+    },
+    "devDependencies": {
+        "concurrently": "^6.2.0",
+        "consola": "^2.15.3",
+        "del": "^6.0.0",
+        "execa": "^5.1.1",
+        "make-dir": "^3.1.0"
+    },
+    "dependencies": {
+        "esno": "^0.8.0"
     }
 }

@@ -1,5 +1,5 @@
 [package]
-name = "iroha-crypto"
+name = "iroha_crypto_wasm"
 version = "0.1.0"
 authors = ["rx"]
 edition = "2018"
@@ -32,7 +32,5 @@ wasm-bindgen-test = "0.3.13"
 hex-literal = "0.2.1"
 # serde_json = "1.0"
 
-[profile.release]
-# Tell `rustc` to optimize for small code size.
-opt-level = "s"
+
 

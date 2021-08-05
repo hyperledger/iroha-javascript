@@ -18,5 +18,12 @@ module.exports = {
                 'max-nested-callbacks': ['error', 5],
             },
         },
+        {
+            files: ['**/packages/iroha-crypto/test/web/cypress/**/*.js'],
+            plugins: ['cypress'],
+            env: {
+                'cypress/globals': true,
+            },
+        },
     ],
 };
