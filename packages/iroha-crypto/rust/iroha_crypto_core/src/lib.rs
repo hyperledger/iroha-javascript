@@ -209,8 +209,8 @@ impl KeyGenConfiguration {
     }
 
     /// Use private key
-    pub fn use_private_key(mut self, private_key: PrivateKey) -> KeyGenConfiguration {
-        self.key_gen_option = Some(KeyGenOption::FromPrivateKey(private_key));
+    pub fn use_private_key(mut self, private_key: &PrivateKey) -> KeyGenConfiguration {
+        self.key_gen_option = Some(KeyGenOption::FromPrivateKey(private_key.clone()));
         self
     }
 
@@ -456,7 +456,7 @@ impl Signature {
     ///
     /// # Errors
     /// Fails if decoding digest of key pair fails
-    pub fn new(key_pair: KeyPair, payload: &[u8]) -> Result<Signature> {
+    pub fn new(key_pair: &KeyPair, payload: &[u8]) -> Result<Signature> {
         let private_key = UrsaPrivateKey(key_pair.private_key.payload.clone());
         let algorithm: Algorithm = key_pair.public_key.digest_function.parse()?;
         let signature = match algorithm {
@@ -467,7 +467,7 @@ impl Signature {
         }
         .map_err(|e| format!("Failed to sign payload: {}", e))?;
         Ok(Signature {
-            public_key: key_pair.public_key,
+            public_key: key_pair.public_key.clone(),
             signature,
         })
     }

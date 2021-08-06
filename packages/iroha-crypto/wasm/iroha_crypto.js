@@ -79,10 +79,6 @@ function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
 
-const u32CvtShim = new Uint32Array(2);
-
-const uint64CvtShim = new BigUint64Array(u32CvtShim.buffer);
-
 let cachedTextEncoder = new TextEncoder('utf-8');
 
 const encodeString = (typeof cachedTextEncoder.encodeInto === 'function'
@@ -135,6 +131,18 @@ function passStringToWasm0(arg, malloc, realloc) {
     WASM_VECTOR_LEN = offset;
     return ptr;
 }
+
+let stack_pointer = 32;
+
+function addBorrowedObject(obj) {
+    if (stack_pointer == 1) throw new Error('out of js stack');
+    heap[--stack_pointer] = obj;
+    return stack_pointer;
+}
+
+const u32CvtShim = new Uint32Array(2);
+
+const uint64CvtShim = new BigUint64Array(u32CvtShim.buffer);
 
 function handleError(f, args) {
     try {
@@ -291,9 +299,7 @@ export class KeyGenConfiguration {
     use_private_key(private_key) {
         const ptr = this.__destroy_into_raw();
         _assertClass(private_key, PrivateKey);
-        var ptr0 = private_key.ptr;
-        private_key.ptr = 0;
-        var ret = wasm.keygenconfiguration_use_private_key(ptr, ptr0);
+        var ret = wasm.keygenconfiguration_use_private_key(ptr, private_key.ptr);
         return KeyGenConfiguration.__wrap(ret);
     }
     /**
@@ -355,6 +361,17 @@ export class KeyPair {
         var ptr0 = config.ptr;
         config.ptr = 0;
         var ret = wasm.keypair_generate_with_configuration(ptr0);
+        return KeyPair.__wrap(ret);
+    }
+    /**
+    * @param {PublicKey} public_key
+    * @param {PrivateKey} private_key
+    * @returns {KeyPair}
+    */
+    static from_pair(public_key, private_key) {
+        _assertClass(public_key, PublicKey);
+        _assertClass(private_key, PrivateKey);
+        var ret = wasm.keypair_from_pair(public_key.ptr, private_key.ptr);
         return KeyPair.__wrap(ret);
     }
 }
@@ -596,6 +613,18 @@ export class PrivateKey {
             wasm.__wbindgen_add_to_stack_pointer(16);
         }
     }
+    /**
+    * @param {Key} key
+    * @returns {PrivateKey}
+    */
+    static from_js_key(key) {
+        try {
+            var ret = wasm.privatekey_from_js_key(addBorrowedObject(key));
+            return PrivateKey.__wrap(ret);
+        } finally {
+            heap[stack_pointer++] = undefined;
+        }
+    }
 }
 /**
 */
@@ -688,11 +717,9 @@ export class Signature {
     */
     constructor(key_pair, payload) {
         _assertClass(key_pair, KeyPair);
-        var ptr0 = key_pair.ptr;
-        key_pair.ptr = 0;
-        var ptr1 = passArray8ToWasm0(payload, wasm.__wbindgen_malloc);
-        var len1 = WASM_VECTOR_LEN;
-        var ret = wasm.signature_new(ptr0, ptr1, len1);
+        var ptr0 = passArray8ToWasm0(payload, wasm.__wbindgen_malloc);
+        var len0 = WASM_VECTOR_LEN;
+        var ret = wasm.signature_new(key_pair.ptr, ptr0, len0);
         return Signature.__wrap(ret);
     }
     /**
@@ -768,6 +795,20 @@ async function init(input) {
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         var ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
+    };
+    imports.wbg.__wbg_digestfunction_5c94abf53db78ecb = function(arg0, arg1) {
+        var ret = getObject(arg1).digest_function;
+        var ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        getInt32Memory0()[arg0 / 4 + 1] = len0;
+        getInt32Memory0()[arg0 / 4 + 0] = ptr0;
+    };
+    imports.wbg.__wbg_payload_1b2200b16ad711b5 = function(arg0, arg1) {
+        var ret = getObject(arg1).payload;
+        var ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        var len0 = WASM_VECTOR_LEN;
+        getInt32Memory0()[arg0 / 4 + 1] = len0;
+        getInt32Memory0()[arg0 / 4 + 0] = ptr0;
     };
     imports.wbg.__wbg_new_59cb74e423758ede = function() {
         var ret = new Error();

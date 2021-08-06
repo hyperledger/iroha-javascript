@@ -37,8 +37,8 @@ pub struct Signature {
 #[wasm_bindgen]
 impl Signature {
     #[wasm_bindgen(constructor)]
-    pub fn new(key_pair: KeyPair, payload: &[u8]) -> Result<Signature, JsValue> {
-        CoreSignature::new(key_pair.inner, payload)
+    pub fn new(key_pair: &KeyPair, payload: &[u8]) -> Result<Signature, JsValue> {
+        CoreSignature::new(&key_pair.inner, payload)
             .map_err(|err| err.to_string().into())
             .map(|val| Signature { inner: val })
     }
@@ -120,8 +120,8 @@ impl KeyGenConfiguration {
     }
 
     /// Use private key
-    pub fn use_private_key(mut self, private_key: PrivateKey) -> KeyGenConfiguration {
-        self.inner = self.inner.use_private_key(private_key.into());
+    pub fn use_private_key(mut self, private_key: &PrivateKey) -> KeyGenConfiguration {
+        self.inner = self.inner.use_private_key(&private_key.inner);
         self
     }
 
@@ -136,6 +136,26 @@ impl Into<CoreKeyGenConfiguration> for KeyGenConfiguration {
     fn into(self) -> CoreKeyGenConfiguration {
         self.inner
     }
+}
+
+#[wasm_bindgen(typescript_custom_section)]
+const ITEXT_STYLE: &'static str = r#"
+export interface Key {
+    digest_function: string;
+    payload: string;
+}
+"#;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "Key")]
+    pub type JsKey;
+
+    #[wasm_bindgen(structural, method, getter)]
+    pub fn digest_function(this: &JsKey) -> String;
+
+    #[wasm_bindgen(structural, method, getter)]
+    pub fn payload(this: &JsKey) -> String;
 }
 
 #[wasm_bindgen]
@@ -159,6 +179,18 @@ impl PrivateKey {
     #[wasm_bindgen(getter)]
     pub fn payload(&self) -> Vec<u8> {
         self.inner.payload.clone()
+    }
+
+    pub fn from_js_key(key: &JsKey) -> PrivateKey {
+        let digest_function = key.digest_function();
+        let payload: String = key.payload();
+
+        PrivateKey {
+            inner: CorePrivateKey {
+                digest_function,
+                payload: hex::decode(&payload[..]).unwrap(),
+            },
+        }
     }
 }
 
@@ -227,6 +259,15 @@ impl KeyPair {
         CoreKeyPair::generate_with_configuration(config.into())
             .map(|val| KeyPair { inner: val })
             .map_err(|err| err.to_string().into())
+    }
+
+    pub fn from_pair(public_key: &PublicKey, private_key: &PrivateKey) -> KeyPair {
+        KeyPair {
+            inner: CoreKeyPair {
+                public_key: public_key.inner.clone(),
+                private_key: private_key.inner.clone(),
+            },
+        }
     }
 }
 

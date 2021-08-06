@@ -3,6 +3,13 @@
 /**
 */
 export function main(): void;
+
+export interface Key {
+    digest_function: string;
+    payload: string;
+}
+
+
 /**
 */
 export class Algorithm {
@@ -73,6 +80,12 @@ export class KeyPair {
 * @returns {KeyPair}
 */
   static generate_with_configuration(config: KeyGenConfiguration): KeyPair;
+/**
+* @param {PublicKey} public_key
+* @param {PrivateKey} private_key
+* @returns {KeyPair}
+*/
+  static from_pair(public_key: PublicKey, private_key: PrivateKey): KeyPair;
 /**
 * @returns {PrivateKey}
 */
@@ -153,6 +166,11 @@ export class MultihashDigestFunction {
 export class PrivateKey {
   free(): void;
 /**
+* @param {Key} key
+* @returns {PrivateKey}
+*/
+  static from_js_key(key: Key): PrivateKey;
+/**
 * @returns {string}
 */
   readonly digest_function: string;
@@ -223,11 +241,13 @@ export interface InitOutput {
   readonly __wbg_privatekey_free: (a: number) => void;
   readonly privatekey_digest_function: (a: number, b: number) => void;
   readonly privatekey_payload: (a: number, b: number) => void;
+  readonly privatekey_from_js_key: (a: number) => number;
   readonly publickey_from_multihash: (a: number) => number;
   readonly __wbg_keypair_free: (a: number) => void;
   readonly keypair_public_key: (a: number) => number;
   readonly keypair_private_key: (a: number) => number;
   readonly keypair_generate_with_configuration: (a: number) => number;
+  readonly keypair_from_pair: (a: number, b: number) => number;
   readonly __wbg_multihashdigestfunction_free: (a: number) => void;
   readonly multihashdigestfunction_ed25519pub: () => number;
   readonly multihashdigestfunction_secp256k1pub: () => number;

@@ -542,6 +542,7 @@ name = "iroha_crypto_wasm"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
+ "hex",
  "hex-literal",
  "iroha_crypto_core",
  "wasm-bindgen",

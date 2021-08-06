@@ -18,11 +18,13 @@ export function keygenconfiguration_with_algorithm(a: number, b: number): number
 export function __wbg_privatekey_free(a: number): void;
 export function privatekey_digest_function(a: number, b: number): void;
 export function privatekey_payload(a: number, b: number): void;
+export function privatekey_from_js_key(a: number): number;
 export function publickey_from_multihash(a: number): number;
 export function __wbg_keypair_free(a: number): void;
 export function keypair_public_key(a: number): number;
 export function keypair_private_key(a: number): number;
 export function keypair_generate_with_configuration(a: number): number;
+export function keypair_from_pair(a: number, b: number): number;
 export function __wbg_multihashdigestfunction_free(a: number): void;
 export function multihashdigestfunction_ed25519pub(): number;
 export function multihashdigestfunction_secp256k1pub(): number;
