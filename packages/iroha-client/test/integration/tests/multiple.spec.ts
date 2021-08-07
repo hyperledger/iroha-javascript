@@ -195,7 +195,7 @@ test('transaction-committed event is triggered after AddAsset instruction has be
         await new Promise<void>((resolveSubscribed, rejectSubscribed) => {
             transactionCommittedPromise = new Promise((resolveTransaction) => {
                 client
-                    .listenEvents({ filter })
+                    .listenForEvents({ filter })
                     .then(({ close, ee }) => {
                         ee.on('event', (event) => {
                             event.match({
