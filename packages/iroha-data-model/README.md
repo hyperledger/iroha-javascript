@@ -5,15 +5,15 @@ Generated SCALE-definitions for Iroha Data Model
 ### Usage
 
 ```ts
-import { types, IrohaTypes } from '@iroha/data-model`
+import { irohaCodec, IrohaDataModel } from '@iroha/data-model`
 
-const assetDefinitionId: IrohaTypes['iroha_data_model::asset::DefinitionId'] = {
+const assetDefinitionId: IrohaDataModel['iroha_data_model::asset::DefinitionId'] = {
     name: 'Alice',
     domainName: 'Wonderland'
 };
 
-const encoded = types.encode('iroha_data_model::asset::DefinitionId', assedDefinitionId);
-const decoded = types.decode('iroha_data_model::asset::DefinitionId', encoded);
+const encoded = irohaCodec.encode('iroha_data_model::asset::DefinitionId', assedDefinitionId);
+const decoded = irohaCodec.decode('iroha_data_model::asset::DefinitionId', encoded);
 ```
 
 ### Regenerate schema

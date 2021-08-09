@@ -14,8 +14,8 @@ async function main() {
 
     consola.info('Generating code...');
     const generated = generate(codegenDefinitions, {
-        namespaceTypeName: 'IrohaTypes',
-        namespaceValueName: 'types',
+        namespaceTypeName: 'IrohaDataModel',
+        namespaceValueName: 'irohaCodec',
         importLib: '@scale-codec/namespace',
         structPropsCamelCase: true,
     });

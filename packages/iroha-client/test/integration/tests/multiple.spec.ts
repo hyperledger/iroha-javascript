@@ -2,7 +2,7 @@ import initCryptoWasm, { Multihash, KeyPair, PublicKey, PrivateKey } from '@iroh
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
-import { createClient, Enum, Result, IrohaTypes } from '../../../src/lib';
+import { createClient, Enum, Result, IrohaDataModel } from '../../../src/lib';
 import JSBI from 'jsbi';
 import fs from 'fs/promises';
 import { hexToBytes } from 'hada';
@@ -14,8 +14,8 @@ const client = createClient({
 let keyPair: KeyPair;
 
 function wrapInstruction(
-    item: IrohaTypes['iroha_data_model::isi::Instruction'],
-): IrohaTypes['iroha_data_model::transaction::Payload'] {
+    item: IrohaDataModel['iroha_data_model::isi::Instruction'],
+): IrohaDataModel['iroha_data_model::transaction::Payload'] {
     return {
         instructions: [item],
         timeToLiveMs: JSBI.BigInt(100_000),
@@ -26,8 +26,8 @@ function wrapInstruction(
 }
 
 function wrapQuery(
-    query: IrohaTypes['iroha_data_model::query::QueryBox'],
-): IrohaTypes['iroha_data_model::query::Payload'] {
+    query: IrohaDataModel['iroha_data_model::query::QueryBox'],
+): IrohaDataModel['iroha_data_model::query::Payload'] {
     return {
         query,
         accountId: client_config.account,
@@ -35,13 +35,13 @@ function wrapQuery(
     };
 }
 
-async function addAsset(definitionid: IrohaTypes['iroha_data_model::asset::DefinitionId']) {
-    const definition: IrohaTypes['iroha_data_model::asset::AssetDefinition'] = {
+async function addAsset(definitionid: IrohaDataModel['iroha_data_model::asset::DefinitionId']) {
+    const definition: IrohaDataModel['iroha_data_model::asset::AssetDefinition'] = {
         id: definitionid,
         valueType: Enum.create('BigQuantity'),
     };
 
-    const createAsset: IrohaTypes['iroha_data_model::isi::RegisterBox'] = {
+    const createAsset: IrohaDataModel['iroha_data_model::isi::RegisterBox'] = {
         object: {
             expression: Enum.create('Raw', Enum.create('Identifiable', Enum.create('AssetDefinition', definition))),
         },
@@ -53,8 +53,8 @@ async function addAsset(definitionid: IrohaTypes['iroha_data_model::asset::Defin
     });
 }
 
-async function addAccount(accountId: IrohaTypes['iroha_data_model::account::Id']) {
-    const registerBox: IrohaTypes['iroha_data_model::isi::RegisterBox'] = {
+async function addAccount(accountId: IrohaDataModel['iroha_data_model::account::Id']) {
+    const registerBox: IrohaDataModel['iroha_data_model::isi::RegisterBox'] = {
         object: {
             expression: Enum.create(
                 'Raw',
@@ -120,7 +120,7 @@ test('Peer is healthy', async () => {
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-    type AssetDefinitionId = IrohaTypes['iroha_data_model::asset::DefinitionId'];
+    type AssetDefinitionId = IrohaDataModel['iroha_data_model::asset::DefinitionId'];
 
     const normalAssetDefinitionId: AssetDefinitionId = {
         name: 'xor',
@@ -152,7 +152,7 @@ test('AddAsset instruction with name length more than limit is not committed', a
 });
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
-    type AccountId = IrohaTypes['iroha_data_model::account::Id'];
+    type AccountId = IrohaDataModel['iroha_data_model::account::Id'];
 
     const normal: AccountId = {
         name: 'bob',
@@ -184,11 +184,11 @@ test('transaction-committed event is triggered after AddAsset instruction has be
     let closeEventsConnection: Function | undefined;
 
     try {
-        const pipelineFilter: IrohaTypes['iroha_data_model::events::pipeline::EventFilter'] = {
+        const pipelineFilter: IrohaDataModel['iroha_data_model::events::pipeline::EventFilter'] = {
             entity: Enum.create('Some', Enum.create('Transaction')),
             hash: Enum.create('None'),
         };
-        const filter: IrohaTypes['iroha_data_model::events::EventFilter'] = Enum.create('Pipeline', pipelineFilter);
+        const filter: IrohaDataModel['iroha_data_model::events::EventFilter'] = Enum.create('Pipeline', pipelineFilter);
 
         // setting up listening
         let transactionCommittedPromise: Promise<void>;

@@ -1,4 +1,4 @@
-import { Enum, IrohaTypes, types } from '@iroha/data-model';
+import { Enum, IrohaDataModel, irohaCodec } from '@iroha/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
 
@@ -6,12 +6,12 @@ export interface EventsEmitteryMap {
     close: CloseEvent;
     error: ErrorEvent;
     accepted: undefined;
-    event: IrohaTypes['iroha_data_model::events::Event'];
+    event: IrohaDataModel['iroha_data_model::events::Event'];
 }
 
 export interface SetupEventsParams {
     toriiURL: string;
-    filter: IrohaTypes['iroha_data_model::events::EventFilter'];
+    filter: IrohaDataModel['iroha_data_model::events::EventFilter'];
 }
 
 export interface SetupEventsReturn {
@@ -29,7 +29,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         error: ErrorEvent;
         close: CloseEvent;
         subscription_accepted: undefined;
-        event: IrohaTypes['iroha_data_model::events::Event'];
+        event: IrohaDataModel['iroha_data_model::events::Event'];
     }>();
 
     ee.on('close', (e) => eeExternal.emit('close', e));
@@ -76,8 +76,11 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         // }, 1000);
     }
 
-    function sendMessage(msg: IrohaTypes['iroha_data_model::events::EventSocketMessage']) {
-        const encoded = types.encode('iroha_data_model::events::VersionedEventSocketMessage', Enum.create('V1', [msg]));
+    function sendMessage(msg: IrohaDataModel['iroha_data_model::events::EventSocketMessage']) {
+        const encoded = irohaCodec.encode(
+            'iroha_data_model::events::VersionedEventSocketMessage',
+            Enum.create('V1', [msg]),
+        );
         socket.send(encoded);
     }
 
@@ -93,7 +96,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             throw new Error('Unexpected array data');
         }
 
-        const event = types
+        const event = irohaCodec
             .decode('iroha_data_model::events::VersionedEventSocketMessage', new Uint8Array(data))
             .as('V1')[0];
 

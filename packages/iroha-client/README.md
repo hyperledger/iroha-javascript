@@ -7,7 +7,7 @@ Client for Iroha 2.
 ### Client creation
 
 ```ts
-import { createClient, IrohaTypes } from '@iroha/client';
+import { createClient, IrohaDataModel } from '@iroha/client';
 import { KeyPair } from '@iroha/crypto';
 
 // you create KeyPair in some way
@@ -19,7 +19,7 @@ const client = createClient({
 
 // use it!
 
-const payload: IrohaTypes['iroha_data_model::transaction::Payload'] = {
+const payload: IrohaDataModel['iroha_data_model::transaction::Payload'] = {
     /* ... */
 }
 
@@ -34,15 +34,15 @@ await client.submitTransaction({
 Let's add new account:
 
 ```ts
-import { IrohaTypes, Enum } from '@iroha/client';
+import { IrohaDataModel, Enum } from '@iroha/client';
 import JSBI from 'jsbi';
 
-const newAccountId: IrohaTypes['iroha_data_model::account::Id'] = {
+const newAccountId: IrohaDataModel['iroha_data_model::account::Id'] = {
     name: 'bob',
     domainName: 'wonderland',
 };
 
-const registerBox: IrohaTypes['iroha_data_model::isi::RegisterBox'] = {
+const registerBox: IrohaDataModel['iroha_data_model::isi::RegisterBox'] = {
     object: {
         expression: Enum.create(
             'Raw',
@@ -60,7 +60,7 @@ const registerBox: IrohaTypes['iroha_data_model::isi::RegisterBox'] = {
     },
 };
 
-const payload: IrohaTypes['iroha_data_model::transaction::Payload'] = {
+const payload: IrohaDataModel['iroha_data_model::transaction::Payload'] = {
     instructions: [item],
     timeToLiveMs: JSBI.BigInt(100_000),
     creationTime: JSBI.BigInt(Date.now()),
@@ -83,12 +83,12 @@ await client.submitInstruction({
 Let's find all of existing accounts and extract from them their IDs:
 
 ```ts
-import { IrohaTypes, Enum } from '@iroha/client';
+import { IrohaDataModel, Enum } from '@iroha/client';
 import JSBI from 'jsbi';
 
-const query: IrohaTypes['iroha_data_model::query::QueryBox'] = Enum.create('FindAllAccounts', {});
+const query: IrohaDataModel['iroha_data_model::query::QueryBox'] = Enum.create('FindAllAccounts', {});
 
-const payload: IrohaTypes['iroha_data_model::query::Payload'] = {
+const payload: IrohaDataModel['iroha_data_model::query::Payload'] = {
     query,
     accountId: client_config.account,
     timestampMs: JSBI.BigInt(Date.now()),
@@ -100,7 +100,7 @@ const result = await client.makeQuery({
     signing: keyPair,
 });
 
-const existingAccounts: IrohaTypes['iroha_data_model::account::Id'][] = result
+const existingAccounts: IrohaDataModel['iroha_data_model::account::Id'][] = result
     .as('Ok')
     .as('Vec')
     .map((val) => val.as('Identifiable').as('Account').id);
@@ -113,13 +113,13 @@ console.log('IDs of existing accounts:', existingAccounts);
 Let's listen for any committed transactions:
 
 ```ts
-import { Enum, IrohaTypes } from '@iroha/client';
+import { Enum, IrohaDataModel } from '@iroha/client';
 
-const pipelineFilter: IrohaTypes['iroha_data_model::events::pipeline::EventFilter'] = {
+const pipelineFilter: IrohaDataModel['iroha_data_model::events::pipeline::EventFilter'] = {
     entity: Enum.create('Some', Enum.create('Transaction')),
     hash: Enum.create('None'),
 };
-const filter: IrohaTypes['iroha_data_model::events::EventFilter'] = Enum.create('Pipeline', pipelineFilter);
+const filter: IrohaDataModel['iroha_data_model::events::EventFilter'] = Enum.create('Pipeline', pipelineFilter);
 
 // Setting up WebSocket connection
 // `await` here for final connection establishment
