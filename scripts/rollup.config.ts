@@ -4,12 +4,12 @@ import dts from 'rollup-plugin-dts';
 import path from 'path';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
-function defineDefaultCjsEsmDts(params: { packageName: string; external?: string[] }): RollupOptions[] {
-    const { packageName, external } = params;
+function defineDefaultCjsEsmDts(params: { packageDir: string; external?: string[] }): RollupOptions[] {
+    const { packageDir, external } = params;
 
-    const inputTs = path.resolve(__dirname, `../packages/${packageName}/src/lib.ts`);
-    const inputDts = path.resolve(__dirname, `../.declaration/${packageName}/src/lib.d.ts`);
-    const distDir = path.resolve(__dirname, `../packages/${packageName}/dist`);
+    const inputTs = path.resolve(__dirname, `../packages/${packageDir}/src/lib.ts`);
+    const inputDts = path.resolve(__dirname, `../.declaration/${packageDir}/src/lib.d.ts`);
+    const distDir = path.resolve(__dirname, `../packages/${packageDir}/dist`);
 
     return [
         {
@@ -41,11 +41,11 @@ function defineDefaultCjsEsmDts(params: { packageName: string; external?: string
 
 export default defineConfig([
     ...defineDefaultCjsEsmDts({
-        packageName: 'iroha-client',
+        packageDir: 'iroha-client',
         external: ['@iroha2/crypto', '@iroha2/data-model', 'emittery', 'ws', 'axios'],
     }),
     ...defineDefaultCjsEsmDts({
-        packageName: 'iroha-data-model',
+        packageDir: 'iroha-data-model',
         external: ['@scale-codec/enum', '@scale-codec/namespace'],
     }),
 ]);

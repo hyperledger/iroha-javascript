@@ -9,7 +9,7 @@
         "build:rollup": "rollup -c rollup.config.js",
         "build:dts": "tsc -p tsconfig.json --declaration --declarationDir .declaration --emitDeclarationOnly",
         "type-check": "tsc --noEmit",
-        "publish": "esno scripts/publish"
+        "publish-all": "esno scripts/publish-all"
     },
     "devDependencies": {
         "@jest/types": "^27.0.6",
@@ -17,6 +17,7 @@
         "@types/jest": "^26.0.24",
         "@typescript-eslint/eslint-plugin": "^4.28.2",
         "@typescript-eslint/parser": "^4.28.2",
+        "chalk": "^4.1.2",
         "consola": "^2.15.3",
         "del-cli": "^4.0.1",
         "esbuild-register": "^2.6.0",
