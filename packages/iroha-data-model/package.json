@@ -1,5 +1,5 @@
 {
-    "name": "@iroha/data-model",
+    "name": "@iroha2/data-model",
     "version": "0.1.0",
     "main": "src/lib.ts",
     "scripts": {

@@ -13,7 +13,7 @@ const config = {
     testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     modulePathIgnorePatterns: ['/dist/'],
     moduleNameMapper: {
-        '^@iroha/data-model': '<rootDir>/../iroha-data-model/src/lib.ts',
+        '^@iroha2/data-model': '<rootDir>/../iroha-data-model/src/lib.ts',
     },
 };
 

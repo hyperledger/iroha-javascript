@@ -1,5 +1,5 @@
-import { IrohaDataModel, irohaCodec, Enum, Result } from '@iroha/data-model';
-import { KeyPair, Signature, Hash } from '@iroha/crypto';
+import { IrohaDataModel, irohaCodec, Enum, Result } from '@iroha2/data-model';
+import { KeyPair, Signature, Hash } from '@iroha2/crypto';
 import Axios, { AxiosError } from 'axios';
 import { SetupEventsParams, SetupEventsReturn, setupEventsWebsocketConnection } from './events';
 import { collect, createScope } from './collect-garbage';

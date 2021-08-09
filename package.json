@@ -2,7 +2,8 @@
     "name": "@iroha/monorepo",
     "version": "0.0.0",
     "scripts": {
-        "preinstall": "npx only-allow pnpm"
+        "preinstall": "npx only-allow pnpm",
+        "test": "pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto"
     },
     "devDependencies": {
         "@jest/types": "^27.0.6",

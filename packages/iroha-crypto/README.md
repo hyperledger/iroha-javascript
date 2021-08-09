@@ -1,4 +1,4 @@
-# @iroha/crypto
+# @iroha2/crypto
 
 Iroha's cryptography wrapped into WASM.
 
@@ -9,7 +9,7 @@ It is not trivial to load WASM in universal way in any environment. Current impl
 #### Example of usage lib in browser
 
 ```ts
-import initWasm, { KeyPair, KeyGenConfiguration } from '@iroha/crypto';
+import initWasm, { KeyPair, KeyGenConfiguration } from '@iroha2/crypto';
 
 // before any manipulations with exported tools you have to initialize wasm
 initWasm().then(() => {
@@ -21,11 +21,11 @@ initWasm().then(() => {
 #### Example of usage in NodeJS
 
 ```ts
-import initWasm from '@iroha/crypto';
+import initWasm from '@iroha2/crypto';
 import fs from 'fs/promises';
 
 async function loadWasmFromFile() {
-    const wasmPath = require.resolve('@iroha/crypto/wasm/iroha_crypto_bg.wasm');
+    const wasmPath = require.resolve('@iroha2/crypto/wasm/iroha_crypto_bg.wasm');
     const buffer = await fs.readFile(wasmPath);
     return buffer;
 }

@@ -1,5 +1,5 @@
 {
-    "name": "@iroha/crypto-test-web",
+    "name": "@iroha2/crypto-test-web",
     "version": "0.0.0",
     "description": "",
     "main": "index.js",
@@ -14,7 +14,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@iroha/crypto": "link:../..",
+        "@iroha2/crypto": "link:../..",
         "cypress": "^8.1.0",
         "hada": "^0.0.8",
         "start-server-and-test": "^1.13.1",

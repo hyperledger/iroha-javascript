@@ -1,4 +1,4 @@
-# @iroha/client
+# @iroha2/client
 
 Client for Iroha 2.
 
@@ -7,8 +7,8 @@ Client for Iroha 2.
 ### Client creation
 
 ```ts
-import { createClient, IrohaDataModel } from '@iroha/client';
-import { KeyPair } from '@iroha/crypto';
+import { createClient, IrohaDataModel } from '@iroha2/client';
+import { KeyPair } from '@iroha2/crypto';
 
 // you create KeyPair in some way
 const keyPair: KeyPair = /* ... */;
@@ -34,7 +34,7 @@ await client.submitTransaction({
 Let's add new account:
 
 ```ts
-import { IrohaDataModel, Enum } from '@iroha/client';
+import { IrohaDataModel, Enum } from '@iroha2/client';
 import JSBI from 'jsbi';
 
 const newAccountId: IrohaDataModel['iroha_data_model::account::Id'] = {
@@ -83,7 +83,7 @@ await client.submitInstruction({
 Let's find all of existing accounts and extract from them their IDs:
 
 ```ts
-import { IrohaDataModel, Enum } from '@iroha/client';
+import { IrohaDataModel, Enum } from '@iroha2/client';
 import JSBI from 'jsbi';
 
 const query: IrohaDataModel['iroha_data_model::query::QueryBox'] = Enum.create('FindAllAccounts', {});
@@ -113,7 +113,7 @@ console.log('IDs of existing accounts:', existingAccounts);
 Let's listen for any committed transactions:
 
 ```ts
-import { Enum, IrohaDataModel } from '@iroha/client';
+import { Enum, IrohaDataModel } from '@iroha2/client';
 
 const pipelineFilter: IrohaDataModel['iroha_data_model::events::pipeline::EventFilter'] = {
     entity: Enum.create('Some', Enum.create('Transaction')),

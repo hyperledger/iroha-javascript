@@ -1,5 +1,5 @@
 {
-    "name": "@iroha/test-peer",
+    "name": "@iroha2/test-peer",
     "version": "0.0.0",
     "main": "src/lib.ts",
     "scripts": {

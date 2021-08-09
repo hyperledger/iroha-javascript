@@ -1,11 +1,11 @@
-# @iroha/data-model
+# @iroha2/data-model
 
 Generated SCALE-definitions for Iroha Data Model
 
 ### Usage
 
 ```ts
-import { irohaCodec, IrohaDataModel } from '@iroha/data-model`
+import { irohaCodec, IrohaDataModel } from '@iroha2/data-model`
 
 const assetDefinitionId: IrohaDataModel['iroha_data_model::asset::DefinitionId'] = {
     name: 'Alice',

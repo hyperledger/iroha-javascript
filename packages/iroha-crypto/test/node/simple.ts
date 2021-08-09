@@ -1,9 +1,9 @@
 import { hexToBytes } from 'hada';
-import init, { KeyGenConfiguration, KeyPair, Multihash } from '@iroha/crypto';
+import init, { KeyGenConfiguration, KeyPair, Multihash } from '@iroha2/crypto';
 import fs from 'fs/promises';
 
 beforeAll(async () => {
-    const buffer = await fs.readFile(require.resolve('@iroha/crypto/wasm/iroha_crypto_bg.wasm'));
+    const buffer = await fs.readFile(require.resolve('@iroha2/crypto/wasm/iroha_crypto_bg.wasm'));
     await init(buffer);
 });
 

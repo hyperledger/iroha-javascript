@@ -1,7 +1,7 @@
 import { cac } from 'cac';
 import consola from 'consola';
-import { IrohaClient } from '@iroha/client';
-import { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/cjs';
+import { IrohaClient } from '@iroha2/client';
+import { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha2/crypto/cjs';
 import fs from 'fs/promises';
 
 const cli = cac('iroha-client-cli');

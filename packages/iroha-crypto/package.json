@@ -1,5 +1,5 @@
 {
-    "name": "@iroha/crypto",
+    "name": "@iroha2/crypto",
     "version": "0.1.0",
     "module": "lib.js",
     "main": "lib.js",

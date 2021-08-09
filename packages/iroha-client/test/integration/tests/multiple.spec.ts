@@ -1,5 +1,5 @@
-import initCryptoWasm, { Multihash, KeyPair, PublicKey, PrivateKey } from '@iroha/crypto';
-import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha/test-peer';
+import initCryptoWasm, { Multihash, KeyPair, PublicKey, PrivateKey } from '@iroha2/crypto';
+import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
 import { createClient, Enum, Result, IrohaDataModel } from '../../../src/lib';
@@ -89,7 +89,7 @@ beforeAll(async () => {
     });
 
     // initialise crypto WASM
-    const wasmBytes = await fs.readFile(require.resolve('@iroha/crypto/wasm/iroha_crypto_bg.wasm'));
+    const wasmBytes = await fs.readFile(require.resolve('@iroha2/crypto/wasm/iroha_crypto_bg.wasm'));
     await initCryptoWasm(wasmBytes);
 
     // preparing keys

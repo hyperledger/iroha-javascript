@@ -1,4 +1,4 @@
-import { Enum, IrohaDataModel, irohaCodec } from '@iroha/data-model';
+import { Enum, IrohaDataModel, irohaCodec } from '@iroha2/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
 

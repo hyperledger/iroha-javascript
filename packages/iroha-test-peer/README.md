@@ -1,6 +1,6 @@
-# @iroha/test-peer
+# @iroha2/test-peer
 
-Wrapper around `iroha_cli` crate binary that provides easy-to-use interface to work with Iroha peer. Usefull for tests and used by `@iroha/client` for it's e2e-tests.
+Wrapper around `iroha_cli` crate binary that provides easy-to-use interface to work with Iroha peer. Usefull for tests and used by `@iroha2/client` for it's e2e-tests.
 
 **This package requires Rust's toolchain and Cargo to be installed on working machine.**
 
