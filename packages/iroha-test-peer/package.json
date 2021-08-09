@@ -3,13 +3,13 @@
     "version": "0.0.0",
     "main": "src/lib.ts",
     "scripts": {
-        "postinstall": "node -r esbuild-register scripts/prepare-iroha.ts",
-        "cli": "node -r esbuild-register scripts/cli.ts"
+        "postinstall": "esno scripts/prepare-iroha.ts",
+        "cli": "esno scripts/cli.ts"
     },
     "dependencies": {
         "cac": "^6.7.3",
         "consola": "^2.15.3",
-        "esbuild-register": "^2.6.0",
+        "esno": "^0.8.0",
         "execa": "^5.1.1"
     }
 }

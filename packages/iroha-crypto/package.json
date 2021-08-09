@@ -9,6 +9,7 @@
         "lib.js",
         "lib.d.ts"
     ],
+    "license": "Apache 2.0",
     "scripts": {
         "build-wasm": "esno scripts/build-wasm",
         "test": "esno scripts/test"
