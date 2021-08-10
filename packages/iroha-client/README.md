@@ -29,7 +29,7 @@ await client.submitTransaction({
 })
 ```
 
-### Submit instruction
+### Submit transaction
 
 Let's add new account:
 
@@ -72,7 +72,7 @@ const payload: IrohaDataModel['iroha_data_model::transaction::Payload'] = {
 };
 
 // Submitting transaction
-await client.submitInstruction({
+await client.submitTransaction({
     payload,
     signing: keyPair,
 });
