@@ -2,6 +2,7 @@ import execa from 'execa';
 import fs from 'fs/promises';
 
 export async function saveDataAsJSON(data: unknown, destination: string): Promise<void> {
+    console.log('saving json', data, destination);
     await fs.writeFile(destination, JSON.stringify(data), { encoding: 'utf-8' });
 }
 
