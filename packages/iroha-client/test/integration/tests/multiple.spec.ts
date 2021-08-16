@@ -107,7 +107,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
     startedPeer = await startPeer({
-        // outputPeerLogs: true,
+        outputPeerLogs: true,
     });
 });
 
