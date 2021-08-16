@@ -9,6 +9,7 @@
     "dependencies": {
         "cac": "^6.7.3",
         "consola": "^2.15.3",
+        "del": "^6.0.0",
         "esno": "^0.8.0",
         "execa": "^5.1.1"
     }

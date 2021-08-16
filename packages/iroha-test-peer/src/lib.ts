@@ -16,6 +16,9 @@ export interface StartPeerParams {
 }
 
 export interface KillPeerParams {
+    /**
+     * If set to `true`, then after killing all side effects will be cleared, e.g. saved blocks
+     */
     clearSideEffects?: boolean;
 }
 
@@ -81,7 +84,7 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
         subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 });
 
         await exitPromise;
-        params?.clearSideEffects && clearSideEffects();
+        params?.clearSideEffects && (await clearSideEffects());
 
         return exitPromise;
     }
@@ -114,9 +117,9 @@ export async function setConfiguration(configs: IrohaConfiguration): Promise<voi
 /**
  * Clear config files
  */
-export async function clearConfiguration(params?: { force?: boolean }): Promise<void> {
+export async function clearConfiguration(): Promise<void> {
     const rmTarget = path.resolve(deployDir, '*.json');
-    await rmWithParams(rmTarget, params);
+    await rmWithParams(rmTarget);
 }
 
 /**
@@ -124,7 +127,7 @@ export async function clearConfiguration(params?: { force?: boolean }): Promise<
  *
  * (Remove `blocks` dir)
  */
-export async function clearSideEffects(params?: { force?: boolean }) {
+export async function clearSideEffects() {
     const rmTarget = path.resolve(deployDir, 'blocks');
-    await rmWithParams(rmTarget, { ...params, recursive: true });
+    await rmWithParams(rmTarget);
 }
