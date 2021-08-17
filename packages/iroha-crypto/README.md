@@ -2,6 +2,21 @@
 
 Iroha's cryptography wrapped into WASM.
 
+## Installation
+
+Configure your package manager to fetch scoped packages from nexus. Example for `npm`/`pnpm` - file `.npmrc`:
+
+```ini
+# .npmrc
+@iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+```
+
+Then, install packages: 
+
+```sh
+npm i @iroha2/crypto
+```
+
 ## Usage notes
 
 It is not trivial to load WASM in universal way in any environment. Current implementations tested in browser **when it is used as native ES module** (e.g. with `vite`) and in NodeJS **when it is used with some ES module register** (e.g. with `esbuild-register`).
