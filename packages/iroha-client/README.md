@@ -1,66 +1,72 @@
-# @iroha/client
+# @iroha2/client
+
+Client for Iroha 2.
+
+## Installation
+
+Configure your package manager to fetch scoped packages from nexus. Example for `npm`/`pnpm` - file `.npmrc`:
+
+```ini
+# .npmrc
+@iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+```
+
+Then, install packages: 
+
+```sh
+npm i @iroha2/client @iroha2/crypto @iroha2/data-model jsbi
+```
+
+> `jsbi` is a peer dependency of `@scale-codec/*` packages
 
 ## Usage
 
 ### Client creation
 
 ```ts
-import { IrohaClient, IrohaClientConfiguration } from '@iroha/client';
-import { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/cjs';
+import { createClient, IrohaDataModel } from '@iroha2/client';
+import { KeyPair } from '@iroha2/crypto';
 
-const config: IrohaClientConfiguration = {
-    toriiURL: 'http://localhost:8080',
-    account: {
-        name: 'alice',
-        domainName: 'wonderland',
-    },
-    publicKey: {
-        digest: 'ed25519',
-        hex: 'e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
-    },
-    privateKey: {
-        digest: 'ed25519',
-        hex: 'de757bcb79f4c63e8fa0795edc26f86dfdba189b846e903d0b732bb644607720e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
-    },
-};
+// you create KeyPair in some way
+const keyPair: KeyPair = /* ... */;
 
-const client = new IrohaClient({
-    config,
-    hashFn: create_blake2b_32_hash,
-    signFn: sign_with_ed25519_sha512,
-});
+const client = createClient({
+    toriiURL: 'http://localhost:8080'
+})
+
+// use it!
+
+const payload: IrohaDataModel['iroha_data_model::transaction::Payload'] = {
+    /* ... */
+}
+
+await client.submitTransaction({
+    payload,
+    signing: keyPair
+})
 ```
 
-> If you import crypto-functions from `@iroha/crypto/cjs`, then you can use client immediately, but if from `@iroha/crypto/esm` (in browser), then you should initialize crypto first with `init()`:
->
-> ```ts
-> import init, { create_blake2b_32_hash, sign_with_ed25519_sha512 } from '@iroha/crypto/esm';
->
-> init().then(() => {
->     // now you can use client
-> });
-> ```
-
-### Submit instruction
+### Submit transaction
 
 Let's add new account:
 
 ```ts
-import { IrohaTypes, Enum } from '@iroha/data-model';
+import { IrohaDataModel, Enum } from '@iroha2/client';
+import JSBI from 'jsbi';
 
-const accountId: IrohaTypes['iroha_data_model::account::Id'] = {
-    name: 'Alice',
-    domainName: 'Wonderland',
+const newAccountId: IrohaDataModel['iroha_data_model::account::Id'] = {
+    name: 'bob',
+    domainName: 'wonderland',
 };
 
-const registerBox: IrohaTypes['iroha_data_model::isi::RegisterBox'] = {
+const registerBox: IrohaDataModel['iroha_data_model::isi::RegisterBox'] = {
     object: {
         expression: Enum.create(
             'Raw',
             Enum.create(
                 'Identifiable',
                 Enum.create('NewAccount', {
-                    id: accountId,
+                    id: newAccountId,
                     signatories: [],
                     metadata: {
                         map: new Map(),
@@ -71,54 +77,84 @@ const registerBox: IrohaTypes['iroha_data_model::isi::RegisterBox'] = {
     },
 };
 
-client.submitInstruction(Enum.create('Register', registerBox)).then(() => {
-    console.log('Submitted!');
+const payload: IrohaDataModel['iroha_data_model::transaction::Payload'] = {
+    instructions: [item],
+    timeToLiveMs: JSBI.BigInt(100_000),
+    creationTime: JSBI.BigInt(Date.now()),
+    metadata: new Map(),
+    accountId: {
+        name: 'alice',
+        domainName: 'wonderland',
+    },
+};
+
+// Submitting transaction
+await client.submitTransaction({
+    payload,
+    signing: keyPair,
 });
 ```
 
-### Query
+### Make query
+
+Let's find all of existing accounts and extract from them their IDs:
 
 ```ts
-import { IrohaTypes, Enum } from '@iroha/data-model';
+import { IrohaDataModel, Enum } from '@iroha2/client';
+import JSBI from 'jsbi';
 
-client.query(Enum.create('FindAllAccounts', {})).then((queryResult) => {
-    const existingAccounts: IrohaTypes['iroha_data_model::account::Id'][] = queryResult
-        .as('Ok')
-        .as('Vec')
-        .map((val) => val.as('Identifiable').as('Account').id);
+const query: IrohaDataModel['iroha_data_model::query::QueryBox'] = Enum.create('FindAllAccounts', {});
 
-    console.log("Existing account's ids:", existingAccounts);
+const payload: IrohaDataModel['iroha_data_model::query::Payload'] = {
+    query,
+    accountId: client_config.account,
+    timestampMs: JSBI.BigInt(Date.now()),
+};
+
+// Making query
+const result = await client.makeQuery({
+    payload,
+    signing: keyPair,
 });
+
+const existingAccounts: IrohaDataModel['iroha_data_model::account::Id'][] = result
+    .as('Ok')
+    .as('Vec')
+    .map((val) => val.as('Identifiable').as('Account').id);
+
+console.log('IDs of existing accounts:', existingAccounts);
 ```
 
-### Listening for events
+### Listen for events
+
+Let's listen for any committed transactions:
 
 ```ts
-import { Enum } from '@iroha/data-model';
+import { Enum, IrohaDataModel } from '@iroha2/client';
 
-client
-    .listenToEvents({
-        eventFilter: Enum.create('Pipeline', pipelineFilter),
-        on: {
-            event: (event) => {
-                event.match({
-                    Pipeline({ entityType, status }) {
-                        if (entityType.is('Transaction') && status.is('Committed')) {
-                            console.log('New transaction has committed!');
-                        }
-                    },
-                    Data() {},
-                });
-            },
+const pipelineFilter: IrohaDataModel['iroha_data_model::events::pipeline::EventFilter'] = {
+    entity: Enum.create('Some', Enum.create('Transaction')),
+    hash: Enum.create('None'),
+};
+const filter: IrohaDataModel['iroha_data_model::events::EventFilter'] = Enum.create('Pipeline', pipelineFilter);
+
+// Setting up WebSocket connection
+// `await` here for final connection establishment
+// `ee` is an instance of Emmittery, a convenient event-emitter library
+// `close` is for connection closing
+const { ee, close } = await client.listenForEvents({ filter });
+
+ee.on('event', (event) => {
+    event.match({
+        Pipeline({ entityType, status }) {
+            if (entityType.is('Transaction') && status.is('Committed')) {
+                console.log('New transaction has been committed!');
+            }
         },
-    })
-    .then(({ close }) => {
-        console.log('Connection opened');
-
-        // Closing connection after 10 seconds
-        setTimeout(close, 10_000);
-    })
-    .catch((err) => {
-        console.error('Connection failed:', err);
+        Data() {},
     });
+});
+
+// Close connection after 10 seconds, for example
+setTimeout(close, 10_000);
 ```

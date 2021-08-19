@@ -15,7 +15,7 @@ import {
 import debugRoot from 'debug';
 import RefConverter from './RefConverter';
 
-const debug = debugRoot('@iroha/data-model:rust-convert');
+const debug = debugRoot('@iroha2/data-model:rust-convert');
 
 function ok<Ok, Err>(ok: Ok): Result<Ok, Err> {
     return Enum.create('Ok', ok);

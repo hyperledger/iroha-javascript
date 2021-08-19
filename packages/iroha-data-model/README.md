@@ -1,19 +1,36 @@
-# @iroha/data-model
+# @iroha2/data-model
 
 Generated SCALE-definitions for Iroha Data Model
+
+## Installation
+
+Configure your package manager to fetch scoped packages from nexus. Example for `npm`/`pnpm` - file `.npmrc`:
+
+```ini
+# .npmrc
+@iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+```
+
+Then, install packages: 
+
+```sh
+npm i @iroha2/data-model jsbi
+```
+
+> `jsbi` is a peer dependency of `@scale-codec/*` packages
 
 ### Usage
 
 ```ts
-import { types, IrohaTypes } from '@iroha/data-model`
+import { irohaCodec, IrohaDataModel } from '@iroha2/data-model`
 
-const assetDefinitionId: IrohaTypes['iroha_data_model::asset::DefinitionId'] = {
+const assetDefinitionId: IrohaDataModel['iroha_data_model::asset::DefinitionId'] = {
     name: 'Alice',
     domainName: 'Wonderland'
 };
 
-const encoded = types.encode('iroha_data_model::asset::DefinitionId', assedDefinitionId);
-const decoded = types.decode('iroha_data_model::asset::DefinitionId', encoded);
+const encoded = irohaCodec.encode('iroha_data_model::asset::DefinitionId', assedDefinitionId);
+const decoded = irohaCodec.decode('iroha_data_model::asset::DefinitionId', encoded);
 ```
 
 ### Regenerate schema

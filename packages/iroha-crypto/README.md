@@ -1,48 +1,73 @@
-# @iroha/crypto
+# @iroha2/crypto
 
-This package contains tiny WASM-compiled `ursa` bindings.
+Iroha's cryptography wrapped into WASM.
 
-```ts
-export declare function create_blake2b_32_hash(bytes: Uint8Array): Uint8Array;
+## Installation
 
-export declare function sign_with_ed25519_sha512(message: Uint8Array, private_key: Uint8Array): Uint8Array;
+Configure your package manager to fetch scoped packages from nexus. Example for `npm`/`pnpm` - file `.npmrc`:
+
+```ini
+# .npmrc
+@iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
 ```
 
-### Requirements
+Then, install packages: 
+
+```sh
+npm i @iroha2/crypto
+```
+
+## Usage notes
+
+It is not trivial to load WASM in universal way in any environment. Current implementations tested in browser **when it is used as native ES module** (e.g. with `vite`) and in NodeJS **when it is used with some ES module register** (e.g. with `esbuild-register`).
+
+#### Example of usage lib in browser
+
+```ts
+import initWasm, { KeyPair, KeyGenConfiguration } from '@iroha2/crypto';
+
+// before any manipulations with exported tools you have to initialize wasm
+initWasm().then(() => {
+    // now you can use them
+    const keyPair = KeyPair.generate_with_configuration(new KeyGenConfiguration());
+});
+```
+
+#### Example of usage in NodeJS
+
+```ts
+import initWasm from '@iroha2/crypto';
+import fs from 'fs/promises';
+
+async function loadWasmFromFile() {
+    const wasmPath = require.resolve('@iroha2/crypto/wasm/iroha_crypto_bg.wasm');
+    const buffer = await fs.readFile(wasmPath);
+    return buffer;
+}
+
+initWasm(
+    // here you have to provide wasm bytes manually
+    loadWasmFromFile(),
+).then(() => {
+    const keyPair = KeyPair.generate_with_configuration(new KeyGenConfiguration());
+});
+```
+
+## Development
+
+Requirements:
 
 -   Rust: https://www.rust-lang.org/tools/install
 -   `wasm-pack`: https://rustwasm.github.io/wasm-pack/installer/
 
-Before local usage package should be compiled with command:
+Rebuild wasm:
 
 ```sh
-pnpm build:wasm
+pnpm build-wasm
 ```
 
-### Usage
+Test build in node & web:
 
-Usage depends on the environment in which the package is being used.
-
-In **Node.JS** you can simply import this functions and use them from the `@iroha/crypto/cjs`:
-
-```js
-const { create_blake2b_32_hash } = require('@iroha/crypto/cjs');
-
-create_blake2b_32_hash(new UInt8Array([1, 2, 3]));
+```sh
+pnpm test
 ```
-
-In **Web** you should initialize the WASM first (and import from `@iroha/crypto/esm`):
-
-```js
-import init, { create_blake2b_32_hash } from '@iroha/crypto/esm';
-
-init().then((output) => {
-    // now you can call imported functions
-    create_blake2b_32_hash(new UInt8Array([1, 2, 3]));
-
-    // or you can gen them from init() result
-    output.create_blake2b_32_hash(new UInt8Array([1, 2, 3]));
-});
-```
-
-> I think that this inconsistency should be fixed. BTW, all monorepo should be fixed, IMO.

@@ -17,117 +17,117 @@ import {
     defVec,
 } from '@scale-codec/namespace';
 
-export type IrohaTypes = StdTypes & {
-    'BTreeMap<String, iroha_data_model::Value>': Map<IrohaTypes['str'], IrohaTypes['iroha_data_model::Value']>;
+export type IrohaDataModel = StdTypes & {
+    'BTreeMap<String, iroha_data_model::Value>': Map<IrohaDataModel['str'], IrohaDataModel['iroha_data_model::Value']>;
     'BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>': Map<
-        IrohaTypes['str'],
-        IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>']
+        IrohaDataModel['str'],
+        IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>']
     >;
     'BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::Account>': Map<
-        IrohaTypes['iroha_data_model::account::Id'],
-        IrohaTypes['iroha_data_model::account::Account']
+        IrohaDataModel['iroha_data_model::account::Id'],
+        IrohaDataModel['iroha_data_model::account::Account']
     >;
     'BTreeMap<iroha_data_model::asset::DefinitionId, iroha_data_model::asset::AssetDefinitionEntry>': Map<
-        IrohaTypes['iroha_data_model::asset::DefinitionId'],
-        IrohaTypes['iroha_data_model::asset::AssetDefinitionEntry']
+        IrohaDataModel['iroha_data_model::asset::DefinitionId'],
+        IrohaDataModel['iroha_data_model::asset::AssetDefinitionEntry']
     >;
     'BTreeMap<iroha_data_model::asset::Id, iroha_data_model::asset::Asset>': Map<
-        IrohaTypes['iroha_data_model::asset::Id'],
-        IrohaTypes['iroha_data_model::asset::Asset']
+        IrohaDataModel['iroha_data_model::asset::Id'],
+        IrohaDataModel['iroha_data_model::asset::Asset']
     >;
-    'Option<iroha_crypto::Hash>': Option<IrohaTypes['iroha_crypto::Hash']>;
+    'Option<iroha_crypto::Hash>': Option<IrohaDataModel['iroha_crypto::Hash']>;
     'Option<iroha_data_model::events::pipeline::EntityType>': Option<
-        IrohaTypes['iroha_data_model::events::pipeline::EntityType']
+        IrohaDataModel['iroha_data_model::events::pipeline::EntityType']
     >;
-    'Option<iroha_data_model::isi::Instruction>': Option<IrohaTypes['iroha_data_model::isi::Instruction']>;
-    String: IrohaTypes['str'];
-    'Vec<iroha_crypto::PublicKey>': IrohaTypes['iroha_crypto::PublicKey'][];
-    'Vec<iroha_crypto::Signature>': IrohaTypes['iroha_crypto::Signature'][];
-    'Vec<iroha_data_model::Value>': IrohaTypes['iroha_data_model::Value'][];
-    'Vec<iroha_data_model::isi::Instruction>': IrohaTypes['iroha_data_model::isi::Instruction'][];
-    'Vec<iroha_data_model::permissions::PermissionToken>': IrohaTypes['iroha_data_model::permissions::PermissionToken'][];
+    'Option<iroha_data_model::isi::Instruction>': Option<IrohaDataModel['iroha_data_model::isi::Instruction']>;
+    String: IrohaDataModel['str'];
+    'Vec<iroha_crypto::PublicKey>': IrohaDataModel['iroha_crypto::PublicKey'][];
+    'Vec<iroha_crypto::Signature>': IrohaDataModel['iroha_crypto::Signature'][];
+    'Vec<iroha_data_model::Value>': IrohaDataModel['iroha_data_model::Value'][];
+    'Vec<iroha_data_model::isi::Instruction>': IrohaDataModel['iroha_data_model::isi::Instruction'][];
+    'Vec<iroha_data_model::permissions::PermissionToken>': IrohaDataModel['iroha_data_model::permissions::PermissionToken'][];
     '[u8; 32]': Uint8Array;
-    'iroha_crypto::Hash': [IrohaTypes['[u8; 32]']];
+    'iroha_crypto::Hash': [IrohaDataModel['[u8; 32]']];
     'iroha_crypto::PublicKey': {
-        digestFunction: IrohaTypes['str'];
-        payload: IrohaTypes['Vec<u8>'];
+        digestFunction: IrohaDataModel['str'];
+        payload: IrohaDataModel['Vec<u8>'];
     };
     'iroha_crypto::Signature': {
-        publicKey: IrohaTypes['iroha_crypto::PublicKey'];
-        signature: IrohaTypes['Vec<u8>'];
+        publicKey: IrohaDataModel['iroha_crypto::PublicKey'];
+        signature: IrohaDataModel['Vec<u8>'];
     };
     'iroha_data_model::IdBox': Enum<{
-        AccountId: Valuable<IrohaTypes['iroha_data_model::account::Id']>;
-        AssetId: Valuable<IrohaTypes['iroha_data_model::asset::Id']>;
-        AssetDefinitionId: Valuable<IrohaTypes['iroha_data_model::asset::DefinitionId']>;
-        DomainName: Valuable<IrohaTypes['str']>;
-        PeerId: Valuable<IrohaTypes['iroha_data_model::peer::Id']>;
+        AccountId: Valuable<IrohaDataModel['iroha_data_model::account::Id']>;
+        AssetId: Valuable<IrohaDataModel['iroha_data_model::asset::Id']>;
+        AssetDefinitionId: Valuable<IrohaDataModel['iroha_data_model::asset::DefinitionId']>;
+        DomainName: Valuable<IrohaDataModel['str']>;
+        PeerId: Valuable<IrohaDataModel['iroha_data_model::peer::Id']>;
         WorldId: null;
     }>;
     'iroha_data_model::IdentifiableBox': Enum<{
-        Account: Valuable<IrohaTypes['iroha_data_model::account::Account']>;
-        NewAccount: Valuable<IrohaTypes['iroha_data_model::account::NewAccount']>;
-        Asset: Valuable<IrohaTypes['iroha_data_model::asset::Asset']>;
-        AssetDefinition: Valuable<IrohaTypes['iroha_data_model::asset::AssetDefinition']>;
-        Domain: Valuable<IrohaTypes['iroha_data_model::domain::Domain']>;
-        Peer: Valuable<IrohaTypes['iroha_data_model::peer::Peer']>;
+        Account: Valuable<IrohaDataModel['iroha_data_model::account::Account']>;
+        NewAccount: Valuable<IrohaDataModel['iroha_data_model::account::NewAccount']>;
+        Asset: Valuable<IrohaDataModel['iroha_data_model::asset::Asset']>;
+        AssetDefinition: Valuable<IrohaDataModel['iroha_data_model::asset::AssetDefinition']>;
+        Domain: Valuable<IrohaDataModel['iroha_data_model::domain::Domain']>;
+        Peer: Valuable<IrohaDataModel['iroha_data_model::peer::Peer']>;
         World: null;
     }>;
     'iroha_data_model::Parameter': Enum<{
-        MaximumFaultyPeersAmount: Valuable<IrohaTypes['u32']>;
-        BlockTime: Valuable<IrohaTypes['u128']>;
-        CommitTime: Valuable<IrohaTypes['u128']>;
-        TransactionReceiptTime: Valuable<IrohaTypes['u128']>;
+        MaximumFaultyPeersAmount: Valuable<IrohaDataModel['u32']>;
+        BlockTime: Valuable<IrohaDataModel['u128']>;
+        CommitTime: Valuable<IrohaDataModel['u128']>;
+        TransactionReceiptTime: Valuable<IrohaDataModel['u128']>;
     }>;
     'iroha_data_model::Value': Enum<{
-        U32: Valuable<IrohaTypes['u32']>;
-        Bool: Valuable<IrohaTypes['bool']>;
-        String: Valuable<IrohaTypes['str']>;
-        Vec: Valuable<IrohaTypes['Vec<iroha_data_model::Value>']>;
-        Id: Valuable<IrohaTypes['iroha_data_model::IdBox']>;
-        Identifiable: Valuable<IrohaTypes['iroha_data_model::IdentifiableBox']>;
-        PublicKey: Valuable<IrohaTypes['iroha_crypto::PublicKey']>;
-        Parameter: Valuable<IrohaTypes['iroha_data_model::Parameter']>;
-        SignatureCheckCondition: Valuable<IrohaTypes['iroha_data_model::account::SignatureCheckCondition']>;
-        TransactionValue: Valuable<IrohaTypes['iroha_data_model::transaction::TransactionValue']>;
-        PermissionToken: Valuable<IrohaTypes['iroha_data_model::permissions::PermissionToken']>;
+        U32: Valuable<IrohaDataModel['u32']>;
+        Bool: Valuable<IrohaDataModel['bool']>;
+        String: Valuable<IrohaDataModel['str']>;
+        Vec: Valuable<IrohaDataModel['Vec<iroha_data_model::Value>']>;
+        Id: Valuable<IrohaDataModel['iroha_data_model::IdBox']>;
+        Identifiable: Valuable<IrohaDataModel['iroha_data_model::IdentifiableBox']>;
+        PublicKey: Valuable<IrohaDataModel['iroha_crypto::PublicKey']>;
+        Parameter: Valuable<IrohaDataModel['iroha_data_model::Parameter']>;
+        SignatureCheckCondition: Valuable<IrohaDataModel['iroha_data_model::account::SignatureCheckCondition']>;
+        TransactionValue: Valuable<IrohaDataModel['iroha_data_model::transaction::TransactionValue']>;
+        PermissionToken: Valuable<IrohaDataModel['iroha_data_model::permissions::PermissionToken']>;
     }>;
     'iroha_data_model::account::Account': {
-        id: IrohaTypes['iroha_data_model::account::Id'];
-        assets: IrohaTypes['BTreeMap<iroha_data_model::asset::Id, iroha_data_model::asset::Asset>'];
-        signatories: IrohaTypes['Vec<iroha_crypto::PublicKey>'];
-        permissionTokens: IrohaTypes['BTreeSet<iroha_data_model::permissions::PermissionToken>'];
-        signatureCheckCondition: IrohaTypes['iroha_data_model::account::SignatureCheckCondition'];
-        metadata: IrohaTypes['iroha_data_model::metadata::Metadata'];
+        id: IrohaDataModel['iroha_data_model::account::Id'];
+        assets: IrohaDataModel['BTreeMap<iroha_data_model::asset::Id, iroha_data_model::asset::Asset>'];
+        signatories: IrohaDataModel['Vec<iroha_crypto::PublicKey>'];
+        permissionTokens: IrohaDataModel['BTreeSet<iroha_data_model::permissions::PermissionToken>'];
+        signatureCheckCondition: IrohaDataModel['iroha_data_model::account::SignatureCheckCondition'];
+        metadata: IrohaDataModel['iroha_data_model::metadata::Metadata'];
     };
     'iroha_data_model::account::Id': {
-        name: IrohaTypes['str'];
-        domainName: IrohaTypes['str'];
+        name: IrohaDataModel['str'];
+        domainName: IrohaDataModel['str'];
     };
     'iroha_data_model::account::NewAccount': {
-        id: IrohaTypes['iroha_data_model::account::Id'];
-        signatories: IrohaTypes['Vec<iroha_crypto::PublicKey>'];
-        metadata: IrohaTypes['iroha_data_model::metadata::Metadata'];
+        id: IrohaDataModel['iroha_data_model::account::Id'];
+        signatories: IrohaDataModel['Vec<iroha_crypto::PublicKey>'];
+        metadata: IrohaDataModel['iroha_data_model::metadata::Metadata'];
     };
     'iroha_data_model::account::SignatureCheckCondition': [
-        IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'],
+        IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'],
     ];
     'iroha_data_model::asset::Asset': {
-        id: IrohaTypes['iroha_data_model::asset::Id'];
-        value: IrohaTypes['iroha_data_model::asset::AssetValue'];
+        id: IrohaDataModel['iroha_data_model::asset::Id'];
+        value: IrohaDataModel['iroha_data_model::asset::AssetValue'];
     };
     'iroha_data_model::asset::AssetDefinition': {
-        valueType: IrohaTypes['iroha_data_model::asset::AssetValueType'];
-        id: IrohaTypes['iroha_data_model::asset::DefinitionId'];
+        valueType: IrohaDataModel['iroha_data_model::asset::AssetValueType'];
+        id: IrohaDataModel['iroha_data_model::asset::DefinitionId'];
     };
     'iroha_data_model::asset::AssetDefinitionEntry': {
-        definition: IrohaTypes['iroha_data_model::asset::AssetDefinition'];
-        registeredBy: IrohaTypes['iroha_data_model::account::Id'];
+        definition: IrohaDataModel['iroha_data_model::asset::AssetDefinition'];
+        registeredBy: IrohaDataModel['iroha_data_model::account::Id'];
     };
     'iroha_data_model::asset::AssetValue': Enum<{
-        Quantity: Valuable<IrohaTypes['u32']>;
-        BigQuantity: Valuable<IrohaTypes['u128']>;
-        Store: Valuable<IrohaTypes['iroha_data_model::metadata::Metadata']>;
+        Quantity: Valuable<IrohaDataModel['u32']>;
+        BigQuantity: Valuable<IrohaDataModel['u128']>;
+        Store: Valuable<IrohaDataModel['iroha_data_model::metadata::Metadata']>;
     }>;
     'iroha_data_model::asset::AssetValueType': Enum<{
         Quantity: null;
@@ -135,38 +135,38 @@ export type IrohaTypes = StdTypes & {
         Store: null;
     }>;
     'iroha_data_model::asset::DefinitionId': {
-        name: IrohaTypes['str'];
-        domainName: IrohaTypes['str'];
+        name: IrohaDataModel['str'];
+        domainName: IrohaDataModel['str'];
     };
     'iroha_data_model::asset::Id': {
-        definitionId: IrohaTypes['iroha_data_model::asset::DefinitionId'];
-        accountId: IrohaTypes['iroha_data_model::account::Id'];
+        definitionId: IrohaDataModel['iroha_data_model::asset::DefinitionId'];
+        accountId: IrohaDataModel['iroha_data_model::account::Id'];
     };
     'iroha_data_model::domain::Domain': {
-        name: IrohaTypes['str'];
-        accounts: IrohaTypes['BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::Account>'];
-        assetDefinitions: IrohaTypes['BTreeMap<iroha_data_model::asset::DefinitionId, iroha_data_model::asset::AssetDefinitionEntry>'];
+        name: IrohaDataModel['str'];
+        accounts: IrohaDataModel['BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::Account>'];
+        assetDefinitions: IrohaDataModel['BTreeMap<iroha_data_model::asset::DefinitionId, iroha_data_model::asset::AssetDefinitionEntry>'];
     };
     'iroha_data_model::events::Event': Enum<{
-        Pipeline: Valuable<IrohaTypes['iroha_data_model::events::pipeline::Event']>;
-        Data: Valuable<IrohaTypes['iroha_data_model::events::data::Event']>;
+        Pipeline: Valuable<IrohaDataModel['iroha_data_model::events::pipeline::Event']>;
+        Data: Valuable<IrohaDataModel['iroha_data_model::events::data::Event']>;
     }>;
     'iroha_data_model::events::EventFilter': Enum<{
-        Pipeline: Valuable<IrohaTypes['iroha_data_model::events::pipeline::EventFilter']>;
-        Data: Valuable<IrohaTypes['iroha_data_model::events::data::EventFilter']>;
+        Pipeline: Valuable<IrohaDataModel['iroha_data_model::events::pipeline::EventFilter']>;
+        Data: Valuable<IrohaDataModel['iroha_data_model::events::data::EventFilter']>;
     }>;
     'iroha_data_model::events::EventSocketMessage': Enum<{
-        SubscriptionRequest: Valuable<IrohaTypes['iroha_data_model::events::SubscriptionRequest']>;
+        SubscriptionRequest: Valuable<IrohaDataModel['iroha_data_model::events::SubscriptionRequest']>;
         SubscriptionAccepted: null;
-        Event: Valuable<IrohaTypes['iroha_data_model::events::Event']>;
+        Event: Valuable<IrohaDataModel['iroha_data_model::events::Event']>;
         EventReceived: null;
     }>;
-    'iroha_data_model::events::SubscriptionRequest': [IrohaTypes['iroha_data_model::events::EventFilter']];
+    'iroha_data_model::events::SubscriptionRequest': [IrohaDataModel['iroha_data_model::events::EventFilter']];
     'iroha_data_model::events::VersionedEventSocketMessage': Enum<{
-        V1: Valuable<IrohaTypes['iroha_data_model::events::_VersionedEventSocketMessageV1']>;
+        V1: Valuable<IrohaDataModel['iroha_data_model::events::_VersionedEventSocketMessageV1']>;
     }>;
     'iroha_data_model::events::_VersionedEventSocketMessageV1': [
-        IrohaTypes['iroha_data_model::events::EventSocketMessage'],
+        IrohaDataModel['iroha_data_model::events::EventSocketMessage'],
     ];
     'iroha_data_model::events::data::Event': [];
     'iroha_data_model::events::data::EventFilter': [];
@@ -178,390 +178,394 @@ export type IrohaTypes = StdTypes & {
         Transaction: null;
     }>;
     'iroha_data_model::events::pipeline::Event': {
-        entityType: IrohaTypes['iroha_data_model::events::pipeline::EntityType'];
-        status: IrohaTypes['iroha_data_model::events::pipeline::Status'];
-        hash: IrohaTypes['iroha_crypto::Hash'];
+        entityType: IrohaDataModel['iroha_data_model::events::pipeline::EntityType'];
+        status: IrohaDataModel['iroha_data_model::events::pipeline::Status'];
+        hash: IrohaDataModel['iroha_crypto::Hash'];
     };
     'iroha_data_model::events::pipeline::EventFilter': {
-        entity: IrohaTypes['Option<iroha_data_model::events::pipeline::EntityType>'];
-        hash: IrohaTypes['Option<iroha_crypto::Hash>'];
+        entity: IrohaDataModel['Option<iroha_data_model::events::pipeline::EntityType>'];
+        hash: IrohaDataModel['Option<iroha_crypto::Hash>'];
     };
     'iroha_data_model::events::pipeline::InstructionExecutionFail': {
-        instruction: IrohaTypes['iroha_data_model::isi::Instruction'];
-        reason: IrohaTypes['str'];
+        instruction: IrohaDataModel['iroha_data_model::isi::Instruction'];
+        reason: IrohaDataModel['str'];
     };
     'iroha_data_model::events::pipeline::NotPermittedFail': {
-        reason: IrohaTypes['str'];
+        reason: IrohaDataModel['str'];
     };
     'iroha_data_model::events::pipeline::RejectionReason': Enum<{
-        Block: Valuable<IrohaTypes['iroha_data_model::events::pipeline::BlockRejectionReason']>;
-        Transaction: Valuable<IrohaTypes['iroha_data_model::events::pipeline::TransactionRejectionReason']>;
+        Block: Valuable<IrohaDataModel['iroha_data_model::events::pipeline::BlockRejectionReason']>;
+        Transaction: Valuable<IrohaDataModel['iroha_data_model::events::pipeline::TransactionRejectionReason']>;
     }>;
     'iroha_data_model::events::pipeline::SignatureVerificationFail': {
-        signature: IrohaTypes['iroha_crypto::Signature'];
-        reason: IrohaTypes['str'];
+        signature: IrohaDataModel['iroha_crypto::Signature'];
+        reason: IrohaDataModel['str'];
     };
     'iroha_data_model::events::pipeline::Status': Enum<{
         Validating: null;
-        Rejected: Valuable<IrohaTypes['iroha_data_model::events::pipeline::RejectionReason']>;
+        Rejected: Valuable<IrohaDataModel['iroha_data_model::events::pipeline::RejectionReason']>;
         Committed: null;
     }>;
     'iroha_data_model::events::pipeline::TransactionRejectionReason': Enum<{
-        NotPermitted: Valuable<IrohaTypes['iroha_data_model::events::pipeline::NotPermittedFail']>;
+        NotPermitted: Valuable<IrohaDataModel['iroha_data_model::events::pipeline::NotPermittedFail']>;
         UnsatisfiedSignatureCondition: Valuable<
-            IrohaTypes['iroha_data_model::events::pipeline::UnsatisfiedSignatureConditionFail']
+            IrohaDataModel['iroha_data_model::events::pipeline::UnsatisfiedSignatureConditionFail']
         >;
-        InstructionExecution: Valuable<IrohaTypes['iroha_data_model::events::pipeline::InstructionExecutionFail']>;
-        SignatureVerification: Valuable<IrohaTypes['iroha_data_model::events::pipeline::SignatureVerificationFail']>;
+        InstructionExecution: Valuable<IrohaDataModel['iroha_data_model::events::pipeline::InstructionExecutionFail']>;
+        SignatureVerification: Valuable<
+            IrohaDataModel['iroha_data_model::events::pipeline::SignatureVerificationFail']
+        >;
         UnexpectedGenesisAccountSignature: null;
     }>;
     'iroha_data_model::events::pipeline::UnsatisfiedSignatureConditionFail': {
-        reason: IrohaTypes['str'];
+        reason: IrohaDataModel['str'];
     };
     'iroha_data_model::expression::Add': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::And': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'];
     };
     'iroha_data_model::expression::Contains': {
-        collection: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
-        element: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        collection: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
+        element: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
     };
     'iroha_data_model::expression::ContainsAll': {
-        collection: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
-        elements: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
+        collection: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
+        elements: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
     };
     'iroha_data_model::expression::ContainsAny': {
-        collection: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
-        elements: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
+        collection: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
+        elements: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>'];
     };
     'iroha_data_model::expression::ContextValue': {
-        valueName: IrohaTypes['str'];
+        valueName: IrohaDataModel['str'];
     };
     'iroha_data_model::expression::Divide': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::Equal': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
     };
     'iroha_data_model::expression::EvaluatesTo<alloc::string::String>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<bool>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdentifiableBox>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::EvaluatesTo<u32>': {
-        expression: IrohaTypes['iroha_data_model::expression::Expression'];
+        expression: IrohaDataModel['iroha_data_model::expression::Expression'];
     };
     'iroha_data_model::expression::Expression': Enum<{
-        Add: Valuable<IrohaTypes['iroha_data_model::expression::Add']>;
-        Subtract: Valuable<IrohaTypes['iroha_data_model::expression::Subtract']>;
-        Multiply: Valuable<IrohaTypes['iroha_data_model::expression::Multiply']>;
-        Divide: Valuable<IrohaTypes['iroha_data_model::expression::Divide']>;
-        Mod: Valuable<IrohaTypes['iroha_data_model::expression::Mod']>;
-        RaiseTo: Valuable<IrohaTypes['iroha_data_model::expression::RaiseTo']>;
-        Greater: Valuable<IrohaTypes['iroha_data_model::expression::Greater']>;
-        Less: Valuable<IrohaTypes['iroha_data_model::expression::Less']>;
-        Equal: Valuable<IrohaTypes['iroha_data_model::expression::Equal']>;
-        Not: Valuable<IrohaTypes['iroha_data_model::expression::Not']>;
-        And: Valuable<IrohaTypes['iroha_data_model::expression::And']>;
-        Or: Valuable<IrohaTypes['iroha_data_model::expression::Or']>;
-        If: Valuable<IrohaTypes['iroha_data_model::expression::If']>;
-        Raw: Valuable<IrohaTypes['iroha_data_model::Value']>;
-        Query: Valuable<IrohaTypes['iroha_data_model::query::QueryBox']>;
-        Contains: Valuable<IrohaTypes['iroha_data_model::expression::Contains']>;
-        ContainsAll: Valuable<IrohaTypes['iroha_data_model::expression::ContainsAll']>;
-        ContainsAny: Valuable<IrohaTypes['iroha_data_model::expression::ContainsAny']>;
-        Where: Valuable<IrohaTypes['iroha_data_model::expression::Where']>;
-        ContextValue: Valuable<IrohaTypes['iroha_data_model::expression::ContextValue']>;
+        Add: Valuable<IrohaDataModel['iroha_data_model::expression::Add']>;
+        Subtract: Valuable<IrohaDataModel['iroha_data_model::expression::Subtract']>;
+        Multiply: Valuable<IrohaDataModel['iroha_data_model::expression::Multiply']>;
+        Divide: Valuable<IrohaDataModel['iroha_data_model::expression::Divide']>;
+        Mod: Valuable<IrohaDataModel['iroha_data_model::expression::Mod']>;
+        RaiseTo: Valuable<IrohaDataModel['iroha_data_model::expression::RaiseTo']>;
+        Greater: Valuable<IrohaDataModel['iroha_data_model::expression::Greater']>;
+        Less: Valuable<IrohaDataModel['iroha_data_model::expression::Less']>;
+        Equal: Valuable<IrohaDataModel['iroha_data_model::expression::Equal']>;
+        Not: Valuable<IrohaDataModel['iroha_data_model::expression::Not']>;
+        And: Valuable<IrohaDataModel['iroha_data_model::expression::And']>;
+        Or: Valuable<IrohaDataModel['iroha_data_model::expression::Or']>;
+        If: Valuable<IrohaDataModel['iroha_data_model::expression::If']>;
+        Raw: Valuable<IrohaDataModel['iroha_data_model::Value']>;
+        Query: Valuable<IrohaDataModel['iroha_data_model::query::QueryBox']>;
+        Contains: Valuable<IrohaDataModel['iroha_data_model::expression::Contains']>;
+        ContainsAll: Valuable<IrohaDataModel['iroha_data_model::expression::ContainsAll']>;
+        ContainsAny: Valuable<IrohaDataModel['iroha_data_model::expression::ContainsAny']>;
+        Where: Valuable<IrohaDataModel['iroha_data_model::expression::Where']>;
+        ContextValue: Valuable<IrohaDataModel['iroha_data_model::expression::ContextValue']>;
     }>;
     'iroha_data_model::expression::Greater': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::If': {
-        condition: IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'];
-        thenExpression: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
-        elseExpression: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        condition: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'];
+        thenExpression: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        elseExpression: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
     };
     'iroha_data_model::expression::Less': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::Mod': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::Multiply': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::Not': {
-        expression: IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'];
+        expression: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'];
     };
     'iroha_data_model::expression::Or': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'];
     };
     'iroha_data_model::expression::RaiseTo': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::Subtract': {
-        left: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
-        right: IrohaTypes['iroha_data_model::expression::EvaluatesTo<u32>'];
+        left: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
+        right: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<u32>'];
     };
     'iroha_data_model::expression::Where': {
-        expression: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
-        values: IrohaTypes['BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>'];
+        expression: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        values: IrohaDataModel['BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>'];
     };
     'iroha_data_model::isi::BurnBox': {
-        object: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
-        destinationId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        object: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        destinationId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
     };
     'iroha_data_model::isi::FailBox': {
-        message: IrohaTypes['str'];
+        message: IrohaDataModel['str'];
     };
     'iroha_data_model::isi::GrantBox': {
-        object: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
-        destinationId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        object: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        destinationId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
     };
     'iroha_data_model::isi::If': {
-        condition: IrohaTypes['iroha_data_model::expression::EvaluatesTo<bool>'];
-        then: IrohaTypes['iroha_data_model::isi::Instruction'];
-        otherwise: IrohaTypes['Option<iroha_data_model::isi::Instruction>'];
+        condition: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<bool>'];
+        then: IrohaDataModel['iroha_data_model::isi::Instruction'];
+        otherwise: IrohaDataModel['Option<iroha_data_model::isi::Instruction>'];
     };
     'iroha_data_model::isi::Instruction': Enum<{
-        Register: Valuable<IrohaTypes['iroha_data_model::isi::RegisterBox']>;
-        Unregister: Valuable<IrohaTypes['iroha_data_model::isi::UnregisterBox']>;
-        Mint: Valuable<IrohaTypes['iroha_data_model::isi::MintBox']>;
-        Burn: Valuable<IrohaTypes['iroha_data_model::isi::BurnBox']>;
-        Transfer: Valuable<IrohaTypes['iroha_data_model::isi::TransferBox']>;
-        If: Valuable<IrohaTypes['iroha_data_model::isi::If']>;
-        Pair: Valuable<IrohaTypes['iroha_data_model::isi::Pair']>;
-        Sequence: Valuable<IrohaTypes['iroha_data_model::isi::SequenceBox']>;
-        Fail: Valuable<IrohaTypes['iroha_data_model::isi::FailBox']>;
-        SetKeyValue: Valuable<IrohaTypes['iroha_data_model::isi::SetKeyValueBox']>;
-        RemoveKeyValue: Valuable<IrohaTypes['iroha_data_model::isi::RemoveKeyValueBox']>;
-        Grant: Valuable<IrohaTypes['iroha_data_model::isi::GrantBox']>;
+        Register: Valuable<IrohaDataModel['iroha_data_model::isi::RegisterBox']>;
+        Unregister: Valuable<IrohaDataModel['iroha_data_model::isi::UnregisterBox']>;
+        Mint: Valuable<IrohaDataModel['iroha_data_model::isi::MintBox']>;
+        Burn: Valuable<IrohaDataModel['iroha_data_model::isi::BurnBox']>;
+        Transfer: Valuable<IrohaDataModel['iroha_data_model::isi::TransferBox']>;
+        If: Valuable<IrohaDataModel['iroha_data_model::isi::If']>;
+        Pair: Valuable<IrohaDataModel['iroha_data_model::isi::Pair']>;
+        Sequence: Valuable<IrohaDataModel['iroha_data_model::isi::SequenceBox']>;
+        Fail: Valuable<IrohaDataModel['iroha_data_model::isi::FailBox']>;
+        SetKeyValue: Valuable<IrohaDataModel['iroha_data_model::isi::SetKeyValueBox']>;
+        RemoveKeyValue: Valuable<IrohaDataModel['iroha_data_model::isi::RemoveKeyValueBox']>;
+        Grant: Valuable<IrohaDataModel['iroha_data_model::isi::GrantBox']>;
     }>;
     'iroha_data_model::isi::MintBox': {
-        object: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
-        destinationId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        object: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        destinationId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
     };
     'iroha_data_model::isi::Pair': {
-        leftInstruction: IrohaTypes['iroha_data_model::isi::Instruction'];
-        rightInstruction: IrohaTypes['iroha_data_model::isi::Instruction'];
+        leftInstruction: IrohaDataModel['iroha_data_model::isi::Instruction'];
+        rightInstruction: IrohaDataModel['iroha_data_model::isi::Instruction'];
     };
     'iroha_data_model::isi::RegisterBox': {
-        object: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdentifiableBox>'];
+        object: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdentifiableBox>'];
     };
     'iroha_data_model::isi::RemoveKeyValueBox': {
-        objectId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
-        key: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        objectId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        key: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::isi::SequenceBox': {
-        instructions: IrohaTypes['Vec<iroha_data_model::isi::Instruction>'];
+        instructions: IrohaDataModel['Vec<iroha_data_model::isi::Instruction>'];
     };
     'iroha_data_model::isi::SetKeyValueBox': {
-        objectId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
-        key: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
-        value: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        objectId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        key: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        value: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
     };
     'iroha_data_model::isi::TransferBox': {
-        sourceId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
-        object: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
-        destinationId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        sourceId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        object: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>'];
+        destinationId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
     };
     'iroha_data_model::isi::UnregisterBox': {
-        objectId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
+        objectId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::IdBox>'];
     };
     'iroha_data_model::metadata::Metadata': {
-        map: IrohaTypes['BTreeMap<String, iroha_data_model::Value>'];
+        map: IrohaDataModel['BTreeMap<String, iroha_data_model::Value>'];
     };
     'iroha_data_model::peer::Id': {
-        address: IrohaTypes['str'];
-        publicKey: IrohaTypes['iroha_crypto::PublicKey'];
+        address: IrohaDataModel['str'];
+        publicKey: IrohaDataModel['iroha_crypto::PublicKey'];
     };
     'iroha_data_model::peer::Peer': {
-        id: IrohaTypes['iroha_data_model::peer::Id'];
+        id: IrohaDataModel['iroha_data_model::peer::Id'];
     };
     'iroha_data_model::permissions::PermissionToken': {
-        name: IrohaTypes['str'];
-        params: IrohaTypes['BTreeMap<String, iroha_data_model::Value>'];
+        name: IrohaDataModel['str'];
+        params: IrohaDataModel['BTreeMap<String, iroha_data_model::Value>'];
     };
     'iroha_data_model::query::Payload': {
-        timestampMs: IrohaTypes['iroha_schema::Compact<u128>'];
-        query: IrohaTypes['iroha_data_model::query::QueryBox'];
-        accountId: IrohaTypes['iroha_data_model::account::Id'];
+        timestampMs: IrohaDataModel['iroha_schema::Compact<u128>'];
+        query: IrohaDataModel['iroha_data_model::query::QueryBox'];
+        accountId: IrohaDataModel['iroha_data_model::account::Id'];
     };
     'iroha_data_model::query::QueryBox': Enum<{
-        FindAllAccounts: Valuable<IrohaTypes['iroha_data_model::query::account::FindAllAccounts']>;
-        FindAccountById: Valuable<IrohaTypes['iroha_data_model::query::account::FindAccountById']>;
+        FindAllAccounts: Valuable<IrohaDataModel['iroha_data_model::query::account::FindAllAccounts']>;
+        FindAccountById: Valuable<IrohaDataModel['iroha_data_model::query::account::FindAccountById']>;
         FindAccountKeyValueByIdAndKey: Valuable<
-            IrohaTypes['iroha_data_model::query::account::FindAccountKeyValueByIdAndKey']
+            IrohaDataModel['iroha_data_model::query::account::FindAccountKeyValueByIdAndKey']
         >;
-        FindAccountsByName: Valuable<IrohaTypes['iroha_data_model::query::account::FindAccountsByName']>;
-        FindAccountsByDomainName: Valuable<IrohaTypes['iroha_data_model::query::account::FindAccountsByDomainName']>;
-        FindAllAssets: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAllAssets']>;
-        FindAllAssetsDefinitions: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAllAssetsDefinitions']>;
-        FindAssetById: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAssetById']>;
-        FindAssetsByName: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAssetsByName']>;
-        FindAssetsByAccountId: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAssetsByAccountId']>;
+        FindAccountsByName: Valuable<IrohaDataModel['iroha_data_model::query::account::FindAccountsByName']>;
+        FindAccountsByDomainName: Valuable<
+            IrohaDataModel['iroha_data_model::query::account::FindAccountsByDomainName']
+        >;
+        FindAllAssets: Valuable<IrohaDataModel['iroha_data_model::query::asset::FindAllAssets']>;
+        FindAllAssetsDefinitions: Valuable<IrohaDataModel['iroha_data_model::query::asset::FindAllAssetsDefinitions']>;
+        FindAssetById: Valuable<IrohaDataModel['iroha_data_model::query::asset::FindAssetById']>;
+        FindAssetsByName: Valuable<IrohaDataModel['iroha_data_model::query::asset::FindAssetsByName']>;
+        FindAssetsByAccountId: Valuable<IrohaDataModel['iroha_data_model::query::asset::FindAssetsByAccountId']>;
         FindAssetsByAssetDefinitionId: Valuable<
-            IrohaTypes['iroha_data_model::query::asset::FindAssetsByAssetDefinitionId']
+            IrohaDataModel['iroha_data_model::query::asset::FindAssetsByAssetDefinitionId']
         >;
-        FindAssetsByDomainName: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAssetsByDomainName']>;
+        FindAssetsByDomainName: Valuable<IrohaDataModel['iroha_data_model::query::asset::FindAssetsByDomainName']>;
         FindAssetsByDomainNameAndAssetDefinitionId: Valuable<
-            IrohaTypes['iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId']
+            IrohaDataModel['iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId']
         >;
-        FindAssetQuantityById: Valuable<IrohaTypes['iroha_data_model::query::asset::FindAssetQuantityById']>;
+        FindAssetQuantityById: Valuable<IrohaDataModel['iroha_data_model::query::asset::FindAssetQuantityById']>;
         FindAssetKeyValueByIdAndKey: Valuable<
-            IrohaTypes['iroha_data_model::query::asset::FindAssetKeyValueByIdAndKey']
+            IrohaDataModel['iroha_data_model::query::asset::FindAssetKeyValueByIdAndKey']
         >;
-        FindAllDomains: Valuable<IrohaTypes['iroha_data_model::query::domain::FindAllDomains']>;
-        FindDomainByName: Valuable<IrohaTypes['iroha_data_model::query::domain::FindDomainByName']>;
-        FindAllPeers: Valuable<IrohaTypes['iroha_data_model::query::peer::FindAllPeers']>;
+        FindAllDomains: Valuable<IrohaDataModel['iroha_data_model::query::domain::FindAllDomains']>;
+        FindDomainByName: Valuable<IrohaDataModel['iroha_data_model::query::domain::FindDomainByName']>;
+        FindAllPeers: Valuable<IrohaDataModel['iroha_data_model::query::peer::FindAllPeers']>;
         FindTransactionsByAccountId: Valuable<
-            IrohaTypes['iroha_data_model::query::transaction::FindTransactionsByAccountId']
+            IrohaDataModel['iroha_data_model::query::transaction::FindTransactionsByAccountId']
         >;
         FindPermissionTokensByAccountId: Valuable<
-            IrohaTypes['iroha_data_model::query::permissions::FindPermissionTokensByAccountId']
+            IrohaDataModel['iroha_data_model::query::permissions::FindPermissionTokensByAccountId']
         >;
     }>;
-    'iroha_data_model::query::QueryResult': [IrohaTypes['iroha_data_model::Value']];
+    'iroha_data_model::query::QueryResult': [IrohaDataModel['iroha_data_model::Value']];
     'iroha_data_model::query::SignedQueryRequest': {
-        payload: IrohaTypes['iroha_data_model::query::Payload'];
-        signature: IrohaTypes['iroha_crypto::Signature'];
+        payload: IrohaDataModel['iroha_data_model::query::Payload'];
+        signature: IrohaDataModel['iroha_crypto::Signature'];
     };
     'iroha_data_model::query::VersionedQueryResult': Enum<{
-        V1: Valuable<IrohaTypes['iroha_data_model::query::_VersionedQueryResultV1']>;
+        V1: Valuable<IrohaDataModel['iroha_data_model::query::_VersionedQueryResultV1']>;
     }>;
     'iroha_data_model::query::VersionedSignedQueryRequest': Enum<{
-        V1: Valuable<IrohaTypes['iroha_data_model::query::_VersionedSignedQueryRequestV1']>;
+        V1: Valuable<IrohaDataModel['iroha_data_model::query::_VersionedSignedQueryRequestV1']>;
     }>;
-    'iroha_data_model::query::_VersionedQueryResultV1': [IrohaTypes['iroha_data_model::query::QueryResult']];
+    'iroha_data_model::query::_VersionedQueryResultV1': [IrohaDataModel['iroha_data_model::query::QueryResult']];
     'iroha_data_model::query::_VersionedSignedQueryRequestV1': [
-        IrohaTypes['iroha_data_model::query::SignedQueryRequest'],
+        IrohaDataModel['iroha_data_model::query::SignedQueryRequest'],
     ];
     'iroha_data_model::query::account::FindAccountById': {
-        id: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
+        id: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
     };
     'iroha_data_model::query::account::FindAccountKeyValueByIdAndKey': {
-        id: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
-        key: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        id: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
+        key: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::query::account::FindAccountsByDomainName': {
-        domainName: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        domainName: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::query::account::FindAccountsByName': {
-        name: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        name: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::query::account::FindAllAccounts': {};
     'iroha_data_model::query::asset::FindAllAssets': {};
     'iroha_data_model::query::asset::FindAllAssetsDefinitions': {};
     'iroha_data_model::query::asset::FindAssetById': {
-        id: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>'];
+        id: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>'];
     };
     'iroha_data_model::query::asset::FindAssetKeyValueByIdAndKey': {
-        id: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>'];
-        key: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        id: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>'];
+        key: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::query::asset::FindAssetQuantityById': {
-        id: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>'];
+        id: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>'];
     };
     'iroha_data_model::query::asset::FindAssetsByAccountId': {
-        accountId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
+        accountId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
     };
     'iroha_data_model::query::asset::FindAssetsByAssetDefinitionId': {
-        assetDefinitionId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'];
+        assetDefinitionId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'];
     };
     'iroha_data_model::query::asset::FindAssetsByDomainName': {
-        domainName: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        domainName: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId': {
-        domainName: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
-        assetDefinitionId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'];
+        domainName: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        assetDefinitionId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>'];
     };
     'iroha_data_model::query::asset::FindAssetsByName': {
-        name: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        name: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::query::domain::FindAllDomains': {};
     'iroha_data_model::query::domain::FindDomainByName': {
-        name: IrohaTypes['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
+        name: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<alloc::string::String>'];
     };
     'iroha_data_model::query::peer::FindAllPeers': {};
     'iroha_data_model::query::permissions::FindPermissionTokensByAccountId': {
-        id: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
+        id: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
     };
     'iroha_data_model::query::transaction::FindTransactionsByAccountId': {
-        accountId: IrohaTypes['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
+        accountId: IrohaDataModel['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>'];
     };
     'iroha_data_model::transaction::Payload': {
-        accountId: IrohaTypes['iroha_data_model::account::Id'];
-        instructions: IrohaTypes['Vec<iroha_data_model::isi::Instruction>'];
-        creationTime: IrohaTypes['u64'];
-        timeToLiveMs: IrohaTypes['u64'];
-        metadata: IrohaTypes['BTreeMap<String, iroha_data_model::Value>'];
+        accountId: IrohaDataModel['iroha_data_model::account::Id'];
+        instructions: IrohaDataModel['Vec<iroha_data_model::isi::Instruction>'];
+        creationTime: IrohaDataModel['u64'];
+        timeToLiveMs: IrohaDataModel['u64'];
+        metadata: IrohaDataModel['BTreeMap<String, iroha_data_model::Value>'];
     };
     'iroha_data_model::transaction::RejectedTransaction': {
-        payload: IrohaTypes['iroha_data_model::transaction::Payload'];
-        signatures: IrohaTypes['Vec<iroha_crypto::Signature>'];
-        rejectionReason: IrohaTypes['iroha_data_model::events::pipeline::TransactionRejectionReason'];
+        payload: IrohaDataModel['iroha_data_model::transaction::Payload'];
+        signatures: IrohaDataModel['Vec<iroha_crypto::Signature>'];
+        rejectionReason: IrohaDataModel['iroha_data_model::events::pipeline::TransactionRejectionReason'];
     };
     'iroha_data_model::transaction::Transaction': {
-        payload: IrohaTypes['iroha_data_model::transaction::Payload'];
-        signatures: IrohaTypes['Vec<iroha_crypto::Signature>'];
+        payload: IrohaDataModel['iroha_data_model::transaction::Payload'];
+        signatures: IrohaDataModel['Vec<iroha_crypto::Signature>'];
     };
     'iroha_data_model::transaction::TransactionValue': Enum<{
-        Transaction: Valuable<IrohaTypes['iroha_data_model::transaction::VersionedTransaction']>;
-        RejectedTransaction: Valuable<IrohaTypes['iroha_data_model::transaction::VersionedRejectedTransaction']>;
+        Transaction: Valuable<IrohaDataModel['iroha_data_model::transaction::VersionedTransaction']>;
+        RejectedTransaction: Valuable<IrohaDataModel['iroha_data_model::transaction::VersionedRejectedTransaction']>;
     }>;
     'iroha_data_model::transaction::VersionedRejectedTransaction': Enum<{
-        V1: Valuable<IrohaTypes['iroha_data_model::transaction::_VersionedRejectedTransactionV1']>;
+        V1: Valuable<IrohaDataModel['iroha_data_model::transaction::_VersionedRejectedTransactionV1']>;
     }>;
     'iroha_data_model::transaction::VersionedTransaction': Enum<{
-        V1: Valuable<IrohaTypes['iroha_data_model::transaction::_VersionedTransactionV1']>;
+        V1: Valuable<IrohaDataModel['iroha_data_model::transaction::_VersionedTransactionV1']>;
     }>;
     'iroha_data_model::transaction::_VersionedRejectedTransactionV1': [
-        IrohaTypes['iroha_data_model::transaction::RejectedTransaction'],
+        IrohaDataModel['iroha_data_model::transaction::RejectedTransaction'],
     ];
     'iroha_data_model::transaction::_VersionedTransactionV1': [
-        IrohaTypes['iroha_data_model::transaction::Transaction'],
+        IrohaDataModel['iroha_data_model::transaction::Transaction'],
     ];
-    'iroha_schema::Compact<u128>': IrohaTypes['compact'];
+    'iroha_schema::Compact<u128>': IrohaDataModel['compact'];
     'BTreeSet<iroha_data_model::permissions::PermissionToken>': Set<
-        IrohaTypes['iroha_data_model::permissions::PermissionToken']
+        IrohaDataModel['iroha_data_model::permissions::PermissionToken']
     >;
 };
 
-export const types = defNamespace<IrohaTypes>({
+export const irohaCodec = defNamespace<IrohaDataModel>({
     ...StdCodecs,
     'BTreeMap<String, iroha_data_model::Value>': defMap('str', 'iroha_data_model::Value'),
     'BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>': defMap(

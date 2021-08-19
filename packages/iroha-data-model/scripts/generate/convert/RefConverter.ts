@@ -2,7 +2,7 @@
 import { NamespaceCodegenDefinition } from '@scale-codec/namespace-codegen';
 import debugRoot from 'debug';
 
-const debug = debugRoot('@iroha/data-model:rust-refs-converter');
+const debug = debugRoot('@iroha2/data-model:rust-refs-converter');
 
 const STD_ALIASES: Record<string, string> = {
     String: 'str',

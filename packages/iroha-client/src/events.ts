@@ -1,28 +1,46 @@
-import { Enum, IrohaTypes, types } from '@iroha/data-model';
+import { Enum, IrohaDataModel, irohaCodec } from '@iroha2/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
-import { IrohaEventsAPIParams, IrohaEventAPIReturn } from './types';
+
+export interface EventsEmitteryMap {
+    close: CloseEvent;
+    error: ErrorEvent;
+    accepted: undefined;
+    event: IrohaDataModel['iroha_data_model::events::Event'];
+}
+
+export interface SetupEventsParams {
+    toriiURL: string;
+    filter: IrohaDataModel['iroha_data_model::events::EventFilter'];
+}
+
+export interface SetupEventsReturn {
+    close: () => void;
+    ee: Emittery<EventsEmitteryMap>;
+}
 
 /**
  * Promise resolved when connection handshake is acquired
  */
-export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParams): Promise<IrohaEventAPIReturn> {
+export async function setupEventsWebsocketConnection(params: SetupEventsParams): Promise<SetupEventsReturn> {
+    const eeExternal = new Emittery<EventsEmitteryMap>();
+
     const ee = new Emittery<{
         error: ErrorEvent;
         close: CloseEvent;
         subscription_accepted: undefined;
-        event: IrohaTypes['iroha_data_model::events::Event'];
+        event: IrohaDataModel['iroha_data_model::events::Event'];
     }>();
 
-    ee.on('close', (e) => params.on.close?.(e));
-    ee.on('error', (e) => params.on.error?.(e));
-    ee.on('event', (event) => params.on.event(event));
-    ee.on('subscription_accepted', () => params.on.ready?.());
+    ee.on('close', (e) => eeExternal.emit('close', e));
+    ee.on('error', (e) => eeExternal.emit('error', e));
+    ee.on('event', (e) => eeExternal.emit('event', e));
+    ee.on('subscription_accepted', () => eeExternal.emit('accepted'));
 
-    const socket = new WebSocket(`${params.baseURL}/events`);
+    const socket = new WebSocket(`${params.toriiURL}/events`);
 
     socket.onopen = () => {
-        sendMessage(Enum.create('SubscriptionRequest', [params.eventFilter]));
+        sendMessage(Enum.create('SubscriptionRequest', [params.filter]));
     };
 
     socket.onclose = (event) => {
@@ -58,8 +76,11 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
         // }, 1000);
     }
 
-    function sendMessage(msg: IrohaTypes['iroha_data_model::events::EventSocketMessage']) {
-        const encoded = types.encode('iroha_data_model::events::VersionedEventSocketMessage', Enum.create('V1', [msg]));
+    function sendMessage(msg: IrohaDataModel['iroha_data_model::events::EventSocketMessage']) {
+        const encoded = irohaCodec.encode(
+            'iroha_data_model::events::VersionedEventSocketMessage',
+            Enum.create('V1', [msg]),
+        );
         socket.send(encoded);
     }
 
@@ -75,7 +96,7 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
             throw new Error('Unexpected array data');
         }
 
-        const event = types
+        const event = irohaCodec
             .decode('iroha_data_model::events::VersionedEventSocketMessage', new Uint8Array(data))
             .as('V1')[0];
 
@@ -89,24 +110,16 @@ export async function setupEventsWebsocketConnection(params: IrohaEventsAPIParam
     };
 
     await new Promise<void>((resolve, reject) => {
-        const unsubs = [
-            ee.on('subscription_accepted', () => {
-                stopAll();
-                resolve();
-            }),
-            ee.on('close', () => {
-                reject(new Error('Handshake acquiring failed - connected closed'));
-            }),
-        ];
-
-        function stopAll() {
-            unsubs.forEach((x) => x());
-        }
+        ee.once('subscription_accepted').then(resolve);
+        ee.once('close').then(() => {
+            reject(new Error('Handshake acquiring failed - connected closed'));
+        });
 
         listeningForSubscriptionAccepted = true;
     });
 
     return {
         close,
+        ee: eeExternal,
     };
 }
