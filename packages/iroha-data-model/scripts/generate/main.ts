@@ -2,28 +2,25 @@ import path from 'path';
 import consola from 'consola';
 import chalk from 'chalk';
 import fs from 'fs/promises';
-import { generate } from '@scale-codec/namespace-codegen';
+import { renderNamespaceDefinition } from '@scale-codec/definition-compiler';
 import inputJson from '../../input/input.json';
-import { convertRustIntrospectOutputToCodegenFormat } from './convert';
+import { convertRustIntrospectOutputIntoCompilerInput } from './convert';
 
 const OUTPUT_PATH = path.join(__dirname, '../../src/generated.ts');
 
 async function main() {
-    consola.info(chalk`Converting {blue.bold input.json} to codegen-compatible format...`);
-    const codegenDefinitions = convertRustIntrospectOutputToCodegenFormat({ input: inputJson });
+    consola.log(chalk`Converting {blue.bold input.json} to compiler-compatible format...`);
+    const codegenDefinitions = convertRustIntrospectOutputIntoCompilerInput({ input: inputJson });
 
-    consola.info('Generating code...');
-    const generated = generate(codegenDefinitions, {
-        namespaceTypeName: 'IrohaDataModel',
-        namespaceValueName: 'irohaCodec',
-        importLib: '@scale-codec/namespace',
-        structPropsCamelCase: true,
+    consola.log('Generating code...');
+    const generated = await renderNamespaceDefinition(codegenDefinitions, {
+        importLib: '@scale-codec/definition-runtime',
     });
 
-    consola.info('Writing result...');
+    consola.log('Writing result...');
     await fs.writeFile(OUTPUT_PATH, generated, { encoding: 'utf8' });
 
-    consola.success(chalk`Generated to {green.bold ${OUTPUT_PATH}}`);
+    consola.success(chalk`Generated into {green.bold ${OUTPUT_PATH}}!`);
 }
 
 main().catch((err) => {

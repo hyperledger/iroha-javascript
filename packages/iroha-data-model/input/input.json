@@ -1368,6 +1368,16 @@
       ]
     }
   },
+  "iroha_data_model::isi::SetBox": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "object",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>"
+        }
+      ]
+    }
+  },
   "iroha_data_model::isi::SetKeyValueBox": {
     "Struct": {
       "declarations": [

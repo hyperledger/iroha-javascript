@@ -1,2 +1,2 @@
 export * from './generated';
-export * from '@scale-codec/enum';
+export * from '@scale-codec/core';
