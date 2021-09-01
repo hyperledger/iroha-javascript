@@ -64,9 +64,9 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
         console.error(err);
     });
 
-    const startingIrohaLogMessagePromise = new Promise<void>((resolve) => {
+    const irohaIsReadyLogMessagePromise = new Promise<void>((resolve) => {
         stdout.on('line', (line) => {
-            if (/Starting Iroha/.test(line)) {
+            if (/listening on.+:8080/i.test(line)) {
                 resolve();
             }
         });
@@ -92,7 +92,7 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
     await new Promise<void>((resolve, reject) => {
         exitPromise.then(() => reject(new Error('Iroha has exited already, maybe something went wrong')));
         setTimeout(() => reject(new Error('No key log message detected within timeout')), 300);
-        startingIrohaLogMessagePromise.then(() => resolve());
+        irohaIsReadyLogMessagePromise.then(() => resolve());
     });
 
     return {

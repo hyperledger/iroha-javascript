@@ -1,4 +1,19 @@
-import { IrohaDataModel, irohaCodec, Enum, Result } from '@iroha2/data-model';
+import {
+    Enum,
+    iroha_crypto_Signature_Decoded,
+    iroha_data_model_query_Payload_Encodable,
+    iroha_data_model_query_Payload_encode,
+    iroha_data_model_query_QueryResult_decode,
+    iroha_data_model_query_VersionedSignedQueryRequest_encode,
+    iroha_data_model_transaction_Payload_Encodable,
+    iroha_data_model_transaction_Payload_encode,
+    iroha_data_model_transaction_VersionedTransaction_Encodable,
+    iroha_data_model_transaction_VersionedTransaction_encode,
+    iroha_data_model_Value_Decoded,
+    Result,
+    EncodeAsIs,
+    respectEncodeAsIs,
+} from '@iroha2/data-model';
 import { KeyPair, Signature, Hash } from '@iroha2/crypto';
 import Axios, { AxiosError } from 'axios';
 import { SetupEventsParams, SetupEventsReturn, setupEventsWebsocketConnection } from './events';
@@ -10,12 +25,12 @@ export interface CreateClientParams {
 }
 
 export interface SubmitTransactionParams {
-    payload: IrohaDataModel['iroha_data_model::transaction::Payload'];
+    payload: iroha_data_model_transaction_Payload_Encodable | EncodeAsIs;
     signing: KeyPair | KeyPair[];
 }
 
 export interface MakeQueryParams {
-    payload: IrohaDataModel['iroha_data_model::query::Payload'];
+    payload: iroha_data_model_query_Payload_Encodable | EncodeAsIs;
     signing: KeyPair;
 }
 
@@ -24,7 +39,7 @@ export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
 export interface Client {
     submitTransaction: (params: SubmitTransactionParams) => Promise<void>;
 
-    makeQuery: (params: MakeQueryParams) => Promise<Result<IrohaDataModel['iroha_data_model::Value'], Error>>;
+    makeQuery: (params: MakeQueryParams) => Promise<Result<iroha_data_model_Value_Decoded, Error>>;
 
     listenForEvents: (params: ListenEventsParams) => Promise<SetupEventsReturn>;
 
@@ -44,25 +59,22 @@ export function createClient(params: CreateClientParams): Client {
                 let txBytes: Uint8Array;
 
                 scope.run(() => {
-                    const payloadBytes = irohaCodec.encode('iroha_data_model::transaction::Payload', payload);
+                    const payloadBytes = respectEncodeAsIs(payload, iroha_data_model_transaction_Payload_encode);
                     const payloadHash = collect(new Hash(payloadBytes));
 
                     const signatures = normalizeArray(signing).map((x) => makeSignature(x, payloadHash.bytes));
 
-                    const tx: IrohaDataModel['iroha_data_model::transaction::VersionedTransaction'] = Enum.create(
-                        'V1',
-                        [
-                            {
-                                payload,
-                                signatures,
-                            },
-                        ],
-                    );
+                    const tx: iroha_data_model_transaction_VersionedTransaction_Encodable = Enum.create('V1', [
+                        {
+                            payload,
+                            signatures,
+                        },
+                    ]);
 
-                    txBytes = irohaCodec.encode('iroha_data_model::transaction::VersionedTransaction', tx);
+                    txBytes = iroha_data_model_transaction_VersionedTransaction_encode(tx);
                 });
 
-                await axios.post('/instruction', txBytes!);
+                await axios.post('/transaction', txBytes!);
             } finally {
                 scope.free();
             }
@@ -75,13 +87,12 @@ export function createClient(params: CreateClientParams): Client {
                 let queryBytes: Uint8Array;
 
                 scope.run(() => {
-                    const payloadBytes = irohaCodec.encode('iroha_data_model::query::Payload', payload);
+                    const payloadBytes = respectEncodeAsIs(payload, iroha_data_model_query_Payload_encode);
                     const payloadHash = collect(new Hash(payloadBytes));
 
                     const signature = makeSignature(signing, payloadHash.bytes);
 
-                    queryBytes = irohaCodec.encode(
-                        'iroha_data_model::query::VersionedSignedQueryRequest',
+                    queryBytes = iroha_data_model_query_VersionedSignedQueryRequest_encode(
                         Enum.create('V1', [
                             {
                                 payload,
@@ -92,18 +103,16 @@ export function createClient(params: CreateClientParams): Client {
                 });
 
                 try {
-                    const { data }: { data: ArrayBuffer } = await axios({
-                        url: '/query',
-                        method: 'GET',
-                        data: queryBytes!,
+                    const { data }: { data: ArrayBuffer } = await axios.post('/query', queryBytes!, {
                         responseType: 'arraybuffer',
                     });
 
+                    const decoded: iroha_data_model_Value_Decoded = iroha_data_model_query_QueryResult_decode(
+                        new Uint8Array(data),
+                    )[0][0];
+
                     // decoding as QueryResult
-                    return Enum.create(
-                        'Ok',
-                        irohaCodec.decode('iroha_data_model::query::QueryResult', new Uint8Array(data))[0],
-                    );
+                    return Enum.create<any, any>('Ok', decoded);
                 } catch (err) {
                     if ((err as AxiosError).isAxiosError) {
                         const { response: { status, data } = {} } = err as AxiosError;
@@ -126,8 +135,8 @@ export function createClient(params: CreateClientParams): Client {
 
         async checkHealth() {
             try {
-                const { data } = await axios.get<'Healthy'>('/health');
-                if (data !== 'Healthy') {
+                const { status } = await axios.get<'Healthy'>('/health');
+                if (status !== 200) {
                     throw new Error('Peer is not healthy');
                 }
                 return Enum.create('Ok', null);
@@ -138,15 +147,15 @@ export function createClient(params: CreateClientParams): Client {
     };
 }
 
-function makeSignature(keyPair: KeyPair, payload: Uint8Array): IrohaDataModel['iroha_crypto::Signature'] {
+function makeSignature(keyPair: KeyPair, payload: Uint8Array): iroha_crypto_Signature_Decoded {
     const signature = collect(new Signature(keyPair, payload));
 
     // Should it be collected?
     const pubKey = keyPair.public_key;
 
     return {
-        publicKey: {
-            digestFunction: pubKey.digest_function,
+        public_key: {
+            digest_function: pubKey.digest_function,
             payload: pubKey.payload,
         },
         signature: signature.signature,
