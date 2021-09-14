@@ -12,6 +12,7 @@ var goog = jspb;
 var global = Function('return this')();
 
 var primitive_pb = require('./primitive_pb.js');
+var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 goog.exportSymbol('proto.iroha.protocol.AccountDetailPaginationMeta', null, global);
 goog.exportSymbol('proto.iroha.protocol.AssetPaginationMeta', null, global);
 goog.exportSymbol('proto.iroha.protocol.BlocksQuery', null, global);
@@ -400,7 +401,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.iroha.protocol.TxPaginationMeta.oneofGroups_ = [[2]];
+proto.iroha.protocol.TxPaginationMeta.oneofGroups_ = [[2],[4],[5],[6],[7]];
 
 /**
  * @enum {number}
@@ -415,6 +416,66 @@ proto.iroha.protocol.TxPaginationMeta.OptFirstTxHashCase = {
  */
 proto.iroha.protocol.TxPaginationMeta.prototype.getOptFirstTxHashCase = function() {
   return /** @type {proto.iroha.protocol.TxPaginationMeta.OptFirstTxHashCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[0]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptFirstTxTimeCase = {
+  OPT_FIRST_TX_TIME_NOT_SET: 0,
+  FIRST_TX_TIME: 4
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptFirstTxTimeCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptFirstTxTimeCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptFirstTxTimeCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[1]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptLastTxTimeCase = {
+  OPT_LAST_TX_TIME_NOT_SET: 0,
+  LAST_TX_TIME: 5
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptLastTxTimeCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptLastTxTimeCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptLastTxTimeCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[2]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptFirstTxHeightCase = {
+  OPT_FIRST_TX_HEIGHT_NOT_SET: 0,
+  FIRST_TX_HEIGHT: 6
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptFirstTxHeightCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptFirstTxHeightCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptFirstTxHeightCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[3]));
+};
+
+/**
+ * @enum {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.OptLastTxHeightCase = {
+  OPT_LAST_TX_HEIGHT_NOT_SET: 0,
+  LAST_TX_HEIGHT: 7
+};
+
+/**
+ * @return {proto.iroha.protocol.TxPaginationMeta.OptLastTxHeightCase}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getOptLastTxHeightCase = function() {
+  return /** @type {proto.iroha.protocol.TxPaginationMeta.OptLastTxHeightCase} */(jspb.Message.computeOneofCase(this, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[4]));
 };
 
 
@@ -448,7 +509,11 @@ proto.iroha.protocol.TxPaginationMeta.toObject = function(includeInstance, msg) 
   var f, obj = {
     pageSize: jspb.Message.getFieldWithDefault(msg, 1, 0),
     firstTxHash: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    ordering: (f = msg.getOrdering()) && proto.iroha.protocol.Ordering.toObject(includeInstance, f)
+    ordering: (f = msg.getOrdering()) && proto.iroha.protocol.Ordering.toObject(includeInstance, f),
+    firstTxTime: (f = msg.getFirstTxTime()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    lastTxTime: (f = msg.getLastTxTime()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    firstTxHeight: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    lastTxHeight: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -497,6 +562,24 @@ proto.iroha.protocol.TxPaginationMeta.deserializeBinaryFromReader = function(msg
       var value = new proto.iroha.protocol.Ordering;
       reader.readMessage(value,proto.iroha.protocol.Ordering.deserializeBinaryFromReader);
       msg.setOrdering(value);
+      break;
+    case 4:
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setFirstTxTime(value);
+      break;
+    case 5:
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setLastTxTime(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setFirstTxHeight(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readUint64());
+      msg.setLastTxHeight(value);
       break;
     default:
       reader.skipField();
@@ -547,6 +630,36 @@ proto.iroha.protocol.TxPaginationMeta.serializeBinaryToWriter = function(message
       3,
       f,
       proto.iroha.protocol.Ordering.serializeBinaryToWriter
+    );
+  }
+  f = message.getFirstTxTime();
+  if (f != null) {
+    writer.writeMessage(
+      4,
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = message.getLastTxTime();
+  if (f != null) {
+    writer.writeMessage(
+      5,
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeUint64(
+      6,
+      f
+    );
+  }
+  f = /** @type {number} */ (jspb.Message.getField(message, 7));
+  if (f != null) {
+    writer.writeUint64(
+      7,
+      f
     );
   }
 };
@@ -623,6 +736,124 @@ proto.iroha.protocol.TxPaginationMeta.prototype.clearOrdering = function() {
  */
 proto.iroha.protocol.TxPaginationMeta.prototype.hasOrdering = function() {
   return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional google.protobuf.Timestamp first_tx_time = 4;
+ * @return {?proto.google.protobuf.Timestamp}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getFirstTxTime = function() {
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 4));
+};
+
+
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setFirstTxTime = function(value) {
+  jspb.Message.setOneofWrapperField(this, 4, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[1], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearFirstTxTime = function() {
+  this.setFirstTxTime(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasFirstTxTime = function() {
+  return jspb.Message.getField(this, 4) != null;
+};
+
+
+/**
+ * optional google.protobuf.Timestamp last_tx_time = 5;
+ * @return {?proto.google.protobuf.Timestamp}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getLastTxTime = function() {
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 5));
+};
+
+
+/** @param {?proto.google.protobuf.Timestamp|undefined} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setLastTxTime = function(value) {
+  jspb.Message.setOneofWrapperField(this, 5, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[2], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearLastTxTime = function() {
+  this.setLastTxTime(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasLastTxTime = function() {
+  return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional uint64 first_tx_height = 6;
+ * @return {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getFirstTxHeight = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setFirstTxHeight = function(value) {
+  jspb.Message.setOneofField(this, 6, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[3], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearFirstTxHeight = function() {
+  jspb.Message.setOneofField(this, 6, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[3], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasFirstTxHeight = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional uint64 last_tx_height = 7;
+ * @return {number}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.getLastTxHeight = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.iroha.protocol.TxPaginationMeta.prototype.setLastTxHeight = function(value) {
+  jspb.Message.setOneofField(this, 7, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[4], value);
+};
+
+
+proto.iroha.protocol.TxPaginationMeta.prototype.clearLastTxHeight = function() {
+  jspb.Message.setOneofField(this, 7, proto.iroha.protocol.TxPaginationMeta.oneofGroups_[4], undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.iroha.protocol.TxPaginationMeta.prototype.hasLastTxHeight = function() {
+  return jspb.Message.getField(this, 7) != null;
 };
 
 

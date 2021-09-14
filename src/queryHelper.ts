@@ -58,6 +58,10 @@ const addQuery = (query, queryName, params = {}) => {
         paginationMeta = new Queries.TxPaginationMeta()
         paginationMeta.setPageSize(value.pageSize)
         paginationMeta.setFirstTxHash(value.firstTxHash)
+        paginationMeta.setFirstTxTime(value.firstTxTime)
+        paginationMeta.setLastTxTime(value.lastTxTime)
+        paginationMeta.setFirstTxHeight(value.firstTxHeight)
+        paginationMeta.setLastTxHeight(value.lastTxHeight)
         paginationMeta.setOrdering(queryOrder)
       }
 

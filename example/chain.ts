@@ -2,10 +2,12 @@
 
 import grpc from 'grpc'
 import {
+  QueryService_v1Client as QueryService,
   CommandService_v1Client as CommandService
 } from '../lib/proto/endpoint_grpc_pb'
 
 import { TxBuilder, BatchBuilder } from '../lib/chain'
+import queries from '../lib/queries'
 
 const IROHA_ADDRESS = 'localhost:50051'
 
@@ -17,9 +19,14 @@ const commandService = new CommandService(
   grpc.credentials.createInsecure()
 )
 
+const queryService = new QueryService(
+  IROHA_ADDRESS,
+  grpc.credentials.createInsecure()
+)
+
 const firstTx = new TxBuilder()
   .createAccount({
-    accountName: 'user1',
+    accountName: 'usera',
     domainId: 'test',
     publicKey: '0000000000000000000000000000000000000000000000000000000000000000'
   })
@@ -28,7 +35,7 @@ const firstTx = new TxBuilder()
 
 const secondTx = new TxBuilder()
   .createAccount({
-    accountName: 'user2',
+    accountName: 'userb',
     domainId: 'test',
     publicKey: '0000000000000000000000000000000000000000000000000000000000000000'
   })
@@ -45,3 +52,26 @@ new BatchBuilder([
   .send(commandService)
   .then(res => console.log(res))
   .catch(err => console.error(err))
+
+Promise.all([
+  queries.getAccountTransactions({
+    privateKey: adminPriv,
+    creatorAccountId: 'admin@test',
+    queryService,
+    timeoutLimit: 5000
+  }, {
+    accountId: 'admin@test',
+    pageSize: 10,
+    firstTxHash: undefined,
+    ordering: {
+      field: undefined,
+      direction: undefined
+    },
+    firstTxTime: undefined,
+    lastTxTime: undefined,
+    firstTxHeight: 1,
+    lastTxHeight: 3
+  })
+])
+  .then(a => console.log(a))
+  .catch(e => console.error(e))
