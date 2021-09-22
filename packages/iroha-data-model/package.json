@@ -1,6 +1,6 @@
 {
     "name": "@iroha2/data-model",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "main": "dist/lib.cjs.js",
     "module": "dist/lib.esm.js",
     "types": "dist/lib.d.ts",
@@ -11,23 +11,28 @@
     "scripts": {
         "test": "jest",
         "gen": "esno scripts/generate/main",
-        "update-json": "esno scripts/update-json"
+        "update-json": "esno scripts/compile-json"
     },
     "dependencies": {
-        "@scale-codec/core": "link:../../../scale-codec-js-library/packages/core",
-        "@scale-codec/definition-runtime": "link:../../../scale-codec-js-library/packages/definition-runtime"
+        "@iroha2/i64-fixnum": "workspace:^0.1.0",
+        "@scale-codec/definition-runtime": "^0.1.0"
     },
     "devDependencies": {
-        "@scale-codec/definition-compiler": "link:../../../scale-codec-js-library/packages/definition-compiler",
-        "@scale-codec/namespace-codegen": "^0.1.0",
+        "@octokit/core": "^3.5.1",
+        "@scale-codec/definition-compiler": "^0.1.0",
         "@types/debug": "^4.1.6",
+        "@types/lodash-es": "^4.17.5",
+        "axios": "^0.21.1",
         "chalk": "^4.1.1",
         "consola": "^2.15.3",
         "debug": "^4.3.2",
         "esbuild-jest": "^0.5.0",
         "esno": "^0.8.0",
         "execa": "^5.1.1",
+        "immutable": "^4.0.0-rc.14",
         "jest": "^27.0.6",
+        "lodash-es": "^4.17.21",
+        "node-fetch": "^3.0.0",
         "ora": "^5.4.1",
         "type-fest": "^1.2.0"
     }

@@ -9,13 +9,9 @@ const config = {
         ],
     },
     testEnvironment: 'node',
-    testMatch: ['**/test/integration/tests/**/*.ts'],
+    testMatch: ['**/*.spec.ts'],
     testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     modulePathIgnorePatterns: ['/dist/'],
-    moduleNameMapper: {
-        '^@iroha2/data-model': '<rootDir>/../iroha-data-model/src/lib.ts',
-        '^@iroha2/i64-fixnum': '<rootDir>/../iroha-i64-fixnum/src/lib.ts',
-    },
 };
 
 module.exports = config;

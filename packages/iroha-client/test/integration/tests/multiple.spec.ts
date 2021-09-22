@@ -5,6 +5,7 @@ import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_
 import {
     createClient,
     Enum,
+    Result,
     iroha_data_model_account_Id_Encodable,
     iroha_data_model_asset_AssetDefinition_Encodable,
     iroha_data_model_asset_DefinitionId_Encodable,
@@ -15,11 +16,17 @@ import {
     iroha_data_model_query_Payload_Encodable,
     iroha_data_model_query_QueryBox_Encodable,
     iroha_data_model_transaction_Payload_Encodable,
-    Result,
+    iroha_data_model_Value_Encodable,
+    iroha_data_model_isi_MintBox_Encodable,
+    iroha_data_model_IdBox_Encodable,
+    iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable,
+    iroha_data_model_asset_DefinitionId_Decoded,
+    iroha_data_model_asset_AssetValueType_Encodable,
 } from '../../../src/lib';
 import JSBI from 'jsbi';
 import fs from 'fs/promises';
 import { hexToBytes } from 'hada';
+import { Seq } from 'immutable';
 
 const client = createClient({
     toriiURL: client_config.toriiURL,
@@ -47,10 +54,14 @@ function wrapQuery(query: iroha_data_model_query_QueryBox_Encodable): iroha_data
     };
 }
 
-async function addAsset(definitionid: iroha_data_model_asset_DefinitionId_Encodable) {
+async function addAsset(
+    definitionid: iroha_data_model_asset_DefinitionId_Encodable,
+    assetType: iroha_data_model_asset_AssetValueType_Encodable = Enum.create('BigQuantity'),
+) {
     const definition: iroha_data_model_asset_AssetDefinition_Encodable = {
         id: definitionid,
-        value_type: Enum.create('BigQuantity'),
+        value_type: assetType,
+        metadata: { map: new Map() },
     };
 
     const createAsset: iroha_data_model_isi_RegisterBox_Encodable = {
@@ -90,9 +101,26 @@ async function addAccount(accountId: iroha_data_model_account_Id_Encodable) {
     });
 }
 
+async function submitMint(mintBox: iroha_data_model_isi_MintBox_Encodable) {
+    await client.submitTransaction({
+        payload: wrapInstruction(Enum.create('Mint', mintBox)),
+        signing: keyPair!,
+    });
+}
+
+async function pipelineStepDelay() {
+    await delay(PIPELINE_MS * 2);
+}
+
 let startedPeer: StartPeerReturn | null = null;
 
+async function killStartedPeer() {
+    await startedPeer?.kill({ clearSideEffects: true });
+}
+
 beforeAll(async () => {
+    await clearConfiguration();
+
     // setup configs for test peer
     await setConfiguration({
         config: peer_config,
@@ -112,19 +140,14 @@ beforeAll(async () => {
     [publicKey, privateKey, multihash].forEach((x) => x.free());
 });
 
-afterAll(async () => {
-    // clear test peer configs
-    await clearConfiguration();
-});
-
 beforeEach(async () => {
-    startedPeer = await startPeer({
-        outputPeerLogs: true,
-    });
+    await killStartedPeer();
+    startedPeer = await startPeer();
 });
 
-afterEach(async () => {
-    await startedPeer?.kill({ clearSideEffects: true });
+afterAll(async () => {
+    await killStartedPeer();
+    await clearConfiguration();
 });
 
 test('Peer is healthy', async () => {
@@ -241,4 +264,44 @@ test('transaction-committed event is triggered after AddAsset instruction has be
     } finally {
         closeEventsConnection?.();
     }
+});
+
+test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
+    // Creating asset by definition
+    const ASSET_DEFINITION_ID: iroha_data_model_asset_DefinitionId_Decoded = {
+        name: 'xor',
+        domain_name: 'wonderland',
+    };
+    await addAsset(ASSET_DEFINITION_ID, Enum.create('Fixed'));
+    await pipelineStepDelay();
+
+    // Adding mint
+    const DECIMAL = '512.5881';
+    const mintValue: iroha_data_model_Value_Encodable = Enum.create('Fixed', [DECIMAL]);
+    const idBox: iroha_data_model_IdBox_Encodable = Enum.create('AssetId', {
+        account_id: client_config.account,
+        definition_id: ASSET_DEFINITION_ID,
+    });
+    await submitMint({
+        object: { expression: Enum.create('Raw', mintValue) },
+        destination_id: { expression: Enum.create('Raw', Enum.create('Id', idBox)) },
+    });
+    await pipelineStepDelay();
+
+    // Checking added asset via query
+    const expressionEvalToAccountId: iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable = {
+        expression: Enum.create('Raw', Enum.create('Id', Enum.create('AccountId', client_config.account))),
+    };
+    const result = await client.makeQuery({
+        payload: wrapQuery(Enum.create('FindAssetsByAccountId', { account_id: expressionEvalToAccountId })),
+        signing: keyPair,
+    });
+
+    // Assert
+    const asset = Seq(result.as('Ok').as('Vec'))
+        .map((x) => x.as('Identifiable').as('Asset'))
+        .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name);
+    expect(asset).toBeTruthy();
+    expect(asset!.value.is('Fixed')).toBe(true);
+    expect(asset!.value.as('Fixed')[0]).toBe(DECIMAL);
 });

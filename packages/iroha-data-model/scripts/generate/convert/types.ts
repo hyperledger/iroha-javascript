@@ -11,7 +11,8 @@ export type RustTypeDefinitionVariant =
     | RustTupleStructDefinition
     | RustEnumDefinition
     | RustArrayDefinition
-    | RustIntDef;
+    | RustIntDef
+    | RustFixedPointDef;
 
 export interface RustMapDefinition {
     Map: {
@@ -66,6 +67,13 @@ export interface RustEnumVarDef {
 
 export interface RustIntDef {
     Int: string;
+}
+
+export interface RustFixedPointDef {
+    FixedPoint: {
+        base: string;
+        decimal_places: number;
+    };
 }
 
 export type TypePath = string;

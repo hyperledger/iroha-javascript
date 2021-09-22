@@ -11,6 +11,7 @@ import {
     isRustStructDef,
     isRustTupleStructDef,
     isRustVecDef,
+    isRustFixedPointDef,
 } from './type-assertions';
 import debugRoot from 'debug';
 import RefConverter from './RefConverter';
@@ -172,6 +173,10 @@ function transformRustDef(
                 items: def.TupleStruct.types.map((x) => converter.handle(x)),
             }),
         );
+    }
+    if (isRustFixedPointDef(def)) {
+        debug('ignoring fixed point def %o %o', name, def);
+        return ok(none());
     }
 
     debug('Unknown def: %O', def);

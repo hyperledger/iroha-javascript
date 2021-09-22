@@ -17,6 +17,7 @@ describe('Refs transformation', () => {
             'BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>',
             'BTreeMap_String_iroha_data_model_expression_EvaluatesTo_iroha_data_model_Value',
         ],
+        ['Fixed<i64>', 'i64'],
     ])('%p transformed into %p', (input, output) => {
         const sut = new RefConverter();
 

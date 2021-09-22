@@ -11,7 +11,7 @@ Configure your package manager to fetch scoped packages from nexus. Example for 
 @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
 ```
 
-Then, install packages: 
+Then, install packages:
 
 ```sh
 npm i @iroha2/data-model jsbi
@@ -43,6 +43,8 @@ pnpm update-json
 ```
 
 **This script requires Rust and Cargo installed!**
+
+**TODO**: load schema from `hyperledger/iroha` actions artifacts.
 
 Then you could regenerate namespace definition with command:
 

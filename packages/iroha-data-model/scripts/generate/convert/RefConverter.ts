@@ -63,6 +63,9 @@ function replaceStdAlias(ref: string): string {
     if (ref.match(/Compact\<u128\>/)) {
         return 'Compact';
     }
+    if (ref.match(/Fixed\<i64\>/)) {
+        return 'i64';
+    }
     return ref;
 }
 

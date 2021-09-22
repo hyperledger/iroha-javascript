@@ -19,6 +19,7 @@ import Axios, { AxiosError } from 'axios';
 import { SetupEventsParams, SetupEventsReturn, setupEventsWebsocketConnection } from './events';
 import { collect, createScope } from './collect-garbage';
 import { normalizeArray } from './util';
+import { inspect } from 'util';
 
 export interface CreateClientParams {
     toriiURL: string;
@@ -67,9 +68,11 @@ export function createClient(params: CreateClientParams): Client {
                     const tx: iroha_data_model_transaction_VersionedTransaction_Encodable = Enum.create('V1', [
                         {
                             payload,
-                            signatures,
+                            signatures: new Set(signatures),
                         },
                     ]);
+
+                    // console.log(inspect(tx, true, 20, true));
 
                     txBytes = iroha_data_model_transaction_VersionedTransaction_encode(tx);
                 });
@@ -119,6 +122,9 @@ export function createClient(params: CreateClientParams): Client {
 
                         if (status === 500) {
                             return Enum.create('Err', new Error(`Request failed with message from Iroha: ${data}`));
+                        }
+                        if (status === 400) {
+                            return Enum.create('Err', new Error(String(data)));
                         }
                     }
 

@@ -18,3 +18,28 @@ test("Converts types' self names", () => {
         },
     });
 });
+
+// test('Fixed<i64> -> i64', () => {
+//     expect(
+//         convert({
+//             input: {
+//                 Value: {
+//                     Enum: {
+//                         variants: [{ name: 'Fixed', discriminant: 0, ty: 'Fixed<i64>' }],
+//                     },
+//                 },
+//             },
+//         }),
+//     ).toEqual({
+//         Value: {
+//             t: 'enum',
+//             variants: [
+//                 {
+//                     name: 'Fixed',
+//                     discriminant: 0,
+//                     ref: 'i64',
+//                 },
+//             ],
+//         },
+//     });
+// });

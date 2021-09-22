@@ -9,6 +9,7 @@ import {
     RustTypeDefinitionVariant,
     RustTupleStructDefinition,
     RustVecDefinition,
+    RustFixedPointDef,
 } from './types';
 
 export function isRustMapDef(v: RustTypeDefinitionVariant): v is RustMapDefinition {
@@ -45,4 +46,8 @@ export function isRustIntDef(v: RustTypeDefinitionVariant): v is RustIntDef {
 
 export function isRustArrayDef(v: RustTypeDefinitionVariant): v is RustArrayDefinition {
     return !!(v as RustArrayDefinition).Array;
+}
+
+export function isRustFixedPointDef(v: RustTypeDefinitionVariant): v is RustFixedPointDef {
+    return !!(v as RustFixedPointDef).FixedPoint;
 }
