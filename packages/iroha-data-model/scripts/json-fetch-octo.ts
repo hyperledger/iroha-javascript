@@ -58,6 +58,9 @@ async function fetchSchemaArtifact({
     });
 
     console.log({ data });
+
+    // TODO
+    return '';
 }
 
 /**

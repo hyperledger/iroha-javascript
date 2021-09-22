@@ -16,9 +16,7 @@ cli.command('clear:effects').action(async () => {
 
 cli.command('start').action(async () => {
     consola.info('Starting peer');
-    await startPeer({
-        outputPeerLogs: true,
-    });
+    await startPeer();
     consola.info('Started! Kill this process to kill peer');
 });
 
