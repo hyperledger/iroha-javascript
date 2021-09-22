@@ -11,13 +11,11 @@ Configure your package manager to fetch scoped packages from nexus. Example for 
 @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
 ```
 
-Then, install packages: 
+Then, install packages:
 
 ```sh
-npm i @iroha2/data-model jsbi
+npm i @iroha2/data-model
 ```
-
-> `jsbi` is a peer dependency of `@scale-codec/*` packages
 
 ### Usage
 
@@ -33,6 +31,8 @@ const encoded = irohaCodec.encode('iroha_data_model::asset::DefinitionId', assed
 const decoded = irohaCodec.decode('iroha_data_model::asset::DefinitionId', encoded);
 ```
 
+> For 64 and 128-bits integers `jsbi` library is used. It is a dependency of `@scale-codec/core` package and re-exported by the chain of packages, so you can use it directly with `import { JSBI } from '@iroha2/data-model'`. For related docs, see [JSBI docs](https://www.npmjs.com/package/jsbi).
+
 ### Regenerate schema
 
 Source data for generation - `input/input.json`. You can update it manually, or automatically with command:
@@ -43,6 +43,8 @@ pnpm update-json
 ```
 
 **This script requires Rust and Cargo installed!**
+
+**TODO**: load schema from `hyperledger/iroha` actions artifacts.
 
 Then you could regenerate namespace definition with command:
 

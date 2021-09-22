@@ -2,10 +2,31 @@ import initCryptoWasm, { Multihash, KeyPair, PublicKey, PrivateKey } from '@iroh
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
-import { createClient, Enum, Result, IrohaDataModel } from '../../../src/lib';
+import {
+    createClient,
+    Enum,
+    Result,
+    iroha_data_model_account_Id_Encodable,
+    iroha_data_model_asset_AssetDefinition_Encodable,
+    iroha_data_model_asset_DefinitionId_Encodable,
+    iroha_data_model_events_EventFilter_Encodable,
+    iroha_data_model_events_pipeline_EventFilter_Encodable,
+    iroha_data_model_isi_Instruction_Encodable,
+    iroha_data_model_isi_RegisterBox_Encodable,
+    iroha_data_model_query_Payload_Encodable,
+    iroha_data_model_query_QueryBox_Encodable,
+    iroha_data_model_transaction_Payload_Encodable,
+    iroha_data_model_Value_Encodable,
+    iroha_data_model_isi_MintBox_Encodable,
+    iroha_data_model_IdBox_Encodable,
+    iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable,
+    iroha_data_model_asset_DefinitionId_Decoded,
+    iroha_data_model_asset_AssetValueType_Encodable,
+} from '../../../src/lib';
 import JSBI from 'jsbi';
 import fs from 'fs/promises';
 import { hexToBytes } from 'hada';
+import { Seq } from 'immutable';
 
 const client = createClient({
     toriiURL: client_config.toriiURL,
@@ -14,34 +35,36 @@ const client = createClient({
 let keyPair: KeyPair;
 
 function wrapInstruction(
-    item: IrohaDataModel['iroha_data_model::isi::Instruction'],
-): IrohaDataModel['iroha_data_model::transaction::Payload'] {
+    item: iroha_data_model_isi_Instruction_Encodable,
+): iroha_data_model_transaction_Payload_Encodable {
     return {
         instructions: [item],
-        timeToLiveMs: JSBI.BigInt(100_000),
-        creationTime: JSBI.BigInt(Date.now()),
+        time_to_live_ms: JSBI.BigInt(100_000),
+        creation_time: JSBI.BigInt(Date.now()),
         metadata: new Map(),
-        accountId: client_config.account,
+        account_id: client_config.account,
     };
 }
 
-function wrapQuery(
-    query: IrohaDataModel['iroha_data_model::query::QueryBox'],
-): IrohaDataModel['iroha_data_model::query::Payload'] {
+function wrapQuery(query: iroha_data_model_query_QueryBox_Encodable): iroha_data_model_query_Payload_Encodable {
     return {
         query,
-        accountId: client_config.account,
-        timestampMs: JSBI.BigInt(Date.now()),
+        account_id: client_config.account,
+        timestamp_ms: JSBI.BigInt(Date.now()),
     };
 }
 
-async function addAsset(definitionid: IrohaDataModel['iroha_data_model::asset::DefinitionId']) {
-    const definition: IrohaDataModel['iroha_data_model::asset::AssetDefinition'] = {
+async function addAsset(
+    definitionid: iroha_data_model_asset_DefinitionId_Encodable,
+    assetType: iroha_data_model_asset_AssetValueType_Encodable = Enum.create('BigQuantity'),
+) {
+    const definition: iroha_data_model_asset_AssetDefinition_Encodable = {
         id: definitionid,
-        valueType: Enum.create('BigQuantity'),
+        value_type: assetType,
+        metadata: { map: new Map() },
     };
 
-    const createAsset: IrohaDataModel['iroha_data_model::isi::RegisterBox'] = {
+    const createAsset: iroha_data_model_isi_RegisterBox_Encodable = {
         object: {
             expression: Enum.create('Raw', Enum.create('Identifiable', Enum.create('AssetDefinition', definition))),
         },
@@ -53,8 +76,8 @@ async function addAsset(definitionid: IrohaDataModel['iroha_data_model::asset::D
     });
 }
 
-async function addAccount(accountId: IrohaDataModel['iroha_data_model::account::Id']) {
-    const registerBox: IrohaDataModel['iroha_data_model::isi::RegisterBox'] = {
+async function addAccount(accountId: iroha_data_model_account_Id_Encodable) {
+    const registerBox: iroha_data_model_isi_RegisterBox_Encodable = {
         object: {
             expression: Enum.create(
                 'Raw',
@@ -78,9 +101,26 @@ async function addAccount(accountId: IrohaDataModel['iroha_data_model::account::
     });
 }
 
+async function submitMint(mintBox: iroha_data_model_isi_MintBox_Encodable) {
+    await client.submitTransaction({
+        payload: wrapInstruction(Enum.create('Mint', mintBox)),
+        signing: keyPair!,
+    });
+}
+
+async function pipelineStepDelay() {
+    await delay(PIPELINE_MS * 2);
+}
+
 let startedPeer: StartPeerReturn | null = null;
 
+async function killStartedPeer() {
+    await startedPeer?.kill({ clearSideEffects: true });
+}
+
 beforeAll(async () => {
+    await clearConfiguration();
+
     // setup configs for test peer
     await setConfiguration({
         config: peer_config,
@@ -100,19 +140,14 @@ beforeAll(async () => {
     [publicKey, privateKey, multihash].forEach((x) => x.free());
 });
 
-afterAll(async () => {
-    // clear test peer configs
-    await clearConfiguration();
-});
-
 beforeEach(async () => {
-    startedPeer = await startPeer({
-        outputPeerLogs: true,
-    });
+    await killStartedPeer();
+    startedPeer = await startPeer();
 });
 
-afterEach(async () => {
-    await startedPeer?.kill({ clearSideEffects: true });
+afterAll(async () => {
+    await killStartedPeer();
+    await clearConfiguration();
 });
 
 test('Peer is healthy', async () => {
@@ -120,25 +155,25 @@ test('Peer is healthy', async () => {
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-    type AssetDefinitionId = IrohaDataModel['iroha_data_model::asset::DefinitionId'];
+    type AssetDefinitionId = iroha_data_model_asset_DefinitionId_Encodable;
 
     const normalAssetDefinitionId: AssetDefinitionId = {
         name: 'xor',
-        domainName: 'wonderland',
+        domain_name: 'wonderland',
     };
     await addAsset(normalAssetDefinitionId);
 
     const tooLongAssetName = '0'.repeat(2 ** 14);
     const invalidAssetDefinitionId: AssetDefinitionId = {
         name: tooLongAssetName,
-        domainName: 'wonderland',
+        domain_name: 'wonderland',
     };
     await addAsset(invalidAssetDefinitionId);
 
     await delay(PIPELINE_MS * 2);
 
     const queryResult = await client.makeQuery({
-        payload: wrapQuery(Enum.create('FindAllAssetsDefinitions', {})),
+        payload: wrapQuery(Enum.create('FindAllAssetsDefinitions', null)),
         signing: keyPair,
     });
 
@@ -152,22 +187,22 @@ test('AddAsset instruction with name length more than limit is not committed', a
 });
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
-    type AccountId = IrohaDataModel['iroha_data_model::account::Id'];
+    type AccountId = iroha_data_model_account_Id_Encodable;
 
     const normal: AccountId = {
         name: 'bob',
-        domainName: 'wonderland',
+        domain_name: 'wonderland',
     };
     const incorrect: AccountId = {
         name: '0'.repeat(2 ** 14),
-        domainName: 'wonderland',
+        domain_name: 'wonderland',
     };
 
     await Promise.all([normal, incorrect].map((x) => addAccount(x)));
     await delay(PIPELINE_MS * 2);
 
     const queryResult = await client.makeQuery({
-        payload: wrapQuery(Enum.create('FindAllAccounts', {})),
+        payload: wrapQuery(Enum.create('FindAllAccounts', null)),
         signing: keyPair,
     });
 
@@ -184,11 +219,11 @@ test('transaction-committed event is triggered after AddAsset instruction has be
     let closeEventsConnection: Function | undefined;
 
     try {
-        const pipelineFilter: IrohaDataModel['iroha_data_model::events::pipeline::EventFilter'] = {
+        const pipelineFilter: iroha_data_model_events_pipeline_EventFilter_Encodable = {
             entity: Enum.create('Some', Enum.create('Transaction')),
             hash: Enum.create('None'),
         };
-        const filter: IrohaDataModel['iroha_data_model::events::EventFilter'] = Enum.create('Pipeline', pipelineFilter);
+        const filter: iroha_data_model_events_EventFilter_Encodable = Enum.create('Pipeline', pipelineFilter);
 
         // setting up listening
         let transactionCommittedPromise: Promise<void>;
@@ -199,8 +234,8 @@ test('transaction-committed event is triggered after AddAsset instruction has be
                     .then(({ close, ee }) => {
                         ee.on('event', (event) => {
                             event.match({
-                                Pipeline({ entityType, status }) {
-                                    if (entityType.is('Transaction') && status.is('Committed')) {
+                                Pipeline({ entity_type, status }) {
+                                    if (entity_type.is('Transaction') && status.is('Committed')) {
                                         resolveTransaction();
                                     }
                                 },
@@ -218,7 +253,7 @@ test('transaction-committed event is triggered after AddAsset instruction has be
         // triggering transaction
         await addAsset({
             name: 'xor',
-            domainName: 'wonderland',
+            domain_name: 'wonderland',
         });
 
         // awaiting for triggering
@@ -229,4 +264,44 @@ test('transaction-committed event is triggered after AddAsset instruction has be
     } finally {
         closeEventsConnection?.();
     }
+});
+
+test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
+    // Creating asset by definition
+    const ASSET_DEFINITION_ID: iroha_data_model_asset_DefinitionId_Decoded = {
+        name: 'xor',
+        domain_name: 'wonderland',
+    };
+    await addAsset(ASSET_DEFINITION_ID, Enum.create('Fixed'));
+    await pipelineStepDelay();
+
+    // Adding mint
+    const DECIMAL = '512.5881';
+    const mintValue: iroha_data_model_Value_Encodable = Enum.create('Fixed', [DECIMAL]);
+    const idBox: iroha_data_model_IdBox_Encodable = Enum.create('AssetId', {
+        account_id: client_config.account,
+        definition_id: ASSET_DEFINITION_ID,
+    });
+    await submitMint({
+        object: { expression: Enum.create('Raw', mintValue) },
+        destination_id: { expression: Enum.create('Raw', Enum.create('Id', idBox)) },
+    });
+    await pipelineStepDelay();
+
+    // Checking added asset via query
+    const expressionEvalToAccountId: iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable = {
+        expression: Enum.create('Raw', Enum.create('Id', Enum.create('AccountId', client_config.account))),
+    };
+    const result = await client.makeQuery({
+        payload: wrapQuery(Enum.create('FindAssetsByAccountId', { account_id: expressionEvalToAccountId })),
+        signing: keyPair,
+    });
+
+    // Assert
+    const asset = Seq(result.as('Ok').as('Vec'))
+        .map((x) => x.as('Identifiable').as('Asset'))
+        .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name);
+    expect(asset).toBeTruthy();
+    expect(asset!.value.is('Fixed')).toBe(true);
+    expect(asset!.value.as('Fixed')[0]).toBe(DECIMAL);
 });

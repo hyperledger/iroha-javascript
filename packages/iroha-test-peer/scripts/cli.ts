@@ -16,19 +16,13 @@ cli.command('clear:effects').action(async () => {
 
 cli.command('start').action(async () => {
     consola.info('Starting peer');
-    const { kill } = await startPeer();
-    consola.info('Started!');
-
-    await new Promise((r) => setTimeout(r, 2_000));
-
-    consola.info('killing');
-    await kill();
-    consola.info('killed');
+    await startPeer();
+    consola.info('Started! Kill this process to kill peer');
 });
 
 cli.command('config:copy-from-client-e2e-tests').action(async () => {
     async function copyOne(name: string) {
-        const from = path.resolve(__dirname, '../../iroha-client/e2e/config', `peer_${name}.json`);
+        const from = path.resolve(__dirname, '../../iroha-client/test/integration/config', `peer_${name}.json`);
         const to = path.resolve(__dirname, '../.iroha-deploy', `${name}.json`);
         await execa('cp', [from, to]);
     }
@@ -37,4 +31,13 @@ cli.command('config:copy-from-client-e2e-tests').action(async () => {
 });
 
 cli.help();
-cli.parse();
+
+async function main() {
+    cli.parse(process.argv, { run: false });
+    await cli.runMatchedCommand();
+}
+
+main().catch((err) => {
+    consola.fatal(err);
+    process.exit(1);
+});

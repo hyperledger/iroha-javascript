@@ -3,6 +3,10 @@ import path from 'path';
 import execa from 'execa';
 import { rmWithParams, saveDataAsJSON } from './util';
 import readline from 'readline';
+import chalk from 'chalk';
+import debugRoot from 'debug';
+
+const debug = debugRoot('@iroha2/test-peer');
 
 const deployDir = path.resolve(__dirname, '../', TMP_IROHA_DEPLOY_DIR);
 
@@ -12,12 +16,14 @@ export interface StartPeerParams {
      */
     withGenesis?: boolean;
 
-    outputPeerLogs?: boolean;
+    // outputPeerLogs?: boolean;
 }
 
 export interface KillPeerParams {
     /**
      * If set to `true`, then after killing all side effects will be cleared, e.g. saved blocks
+     *
+     * TODO remove not `blocks` dir, but dir, specified in kura config
      */
     clearSideEffects?: boolean;
 }
@@ -49,24 +55,24 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
 
     // starting peer
     const withGenesis: boolean = params?.withGenesis ?? true;
-    const subprocess = execa('./iroha_cli', withGenesis ? ['--genesis', 'genesis.json'] : [], {
+    const subprocess = execa('./iroha_cli', withGenesis ? ['--submit-genesis'] : [], {
         cwd: deployDir,
     });
+    debug('Subprocess spawnargs: %o', subprocess.spawnargs);
     const stdout = readline.createInterface(subprocess.stdout!);
+    const stderr = readline.createInterface(subprocess.stderr!);
 
-    stdout.on('line', (line) => {
-        params?.outputPeerLogs &&
-            // logging alongside of jest
-            process.stdout.write(line + '\n');
-    });
+    const makeStdioDebug = (prefix: string) => (line: string) => debug(prefix + line);
+    stdout.on('line', makeStdioDebug(chalk`{green stdout}: `));
+    stderr.on('line', makeStdioDebug(chalk`{red stderr}: `));
 
     subprocess.on('error', (err) => {
-        console.error(err);
+        debug('Subprocess error:', err);
     });
 
-    const startingIrohaLogMessagePromise = new Promise<void>((resolve) => {
+    const irohaIsReadyLogMessagePromise = new Promise<void>((resolve) => {
         stdout.on('line', (line) => {
-            if (/Starting Iroha/.test(line)) {
+            if (/listening on.+:8080/i.test(line)) {
                 resolve();
             }
         });
@@ -92,7 +98,7 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
     await new Promise<void>((resolve, reject) => {
         exitPromise.then(() => reject(new Error('Iroha has exited already, maybe something went wrong')));
         setTimeout(() => reject(new Error('No key log message detected within timeout')), 300);
-        startingIrohaLogMessagePromise.then(() => resolve());
+        irohaIsReadyLogMessagePromise.then(() => resolve());
     });
 
     return {

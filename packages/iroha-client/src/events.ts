@@ -1,4 +1,12 @@
-import { Enum, IrohaDataModel, irohaCodec } from '@iroha2/data-model';
+import {
+    EncodeAsIs,
+    Enum,
+    iroha_data_model_events_EventFilter_Encodable,
+    iroha_data_model_events_EventSocketMessage_Encodable,
+    iroha_data_model_events_Event_Decoded,
+    iroha_data_model_events_VersionedEventSocketMessage_decode,
+    iroha_data_model_events_VersionedEventSocketMessage_encode,
+} from '@iroha2/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
 
@@ -6,12 +14,12 @@ export interface EventsEmitteryMap {
     close: CloseEvent;
     error: ErrorEvent;
     accepted: undefined;
-    event: IrohaDataModel['iroha_data_model::events::Event'];
+    event: iroha_data_model_events_Event_Decoded;
 }
 
 export interface SetupEventsParams {
     toriiURL: string;
-    filter: IrohaDataModel['iroha_data_model::events::EventFilter'];
+    filter: iroha_data_model_events_EventFilter_Encodable | EncodeAsIs;
 }
 
 export interface SetupEventsReturn {
@@ -29,7 +37,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         error: ErrorEvent;
         close: CloseEvent;
         subscription_accepted: undefined;
-        event: IrohaDataModel['iroha_data_model::events::Event'];
+        event: iroha_data_model_events_Event_Decoded;
     }>();
 
     ee.on('close', (e) => eeExternal.emit('close', e));
@@ -57,30 +65,13 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         // At the moment Iroha does not support gracefull connection closing, so
         // forced termination
         // Iroha issue: https://github.com/hyperledger/iroha/issues/1195
+        // In future it should be done via `socket.close()`
         socket.terminate();
         return ee.once('close').then(() => {});
-
-        // let closed = false;
-
-        // ee.on('close', () => {
-        //     closed = true;
-        // });
-
-        // socket.close();
-
-        // setTimeout(() => {
-        //     if (!closed) {
-        //         console.log('too long, terminating..');
-        //         socket.terminate();
-        //     }
-        // }, 1000);
     }
 
-    function sendMessage(msg: IrohaDataModel['iroha_data_model::events::EventSocketMessage']) {
-        const encoded = irohaCodec.encode(
-            'iroha_data_model::events::VersionedEventSocketMessage',
-            Enum.create('V1', [msg]),
-        );
+    function sendMessage(msg: iroha_data_model_events_EventSocketMessage_Encodable) {
+        const encoded = iroha_data_model_events_VersionedEventSocketMessage_encode(Enum.create('V1', [msg]));
         socket.send(encoded);
     }
 
@@ -96,9 +87,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             throw new Error('Unexpected array data');
         }
 
-        const event = irohaCodec
-            .decode('iroha_data_model::events::VersionedEventSocketMessage', new Uint8Array(data))
-            .as('V1')[0];
+        const event = iroha_data_model_events_VersionedEventSocketMessage_decode(new Uint8Array(data))[0].as('V1')[0];
 
         if (event.is('SubscriptionAccepted')) {
             if (!listeningForSubscriptionAccepted) throw new Error('No callback!');

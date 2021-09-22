@@ -4,7 +4,7 @@ import dts from 'rollup-plugin-dts';
 import path from 'path';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
-function defineDefaultCjsEsmDts(params: { packageDir: string; external?: string[] }): RollupOptions[] {
+function defineDefaultCjsEsmDts(params: { packageDir: string; external?: RollupOptions['external'] }): RollupOptions[] {
     const { packageDir, external } = params;
 
     const inputTs = path.resolve(__dirname, `../packages/${packageDir}/src/lib.ts`);
@@ -42,10 +42,14 @@ function defineDefaultCjsEsmDts(params: { packageDir: string; external?: string[
 export default defineConfig([
     ...defineDefaultCjsEsmDts({
         packageDir: 'iroha-client',
-        external: ['@iroha2/crypto', '@iroha2/data-model', 'emittery', 'ws', 'axios'],
+        external: [/^@scale-codec/, /^@iroha2/, 'emittery', 'ws', 'axios'],
     }),
     ...defineDefaultCjsEsmDts({
         packageDir: 'iroha-data-model',
-        external: ['@scale-codec/enum', '@scale-codec/namespace'],
+        external: [/^@scale-codec/, /^@iroha2/],
+    }),
+    ...defineDefaultCjsEsmDts({
+        packageDir: 'iroha-i64-fixnum',
+        external: [/^@scale-codec/],
     }),
 ]);

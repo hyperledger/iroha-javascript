@@ -1,2 +1,18 @@
 export * from './generated';
-export * from '@scale-codec/enum';
+export * from './extend';
+
+export {
+    JSBI,
+    Enum,
+    Valuable,
+    ValuableVariants,
+    GetEnumDef,
+    GetValuableVariantValue,
+    encodeAsIs,
+    EncodeAsIs,
+    isEncodeAsIsWrapper,
+    Result,
+    respectEncodeAsIs,
+    makeEncoderAsIsRespectable,
+    Option,
+} from '@scale-codec/definition-runtime';
