@@ -14,10 +14,8 @@ Configure your package manager to fetch scoped packages from nexus. Example for 
 Then, install packages:
 
 ```sh
-npm i @iroha2/data-model jsbi
+npm i @iroha2/data-model
 ```
-
-> `jsbi` is a peer dependency of `@scale-codec/*` packages
 
 ### Usage
 
@@ -32,6 +30,8 @@ const assetDefinitionId: IrohaDataModel['iroha_data_model::asset::DefinitionId']
 const encoded = irohaCodec.encode('iroha_data_model::asset::DefinitionId', assedDefinitionId);
 const decoded = irohaCodec.decode('iroha_data_model::asset::DefinitionId', encoded);
 ```
+
+> For 64 and 128-bits integers `jsbi` library is used. It is a dependency of `@scale-codec/core` package and re-exported by the chain of packages, so you can use it directly with `import { JSBI } from '@iroha2/data-model'`. For related docs, see [JSBI docs](https://www.npmjs.com/package/jsbi).
 
 ### Regenerate schema
 
