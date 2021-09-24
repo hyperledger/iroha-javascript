@@ -1,6 +1,6 @@
 {
     "name": "@iroha2/client",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "main": "dist/lib.cjs.js",
     "module": "dist/lib.esm.js",
     "types": "dist/lib.d.ts",
