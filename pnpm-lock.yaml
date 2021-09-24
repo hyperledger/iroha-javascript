@@ -48,7 +48,7 @@ importers:
 
   packages/iroha-client:
     specifiers:
-      '@iroha2/crypto': workspace:^0.1.0
+      '@iroha2/crypto': workspace:^0.2.0
       '@iroha2/data-model': workspace:^0.2.0
       '@iroha2/test-peer': workspace:^0.0.0
       '@types/ws': ^7.4.7
@@ -58,7 +58,6 @@ importers:
       hada: ^0.0.8
       immutable: ^4.0.0-rc.14
       jest: ^27.0.6
-      jsbi: ^3.1.5
       ws: ^7.5.0
     dependencies:
       '@iroha2/crypto': link:../iroha-crypto
@@ -73,7 +72,6 @@ importers:
       hada: 0.0.8
       immutable: 4.0.0-rc.14
       jest: 27.0.6
-      jsbi: 3.1.5
 
   packages/iroha-crypto:
     specifiers:
@@ -4248,10 +4246,6 @@ packages:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
-
-  /jsbi/3.1.5:
-    resolution: {integrity: sha512-w2BY0VOYC1ahe+w6Qhl4SFoPvPsZ9NPHY4bwass+LCgU7RK3PBoVQlQ3G1s7vI8W3CYyJiEXcbKF7FIM/L8q3Q==}
-    dev: true
 
   /jsbn/0.1.1:
     resolution: {integrity: sha1-peZUwuWi3rXyAdls77yoDA7y9RM=}
