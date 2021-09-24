@@ -22,8 +22,8 @@ import {
     iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable,
     iroha_data_model_asset_DefinitionId_Decoded,
     iroha_data_model_asset_AssetValueType_Encodable,
+    JSBI,
 } from '../../../src/lib';
-import JSBI from 'jsbi';
 import fs from 'fs/promises';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
