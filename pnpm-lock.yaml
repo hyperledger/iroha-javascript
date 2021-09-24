@@ -83,6 +83,7 @@ importers:
       esno: ^0.8.0
       execa: ^5.1.1
       make-dir: ^3.1.0
+      rollup: ^2.53.1
     dependencies:
       esno: 0.8.0
     devDependencies:
@@ -91,6 +92,7 @@ importers:
       del: 6.0.0
       execa: 5.1.1
       make-dir: 3.1.0
+      rollup: 2.53.1
 
   packages/iroha-crypto/test/node:
     specifiers:

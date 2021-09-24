@@ -1,4 +1,4 @@
-import initCryptoWasm, { Multihash, KeyPair, PublicKey, PrivateKey } from '@iroha2/crypto';
+import { init as initCryptoWasm, Multihash, KeyPair, PublicKey, PrivateKey } from '@iroha2/crypto';
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';

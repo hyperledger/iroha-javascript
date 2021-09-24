@@ -1,13 +1,14 @@
 {
     "name": "@iroha2/crypto",
-    "version": "0.1.0",
-    "module": "lib.js",
-    "main": "lib.js",
+    "version": "0.2.0",
+    "module": "lib.esm.js",
+    "main": "lib.cjs.js",
     "types": "lib.d.ts",
     "files": [
         "wasm",
-        "lib.js",
-        "lib.d.ts"
+        "lib.d.ts",
+        "lib.esm.js",
+        "lib.cjs.js"
     ],
     "license": "Apache 2.0",
     "scripts": {
@@ -19,7 +20,8 @@
         "consola": "^2.15.3",
         "del": "^6.0.0",
         "execa": "^5.1.1",
-        "make-dir": "^3.1.0"
+        "make-dir": "^3.1.0",
+        "rollup": "^2.53.1"
     },
     "dependencies": {
         "esno": "^0.8.0"
