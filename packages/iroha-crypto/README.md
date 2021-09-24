@@ -11,7 +11,7 @@ Configure your package manager to fetch scoped packages from nexus. Example for 
 @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
 ```
 
-Then, install packages: 
+Then, install packages:
 
 ```sh
 npm i @iroha2/crypto
@@ -24,10 +24,10 @@ It is not trivial to load WASM in universal way in any environment. Current impl
 #### Example of usage lib in browser
 
 ```ts
-import initWasm, { KeyPair, KeyGenConfiguration } from '@iroha2/crypto';
+import { init, KeyPair, KeyGenConfiguration } from '@iroha2/crypto';
 
 // before any manipulations with exported tools you have to initialize wasm
-initWasm().then(() => {
+init().then(() => {
     // now you can use them
     const keyPair = KeyPair.generate_with_configuration(new KeyGenConfiguration());
 });
@@ -36,7 +36,7 @@ initWasm().then(() => {
 #### Example of usage in NodeJS
 
 ```ts
-import initWasm from '@iroha2/crypto';
+import { init } from '@iroha2/crypto';
 import fs from 'fs/promises';
 
 async function loadWasmFromFile() {
@@ -45,7 +45,7 @@ async function loadWasmFromFile() {
     return buffer;
 }
 
-initWasm(
+init(
     // here you have to provide wasm bytes manually
     loadWasmFromFile(),
 ).then(() => {

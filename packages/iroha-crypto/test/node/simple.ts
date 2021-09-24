@@ -1,5 +1,5 @@
 import { hexToBytes } from 'hada';
-import init, { KeyGenConfiguration, KeyPair, Multihash } from '@iroha2/crypto';
+import { init, KeyGenConfiguration, KeyPair, Multihash } from '@iroha2/crypto';
 import fs from 'fs/promises';
 
 beforeAll(async () => {

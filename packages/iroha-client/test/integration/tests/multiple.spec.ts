@@ -1,4 +1,4 @@
-import initCryptoWasm, { Multihash, KeyPair, PublicKey, PrivateKey } from '@iroha2/crypto';
+import { init as initCryptoWasm, Multihash, KeyPair, PublicKey, PrivateKey } from '@iroha2/crypto';
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
@@ -22,8 +22,8 @@ import {
     iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable,
     iroha_data_model_asset_DefinitionId_Decoded,
     iroha_data_model_asset_AssetValueType_Encodable,
+    JSBI,
 } from '../../../src/lib';
-import JSBI from 'jsbi';
 import fs from 'fs/promises';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';

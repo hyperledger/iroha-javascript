@@ -1,4 +1,4 @@
-import init, { PublicKey, Multihash } from '@iroha2/crypto';
+import { init, PublicKey, Multihash } from '@iroha2/crypto';
 import { hexToBytes, bytesToHex } from 'hada';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
