@@ -1,6 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
 
 let wasm;
 
@@ -50,7 +47,7 @@ function takeObject(idx) {
 }
 /**
 */
-function main() {
+export function main() {
     wasm.main();
 }
 
@@ -69,6 +66,18 @@ function passArray8ToWasm0(arg, malloc) {
     WASM_VECTOR_LEN = arg.length;
     return ptr;
 }
+/**
+* @param {KeyPair} key_pair
+* @param {Uint8Array} payload
+* @returns {Signature}
+*/
+export function createSignature(key_pair, payload) {
+    _assertClass(key_pair, KeyPair);
+    var ptr0 = passArray8ToWasm0(payload, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ret = wasm.createSignature(key_pair.ptr, ptr0, len0);
+    return Signature.__wrap(ret);
+}
 
 let cachegetInt32Memory0 = null;
 function getInt32Memory0() {
@@ -80,6 +89,45 @@ function getInt32Memory0() {
 
 function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
+}
+/**
+* @returns {Algorithm}
+*/
+export function AlgorithmBlsNormal() {
+    var ret = wasm.AlgorithmBlsNormal();
+    return Algorithm.__wrap(ret);
+}
+
+/**
+* @returns {Algorithm}
+*/
+export function AlgorithmBlsSmall() {
+    var ret = wasm.AlgorithmBlsSmall();
+    return Algorithm.__wrap(ret);
+}
+
+/**
+* @returns {Algorithm}
+*/
+export function AlgorithmSecp256k1() {
+    var ret = wasm.AlgorithmSecp256k1();
+    return Algorithm.__wrap(ret);
+}
+
+/**
+* @returns {Algorithm}
+*/
+export function AlgorithmEd25519() {
+    var ret = wasm.AlgorithmEd25519();
+    return Algorithm.__wrap(ret);
+}
+
+/**
+* @returns {KeyGenConfiguration}
+*/
+export function createKeyGenConfiguration() {
+    var ret = wasm.createKeyGenConfiguration();
+    return KeyGenConfiguration.__wrap(ret);
 }
 
 let cachedTextEncoder = new TextEncoder('utf-8');
@@ -142,10 +190,127 @@ function addBorrowedObject(obj) {
     heap[--stack_pointer] = obj;
     return stack_pointer;
 }
+/**
+* @param {Key} key
+* @returns {PrivateKey}
+*/
+export function createPrivateKeyFromJsKey(key) {
+    try {
+        var ret = wasm.createPrivateKeyFromJsKey(addBorrowedObject(key));
+        return PrivateKey.__wrap(ret);
+    } finally {
+        heap[stack_pointer++] = undefined;
+    }
+}
 
-const u32CvtShim = new Uint32Array(2);
+/**
+* @param {Multihash} multihash
+* @returns {PublicKey}
+*/
+export function createPublicKeyFromMultihash(multihash) {
+    _assertClass(multihash, Multihash);
+    var ret = wasm.createPublicKeyFromMultihash(multihash.ptr);
+    return PublicKey.__wrap(ret);
+}
 
-const uint64CvtShim = new BigUint64Array(u32CvtShim.buffer);
+/**
+* @param {KeyGenConfiguration} config
+* @returns {KeyPair}
+*/
+export function generateKeyPairWithConfiguration(config) {
+    _assertClass(config, KeyGenConfiguration);
+    var ptr0 = config.ptr;
+    config.ptr = 0;
+    var ret = wasm.generateKeyPairWithConfiguration(ptr0);
+    return KeyPair.__wrap(ret);
+}
+
+/**
+* @param {PublicKey} public_key
+* @param {PrivateKey} private_key
+* @returns {KeyPair}
+*/
+export function createKeyPairFromKeys(public_key, private_key) {
+    _assertClass(public_key, PublicKey);
+    _assertClass(private_key, PrivateKey);
+    var ret = wasm.createKeyPairFromKeys(public_key.ptr, private_key.ptr);
+    return KeyPair.__wrap(ret);
+}
+
+/**
+* @returns {MultihashDigestFunction}
+*/
+export function MultihashDigestEd25519Pub() {
+    var ret = wasm.MultihashDigestEd25519Pub();
+    return MultihashDigestFunction.__wrap(ret);
+}
+
+/**
+* @returns {MultihashDigestFunction}
+*/
+export function MultihashDigestSecp256k1Pub() {
+    var ret = wasm.MultihashDigestSecp256k1Pub();
+    return MultihashDigestFunction.__wrap(ret);
+}
+
+/**
+* @returns {MultihashDigestFunction}
+*/
+export function MultihashDigestBls12381g1Pub() {
+    var ret = wasm.MultihashDigestBls12381g1Pub();
+    return MultihashDigestFunction.__wrap(ret);
+}
+
+/**
+* @returns {MultihashDigestFunction}
+*/
+export function MultihashDigestBls12381g2Pub() {
+    var ret = wasm.MultihashDigestBls12381g2Pub();
+    return MultihashDigestFunction.__wrap(ret);
+}
+
+/**
+* @param {string} val
+* @returns {MultihashDigestFunction}
+*/
+export function createMultihashDigestFunctionFromString(val) {
+    var ptr0 = passStringToWasm0(val, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ret = wasm.createMultihashDigestFunctionFromString(ptr0, len0);
+    return MultihashDigestFunction.__wrap(ret);
+}
+
+/**
+* @param {Uint8Array} bytes
+* @returns {Multihash}
+*/
+export function createMultihashFromBytes(bytes) {
+    var ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ret = wasm.createMultihashFromBytes(ptr0, len0);
+    return Multihash.__wrap(ret);
+}
+
+/**
+* @param {PublicKey} public_key
+* @returns {Multihash}
+*/
+export function createMultihashFromPublicKey(public_key) {
+    _assertClass(public_key, PublicKey);
+    var ret = wasm.createMultihashFromPublicKey(public_key.ptr);
+    return Multihash.__wrap(ret);
+}
+
+/**
+* @param {Uint8Array} input
+* @returns {Hash}
+*/
+export function createHash(input) {
+    var ptr0 = passArray8ToWasm0(input, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ret = wasm.createHash(ptr0, len0);
+    return Hash.__wrap(ret);
+}
 
 function handleError(f, args) {
     try {
@@ -156,7 +321,7 @@ function handleError(f, args) {
 }
 /**
 */
-class Algorithm {
+export class Algorithm {
 
     static __wrap(ptr) {
         const obj = Object.create(Algorithm.prototype);
@@ -176,38 +341,10 @@ class Algorithm {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_algorithm_free(ptr);
     }
-    /**
-    * @returns {Algorithm}
-    */
-    static bls_normal() {
-        var ret = wasm.algorithm_bls_normal();
-        return Algorithm.__wrap(ret);
-    }
-    /**
-    * @returns {Algorithm}
-    */
-    static bls_small() {
-        var ret = wasm.algorithm_bls_small();
-        return Algorithm.__wrap(ret);
-    }
-    /**
-    * @returns {Algorithm}
-    */
-    static secp256k1() {
-        var ret = wasm.algorithm_secp256k1();
-        return Algorithm.__wrap(ret);
-    }
-    /**
-    * @returns {Algorithm}
-    */
-    static ed25519() {
-        var ret = wasm.algorithm_ed25519();
-        return Algorithm.__wrap(ret);
-    }
 }
 /**
 */
-class Hash {
+export class Hash {
 
     static __wrap(ptr) {
         const obj = Object.create(Hash.prototype);
@@ -228,18 +365,9 @@ class Hash {
         wasm.__wbg_hash_free(ptr);
     }
     /**
-    * @param {Uint8Array} input
-    */
-    constructor(input) {
-        var ptr0 = passArray8ToWasm0(input, wasm.__wbindgen_malloc);
-        var len0 = WASM_VECTOR_LEN;
-        var ret = wasm.hash_new(ptr0, len0);
-        return Hash.__wrap(ret);
-    }
-    /**
     * @returns {Uint8Array}
     */
-    get bytes() {
+    bytes() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.hash_bytes(retptr, this.ptr);
@@ -256,7 +384,7 @@ class Hash {
 /**
 * Configuration of key generation
 */
-class KeyGenConfiguration {
+export class KeyGenConfiguration {
 
     static __wrap(ptr) {
         const obj = Object.create(KeyGenConfiguration.prototype);
@@ -277,21 +405,15 @@ class KeyGenConfiguration {
         wasm.__wbg_keygenconfiguration_free(ptr);
     }
     /**
-    */
-    constructor() {
-        var ret = wasm.keygenconfiguration_new();
-        return KeyGenConfiguration.__wrap(ret);
-    }
-    /**
     * Use seed
     * @param {Uint8Array} seed
     * @returns {KeyGenConfiguration}
     */
-    use_seed(seed) {
+    useSeed(seed) {
         const ptr = this.__destroy_into_raw();
         var ptr0 = passArray8ToWasm0(seed, wasm.__wbindgen_malloc);
         var len0 = WASM_VECTOR_LEN;
-        var ret = wasm.keygenconfiguration_use_seed(ptr, ptr0, len0);
+        var ret = wasm.keygenconfiguration_useSeed(ptr, ptr0, len0);
         return KeyGenConfiguration.__wrap(ret);
     }
     /**
@@ -299,10 +421,10 @@ class KeyGenConfiguration {
     * @param {PrivateKey} private_key
     * @returns {KeyGenConfiguration}
     */
-    use_private_key(private_key) {
+    usePrivateKey(private_key) {
         const ptr = this.__destroy_into_raw();
         _assertClass(private_key, PrivateKey);
-        var ret = wasm.keygenconfiguration_use_private_key(ptr, private_key.ptr);
+        var ret = wasm.keygenconfiguration_usePrivateKey(ptr, private_key.ptr);
         return KeyGenConfiguration.__wrap(ret);
     }
     /**
@@ -310,18 +432,18 @@ class KeyGenConfiguration {
     * @param {Algorithm} algorithm
     * @returns {KeyGenConfiguration}
     */
-    with_algorithm(algorithm) {
+    withAlgorithm(algorithm) {
         const ptr = this.__destroy_into_raw();
         _assertClass(algorithm, Algorithm);
         var ptr0 = algorithm.ptr;
         algorithm.ptr = 0;
-        var ret = wasm.keygenconfiguration_with_algorithm(ptr, ptr0);
+        var ret = wasm.keygenconfiguration_withAlgorithm(ptr, ptr0);
         return KeyGenConfiguration.__wrap(ret);
     }
 }
 /**
 */
-class KeyPair {
+export class KeyPair {
 
     static __wrap(ptr) {
         const obj = Object.create(KeyPair.prototype);
@@ -344,43 +466,21 @@ class KeyPair {
     /**
     * @returns {PublicKey}
     */
-    get public_key() {
-        var ret = wasm.keypair_public_key(this.ptr);
+    publicKey() {
+        var ret = wasm.keypair_publicKey(this.ptr);
         return PublicKey.__wrap(ret);
     }
     /**
     * @returns {PrivateKey}
     */
-    get private_key() {
-        var ret = wasm.keypair_private_key(this.ptr);
+    privateKey() {
+        var ret = wasm.keypair_privateKey(this.ptr);
         return PrivateKey.__wrap(ret);
-    }
-    /**
-    * @param {KeyGenConfiguration} config
-    * @returns {KeyPair}
-    */
-    static generate_with_configuration(config) {
-        _assertClass(config, KeyGenConfiguration);
-        var ptr0 = config.ptr;
-        config.ptr = 0;
-        var ret = wasm.keypair_generate_with_configuration(ptr0);
-        return KeyPair.__wrap(ret);
-    }
-    /**
-    * @param {PublicKey} public_key
-    * @param {PrivateKey} private_key
-    * @returns {KeyPair}
-    */
-    static from_pair(public_key, private_key) {
-        _assertClass(public_key, PublicKey);
-        _assertClass(private_key, PrivateKey);
-        var ret = wasm.keypair_from_pair(public_key.ptr, private_key.ptr);
-        return KeyPair.__wrap(ret);
     }
 }
 /**
 */
-class Multihash {
+export class Multihash {
 
     static __wrap(ptr) {
         const obj = Object.create(Multihash.prototype);
@@ -403,10 +503,10 @@ class Multihash {
     /**
     * @returns {Uint8Array}
     */
-    to_bytes() {
+    toBytes() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.multihash_to_bytes(retptr, this.ptr);
+            wasm.multihash_toBytes(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var v0 = getArrayU8FromWasm0(r0, r1).slice();
@@ -417,35 +517,16 @@ class Multihash {
         }
     }
     /**
-    * @param {Uint8Array} bytes
-    * @returns {Multihash}
-    */
-    static from_bytes(bytes) {
-        var ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
-        var len0 = WASM_VECTOR_LEN;
-        var ret = wasm.multihash_from_bytes(ptr0, len0);
-        return Multihash.__wrap(ret);
-    }
-    /**
-    * @param {PublicKey} public_key
-    * @returns {Multihash}
-    */
-    static from_public_key(public_key) {
-        _assertClass(public_key, PublicKey);
-        var ret = wasm.multihash_from_public_key(public_key.ptr);
-        return Multihash.__wrap(ret);
-    }
-    /**
     * @returns {MultihashDigestFunction}
     */
-    get digest_function() {
-        var ret = wasm.multihash_digest_function(this.ptr);
+    digestFunction() {
+        var ret = wasm.multihash_digestFunction(this.ptr);
         return MultihashDigestFunction.__wrap(ret);
     }
     /**
     * @returns {Uint8Array}
     */
-    get payload() {
+    payload() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.multihash_payload(retptr, this.ptr);
@@ -461,7 +542,7 @@ class Multihash {
 }
 /**
 */
-class MultihashDigestFunction {
+export class MultihashDigestFunction {
 
     static __wrap(ptr) {
         const obj = Object.create(MultihashDigestFunction.prototype);
@@ -482,40 +563,12 @@ class MultihashDigestFunction {
         wasm.__wbg_multihashdigestfunction_free(ptr);
     }
     /**
-    * @returns {MultihashDigestFunction}
-    */
-    static ed25519pub() {
-        var ret = wasm.multihashdigestfunction_ed25519pub();
-        return MultihashDigestFunction.__wrap(ret);
-    }
-    /**
-    * @returns {MultihashDigestFunction}
-    */
-    static secp256k1pub() {
-        var ret = wasm.multihashdigestfunction_secp256k1pub();
-        return MultihashDigestFunction.__wrap(ret);
-    }
-    /**
-    * @returns {MultihashDigestFunction}
-    */
-    static bls12381g1pub() {
-        var ret = wasm.multihashdigestfunction_bls12381g1pub();
-        return MultihashDigestFunction.__wrap(ret);
-    }
-    /**
-    * @returns {MultihashDigestFunction}
-    */
-    static bls12381g2pub() {
-        var ret = wasm.multihashdigestfunction_bls12381g2pub();
-        return MultihashDigestFunction.__wrap(ret);
-    }
-    /**
     * @returns {string}
     */
-    to_string() {
+    toString() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.multihashdigestfunction_to_string(retptr, this.ptr);
+            wasm.multihashdigestfunction_toString(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             return getStringFromWasm0(r0, r1);
@@ -524,48 +577,10 @@ class MultihashDigestFunction {
             wasm.__wbindgen_free(r0, r1);
         }
     }
-    /**
-    * @returns {BigInt}
-    */
-    to_u64() {
-        try {
-            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.multihashdigestfunction_to_u64(retptr, this.ptr);
-            var r0 = getInt32Memory0()[retptr / 4 + 0];
-            var r1 = getInt32Memory0()[retptr / 4 + 1];
-            u32CvtShim[0] = r0;
-            u32CvtShim[1] = r1;
-            const n0 = uint64CvtShim[0];
-            return n0;
-        } finally {
-            wasm.__wbindgen_add_to_stack_pointer(16);
-        }
-    }
-    /**
-    * @param {string} val
-    * @returns {MultihashDigestFunction}
-    */
-    static from_string(val) {
-        var ptr0 = passStringToWasm0(val, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        var len0 = WASM_VECTOR_LEN;
-        var ret = wasm.multihashdigestfunction_from_string(ptr0, len0);
-        return MultihashDigestFunction.__wrap(ret);
-    }
-    /**
-    * @param {BigInt} val
-    * @returns {MultihashDigestFunction}
-    */
-    static from_u64(val) {
-        uint64CvtShim[0] = val;
-        const low0 = u32CvtShim[0];
-        const high0 = u32CvtShim[1];
-        var ret = wasm.multihashdigestfunction_from_u64(low0, high0);
-        return MultihashDigestFunction.__wrap(ret);
-    }
 }
 /**
 */
-class PrivateKey {
+export class PrivateKey {
 
     static __wrap(ptr) {
         const obj = Object.create(PrivateKey.prototype);
@@ -588,10 +603,10 @@ class PrivateKey {
     /**
     * @returns {string}
     */
-    get digest_function() {
+    digestFunction() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.privatekey_digest_function(retptr, this.ptr);
+            wasm.privatekey_digestFunction(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             return getStringFromWasm0(r0, r1);
@@ -603,7 +618,7 @@ class PrivateKey {
     /**
     * @returns {Uint8Array}
     */
-    get payload() {
+    payload() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.privatekey_payload(retptr, this.ptr);
@@ -616,22 +631,10 @@ class PrivateKey {
             wasm.__wbindgen_add_to_stack_pointer(16);
         }
     }
-    /**
-    * @param {Key} key
-    * @returns {PrivateKey}
-    */
-    static from_js_key(key) {
-        try {
-            var ret = wasm.privatekey_from_js_key(addBorrowedObject(key));
-            return PrivateKey.__wrap(ret);
-        } finally {
-            heap[stack_pointer++] = undefined;
-        }
-    }
 }
 /**
 */
-class PublicKey {
+export class PublicKey {
 
     static __wrap(ptr) {
         const obj = Object.create(PublicKey.prototype);
@@ -654,10 +657,10 @@ class PublicKey {
     /**
     * @returns {string}
     */
-    get digest_function() {
+    digestFunction() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.privatekey_digest_function(retptr, this.ptr);
+            wasm.privatekey_digestFunction(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             return getStringFromWasm0(r0, r1);
@@ -669,7 +672,7 @@ class PublicKey {
     /**
     * @returns {Uint8Array}
     */
-    get payload() {
+    payload() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.privatekey_payload(retptr, this.ptr);
@@ -682,19 +685,10 @@ class PublicKey {
             wasm.__wbindgen_add_to_stack_pointer(16);
         }
     }
-    /**
-    * @param {Multihash} multihash
-    * @returns {PublicKey}
-    */
-    static from_multihash(multihash) {
-        _assertClass(multihash, Multihash);
-        var ret = wasm.publickey_from_multihash(multihash.ptr);
-        return PublicKey.__wrap(ret);
-    }
 }
 /**
 */
-class Signature {
+export class Signature {
 
     static __wrap(ptr) {
         const obj = Object.create(Signature.prototype);
@@ -715,17 +709,6 @@ class Signature {
         wasm.__wbg_signature_free(ptr);
     }
     /**
-    * @param {KeyPair} key_pair
-    * @param {Uint8Array} payload
-    */
-    constructor(key_pair, payload) {
-        _assertClass(key_pair, KeyPair);
-        var ptr0 = passArray8ToWasm0(payload, wasm.__wbindgen_malloc);
-        var len0 = WASM_VECTOR_LEN;
-        var ret = wasm.signature_new(key_pair.ptr, ptr0, len0);
-        return Signature.__wrap(ret);
-    }
-    /**
     * @param {Uint8Array} payload
     */
     verify(payload) {
@@ -736,17 +719,17 @@ class Signature {
     /**
     * @returns {PublicKey}
     */
-    get public_key() {
-        var ret = wasm.keypair_public_key(this.ptr);
+    publicKey() {
+        var ret = wasm.keypair_publicKey(this.ptr);
         return PublicKey.__wrap(ret);
     }
     /**
     * @returns {Uint8Array}
     */
-    get signature() {
+    signatureBytes() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.signature_signature(retptr, this.ptr);
+            wasm.signature_signatureBytes(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var v0 = getArrayU8FromWasm0(r0, r1).slice();
@@ -791,7 +774,7 @@ async function load(module, imports) {
 
 async function init(input) {
     if (typeof input === 'undefined') {
-        input = new URL('iroha_crypto_bg.wasm', (typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('lib.cjs.js', document.baseURI).href)));
+        input = new URL('wasm_pack_output_bg.wasm', import.meta.url);
     }
     const imports = {};
     imports.wbg = {};
@@ -799,8 +782,8 @@ async function init(input) {
         var ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbg_digestfunction_5c94abf53db78ecb = function(arg0, arg1) {
-        var ret = getObject(arg1).digest_function;
+    imports.wbg.__wbg_digestFunction_5c94abf53db78ecb = function(arg0, arg1) {
+        var ret = getObject(arg1).digestFunction;
         var ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
         getInt32Memory0()[arg0 / 4 + 1] = len0;
@@ -916,14 +899,5 @@ async function init(input) {
     return wasm;
 }
 
-exports.Algorithm = Algorithm;
-exports.Hash = Hash;
-exports.KeyGenConfiguration = KeyGenConfiguration;
-exports.KeyPair = KeyPair;
-exports.Multihash = Multihash;
-exports.MultihashDigestFunction = MultihashDigestFunction;
-exports.PrivateKey = PrivateKey;
-exports.PublicKey = PublicKey;
-exports.Signature = Signature;
-exports.init = init;
-exports.main = main;
+export default init;
+

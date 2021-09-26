@@ -11,7 +11,7 @@ Configure your package manager to fetch scoped packages from nexus. Example for 
 @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
 ```
 
-Then, install packages:
+And then install the package:
 
 ```sh
 npm i @iroha2/crypto

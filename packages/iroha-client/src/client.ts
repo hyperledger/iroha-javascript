@@ -14,15 +14,15 @@ import {
     EncodeAsIs,
     respectEncodeAsIs,
 } from '@iroha2/data-model';
-import { KeyPair, Signature, Hash } from '@iroha2/crypto';
+import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto';
 import Axios, { AxiosError } from 'axios';
 import { SetupEventsParams, SetupEventsReturn, setupEventsWebsocketConnection } from './events';
 import { collect, createScope } from './collect-garbage';
 import { normalizeArray } from './util';
-import { inspect } from 'util';
 
 export interface CreateClientParams {
     toriiURL: string;
+    crypto: IrohaCryptoInterface;
 }
 
 export interface SubmitTransactionParams {
@@ -52,6 +52,25 @@ export function createClient(params: CreateClientParams): Client {
         baseURL: params.toriiURL,
     });
 
+    const {
+        crypto: { createSignature, createHash },
+    } = params;
+
+    function makeSignature(keyPair: KeyPair, payload: Uint8Array): iroha_crypto_Signature_Decoded {
+        const signature = collect(createSignature(keyPair, payload));
+
+        // Should it be collected?
+        const pubKey = keyPair.publicKey();
+
+        return {
+            public_key: {
+                digest_function: pubKey.digestFunction(),
+                payload: pubKey.payload(),
+            },
+            signature: signature.signatureBytes(),
+        };
+    }
+
     return {
         async submitTransaction({ payload, signing }) {
             const scope = createScope();
@@ -61,9 +80,9 @@ export function createClient(params: CreateClientParams): Client {
 
                 scope.run(() => {
                     const payloadBytes = respectEncodeAsIs(payload, iroha_data_model_transaction_Payload_encode);
-                    const payloadHash = collect(new Hash(payloadBytes));
+                    const payloadHash = collect(createHash(payloadBytes));
 
-                    const signatures = normalizeArray(signing).map((x) => makeSignature(x, payloadHash.bytes));
+                    const signatures = normalizeArray(signing).map((x) => makeSignature(x, payloadHash.bytes()));
 
                     const tx: iroha_data_model_transaction_VersionedTransaction_Encodable = Enum.create('V1', [
                         {
@@ -91,9 +110,9 @@ export function createClient(params: CreateClientParams): Client {
 
                 scope.run(() => {
                     const payloadBytes = respectEncodeAsIs(payload, iroha_data_model_query_Payload_encode);
-                    const payloadHash = collect(new Hash(payloadBytes));
+                    const payloadHash = collect(createHash(payloadBytes));
 
-                    const signature = makeSignature(signing, payloadHash.bytes);
+                    const signature = makeSignature(signing, payloadHash.bytes());
 
                     queryBytes = iroha_data_model_query_VersionedSignedQueryRequest_encode(
                         Enum.create('V1', [
@@ -150,20 +169,5 @@ export function createClient(params: CreateClientParams): Client {
                 return Enum.create('Err', err);
             }
         },
-    };
-}
-
-function makeSignature(keyPair: KeyPair, payload: Uint8Array): iroha_crypto_Signature_Decoded {
-    const signature = collect(new Signature(keyPair, payload));
-
-    // Should it be collected?
-    const pubKey = keyPair.public_key;
-
-    return {
-        public_key: {
-            digest_function: pubKey.digest_function,
-            payload: pubKey.payload,
-        },
-        signature: signature.signature,
     };
 }

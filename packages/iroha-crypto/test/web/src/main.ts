@@ -1,5 +1,7 @@
-import { init, PublicKey, Multihash } from '@iroha2/crypto';
+import { init, crypto } from '@iroha2/crypto/web';
 import { hexToBytes, bytesToHex } from 'hada';
+
+const { createPublicKeyFromMultihash, createMultihashFromBytes } = crypto;
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -20,9 +22,9 @@ async function main() {
 
     const config = await fetchConfig();
 
-    const { digest_function, payload } = PublicKey.from_multihash(
-        Multihash.from_bytes(Uint8Array.from(hexToBytes(config.PUBLIC_KEY))),
-    );
+    const payload = createPublicKeyFromMultihash(
+        createMultihashFromBytes(Uint8Array.from(hexToBytes(config.PUBLIC_KEY))),
+    ).payload();
 
     const payloadHex = bytesToHex([...payload]);
 

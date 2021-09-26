@@ -1,29 +1,28 @@
 {
     "name": "@iroha2/crypto",
-    "version": "0.2.0",
-    "module": "lib.esm.js",
-    "main": "lib.cjs.js",
-    "types": "lib.d.ts",
+    "version": "0.3.0",
     "files": [
-        "wasm",
-        "lib.d.ts",
-        "lib.esm.js",
-        "lib.cjs.js"
+        "types.d.ts",
+        "web",
+        "node",
+        "bundler"
     ],
     "license": "Apache 2.0",
     "scripts": {
-        "build-wasm": "esno scripts/build-wasm",
-        "test": "esno scripts/test"
+        "build": "esno scripts/build",
+        "build:wasm": "esno scripts/build-wasm",
+        "build:interfaces": "esno scripts/build-interfaces",
+        "rollup-types": "rollup -c rollup.dts.config.js",
+        "test": "pnpm test --parallel --filter \"@iroha2/crypto-test-*\""
     },
     "devDependencies": {
-        "concurrently": "^6.2.0",
+        "@iroha2/cli-tools": "workspace:^0.0.0",
         "consola": "^2.15.3",
         "del": "^6.0.0",
+        "esno": "^0.8.0",
         "execa": "^5.1.1",
         "make-dir": "^3.1.0",
-        "rollup": "^2.53.1"
-    },
-    "dependencies": {
-        "esno": "^0.8.0"
+        "rollup": "^2.53.1",
+        "rollup-plugin-dts": "^3.0.2"
     }
 }

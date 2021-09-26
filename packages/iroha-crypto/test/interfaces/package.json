@@ -1,0 +1,11 @@
+{
+    "name": "@iroha2/crypto-test-interfaces",
+    "version": "0.0.0",
+    "scripts": {
+        "test": "tsc test.ts --noEmit"
+    },
+    "dependencies": {
+        "@iroha2/crypto": "link:../..",
+        "typescript": "^4.3.5"
+    }
+}

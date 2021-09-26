@@ -1,0 +1,8 @@
+{
+    "name": "@iroha2/cli-tools",
+    "version": "0.0.0",
+    "main": "lib.ts",
+    "dependencies": {
+        "consola": "^2.15.3"
+    }
+}
