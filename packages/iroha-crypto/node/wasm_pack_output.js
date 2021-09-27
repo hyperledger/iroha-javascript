@@ -221,9 +221,7 @@ module.exports.createPublicKeyFromMultihash = function(multihash) {
 */
 module.exports.generateKeyPairWithConfiguration = function(config) {
     _assertClass(config, KeyGenConfiguration);
-    var ptr0 = config.ptr;
-    config.ptr = 0;
-    var ret = wasm.generateKeyPairWithConfiguration(ptr0);
+    var ret = wasm.generateKeyPairWithConfiguration(config.ptr);
     return KeyPair.__wrap(ret);
 };
 
@@ -719,6 +717,7 @@ class Signature {
         wasm.__wbg_signature_free(ptr);
     }
     /**
+    * Throws an error in case of failed verification and just succeeds if verification is passed
     * @param {Uint8Array} payload
     */
     verify(payload) {

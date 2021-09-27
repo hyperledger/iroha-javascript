@@ -198,6 +198,7 @@ declare class PublicKey {
 declare class Signature {
   free(): void;
 /**
+* Throws an error in case of failed verification and just succeeds if verification is passed
 * @param {Uint8Array} payload
 */
   verify(payload: Uint8Array): void;

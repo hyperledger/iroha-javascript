@@ -43,6 +43,7 @@ pub fn create_signature(key_pair: &KeyPair, payload: &[u8]) -> Result<Signature,
 
 #[wasm_bindgen]
 impl Signature {
+    /// Throws an error in case of failed verification and just succeeds if verification is passed
     pub fn verify(&self, payload: &[u8]) -> Result<(), JsValue> {
         self.inner
             .verify(payload)
@@ -244,9 +245,9 @@ pub struct KeyPair {
 
 #[wasm_bindgen(js_name = generateKeyPairWithConfiguration)]
 pub fn generate_key_pair_with_configuration(
-    config: KeyGenConfiguration,
+    config: &KeyGenConfiguration,
 ) -> Result<KeyPair, JsValue> {
-    CoreKeyPair::generate_with_configuration(config.into())
+    CoreKeyPair::generate_with_configuration(config.clone().into())
         .map(|val| KeyPair { inner: val })
         .map_err(|err| err.to_string().into())
 }
