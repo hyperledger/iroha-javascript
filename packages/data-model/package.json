@@ -1,6 +1,6 @@
 {
     "name": "@iroha2/data-model",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "main": "src/lib.ts",
     "publishConfig": {
         "main": "dist/lib.cjs.js",
@@ -17,7 +17,7 @@
         "update-json": "esno scripts/compile-json"
     },
     "dependencies": {
-        "@iroha2/i64-fixnum": "workspace:^0.1.1",
+        "@iroha2/i64-fixnum": "workspace:^0.1.2",
         "@scale-codec/definition-runtime": "^0.1.1"
     },
     "devDependencies": {
