@@ -13,6 +13,7 @@
         "publish-all": "esno scripts/publish-all"
     },
     "devDependencies": {
+        "@changesets/cli": "^2.17.0",
         "@jest/types": "^27.2.3",
         "@rollup/plugin-node-resolve": "^13.0.5",
         "@types/jest": "^27.0.2",
