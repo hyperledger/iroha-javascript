@@ -1,6 +1,6 @@
 {
     "name": "@iroha2/client",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "main": "dist/lib.cjs.js",
     "module": "dist/lib.esm.js",
     "types": "dist/lib.d.ts",
@@ -15,7 +15,7 @@
         "test": "jest -i"
     },
     "dependencies": {
-        "@iroha2/crypto": "workspace:^0.2.0",
+        "@iroha2/crypto": "workspace:^0.3.0",
         "@iroha2/data-model": "workspace:^0.2.0",
         "axios": "^0.21.1",
         "emittery": "^0.9.2",

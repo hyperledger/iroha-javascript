@@ -1,1 +1,2 @@
 dist
+**/iroha-crypto/*/wasm_pack_output*

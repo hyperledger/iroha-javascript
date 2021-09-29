@@ -11,63 +11,86 @@ Configure your package manager to fetch scoped packages from nexus. Example for 
 @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
 ```
 
-Then, install packages:
+And then install the package:
 
 ```sh
 npm i @iroha2/crypto
 ```
 
-## Usage notes
+## Usage
 
-It is not trivial to load WASM in universal way in any environment. Current implementations tested in browser **when it is used as native ES module** (e.g. with `vite`) and in NodeJS **when it is used with some ES module register** (e.g. with `esbuild-register`).
+There are 4 entrypoints in this package:
 
-#### Example of usage lib in browser
+-   `@iroha2/crypto/web` for usage in Web (requires pre-initialization)
+-   `@iroha2/crypto/node` for usage in the NodeJS env
+-   `@iroha2/crypto/bundler` for usage with Webpack
+-   `@iroha2/crypto/types` for types; convenient for libraries development (e.g. for the client lib). **It is pure types (d.ts) file and doesn't contain any runtime stuff**.
+
+> If you want to know more details about targets and their differences, read [the `wasm-bindgen`'s docs](https://rustwasm.github.io/docs/wasm-bindgen/reference/deployment.html).
 
 ```ts
-import { init, KeyPair, KeyGenConfiguration } from '@iroha2/crypto';
+// import crypto interface relatively to the enviroment
+import { crypto } from '@iroha2/crypto/node';
+import { crypto } from '@iroha2/crypto/web';
+import { crypto } from '@iroha2/crypto/bundler';
 
-// before any manipulations with exported tools you have to initialize wasm
+// import pure types for development
+import { IrohaCryptoInterface, KeyPair /* etc */ } from '@iroha2/crypto/types';
+```
+
+`crypto` here is an `IrohaCryptoInterface`-object.
+
+**Please note** that in web env it requires pre-initialization:
+
+```ts
+import { init, crypto } from '@iroha2/crypto/web';
+
 init().then(() => {
-    // now you can use them
-    const keyPair = KeyPair.generate_with_configuration(new KeyGenConfiguration());
+    // now you can use crypto
+    crypto.createHash(new Uint8Array([1, 2, 3]));
 });
 ```
 
-#### Example of usage in NodeJS
+## How to develop libraries that would depend on Iroha Crypto?
+
+There is the only way (as I see it) now to develop a library that will be environment-agnostic. You have to use dependency-inversion strategy - make your library depend on the interface `IrohaCryptoInterface` instead of a particular implementation. For example:
 
 ```ts
-import { init } from '@iroha2/crypto';
-import fs from 'fs/promises';
+import { IrohaCryptoInterface } from '@iroha2/crypto/types';
 
-async function loadWasmFromFile() {
-    const wasmPath = require.resolve('@iroha2/crypto/wasm/iroha_crypto_bg.wasm');
-    const buffer = await fs.readFile(wasmPath);
-    return buffer;
+interface MyEmailHashingLibrary {
+    hash(email: string): Uint8Array;
 }
 
-init(
-    // here you have to provide wasm bytes manually
-    loadWasmFromFile(),
-).then(() => {
-    const keyPair = KeyPair.generate_with_configuration(new KeyGenConfiguration());
-});
+function encodeString(str: string): Uint8Array {
+    /* making utf-8 magic... */
+}
+
+/**
+ * Injecting crypto in runtime as an argument
+ */
+export function createEmailHashing(crypto: IrohaCryptoInterface): MyEmailHashingLibrary {
+    return {
+        hash(email) {
+            // and using crypto
+            const hash = crypto.createHash(encodeString(email));
+            const bytes = hash.bytes();
+            // also don't forget to `free` structures from the wasm to avoid memory leaks!
+            hash.free();
+            return bytes;
+        },
+    };
+}
 ```
 
-## Development
+## Detailed documentation about library exports
 
-Requirements:
+TODO
 
--   Rust: https://www.rust-lang.org/tools/install
--   `wasm-pack`: https://rustwasm.github.io/wasm-pack/installer/
+## Why so ugly usage interface?
 
-Rebuild wasm:
+Because of restriction of WASM approach. Internally it uses Rust and [`wasm-pack`](https://rustwasm.github.io/docs/wasm-pack/introduction.html) and its build output depends on the target enviroment.
 
-```sh
-pnpm build-wasm
-```
+## Notes for future developers
 
-Test build in node & web:
-
-```sh
-pnpm test
-```
+I want to make a note about building of `types.d.ts`. It works in a circular way: firstly I built a web wasm with `wasm-pack`, then I created it exports with `input-for-rollup-dts.d.ts` and then I bundled it with Rollup and `rollup-plugin-dts` into the `types.d.ts` file that looks like it is undependent from any bundles. And it is a right way - these types are primary and implementations are secondary. To ensure that implementations follow these types there is a special test package in `test/interfaces` that just type-checks that everything is ok. Btw, if you will need to rebuild `types.d.ts` in the same way you could do it easy with `pnpm rollup-types` command.

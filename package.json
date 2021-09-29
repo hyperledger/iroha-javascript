@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "scripts": {
         "preinstall": "npx only-allow pnpm",
-        "test": "pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto",
+        "test": "pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto --filter @iroha2/i64-fixnum",
         "build": "esno scripts/build",
         "build:clean": "del-cli ./.declaration ./packages/iroha-client/dist ./packages/iroha-data-model/dist",
         "build:rollup": "rollup -c rollup.config.js",

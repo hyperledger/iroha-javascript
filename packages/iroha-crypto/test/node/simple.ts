@@ -1,11 +1,7 @@
 import { hexToBytes } from 'hada';
-import { init, KeyGenConfiguration, KeyPair, Multihash } from '@iroha2/crypto';
-import fs from 'fs/promises';
+import { crypto } from '@iroha2/crypto/node';
 
-beforeAll(async () => {
-    const buffer = await fs.readFile(require.resolve('@iroha2/crypto/wasm/iroha_crypto_bg.wasm'));
-    await init(buffer);
-});
+const { createMultihashFromPublicKey, createKeyGenConfiguration, generateKeyPairWithConfiguration } = crypto;
 
 test('Generates KeyPair from seed as expected', () => {
     // given
@@ -17,10 +13,10 @@ test('Generates KeyPair from seed as expected', () => {
     const seedBytes = [49, 50, 51, 52];
 
     // when
-    const config = new KeyGenConfiguration().use_seed(Uint8Array.from(seedBytes));
-    const keyPair = KeyPair.generate_with_configuration(config);
+    const config = createKeyGenConfiguration().useSeed(Uint8Array.from(seedBytes));
+    const keyPair = generateKeyPairWithConfiguration(config);
 
     // then
-    expect(keyPair.private_key.payload).toEqual(Uint8Array.from(privKeyBytes));
-    expect(Multihash.from_public_key(keyPair.public_key).to_bytes()).toEqual(Uint8Array.from(pubKeyMultihashBytes));
+    expect(keyPair.privateKey().payload()).toEqual(Uint8Array.from(privKeyBytes));
+    expect(createMultihashFromPublicKey(keyPair.publicKey()).toBytes()).toEqual(Uint8Array.from(pubKeyMultihashBytes));
 });

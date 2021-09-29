@@ -1,7 +1,7 @@
 /* eslint-disable spaced-comment */
 /// <reference types="cypress" />
 
-it('Hello', () => {
+it("It doesn't fail and outputs the correct hex", () => {
     cy.intercept('/api/config', { fixture: 'config' }).as('get-config');
 
     cy.visit('/').wait('@get-config');

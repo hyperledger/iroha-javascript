@@ -1,4 +1,5 @@
-import { init as initCryptoWasm, Multihash, KeyPair, PublicKey, PrivateKey } from '@iroha2/crypto';
+import { crypto } from '@iroha2/crypto/node';
+import { KeyPair } from '@iroha2/crypto/types';
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
@@ -24,12 +25,12 @@ import {
     iroha_data_model_asset_AssetValueType_Encodable,
     JSBI,
 } from '../../../src/lib';
-import fs from 'fs/promises';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
 
 const client = createClient({
     toriiURL: client_config.toriiURL,
+    crypto,
 });
 
 let keyPair: KeyPair;
@@ -118,6 +119,8 @@ async function killStartedPeer() {
     await startedPeer?.kill({ clearSideEffects: true });
 }
 
+// and now tests...
+
 beforeAll(async () => {
     await clearConfiguration();
 
@@ -128,15 +131,11 @@ beforeAll(async () => {
         trusted_peers: peer_trusted_peers,
     });
 
-    // initialise crypto WASM
-    const wasmBytes = await fs.readFile(require.resolve('@iroha2/crypto/wasm/iroha_crypto_bg.wasm'));
-    await initCryptoWasm(wasmBytes);
-
     // preparing keys
-    const multihash = Multihash.from_bytes(Uint8Array.from(hexToBytes(client_config.publicKey)));
-    const publicKey = PublicKey.from_multihash(multihash);
-    const privateKey = PrivateKey.from_js_key(client_config.privateKey);
-    keyPair = KeyPair.from_pair(publicKey, privateKey);
+    const multihash = crypto.createMultihashFromBytes(Uint8Array.from(hexToBytes(client_config.publicKey)));
+    const publicKey = crypto.createPublicKeyFromMultihash(multihash);
+    const privateKey = crypto.createPrivateKeyFromJsKey(client_config.privateKey);
+    keyPair = crypto.createKeyPairFromKeys(publicKey, privateKey);
     [publicKey, privateKey, multihash].forEach((x) => x.free());
 });
 

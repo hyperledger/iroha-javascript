@@ -1,0 +1,2 @@
+# In case of this library `dist` is a part of code, not artifact
+!dist
