@@ -1,15 +1,25 @@
 {
     "name": "@iroha2/i64-fixnum",
-    "version": "0.1.0",
+    "version": "0.1.1",
+    "main": "src/lib.ts",
+    "publishConfig": {
+        "main": "dist/lib.cjs.js",
+        "module": "dist/lib.esm.js",
+        "types": "dist/lib.d.ts",
+        "files": [
+            "dist"
+        ]
+    },
+    "license": "Apache 2.0",
     "scripts": {
         "test": "jest"
     },
     "dependencies": {
-        "@scale-codec/core": "^0.2.0",
+        "@scale-codec/core": "^0.2.1",
         "@scale-codec/util": "^0.1.0"
     },
     "devDependencies": {
         "esbuild-jest": "^0.5.0",
-        "jest": "^27.0.6"
+        "jest": "^27.2.3"
     }
 }

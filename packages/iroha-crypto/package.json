@@ -19,10 +19,10 @@
         "@iroha2/cli-tools": "workspace:^0.0.0",
         "consola": "^2.15.3",
         "del": "^6.0.0",
-        "esno": "^0.8.0",
+        "esno": "^0.10.0",
         "execa": "^5.1.1",
         "make-dir": "^3.1.0",
-        "rollup": "^2.53.1",
-        "rollup-plugin-dts": "^3.0.2"
+        "rollup": "^2.57.0",
+        "rollup-plugin-dts": "^4.0.0"
     }
 }

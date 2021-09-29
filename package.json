@@ -1,6 +1,7 @@
 {
-    "name": "@iroha/monorepo",
+    "name": "@iroha2/monorepo",
     "version": "0.0.0",
+    "private": true,
     "scripts": {
         "preinstall": "npx only-allow pnpm",
         "test": "pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto --filter @iroha2/i64-fixnum",
@@ -12,25 +13,25 @@
         "publish-all": "esno scripts/publish-all"
     },
     "devDependencies": {
-        "@jest/types": "^27.0.6",
-        "@rollup/plugin-node-resolve": "^13.0.0",
-        "@types/jest": "^26.0.24",
-        "@typescript-eslint/eslint-plugin": "^4.28.2",
-        "@typescript-eslint/parser": "^4.28.2",
+        "@jest/types": "^27.2.3",
+        "@rollup/plugin-node-resolve": "^13.0.5",
+        "@types/jest": "^27.0.2",
+        "@typescript-eslint/eslint-plugin": "^4.32.0",
+        "@typescript-eslint/parser": "^4.32.0",
         "chalk": "^4.1.2",
         "consola": "^2.15.3",
         "del-cli": "^4.0.1",
-        "esbuild-register": "^2.6.0",
-        "eslint": "^7.30.0",
-        "eslint-config-alloy": "^4.1.0",
-        "eslint-plugin-cypress": "^2.11.3",
-        "esno": "^0.8.0",
+        "esbuild-register": "^3.0.0",
+        "eslint": "^7.32.0",
+        "eslint-config-alloy": "^4.3.0",
+        "eslint-plugin-cypress": "^2.12.1",
+        "esno": "^0.10.0",
         "execa": "^5.1.1",
-        "prettier": "^2.3.2",
-        "prettier-eslint": "^12.0.0",
-        "rollup": "^2.53.1",
-        "rollup-plugin-dts": "^3.0.2",
+        "prettier": "^2.4.1",
+        "prettier-eslint": "^13.0.0",
+        "rollup": "^2.57.0",
+        "rollup-plugin-dts": "^4.0.0",
         "rollup-plugin-esbuild": "^4.5.0",
-        "typescript": "^4.3.5"
+        "typescript": "^4.4.3"
     }
 }
