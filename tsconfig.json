@@ -15,15 +15,7 @@
         "strictNullChecks": true,
         "moduleResolution": "node",
         "skipLibCheck": true,
-        "resolveJsonModule": true,
-        "paths": {
-            "@iroha2/client": ["./packages/iroha-client/src/lib.ts"],
-            "@iroha2/crypto*": ["./packages/iroha-crypto*"],
-            "@iroha2/data-model": ["./packages/iroha-data-model/src/lib.ts"],
-            "@iroha2/test-peer": ["./packages/iroha-test-peer/src/lib.ts"],
-            "@iroha2/i64-fixnum": ["./packages/iroha-i64-fixnum/src/lib.ts"]
-        }
+        "resolveJsonModule": true
     },
-    "include": ["packages"],
-    "exclude": ["**/dist"]
+    "exclude": ["**/dist/**/*", "**/node_modules/**/*"]
 }

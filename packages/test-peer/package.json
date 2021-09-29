@@ -1,6 +1,7 @@
 {
     "name": "@iroha2/test-peer",
-    "version": "0.0.0",
+    "version": "0.0.1",
+    "private": true,
     "main": "src/lib.ts",
     "scripts": {
         "postinstall": "esno scripts/prepare-iroha.ts",
@@ -8,13 +9,14 @@
     },
     "dependencies": {
         "cac": "^6.7.3",
+        "chalk": "^4.1.2",
         "consola": "^2.15.3",
         "debug": "^4.3.2",
         "del": "^6.0.0",
-        "esno": "^0.8.0",
         "execa": "^5.1.1"
     },
     "devDependencies": {
-        "chalk": "^4.1.2"
+        "@types/debug": "^4.1.7",
+        "esno": "^0.10.0"
     }
 }

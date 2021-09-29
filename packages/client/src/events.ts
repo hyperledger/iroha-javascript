@@ -27,6 +27,13 @@ export interface SetupEventsReturn {
     ee: Emittery<EventsEmitteryMap>;
 }
 
+function transformProtocolInUrlFromHttpToWs(url: string): string {
+    return url.replace(/^https?:\/\//, (substr) => {
+        const isSafe = /https/.test(substr);
+        return `ws${isSafe ? 's' : ''}://`;
+    });
+}
+
 /**
  * Promise resolved when connection handshake is acquired
  */
@@ -45,7 +52,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     ee.on('event', (e) => eeExternal.emit('event', e));
     ee.on('subscription_accepted', () => eeExternal.emit('accepted'));
 
-    const socket = new WebSocket(`${params.toriiURL}/events`);
+    const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiURL)}/events`);
 
     socket.onopen = () => {
         sendMessage(Enum.create('SubscriptionRequest', [params.filter]));

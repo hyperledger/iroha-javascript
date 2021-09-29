@@ -8,7 +8,7 @@ function defineDefaultCjsEsmDts(params: { packageDir: string; external?: RollupO
     const { packageDir, external } = params;
 
     const inputTs = path.resolve(__dirname, `../packages/${packageDir}/src/lib.ts`);
-    const inputDts = path.resolve(__dirname, `../.declaration/${packageDir}/src/lib.d.ts`);
+    const inputDts = path.resolve(__dirname, `../.declaration/packages/${packageDir}/src/lib.d.ts`);
     const distDir = path.resolve(__dirname, `../packages/${packageDir}/dist`);
 
     return [
@@ -41,15 +41,15 @@ function defineDefaultCjsEsmDts(params: { packageDir: string; external?: RollupO
 
 export default defineConfig([
     ...defineDefaultCjsEsmDts({
-        packageDir: 'iroha-client',
+        packageDir: 'client',
         external: [/^@scale-codec/, /^@iroha2/, 'emittery', 'ws', 'axios'],
     }),
     ...defineDefaultCjsEsmDts({
-        packageDir: 'iroha-data-model',
+        packageDir: 'data-model',
         external: [/^@scale-codec/, /^@iroha2/],
     }),
     ...defineDefaultCjsEsmDts({
-        packageDir: 'iroha-i64-fixnum',
+        packageDir: 'i64-fixnum',
         external: [/^@scale-codec/],
     }),
 ]);
