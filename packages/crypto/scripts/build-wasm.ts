@@ -3,7 +3,6 @@ import execa from 'execa';
 import path from 'path';
 import del from 'del';
 import makeDir from 'make-dir';
-import { main } from '@iroha2/cli-tools';
 
 const CRATE_ROOT_DIR = path.resolve(__dirname, '../rust/iroha_crypto_wasm');
 const BUILD_TMP_DIR = path.resolve(CRATE_ROOT_DIR, '.tmp-pkg');
@@ -14,7 +13,7 @@ function necessaryArtifacts(outName: string): string[] {
     return [`${outName}_bg*`, `${outName}.*`];
 }
 
-main(async () => {
+export async function build_wasm() {
     interface BuildConfig {
         target: string;
         distDir: string;
@@ -50,4 +49,4 @@ main(async () => {
     }
 
     consola.success('Done!');
-});
+}

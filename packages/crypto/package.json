@@ -9,20 +9,23 @@
     ],
     "license": "Apache 2.0",
     "scripts": {
-        "build": "esno scripts/build",
-        "build:wasm": "esno scripts/build-wasm",
-        "build:interfaces": "esno scripts/build-interfaces",
+        "gulp-ts": "gulp --require sucrase/register -f gulpfile.ts",
+        "build": "pnpm gulp-ts",
+        "build:wasm": "pnpm gulp-ts -- build_wasm",
+        "build:interfaces": "pnpm gulp-ts -- build_interfaces",
         "rollup-types": "rollup -c rollup.dts.config.js",
         "test": "pnpm test --parallel --filter \"@iroha2/crypto-test-*\""
     },
     "devDependencies": {
-        "@iroha2/cli-tools": "workspace:^0.0.0",
+        "@types/gulp": "^4.0.9",
         "consola": "^2.15.3",
         "del": "^6.0.0",
         "esno": "^0.10.0",
         "execa": "^5.1.1",
+        "gulp": "^4.0.2",
         "make-dir": "^3.1.0",
         "rollup": "^2.57.0",
-        "rollup-plugin-dts": "^4.0.0"
+        "rollup-plugin-dts": "^4.0.0",
+        "sucrase": "^3.20.2"
     }
 }

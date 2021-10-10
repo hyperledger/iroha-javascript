@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { main } from '@iroha2/cli-tools';
 
 const INTERFACE_FILENAME = 'index';
 const WASM_FILENAME = 'wasm_pack_output';
@@ -31,7 +30,7 @@ async function readIrohaCryptoInterfaceEntriesFromSourceCode(): Promise<Set<stri
     );
 }
 
-main(async () => {
+export async function build_interfaces() {
     const entries = await readIrohaCryptoInterfaceEntriesFromSourceCode();
     const runtimeImportsCommaJoined = [...entries].join(',');
 
@@ -74,4 +73,4 @@ main(async () => {
             putInterfaces(path.join(BASE_DIST_DIR, target), contentJs, contentDts),
         ),
     );
-});
+}
