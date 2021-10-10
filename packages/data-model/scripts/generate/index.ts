@@ -8,7 +8,7 @@ import { convertRustIntrospectOutputIntoCompilerInput } from './convert';
 
 const OUTPUT_PATH = path.join(__dirname, '../../src/generated.ts');
 
-async function main() {
+export default async function () {
     consola.log(chalk`Converting {blue.bold input.json} to compiler-compatible format...`);
     const codegenDefinitions = convertRustIntrospectOutputIntoCompilerInput({ input: inputJson });
 
@@ -22,8 +22,3 @@ async function main() {
 
     consola.success(chalk`Generated into {green.bold ${OUTPUT_PATH}}!`);
 }
-
-main().catch((err) => {
-    consola.fatal(err);
-    process.exit(1);
-});
