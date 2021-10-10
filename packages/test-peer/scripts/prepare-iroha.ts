@@ -1,7 +1,6 @@
 import execa from 'execa';
 import { series } from 'gulp';
 import path from 'path';
-import del from 'del';
 import makeDir from 'make-dir';
 import { TMP_IROHA_DEPLOY_DIR, TMP_IROHA_INSTALL_DIR } from '../const';
 
@@ -31,10 +30,6 @@ async function install_iroha_binary() {
     );
 }
 
-async function clean_deploy_dir() {
-    await del(path.join(IROHA_DEPLOY_DIR, '*'));
-}
-
 async function make_deploy_dir() {
     await makeDir(IROHA_DEPLOY_DIR);
 }
@@ -43,4 +38,4 @@ async function copy_binary_into_deploy_dir() {
     await execa('cp', [path.resolve(IROHA_INSTALL_ROOT_DIR, 'bin/iroha_cli'), IROHA_DEPLOY_DIR]);
 }
 
-export default series(install_iroha_binary, clean_deploy_dir, make_deploy_dir, copy_binary_into_deploy_dir);
+export default series(install_iroha_binary, make_deploy_dir, copy_binary_into_deploy_dir);
