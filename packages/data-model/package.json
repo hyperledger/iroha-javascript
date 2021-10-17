@@ -18,11 +18,11 @@
     },
     "dependencies": {
         "@iroha2/i64-fixnum": "workspace:^0.1.2",
-        "@scale-codec/definition-runtime": "^0.1.1"
+        "@scale-codec/definition-runtime": "^0.1.2"
     },
     "devDependencies": {
         "@octokit/core": "^3.5.1",
-        "@scale-codec/definition-compiler": "^0.1.1",
+        "@scale-codec/definition-compiler": "^0.2.0",
         "@types/debug": "^4.1.7",
         "@types/lodash-es": "^4.17.5",
         "axios": "^0.21.4",
