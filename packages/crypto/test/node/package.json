@@ -6,7 +6,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "@iroha2/crypto": "link:../..",
+        "@iroha2/crypto": "workspace:^0.3.0",
         "esbuild-jest": "^0.5.0",
         "hada": "^0.0.8",
         "jest": "^27.2.3",

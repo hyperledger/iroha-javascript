@@ -6,7 +6,7 @@
         "test": "tsc test.ts --noEmit"
     },
     "dependencies": {
-        "@iroha2/crypto": "link:../..",
+        "@iroha2/crypto": "workspace:^0.3.0",
         "typescript": "^4.4.3"
     }
 }
