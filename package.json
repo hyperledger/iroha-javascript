@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "preinstall": "npx only-allow pnpm",
-        "test": "pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto --filter @iroha2/i64-fixnum",
+        "test": "DEBUG=@iroha2/test-peer pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto --filter @iroha2/i64-fixnum",
         "build": "esno scripts/build",
         "build:clean": "del-cli ./ts-dist ./packages/*/dist",
         "build:rollup": "rollup -c rollup.config.js",
