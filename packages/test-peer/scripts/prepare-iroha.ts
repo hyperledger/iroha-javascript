@@ -1,7 +1,7 @@
 import consola from 'consola';
 import execa from 'execa';
 import path from 'path';
-import { TMP_IROHA_DEPLOY_DIR, TMP_IROHA_INSTALL_DIR } from '../const';
+import { TMP_IROHA_DEPLOY_DIR, TMP_IROHA_INSTALL_DIR, IROHA_CLI_NAME } from '../const';
 
 function runAsyncMain(mainFn: () => Promise<void>): void {
     mainFn().catch((err) => {
@@ -34,7 +34,7 @@ runAsyncMain(async () => {
         '--branch',
         GIT_BRANCH,
         // and finally - which crate from repo to install?
-        'iroha_cli',
+        IROHA_CLI_NAME,
     ]);
 
     consola.info('Extracting Iroha binary into deploy dir');
@@ -44,7 +44,7 @@ runAsyncMain(async () => {
     await $('rm', ['-rf', deployDir]);
     await $('mkdir', [deployDir]);
     // copy
-    await $('cp', [path.resolve(irohaInstallRootDir, 'bin/iroha_cli'), deployDir]);
+    await $('cp', [path.resolve(irohaInstallRootDir, 'bin', IROHA_CLI_NAME), deployDir]);
 
     // ?????
 
