@@ -15,7 +15,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "@scale-codec/core": "^0.2.1",
+        "@scale-codec/core": "^0.2.2",
         "@scale-codec/util": "^0.1.0"
     },
     "devDependencies": {

@@ -1,5 +1,4 @@
 export * from './generated';
-export * from './extend';
 
 export {
     JSBI,

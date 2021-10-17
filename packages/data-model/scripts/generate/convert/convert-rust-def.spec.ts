@@ -1,4 +1,6 @@
+import { NamespaceDefinition } from '@scale-codec/definition-compiler';
 import { convertRustIntrospectOutputIntoCompilerInput as convert } from './convert-rust-def';
+import { RustDefinitions } from './types';
 
 test("Converts types' self names", () => {
     expect(
@@ -17,6 +19,28 @@ test("Converts types' self names", () => {
             fields: [],
         },
     });
+});
+
+test('Transforms Fixed Point i64 dec9 to special external type', () => {
+    const input: RustDefinitions = {
+        'Fixed<i64>': {
+            FixedPoint: {
+                base: 'i64',
+                decimal_places: 9,
+            },
+        },
+    };
+    const expectedOutput: NamespaceDefinition = {
+        Fixed_i64: {
+            t: 'external',
+            module: './fixed_points',
+            nameInModule: 'FixedPoint_i64_9',
+        },
+    };
+
+    const output = convert({ input });
+
+    expect(output).toEqual(expectedOutput);
 });
 
 // test('Fixed<i64> -> i64', () => {
