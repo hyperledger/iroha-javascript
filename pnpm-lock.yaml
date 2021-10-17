@@ -23,7 +23,6 @@ importers:
       prettier-eslint: ^13.0.0
       rollup: ^2.58.0
       rollup-plugin-dts: ^4.0.0
-      rollup-plugin-esbuild: ^4.6.0
       typescript: ^4.4.4
     devDependencies:
       '@changesets/cli': 2.17.0
@@ -45,7 +44,6 @@ importers:
       prettier-eslint: 13.0.0
       rollup: 2.58.0
       rollup-plugin-dts: 4.0.0_rollup@2.58.0+typescript@4.4.4
-      rollup-plugin-esbuild: 4.6.0_rollup@2.58.0
       typescript: 4.4.4
 
   packages/cli-tools:
@@ -1171,14 +1169,6 @@ packages:
       estree-walker: 1.0.1
       picomatch: 2.3.0
       rollup: 2.58.0
-    dev: true
-
-  /@rollup/pluginutils/4.1.1:
-    resolution: {integrity: sha512-clDjivHqWGXi7u+0d2r2sBi4Ie6VLEAzWMIkvJLnDmxoOhBYOTfzGbOQBA32THHm11/LiJbd01tJUpJsbshSWQ==}
-    engines: {node: '>= 8.0.0'}
-    dependencies:
-      estree-walker: 2.0.2
-      picomatch: 2.3.0
     dev: true
 
   /@scale-codec/core/0.2.2:
@@ -4731,11 +4721,6 @@ packages:
       '@sideway/pinpoint': 2.0.0
     dev: false
 
-  /joycon/3.0.1:
-    resolution: {integrity: sha512-SJcJNBg32dGgxhPtM0wQqxqV0ax9k/9TaUskGDSJkSFSQOEWWvQ3zzWdGQRIUry2j1zA5+ReH13t0Mf3StuVZA==}
-    engines: {node: '>=10'}
-    dev: true
-
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -5892,19 +5877,6 @@ packages:
       typescript: 4.4.4
     optionalDependencies:
       '@babel/code-frame': 7.15.8
-    dev: true
-
-  /rollup-plugin-esbuild/4.6.0_rollup@2.58.0:
-    resolution: {integrity: sha512-fjihkrOCy7qeNDd1VmtWw39UA4b6a96NVrsuK6eg1SArnWoS3G4xLoW7liF0oRQU7+ONPr/Gjxz9cv+WLRhaGA==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      esbuild: '>=0.10.1'
-      rollup: ^1.20.0 || ^2.0.0
-    dependencies:
-      '@rollup/pluginutils': 4.1.1
-      joycon: 3.0.1
-      jsonc-parser: 3.0.0
-      rollup: 2.58.0
     dev: true
 
   /rollup/2.57.0:

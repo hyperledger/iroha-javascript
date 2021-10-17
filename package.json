@@ -6,9 +6,9 @@
         "preinstall": "npx only-allow pnpm",
         "test": "pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto --filter @iroha2/i64-fixnum",
         "build": "esno scripts/build",
-        "build:clean": "del-cli ./.declaration ./packages/iroha-client/dist ./packages/iroha-data-model/dist",
+        "build:clean": "del-cli ./ts-dist ./packages/*/dist",
         "build:rollup": "rollup -c rollup.config.js",
-        "build:dts": "tsc -p tsconfig.json --declaration --declarationDir .declaration --emitDeclarationOnly",
+        "build:ts": "tsc",
         "type-check": "tsc --noEmit",
         "publish-all": "esno scripts/publish-all"
     },
@@ -32,7 +32,6 @@
         "prettier-eslint": "^13.0.0",
         "rollup": "^2.58.0",
         "rollup-plugin-dts": "^4.0.0",
-        "rollup-plugin-esbuild": "^4.6.0",
         "typescript": "^4.4.4"
     }
 }
