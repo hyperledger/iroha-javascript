@@ -1,6 +1,6 @@
 {
     "name": "@iroha2/client",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "main": "src/lib.ts",
     "publishConfig": {
         "main": "dist/lib.cjs.js",
@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@iroha2/crypto": "workspace:^0.3.0",
-        "@iroha2/data-model": "workspace:^0.2.1",
+        "@iroha2/data-model": "workspace:^0.3.0",
         "axios": "^0.21.4",
         "emittery": "^0.10.0",
         "ws": "^8.2.2"

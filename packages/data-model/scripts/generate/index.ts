@@ -15,6 +15,7 @@ export default async function () {
     consola.log('Generating code...');
     const generated = await renderNamespaceDefinition(codegenDefinitions, {
         importLib: '@scale-codec/definition-runtime',
+        rollupSingleTuplesIntoAliases: true,
     });
 
     consola.log('Writing result...');

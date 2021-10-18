@@ -55,7 +55,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiURL)}/events`);
 
     socket.onopen = () => {
-        sendMessage(Enum.create('SubscriptionRequest', [params.filter]));
+        sendMessage(Enum.create('SubscriptionRequest', params.filter));
     };
 
     socket.onclose = (event) => {
@@ -78,7 +78,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     }
 
     function sendMessage(msg: iroha_data_model_events_EventSocketMessage_Encodable) {
-        const encoded = iroha_data_model_events_VersionedEventSocketMessage_encode(Enum.create('V1', [msg]));
+        const encoded = iroha_data_model_events_VersionedEventSocketMessage_encode(Enum.create('V1', msg));
         socket.send(encoded);
     }
 
@@ -94,7 +94,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             throw new Error('Unexpected array data');
         }
 
-        const event = iroha_data_model_events_VersionedEventSocketMessage_decode(new Uint8Array(data))[0].as('V1')[0];
+        const event = iroha_data_model_events_VersionedEventSocketMessage_decode(new Uint8Array(data))[0].as('V1');
 
         if (event.is('SubscriptionAccepted')) {
             if (!listeningForSubscriptionAccepted) throw new Error('No callback!');

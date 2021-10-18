@@ -1,55 +1,63 @@
 import { defineConfig, RollupOptions } from 'rollup';
-import esbuild from 'rollup-plugin-esbuild';
+// import sucrase from '@rollup/plugin-sucrase';
+// import esbuild from 'rollup-plugin-esbuild';
 import dts from 'rollup-plugin-dts';
 import path from 'path';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
-function defineDefaultCjsEsmDts(params: { packageDir: string; external?: RollupOptions['external'] }): RollupOptions[] {
-    const { packageDir, external } = params;
+const ROOT = path.resolve(__dirname, '../');
+const TS_DIST = path.resolve(ROOT, 'ts-dist');
 
-    const inputTs = path.resolve(__dirname, `../packages/${packageDir}/src/lib.ts`);
-    const inputDts = path.resolve(__dirname, `../.declaration/packages/${packageDir}/src/lib.d.ts`);
-    const distDir = path.resolve(__dirname, `../packages/${packageDir}/dist`);
+function* optionsPackageCjsEsmDts({
+    unscopedPackageName,
+    external,
+}: {
+    unscopedPackageName: string;
+    external?: RollupOptions['external'];
+}): Iterable<RollupOptions> {
+    const tsDistPkgSrcDir = path.resolve(TS_DIST, 'packages', unscopedPackageName, 'src');
+    const inputJsFile = path.resolve(tsDistPkgSrcDir, 'lib.js');
+    const inputDtsFile = path.resolve(tsDistPkgSrcDir, 'lib.d.ts');
+    const outDir = path.resolve(ROOT, 'packages', unscopedPackageName, 'dist');
 
-    return [
-        {
-            input: inputTs,
-            external,
-            plugins: [esbuild(), nodeResolve()],
-            output: [
-                {
-                    file: path.join(distDir, 'lib.esm.js'),
-                    format: 'esm',
-                },
-                {
-                    file: path.join(distDir, 'lib.cjs.js'),
-                    format: 'cjs',
-                },
-            ],
-        },
-        {
-            input: inputDts,
-            external,
-            plugins: [dts()],
-            output: {
-                file: path.join(distDir, 'lib.d.ts'),
+    yield {
+        input: inputJsFile,
+        external,
+        plugins: [nodeResolve()],
+        output: [
+            {
                 format: 'esm',
+                file: path.resolve(outDir, 'lib.esm.js'),
             },
+            {
+                format: 'cjs',
+                file: path.resolve(outDir, 'lib.cjs.js'),
+            },
+        ],
+    };
+
+    yield {
+        input: inputDtsFile,
+        external,
+        plugins: [dts()],
+        output: {
+            format: 'esm',
+            file: path.resolve(outDir, 'lib.d.ts'),
         },
-    ];
+    };
 }
 
 export default defineConfig([
-    ...defineDefaultCjsEsmDts({
-        packageDir: 'client',
+    ...optionsPackageCjsEsmDts({
+        unscopedPackageName: 'client',
         external: [/^@scale-codec/, /^@iroha2/, 'emittery', 'ws', 'axios'],
     }),
-    ...defineDefaultCjsEsmDts({
-        packageDir: 'data-model',
+    ...optionsPackageCjsEsmDts({
+        unscopedPackageName: 'data-model',
         external: [/^@scale-codec/, /^@iroha2/],
     }),
-    ...defineDefaultCjsEsmDts({
-        packageDir: 'i64-fixnum',
+    ...optionsPackageCjsEsmDts({
+        unscopedPackageName: 'i64-fixnum',
         external: [/^@scale-codec/],
     }),
 ]);

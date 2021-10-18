@@ -45,8 +45,8 @@
     "Option": "iroha_data_model::isi::Instruction"
   },
   "String": "String",
-  "Vec<iroha::genesis::GenesisTransaction>": {
-    "Vec": "iroha::genesis::GenesisTransaction"
+  "Vec<iroha_core::genesis::GenesisTransaction>": {
+    "Vec": "iroha_core::genesis::GenesisTransaction"
   },
   "Vec<iroha_crypto::PublicKey>": {
     "Vec": "iroha_crypto::PublicKey"
@@ -76,7 +76,7 @@
   "i64": {
     "Int": "FixedWidth"
   },
-  "iroha::genesis::GenesisTransaction": {
+  "iroha_core::genesis::GenesisTransaction": {
     "Struct": {
       "declarations": [
         {
@@ -86,12 +86,12 @@
       ]
     }
   },
-  "iroha::genesis::RawGenesisBlock": {
+  "iroha_core::genesis::RawGenesisBlock": {
     "Struct": {
       "declarations": [
         {
           "name": "transactions",
-          "ty": "Vec<iroha::genesis::GenesisTransaction>"
+          "ty": "Vec<iroha_core::genesis::GenesisTransaction>"
         }
       ]
     }
@@ -296,6 +296,11 @@
           "name": "PermissionToken",
           "discriminant": 11,
           "ty": "iroha_data_model::permissions::PermissionToken"
+        },
+        {
+          "name": "Hash",
+          "discriminant": 12,
+          "ty": "iroha_crypto::Hash"
         }
       ]
     }
@@ -910,6 +915,16 @@
     }
   },
   "iroha_data_model::expression::EvaluatesTo<bool>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "expression",
+          "ty": "iroha_data_model::expression::Expression"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::expression::EvaluatesTo<iroha_crypto::Hash>": {
     "Struct": {
       "declarations": [
         {
@@ -1652,8 +1667,13 @@
           "ty": "iroha_data_model::query::transaction::FindTransactionsByAccountId"
         },
         {
-          "name": "FindPermissionTokensByAccountId",
+          "name": "FindTransactionByHash",
           "discriminant": 20,
+          "ty": "iroha_data_model::query::transaction::FindTransactionByHash"
+        },
+        {
+          "name": "FindPermissionTokensByAccountId",
+          "discriminant": 21,
           "ty": "iroha_data_model::query::permissions::FindPermissionTokensByAccountId"
         }
       ]
@@ -1903,6 +1923,16 @@
         {
           "name": "id",
           "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::query::transaction::FindTransactionByHash": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "hash",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_crypto::Hash>"
         }
       ]
     }

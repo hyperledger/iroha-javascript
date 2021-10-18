@@ -1,8 +1,21 @@
 # @iroha2/data-model
 
-## 0.2.1
+## 0.3.0
+
+### Minor Changes
+
+-   0a583c2: breaking: re-generate data model with some optimizations and updated compiler
+-   0a583c2: deps: update `@scale-codec/*` deps
+
 ### Patch Changes
 
-- 1833de7: Fix package.json, bump version of definition runtime with correct export of `jsbi` stuff
-- Updated dependencies [1833de7]
-  - @iroha2/i64-fixnum@0.1.2
+-   Updated dependencies [0a583c2]
+    -   @iroha2/i64-fixnum@0.1.3
+
+## 0.2.1
+
+### Patch Changes
+
+-   1833de7: Fix package.json, bump version of definition runtime with correct export of `jsbi` stuff
+-   Updated dependencies [1833de7]
+    -   @iroha2/i64-fixnum@0.1.2

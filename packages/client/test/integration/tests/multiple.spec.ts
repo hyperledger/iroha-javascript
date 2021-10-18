@@ -276,7 +276,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
 
     // Adding mint
     const DECIMAL = '512.5881';
-    const mintValue: iroha_data_model_Value_Encodable = Enum.create('Fixed', [DECIMAL]);
+    const mintValue: iroha_data_model_Value_Encodable = Enum.create('Fixed', DECIMAL);
     const idBox: iroha_data_model_IdBox_Encodable = Enum.create('AssetId', {
         account_id: client_config.account,
         definition_id: ASSET_DEFINITION_ID,
@@ -302,5 +302,5 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
         .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name);
     expect(asset).toBeTruthy();
     expect(asset!.value.is('Fixed')).toBe(true);
-    expect(asset!.value.as('Fixed')[0]).toBe(DECIMAL);
+    expect(asset!.value.as('Fixed')).toBe(DECIMAL);
 });

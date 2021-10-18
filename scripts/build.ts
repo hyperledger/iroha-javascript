@@ -11,8 +11,8 @@ async function main() {
     // doesn't fail when declarations is emitted from tsc directly. So, I found a solution: firstly,
     // emit declarations by tsc, and then rollup from them. Btw this way to rollup declaration
     // is the best accrodingly to `rollup-plugin-dts` docs
-    consola.info('Building declarations');
-    await execa('pnpm', ['build:dts'], { stdio: 'inherit' });
+    consola.info('Running TypeScript compiler');
+    await execa('pnpm', ['build:ts'], { stdio: 'inherit' });
 
     consola.info('Rolling up');
     await execa('pnpm', ['build:rollup'], { stdio: 'inherit' });
