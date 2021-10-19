@@ -84,12 +84,10 @@ export function createClient(params: CreateClientParams): Client {
 
                     const signatures = normalizeArray(signing).map((x) => makeSignature(x, payloadHash.bytes()));
 
-                    const tx: iroha_data_model_transaction_VersionedTransaction_Encodable = Enum.create('V1', [
-                        {
-                            payload,
-                            signatures: new Set(signatures),
-                        },
-                    ]);
+                    const tx: iroha_data_model_transaction_VersionedTransaction_Encodable = Enum.create('V1', {
+                        payload,
+                        signatures: new Set(signatures),
+                    });
 
                     // console.log(inspect(tx, true, 20, true));
 
@@ -115,12 +113,10 @@ export function createClient(params: CreateClientParams): Client {
                     const signature = makeSignature(signing, payloadHash.bytes());
 
                     queryBytes = iroha_data_model_query_VersionedSignedQueryRequest_encode(
-                        Enum.create('V1', [
-                            {
-                                payload,
-                                signature,
-                            },
-                        ]),
+                        Enum.create('V1', {
+                            payload,
+                            signature,
+                        }),
                     );
                 });
 
@@ -131,7 +127,7 @@ export function createClient(params: CreateClientParams): Client {
 
                     const decoded: iroha_data_model_Value_Decoded = iroha_data_model_query_QueryResult_decode(
                         new Uint8Array(data),
-                    )[0][0];
+                    )[0];
 
                     // decoding as QueryResult
                     return Enum.create<any, any>('Ok', decoded);

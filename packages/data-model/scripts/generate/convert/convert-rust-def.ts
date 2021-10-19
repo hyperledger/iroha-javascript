@@ -44,6 +44,8 @@ const IGNORE_TYPES = new Set<string>([
     'Vec<u8>',
 ]);
 
+const AVAILABLE_FIXED_POINTS = new Set(['i64_9']);
+
 export function convertRustIntrospectOutputIntoCompilerInput(params: { input: RustDefinitions }): NamespaceDefinition {
     const converter = new RefConverter();
 
@@ -175,8 +177,23 @@ function transformRustDef(
         );
     }
     if (isRustFixedPointDef(def)) {
-        debug('ignoring fixed point def %o %o', name, def);
-        return ok(none());
+        const {
+            FixedPoint: { decimal_places, base },
+        } = def;
+        /**
+         * Something like `i64_9`
+         */
+        const fixedPointKey = `${base}_${decimal_places}`;
+        if (AVAILABLE_FIXED_POINTS.has(fixedPointKey)) {
+            return ok(
+                some<TypeDef>({
+                    t: 'external',
+                    module: `./fixed_points`,
+                    nameInModule: `FixedPoint_${fixedPointKey}`,
+                }),
+            );
+        }
+        return err(`Unsupported fixed point with base ${base} and ${decimal_places} decimal places`);
     }
 
     debug('Unknown def: %O', def);

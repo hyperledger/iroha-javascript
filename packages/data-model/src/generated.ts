@@ -24,14 +24,12 @@ import {
     decodeMap,
     decodeSet,
     decodeStruct,
-    decodeTuple,
     decodeUint8Array,
     decodeVec,
     encodeEnum,
     encodeMap,
     encodeSet,
     encodeStruct,
-    encodeTuple,
     encodeUint8Array,
     encodeVec,
     makeEncoderAsIsRespectable,
@@ -310,25 +308,101 @@ export function BTreeSet_iroha_data_model_permissions_PermissionToken_encode(
     return encodeSet(encodable, BTreeSet_iroha_data_model_permissions_PermissionToken_entry_encode);
 }
 
+// FixedPoint_i64
+
+import {
+    FixedPoint_i64_9_Decoded as FixedPoint_i64_Decoded,
+    FixedPoint_i64_9_Encodable as FixedPoint_i64_Encodable,
+    FixedPoint_i64_9_decode as FixedPoint_i64_decode,
+    FixedPoint_i64_9_encode as FixedPoint_i64_encode,
+} from './fixed_points';
+
+export { FixedPoint_i64_Decoded, FixedPoint_i64_Encodable, FixedPoint_i64_decode, FixedPoint_i64_encode };
+
+// iroha_core_genesis_GenesisTransaction
+
+export type iroha_core_genesis_GenesisTransaction_Decoded = {
+    isi: Vec_iroha_data_model_isi_Instruction_Decoded;
+};
+
+export type iroha_core_genesis_GenesisTransaction_Encodable = {
+    isi: Vec_iroha_data_model_isi_Instruction_Encodable | EncodeAsIs;
+};
+
+const iroha_core_genesis_GenesisTransaction_order: (keyof iroha_core_genesis_GenesisTransaction_Decoded)[] = ['isi'];
+const iroha_core_genesis_GenesisTransaction_decoders = {
+    isi: Vec_iroha_data_model_isi_Instruction_decode,
+};
+const iroha_core_genesis_GenesisTransaction_encoders = {
+    isi: makeEncoderAsIsRespectable(Vec_iroha_data_model_isi_Instruction_encode),
+};
+
+export function iroha_core_genesis_GenesisTransaction_decode(
+    bytes: Uint8Array,
+): DecodeResult<iroha_core_genesis_GenesisTransaction_Decoded> {
+    return decodeStruct(
+        bytes,
+        iroha_core_genesis_GenesisTransaction_decoders,
+        iroha_core_genesis_GenesisTransaction_order,
+    );
+}
+
+export function iroha_core_genesis_GenesisTransaction_encode(
+    encodable: iroha_core_genesis_GenesisTransaction_Encodable,
+): Uint8Array {
+    return encodeStruct(
+        encodable,
+        iroha_core_genesis_GenesisTransaction_encoders,
+        iroha_core_genesis_GenesisTransaction_order,
+    );
+}
+
+// iroha_core_genesis_RawGenesisBlock
+
+export type iroha_core_genesis_RawGenesisBlock_Decoded = {
+    transactions: Vec_iroha_core_genesis_GenesisTransaction_Decoded;
+};
+
+export type iroha_core_genesis_RawGenesisBlock_Encodable = {
+    transactions: Vec_iroha_core_genesis_GenesisTransaction_Encodable | EncodeAsIs;
+};
+
+const iroha_core_genesis_RawGenesisBlock_order: (keyof iroha_core_genesis_RawGenesisBlock_Decoded)[] = ['transactions'];
+const iroha_core_genesis_RawGenesisBlock_decoders = {
+    transactions: Vec_iroha_core_genesis_GenesisTransaction_decode,
+};
+const iroha_core_genesis_RawGenesisBlock_encoders = {
+    transactions: makeEncoderAsIsRespectable(Vec_iroha_core_genesis_GenesisTransaction_encode),
+};
+
+export function iroha_core_genesis_RawGenesisBlock_decode(
+    bytes: Uint8Array,
+): DecodeResult<iroha_core_genesis_RawGenesisBlock_Decoded> {
+    return decodeStruct(bytes, iroha_core_genesis_RawGenesisBlock_decoders, iroha_core_genesis_RawGenesisBlock_order);
+}
+
+export function iroha_core_genesis_RawGenesisBlock_encode(
+    encodable: iroha_core_genesis_RawGenesisBlock_Encodable,
+): Uint8Array {
+    return encodeStruct(
+        encodable,
+        iroha_core_genesis_RawGenesisBlock_encoders,
+        iroha_core_genesis_RawGenesisBlock_order,
+    );
+}
+
 // iroha_crypto_Hash
 
-export type iroha_crypto_Hash_Decoded = [Array_u8_32_Decoded];
+export type iroha_crypto_Hash_Decoded = Array_u8_32_Decoded;
 
-export type iroha_crypto_Hash_Encodable = [Array_u8_32_Encodable | EncodeAsIs];
-
-// iroha_crypto_Hash tuple-related tools
-
-const iroha_crypto_Hash_decoders = [Array_u8_32_decode];
-const iroha_crypto_Hash_encoders = ([Array_u8_32_encode] as any).map(makeEncoderAsIsRespectable);
-
-// iroha_crypto_Hash tools end
+export type iroha_crypto_Hash_Encodable = Array_u8_32_Encodable;
 
 export function iroha_crypto_Hash_decode(bytes: Uint8Array): DecodeResult<iroha_crypto_Hash_Decoded> {
-    return decodeTuple(bytes, iroha_crypto_Hash_decoders as any);
+    return Array_u8_32_decode(bytes);
 }
 
 export function iroha_crypto_Hash_encode(encodable: iroha_crypto_Hash_Encodable): Uint8Array {
-    return encodeTuple(encodable, iroha_crypto_Hash_encoders as any);
+    return Array_u8_32_encode(encodable);
 }
 
 // iroha_crypto_PublicKey
@@ -528,33 +602,22 @@ export function iroha_data_model_account_NewAccount_encode(
 
 // iroha_data_model_account_SignatureCheckCondition
 
-export type iroha_data_model_account_SignatureCheckCondition_Decoded = [
-    iroha_data_model_expression_EvaluatesTo_bool_Decoded,
-];
+export type iroha_data_model_account_SignatureCheckCondition_Decoded =
+    iroha_data_model_expression_EvaluatesTo_bool_Decoded;
 
-export type iroha_data_model_account_SignatureCheckCondition_Encodable = [
-    iroha_data_model_expression_EvaluatesTo_bool_Encodable | EncodeAsIs,
-];
-
-// iroha_data_model_account_SignatureCheckCondition tuple-related tools
-
-const iroha_data_model_account_SignatureCheckCondition_decoders = [iroha_data_model_expression_EvaluatesTo_bool_decode];
-const iroha_data_model_account_SignatureCheckCondition_encoders = (
-    [iroha_data_model_expression_EvaluatesTo_bool_encode] as any
-).map(makeEncoderAsIsRespectable);
-
-// iroha_data_model_account_SignatureCheckCondition tools end
+export type iroha_data_model_account_SignatureCheckCondition_Encodable =
+    iroha_data_model_expression_EvaluatesTo_bool_Encodable;
 
 export function iroha_data_model_account_SignatureCheckCondition_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_account_SignatureCheckCondition_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_account_SignatureCheckCondition_decoders as any);
+    return iroha_data_model_expression_EvaluatesTo_bool_decode(bytes);
 }
 
 export function iroha_data_model_account_SignatureCheckCondition_encode(
     encodable: iroha_data_model_account_SignatureCheckCondition_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_account_SignatureCheckCondition_encoders as any);
+    return iroha_data_model_expression_EvaluatesTo_bool_encode(encodable);
 }
 
 // iroha_data_model_asset_Asset
@@ -707,10 +770,10 @@ const iroha_data_model_asset_AssetValue_decoders: EnumDecoders = {
     3: { v: 'Store', decode: iroha_data_model_metadata_Metadata_decode },
 };
 const iroha_data_model_asset_AssetValue_encoders: EnumEncoders = {
-    Quantity: { d: 0, encode: u32_encode },
-    BigQuantity: { d: 1, encode: u128_encode },
-    Fixed: { d: 2, encode: iroha_data_model_fixed_Fixed_encode },
-    Store: { d: 3, encode: iroha_data_model_metadata_Metadata_encode },
+    Quantity: { d: 0, encode: makeEncoderAsIsRespectable(u32_encode) },
+    BigQuantity: { d: 1, encode: makeEncoderAsIsRespectable(u128_encode) },
+    Fixed: { d: 2, encode: makeEncoderAsIsRespectable(iroha_data_model_fixed_Fixed_encode) },
+    Store: { d: 3, encode: makeEncoderAsIsRespectable(iroha_data_model_metadata_Metadata_encode) },
 };
 
 // iroha_data_model_asset_AssetValue tools end
@@ -942,8 +1005,8 @@ const iroha_data_model_events_Event_decoders: EnumDecoders = {
     1: { v: 'Data', decode: iroha_data_model_events_data_Event_decode },
 };
 const iroha_data_model_events_Event_encoders: EnumEncoders = {
-    Pipeline: { d: 0, encode: iroha_data_model_events_pipeline_Event_encode },
-    Data: { d: 1, encode: iroha_data_model_events_data_Event_encode },
+    Pipeline: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_Event_encode) },
+    Data: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_events_data_Event_encode) },
 };
 
 // iroha_data_model_events_Event tools end
@@ -977,8 +1040,8 @@ const iroha_data_model_events_EventFilter_decoders: EnumDecoders = {
     1: { v: 'Data', decode: iroha_data_model_events_data_EventFilter_decode },
 };
 const iroha_data_model_events_EventFilter_encoders: EnumEncoders = {
-    Pipeline: { d: 0, encode: iroha_data_model_events_pipeline_EventFilter_encode },
-    Data: { d: 1, encode: iroha_data_model_events_data_EventFilter_encode },
+    Pipeline: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_EventFilter_encode) },
+    Data: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_events_data_EventFilter_encode) },
 };
 
 // iroha_data_model_events_EventFilter tools end
@@ -1020,9 +1083,12 @@ const iroha_data_model_events_EventSocketMessage_decoders: EnumDecoders = {
     3: { v: 'EventReceived' },
 };
 const iroha_data_model_events_EventSocketMessage_encoders: EnumEncoders = {
-    SubscriptionRequest: { d: 0, encode: iroha_data_model_events_SubscriptionRequest_encode },
+    SubscriptionRequest: {
+        d: 0,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_events_SubscriptionRequest_encode),
+    },
     SubscriptionAccepted: { d: 1 },
-    Event: { d: 2, encode: iroha_data_model_events_Event_encode },
+    Event: { d: 2, encode: makeEncoderAsIsRespectable(iroha_data_model_events_Event_encode) },
     EventReceived: { d: 3 },
 };
 
@@ -1304,8 +1370,11 @@ const iroha_data_model_events_pipeline_RejectionReason_decoders: EnumDecoders = 
     1: { v: 'Transaction', decode: iroha_data_model_events_pipeline_TransactionRejectionReason_decode },
 };
 const iroha_data_model_events_pipeline_RejectionReason_encoders: EnumEncoders = {
-    Block: { d: 0, encode: iroha_data_model_events_pipeline_BlockRejectionReason_encode },
-    Transaction: { d: 1, encode: iroha_data_model_events_pipeline_TransactionRejectionReason_encode },
+    Block: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_BlockRejectionReason_encode) },
+    Transaction: {
+        d: 1,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_TransactionRejectionReason_encode),
+    },
 };
 
 // iroha_data_model_events_pipeline_RejectionReason tools end
@@ -1388,7 +1457,7 @@ const iroha_data_model_events_pipeline_Status_decoders: EnumDecoders = {
 };
 const iroha_data_model_events_pipeline_Status_encoders: EnumEncoders = {
     Validating: { d: 0 },
-    Rejected: { d: 1, encode: iroha_data_model_events_pipeline_RejectionReason_encode },
+    Rejected: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_RejectionReason_encode) },
     Committed: { d: 2 },
 };
 
@@ -1439,13 +1508,22 @@ const iroha_data_model_events_pipeline_TransactionRejectionReason_decoders: Enum
     4: { v: 'UnexpectedGenesisAccountSignature' },
 };
 const iroha_data_model_events_pipeline_TransactionRejectionReason_encoders: EnumEncoders = {
-    NotPermitted: { d: 0, encode: iroha_data_model_events_pipeline_NotPermittedFail_encode },
+    NotPermitted: {
+        d: 0,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_NotPermittedFail_encode),
+    },
     UnsatisfiedSignatureCondition: {
         d: 1,
-        encode: iroha_data_model_events_pipeline_UnsatisfiedSignatureConditionFail_encode,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_UnsatisfiedSignatureConditionFail_encode),
     },
-    InstructionExecution: { d: 2, encode: iroha_data_model_events_pipeline_InstructionExecutionFail_encode },
-    SignatureVerification: { d: 3, encode: iroha_data_model_events_pipeline_SignatureVerificationFail_encode },
+    InstructionExecution: {
+        d: 2,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_InstructionExecutionFail_encode),
+    },
+    SignatureVerification: {
+        d: 3,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_SignatureVerificationFail_encode),
+    },
     UnexpectedGenesisAccountSignature: { d: 4 },
 };
 
@@ -1504,31 +1582,20 @@ export function iroha_data_model_events_pipeline_UnsatisfiedSignatureConditionFa
 
 // iroha_data_model_events_SubscriptionRequest
 
-export type iroha_data_model_events_SubscriptionRequest_Decoded = [iroha_data_model_events_EventFilter_Decoded];
+export type iroha_data_model_events_SubscriptionRequest_Decoded = iroha_data_model_events_EventFilter_Decoded;
 
-export type iroha_data_model_events_SubscriptionRequest_Encodable = [
-    iroha_data_model_events_EventFilter_Encodable | EncodeAsIs,
-];
-
-// iroha_data_model_events_SubscriptionRequest tuple-related tools
-
-const iroha_data_model_events_SubscriptionRequest_decoders = [iroha_data_model_events_EventFilter_decode];
-const iroha_data_model_events_SubscriptionRequest_encoders = ([iroha_data_model_events_EventFilter_encode] as any).map(
-    makeEncoderAsIsRespectable,
-);
-
-// iroha_data_model_events_SubscriptionRequest tools end
+export type iroha_data_model_events_SubscriptionRequest_Encodable = iroha_data_model_events_EventFilter_Encodable;
 
 export function iroha_data_model_events_SubscriptionRequest_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_events_SubscriptionRequest_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_events_SubscriptionRequest_decoders as any);
+    return iroha_data_model_events_EventFilter_decode(bytes);
 }
 
 export function iroha_data_model_events_SubscriptionRequest_encode(
     encodable: iroha_data_model_events_SubscriptionRequest_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_events_SubscriptionRequest_encoders as any);
+    return iroha_data_model_events_EventFilter_encode(encodable);
 }
 
 // iroha_data_model_events_VersionedEventSocketMessage
@@ -1547,7 +1614,7 @@ const iroha_data_model_events_VersionedEventSocketMessage_decoders: EnumDecoders
     1: { v: 'V1', decode: iroha_data_model_events_VersionedEventSocketMessageV1_decode },
 };
 const iroha_data_model_events_VersionedEventSocketMessage_encoders: EnumEncoders = {
-    V1: { d: 1, encode: iroha_data_model_events_VersionedEventSocketMessageV1_encode },
+    V1: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_events_VersionedEventSocketMessageV1_encode) },
 };
 
 // iroha_data_model_events_VersionedEventSocketMessage tools end
@@ -1566,35 +1633,22 @@ export function iroha_data_model_events_VersionedEventSocketMessage_encode(
 
 // iroha_data_model_events_VersionedEventSocketMessageV1
 
-export type iroha_data_model_events_VersionedEventSocketMessageV1_Decoded = [
-    iroha_data_model_events_EventSocketMessage_Decoded,
-];
+export type iroha_data_model_events_VersionedEventSocketMessageV1_Decoded =
+    iroha_data_model_events_EventSocketMessage_Decoded;
 
-export type iroha_data_model_events_VersionedEventSocketMessageV1_Encodable = [
-    iroha_data_model_events_EventSocketMessage_Encodable | EncodeAsIs,
-];
-
-// iroha_data_model_events_VersionedEventSocketMessageV1 tuple-related tools
-
-const iroha_data_model_events_VersionedEventSocketMessageV1_decoders = [
-    iroha_data_model_events_EventSocketMessage_decode,
-];
-const iroha_data_model_events_VersionedEventSocketMessageV1_encoders = (
-    [iroha_data_model_events_EventSocketMessage_encode] as any
-).map(makeEncoderAsIsRespectable);
-
-// iroha_data_model_events_VersionedEventSocketMessageV1 tools end
+export type iroha_data_model_events_VersionedEventSocketMessageV1_Encodable =
+    iroha_data_model_events_EventSocketMessage_Encodable;
 
 export function iroha_data_model_events_VersionedEventSocketMessageV1_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_events_VersionedEventSocketMessageV1_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_events_VersionedEventSocketMessageV1_decoders as any);
+    return iroha_data_model_events_EventSocketMessage_decode(bytes);
 }
 
 export function iroha_data_model_events_VersionedEventSocketMessageV1_encode(
     encodable: iroha_data_model_events_VersionedEventSocketMessageV1_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_events_VersionedEventSocketMessageV1_encoders as any);
+    return iroha_data_model_events_EventSocketMessage_encode(encodable);
 }
 
 // iroha_data_model_expression_Add
@@ -2042,6 +2096,45 @@ export function iroha_data_model_expression_EvaluatesTo_bool_encode(
     );
 }
 
+// iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash
+
+export type iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_Decoded = {
+    expression: iroha_data_model_expression_Expression_Decoded;
+};
+
+export type iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_Encodable = {
+    expression: iroha_data_model_expression_Expression_Encodable | EncodeAsIs;
+};
+
+const iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_order: (keyof iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_Decoded)[] =
+    ['expression'];
+const iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_decoders = {
+    expression: iroha_data_model_expression_Expression_decode,
+};
+const iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_encoders = {
+    expression: makeEncoderAsIsRespectable(iroha_data_model_expression_Expression_encode),
+};
+
+export function iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_decode(
+    bytes: Uint8Array,
+): DecodeResult<iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_Decoded> {
+    return decodeStruct(
+        bytes,
+        iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_decoders,
+        iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_order,
+    );
+}
+
+export function iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_encode(
+    encodable: iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_Encodable,
+): Uint8Array {
+    return encodeStruct(
+        encodable,
+        iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_encoders,
+        iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_order,
+    );
+}
+
 // iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id
 
 export type iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Decoded = {
@@ -2388,26 +2481,26 @@ const iroha_data_model_expression_Expression_decoders: EnumDecoders = {
     19: { v: 'ContextValue', decode: iroha_data_model_expression_ContextValue_decode },
 };
 const iroha_data_model_expression_Expression_encoders: EnumEncoders = {
-    Add: { d: 0, encode: iroha_data_model_expression_Add_encode },
-    Subtract: { d: 1, encode: iroha_data_model_expression_Subtract_encode },
-    Multiply: { d: 2, encode: iroha_data_model_expression_Multiply_encode },
-    Divide: { d: 3, encode: iroha_data_model_expression_Divide_encode },
-    Mod: { d: 4, encode: iroha_data_model_expression_Mod_encode },
-    RaiseTo: { d: 5, encode: iroha_data_model_expression_RaiseTo_encode },
-    Greater: { d: 6, encode: iroha_data_model_expression_Greater_encode },
-    Less: { d: 7, encode: iroha_data_model_expression_Less_encode },
-    Equal: { d: 8, encode: iroha_data_model_expression_Equal_encode },
-    Not: { d: 9, encode: iroha_data_model_expression_Not_encode },
-    And: { d: 10, encode: iroha_data_model_expression_And_encode },
-    Or: { d: 11, encode: iroha_data_model_expression_Or_encode },
-    If: { d: 12, encode: iroha_data_model_expression_If_encode },
-    Raw: { d: 13, encode: iroha_data_model_Value_encode },
-    Query: { d: 14, encode: iroha_data_model_query_QueryBox_encode },
-    Contains: { d: 15, encode: iroha_data_model_expression_Contains_encode },
-    ContainsAll: { d: 16, encode: iroha_data_model_expression_ContainsAll_encode },
-    ContainsAny: { d: 17, encode: iroha_data_model_expression_ContainsAny_encode },
-    Where: { d: 18, encode: iroha_data_model_expression_Where_encode },
-    ContextValue: { d: 19, encode: iroha_data_model_expression_ContextValue_encode },
+    Add: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Add_encode) },
+    Subtract: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Subtract_encode) },
+    Multiply: { d: 2, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Multiply_encode) },
+    Divide: { d: 3, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Divide_encode) },
+    Mod: { d: 4, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Mod_encode) },
+    RaiseTo: { d: 5, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_RaiseTo_encode) },
+    Greater: { d: 6, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Greater_encode) },
+    Less: { d: 7, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Less_encode) },
+    Equal: { d: 8, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Equal_encode) },
+    Not: { d: 9, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Not_encode) },
+    And: { d: 10, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_And_encode) },
+    Or: { d: 11, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Or_encode) },
+    If: { d: 12, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_If_encode) },
+    Raw: { d: 13, encode: makeEncoderAsIsRespectable(iroha_data_model_Value_encode) },
+    Query: { d: 14, encode: makeEncoderAsIsRespectable(iroha_data_model_query_QueryBox_encode) },
+    Contains: { d: 15, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Contains_encode) },
+    ContainsAll: { d: 16, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_ContainsAll_encode) },
+    ContainsAny: { d: 17, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_ContainsAny_encode) },
+    Where: { d: 18, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_Where_encode) },
+    ContextValue: { d: 19, encode: makeEncoderAsIsRespectable(iroha_data_model_expression_ContextValue_encode) },
 };
 
 // iroha_data_model_expression_Expression tools end
@@ -2805,34 +2898,20 @@ export function iroha_data_model_expression_Where_encode(
     return encodeStruct(encodable, iroha_data_model_expression_Where_encoders, iroha_data_model_expression_Where_order);
 }
 
-import {
-    FixedPoint_i64_9_Decoded,
-    FixedPoint_i64_9_Encodable,
-    FixedPoint_i64_9_decode,
-    FixedPoint_i64_9_encode,
-} from './extend';
-
 // iroha_data_model_fixed_Fixed
 
-export type iroha_data_model_fixed_Fixed_Decoded = [FixedPoint_i64_9_Decoded];
+export type iroha_data_model_fixed_Fixed_Decoded = FixedPoint_i64_Decoded;
 
-export type iroha_data_model_fixed_Fixed_Encodable = [FixedPoint_i64_9_Encodable | EncodeAsIs];
-
-// iroha_data_model_fixed_Fixed tuple-related tools
-
-const iroha_data_model_fixed_Fixed_decoders = [FixedPoint_i64_9_decode];
-const iroha_data_model_fixed_Fixed_encoders = ([FixedPoint_i64_9_encode] as any).map(makeEncoderAsIsRespectable);
-
-// iroha_data_model_fixed_Fixed tools end
+export type iroha_data_model_fixed_Fixed_Encodable = FixedPoint_i64_Encodable;
 
 export function iroha_data_model_fixed_Fixed_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_fixed_Fixed_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_fixed_Fixed_decoders as any);
+    return FixedPoint_i64_decode(bytes);
 }
 
 export function iroha_data_model_fixed_Fixed_encode(encodable: iroha_data_model_fixed_Fixed_Encodable): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_fixed_Fixed_encoders as any);
+    return FixedPoint_i64_encode(encodable);
 }
 
 // iroha_data_model_IdBox
@@ -2866,11 +2945,11 @@ const iroha_data_model_IdBox_decoders: EnumDecoders = {
     5: { v: 'WorldId' },
 };
 const iroha_data_model_IdBox_encoders: EnumEncoders = {
-    AccountId: { d: 0, encode: iroha_data_model_account_Id_encode },
-    AssetId: { d: 1, encode: iroha_data_model_asset_Id_encode },
-    AssetDefinitionId: { d: 2, encode: iroha_data_model_asset_DefinitionId_encode },
-    DomainName: { d: 3, encode: str_encode },
-    PeerId: { d: 4, encode: iroha_data_model_peer_Id_encode },
+    AccountId: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_account_Id_encode) },
+    AssetId: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_asset_Id_encode) },
+    AssetDefinitionId: { d: 2, encode: makeEncoderAsIsRespectable(iroha_data_model_asset_DefinitionId_encode) },
+    DomainName: { d: 3, encode: makeEncoderAsIsRespectable(str_encode) },
+    PeerId: { d: 4, encode: makeEncoderAsIsRespectable(iroha_data_model_peer_Id_encode) },
     WorldId: { d: 5 },
 };
 
@@ -2918,12 +2997,12 @@ const iroha_data_model_IdentifiableBox_decoders: EnumDecoders = {
     6: { v: 'World' },
 };
 const iroha_data_model_IdentifiableBox_encoders: EnumEncoders = {
-    Account: { d: 0, encode: iroha_data_model_account_Account_encode },
-    NewAccount: { d: 1, encode: iroha_data_model_account_NewAccount_encode },
-    Asset: { d: 2, encode: iroha_data_model_asset_Asset_encode },
-    AssetDefinition: { d: 3, encode: iroha_data_model_asset_AssetDefinition_encode },
-    Domain: { d: 4, encode: iroha_data_model_domain_Domain_encode },
-    Peer: { d: 5, encode: iroha_data_model_peer_Peer_encode },
+    Account: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_account_Account_encode) },
+    NewAccount: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_account_NewAccount_encode) },
+    Asset: { d: 2, encode: makeEncoderAsIsRespectable(iroha_data_model_asset_Asset_encode) },
+    AssetDefinition: { d: 3, encode: makeEncoderAsIsRespectable(iroha_data_model_asset_AssetDefinition_encode) },
+    Domain: { d: 4, encode: makeEncoderAsIsRespectable(iroha_data_model_domain_Domain_encode) },
+    Peer: { d: 5, encode: makeEncoderAsIsRespectable(iroha_data_model_peer_Peer_encode) },
     World: { d: 6 },
 };
 
@@ -3119,18 +3198,18 @@ const iroha_data_model_isi_Instruction_decoders: EnumDecoders = {
     11: { v: 'Grant', decode: iroha_data_model_isi_GrantBox_decode },
 };
 const iroha_data_model_isi_Instruction_encoders: EnumEncoders = {
-    Register: { d: 0, encode: iroha_data_model_isi_RegisterBox_encode },
-    Unregister: { d: 1, encode: iroha_data_model_isi_UnregisterBox_encode },
-    Mint: { d: 2, encode: iroha_data_model_isi_MintBox_encode },
-    Burn: { d: 3, encode: iroha_data_model_isi_BurnBox_encode },
-    Transfer: { d: 4, encode: iroha_data_model_isi_TransferBox_encode },
-    If: { d: 5, encode: iroha_data_model_isi_If_encode },
-    Pair: { d: 6, encode: iroha_data_model_isi_Pair_encode },
-    Sequence: { d: 7, encode: iroha_data_model_isi_SequenceBox_encode },
-    Fail: { d: 8, encode: iroha_data_model_isi_FailBox_encode },
-    SetKeyValue: { d: 9, encode: iroha_data_model_isi_SetKeyValueBox_encode },
-    RemoveKeyValue: { d: 10, encode: iroha_data_model_isi_RemoveKeyValueBox_encode },
-    Grant: { d: 11, encode: iroha_data_model_isi_GrantBox_encode },
+    Register: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_RegisterBox_encode) },
+    Unregister: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_UnregisterBox_encode) },
+    Mint: { d: 2, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_MintBox_encode) },
+    Burn: { d: 3, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_BurnBox_encode) },
+    Transfer: { d: 4, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_TransferBox_encode) },
+    If: { d: 5, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_If_encode) },
+    Pair: { d: 6, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_Pair_encode) },
+    Sequence: { d: 7, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_SequenceBox_encode) },
+    Fail: { d: 8, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_FailBox_encode) },
+    SetKeyValue: { d: 9, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_SetKeyValueBox_encode) },
+    RemoveKeyValue: { d: 10, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_RemoveKeyValueBox_encode) },
+    Grant: { d: 11, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_GrantBox_encode) },
 };
 
 // iroha_data_model_isi_Instruction tools end
@@ -3526,10 +3605,10 @@ const iroha_data_model_Parameter_decoders: EnumDecoders = {
     3: { v: 'TransactionReceiptTime', decode: u128_decode },
 };
 const iroha_data_model_Parameter_encoders: EnumEncoders = {
-    MaximumFaultyPeersAmount: { d: 0, encode: u32_encode },
-    BlockTime: { d: 1, encode: u128_encode },
-    CommitTime: { d: 2, encode: u128_encode },
-    TransactionReceiptTime: { d: 3, encode: u128_encode },
+    MaximumFaultyPeersAmount: { d: 0, encode: makeEncoderAsIsRespectable(u32_encode) },
+    BlockTime: { d: 1, encode: makeEncoderAsIsRespectable(u128_encode) },
+    CommitTime: { d: 2, encode: makeEncoderAsIsRespectable(u128_encode) },
+    TransactionReceiptTime: { d: 3, encode: makeEncoderAsIsRespectable(u128_encode) },
 };
 
 // iroha_data_model_Parameter tools end
@@ -4404,6 +4483,7 @@ export type iroha_data_model_query_QueryBox_Decoded = Enum<{
     FindDomainByName: Valuable<iroha_data_model_query_domain_FindDomainByName_Decoded>;
     FindAllPeers: Valuable<iroha_data_model_query_peer_FindAllPeers_Decoded>;
     FindTransactionsByAccountId: Valuable<iroha_data_model_query_transaction_FindTransactionsByAccountId_Decoded>;
+    FindTransactionByHash: Valuable<iroha_data_model_query_transaction_FindTransactionByHash_Decoded>;
     FindPermissionTokensByAccountId: Valuable<iroha_data_model_query_permissions_FindPermissionTokensByAccountId_Decoded>;
 }>;
 
@@ -4440,6 +4520,7 @@ export type iroha_data_model_query_QueryBox_Encodable = Enum<{
     FindTransactionsByAccountId: Valuable<
         iroha_data_model_query_transaction_FindTransactionsByAccountId_Encodable | EncodeAsIs
     >;
+    FindTransactionByHash: Valuable<iroha_data_model_query_transaction_FindTransactionByHash_Encodable | EncodeAsIs>;
     FindPermissionTokensByAccountId: Valuable<
         iroha_data_model_query_permissions_FindPermissionTokensByAccountId_Encodable | EncodeAsIs
     >;
@@ -4483,47 +4564,90 @@ const iroha_data_model_query_QueryBox_decoders: EnumDecoders = {
         v: 'FindTransactionsByAccountId',
         decode: iroha_data_model_query_transaction_FindTransactionsByAccountId_decode,
     },
-    20: {
+    20: { v: 'FindTransactionByHash', decode: iroha_data_model_query_transaction_FindTransactionByHash_decode },
+    21: {
         v: 'FindPermissionTokensByAccountId',
         decode: iroha_data_model_query_permissions_FindPermissionTokensByAccountId_decode,
     },
 };
 const iroha_data_model_query_QueryBox_encoders: EnumEncoders = {
-    FindAllAccounts: { d: 0, encode: iroha_data_model_query_account_FindAllAccounts_encode },
-    FindAccountById: { d: 1, encode: iroha_data_model_query_account_FindAccountById_encode },
+    FindAllAccounts: {
+        d: 0,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_account_FindAllAccounts_encode),
+    },
+    FindAccountById: {
+        d: 1,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_account_FindAccountById_encode),
+    },
     FindAccountKeyValueByIdAndKey: {
         d: 2,
-        encode: iroha_data_model_query_account_FindAccountKeyValueByIdAndKey_encode,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_account_FindAccountKeyValueByIdAndKey_encode),
     },
-    FindAccountsByName: { d: 3, encode: iroha_data_model_query_account_FindAccountsByName_encode },
-    FindAccountsByDomainName: { d: 4, encode: iroha_data_model_query_account_FindAccountsByDomainName_encode },
-    FindAllAssets: { d: 5, encode: iroha_data_model_query_asset_FindAllAssets_encode },
-    FindAllAssetsDefinitions: { d: 6, encode: iroha_data_model_query_asset_FindAllAssetsDefinitions_encode },
-    FindAssetById: { d: 7, encode: iroha_data_model_query_asset_FindAssetById_encode },
-    FindAssetsByName: { d: 8, encode: iroha_data_model_query_asset_FindAssetsByName_encode },
-    FindAssetsByAccountId: { d: 9, encode: iroha_data_model_query_asset_FindAssetsByAccountId_encode },
-    FindAssetsByAssetDefinitionId: { d: 10, encode: iroha_data_model_query_asset_FindAssetsByAssetDefinitionId_encode },
-    FindAssetsByDomainName: { d: 11, encode: iroha_data_model_query_asset_FindAssetsByDomainName_encode },
+    FindAccountsByName: {
+        d: 3,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_account_FindAccountsByName_encode),
+    },
+    FindAccountsByDomainName: {
+        d: 4,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_account_FindAccountsByDomainName_encode),
+    },
+    FindAllAssets: { d: 5, encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAllAssets_encode) },
+    FindAllAssetsDefinitions: {
+        d: 6,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAllAssetsDefinitions_encode),
+    },
+    FindAssetById: { d: 7, encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetById_encode) },
+    FindAssetsByName: {
+        d: 8,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetsByName_encode),
+    },
+    FindAssetsByAccountId: {
+        d: 9,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetsByAccountId_encode),
+    },
+    FindAssetsByAssetDefinitionId: {
+        d: 10,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetsByAssetDefinitionId_encode),
+    },
+    FindAssetsByDomainName: {
+        d: 11,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetsByDomainName_encode),
+    },
     FindAssetsByDomainNameAndAssetDefinitionId: {
         d: 12,
-        encode: iroha_data_model_query_asset_FindAssetsByDomainNameAndAssetDefinitionId_encode,
+        encode: makeEncoderAsIsRespectable(
+            iroha_data_model_query_asset_FindAssetsByDomainNameAndAssetDefinitionId_encode,
+        ),
     },
-    FindAssetQuantityById: { d: 13, encode: iroha_data_model_query_asset_FindAssetQuantityById_encode },
-    FindAssetKeyValueByIdAndKey: { d: 14, encode: iroha_data_model_query_asset_FindAssetKeyValueByIdAndKey_encode },
+    FindAssetQuantityById: {
+        d: 13,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetQuantityById_encode),
+    },
+    FindAssetKeyValueByIdAndKey: {
+        d: 14,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetKeyValueByIdAndKey_encode),
+    },
     FindAssetDefinitionKeyValueByIdAndKey: {
         d: 15,
-        encode: iroha_data_model_query_asset_FindAssetDefinitionKeyValueByIdAndKey_encode,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_asset_FindAssetDefinitionKeyValueByIdAndKey_encode),
     },
-    FindAllDomains: { d: 16, encode: iroha_data_model_query_domain_FindAllDomains_encode },
-    FindDomainByName: { d: 17, encode: iroha_data_model_query_domain_FindDomainByName_encode },
-    FindAllPeers: { d: 18, encode: iroha_data_model_query_peer_FindAllPeers_encode },
+    FindAllDomains: { d: 16, encode: makeEncoderAsIsRespectable(iroha_data_model_query_domain_FindAllDomains_encode) },
+    FindDomainByName: {
+        d: 17,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_domain_FindDomainByName_encode),
+    },
+    FindAllPeers: { d: 18, encode: makeEncoderAsIsRespectable(iroha_data_model_query_peer_FindAllPeers_encode) },
     FindTransactionsByAccountId: {
         d: 19,
-        encode: iroha_data_model_query_transaction_FindTransactionsByAccountId_encode,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_transaction_FindTransactionsByAccountId_encode),
+    },
+    FindTransactionByHash: {
+        d: 20,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_transaction_FindTransactionByHash_encode),
     },
     FindPermissionTokensByAccountId: {
-        d: 20,
-        encode: iroha_data_model_query_permissions_FindPermissionTokensByAccountId_encode,
+        d: 21,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_query_permissions_FindPermissionTokensByAccountId_encode),
     },
 };
 
@@ -4543,29 +4667,20 @@ export function iroha_data_model_query_QueryBox_encode(
 
 // iroha_data_model_query_QueryResult
 
-export type iroha_data_model_query_QueryResult_Decoded = [iroha_data_model_Value_Decoded];
+export type iroha_data_model_query_QueryResult_Decoded = iroha_data_model_Value_Decoded;
 
-export type iroha_data_model_query_QueryResult_Encodable = [iroha_data_model_Value_Encodable | EncodeAsIs];
-
-// iroha_data_model_query_QueryResult tuple-related tools
-
-const iroha_data_model_query_QueryResult_decoders = [iroha_data_model_Value_decode];
-const iroha_data_model_query_QueryResult_encoders = ([iroha_data_model_Value_encode] as any).map(
-    makeEncoderAsIsRespectable,
-);
-
-// iroha_data_model_query_QueryResult tools end
+export type iroha_data_model_query_QueryResult_Encodable = iroha_data_model_Value_Encodable;
 
 export function iroha_data_model_query_QueryResult_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_query_QueryResult_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_query_QueryResult_decoders as any);
+    return iroha_data_model_Value_decode(bytes);
 }
 
 export function iroha_data_model_query_QueryResult_encode(
     encodable: iroha_data_model_query_QueryResult_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_query_QueryResult_encoders as any);
+    return iroha_data_model_Value_encode(encodable);
 }
 
 // iroha_data_model_query_SignedQueryRequest
@@ -4610,6 +4725,45 @@ export function iroha_data_model_query_SignedQueryRequest_encode(
         encodable,
         iroha_data_model_query_SignedQueryRequest_encoders,
         iroha_data_model_query_SignedQueryRequest_order,
+    );
+}
+
+// iroha_data_model_query_transaction_FindTransactionByHash
+
+export type iroha_data_model_query_transaction_FindTransactionByHash_Decoded = {
+    hash: iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_Decoded;
+};
+
+export type iroha_data_model_query_transaction_FindTransactionByHash_Encodable = {
+    hash: iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_Encodable | EncodeAsIs;
+};
+
+const iroha_data_model_query_transaction_FindTransactionByHash_order: (keyof iroha_data_model_query_transaction_FindTransactionByHash_Decoded)[] =
+    ['hash'];
+const iroha_data_model_query_transaction_FindTransactionByHash_decoders = {
+    hash: iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_decode,
+};
+const iroha_data_model_query_transaction_FindTransactionByHash_encoders = {
+    hash: makeEncoderAsIsRespectable(iroha_data_model_expression_EvaluatesTo_iroha_crypto_Hash_encode),
+};
+
+export function iroha_data_model_query_transaction_FindTransactionByHash_decode(
+    bytes: Uint8Array,
+): DecodeResult<iroha_data_model_query_transaction_FindTransactionByHash_Decoded> {
+    return decodeStruct(
+        bytes,
+        iroha_data_model_query_transaction_FindTransactionByHash_decoders,
+        iroha_data_model_query_transaction_FindTransactionByHash_order,
+    );
+}
+
+export function iroha_data_model_query_transaction_FindTransactionByHash_encode(
+    encodable: iroha_data_model_query_transaction_FindTransactionByHash_Encodable,
+): Uint8Array {
+    return encodeStruct(
+        encodable,
+        iroha_data_model_query_transaction_FindTransactionByHash_encoders,
+        iroha_data_model_query_transaction_FindTransactionByHash_order,
     );
 }
 
@@ -4668,7 +4822,7 @@ const iroha_data_model_query_VersionedQueryResult_decoders: EnumDecoders = {
     1: { v: 'V1', decode: iroha_data_model_query_VersionedQueryResultV1_decode },
 };
 const iroha_data_model_query_VersionedQueryResult_encoders: EnumEncoders = {
-    V1: { d: 1, encode: iroha_data_model_query_VersionedQueryResultV1_encode },
+    V1: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_query_VersionedQueryResultV1_encode) },
 };
 
 // iroha_data_model_query_VersionedQueryResult tools end
@@ -4687,31 +4841,20 @@ export function iroha_data_model_query_VersionedQueryResult_encode(
 
 // iroha_data_model_query_VersionedQueryResultV1
 
-export type iroha_data_model_query_VersionedQueryResultV1_Decoded = [iroha_data_model_query_QueryResult_Decoded];
+export type iroha_data_model_query_VersionedQueryResultV1_Decoded = iroha_data_model_query_QueryResult_Decoded;
 
-export type iroha_data_model_query_VersionedQueryResultV1_Encodable = [
-    iroha_data_model_query_QueryResult_Encodable | EncodeAsIs,
-];
-
-// iroha_data_model_query_VersionedQueryResultV1 tuple-related tools
-
-const iroha_data_model_query_VersionedQueryResultV1_decoders = [iroha_data_model_query_QueryResult_decode];
-const iroha_data_model_query_VersionedQueryResultV1_encoders = ([iroha_data_model_query_QueryResult_encode] as any).map(
-    makeEncoderAsIsRespectable,
-);
-
-// iroha_data_model_query_VersionedQueryResultV1 tools end
+export type iroha_data_model_query_VersionedQueryResultV1_Encodable = iroha_data_model_query_QueryResult_Encodable;
 
 export function iroha_data_model_query_VersionedQueryResultV1_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_query_VersionedQueryResultV1_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_query_VersionedQueryResultV1_decoders as any);
+    return iroha_data_model_query_QueryResult_decode(bytes);
 }
 
 export function iroha_data_model_query_VersionedQueryResultV1_encode(
     encodable: iroha_data_model_query_VersionedQueryResultV1_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_query_VersionedQueryResultV1_encoders as any);
+    return iroha_data_model_query_QueryResult_encode(encodable);
 }
 
 // iroha_data_model_query_VersionedSignedQueryRequest
@@ -4730,7 +4873,7 @@ const iroha_data_model_query_VersionedSignedQueryRequest_decoders: EnumDecoders 
     1: { v: 'V1', decode: iroha_data_model_query_VersionedSignedQueryRequestV1_decode },
 };
 const iroha_data_model_query_VersionedSignedQueryRequest_encoders: EnumEncoders = {
-    V1: { d: 1, encode: iroha_data_model_query_VersionedSignedQueryRequestV1_encode },
+    V1: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_query_VersionedSignedQueryRequestV1_encode) },
 };
 
 // iroha_data_model_query_VersionedSignedQueryRequest tools end
@@ -4749,35 +4892,22 @@ export function iroha_data_model_query_VersionedSignedQueryRequest_encode(
 
 // iroha_data_model_query_VersionedSignedQueryRequestV1
 
-export type iroha_data_model_query_VersionedSignedQueryRequestV1_Decoded = [
-    iroha_data_model_query_SignedQueryRequest_Decoded,
-];
+export type iroha_data_model_query_VersionedSignedQueryRequestV1_Decoded =
+    iroha_data_model_query_SignedQueryRequest_Decoded;
 
-export type iroha_data_model_query_VersionedSignedQueryRequestV1_Encodable = [
-    iroha_data_model_query_SignedQueryRequest_Encodable | EncodeAsIs,
-];
-
-// iroha_data_model_query_VersionedSignedQueryRequestV1 tuple-related tools
-
-const iroha_data_model_query_VersionedSignedQueryRequestV1_decoders = [
-    iroha_data_model_query_SignedQueryRequest_decode,
-];
-const iroha_data_model_query_VersionedSignedQueryRequestV1_encoders = (
-    [iroha_data_model_query_SignedQueryRequest_encode] as any
-).map(makeEncoderAsIsRespectable);
-
-// iroha_data_model_query_VersionedSignedQueryRequestV1 tools end
+export type iroha_data_model_query_VersionedSignedQueryRequestV1_Encodable =
+    iroha_data_model_query_SignedQueryRequest_Encodable;
 
 export function iroha_data_model_query_VersionedSignedQueryRequestV1_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_query_VersionedSignedQueryRequestV1_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_query_VersionedSignedQueryRequestV1_decoders as any);
+    return iroha_data_model_query_SignedQueryRequest_decode(bytes);
 }
 
 export function iroha_data_model_query_VersionedSignedQueryRequestV1_encode(
     encodable: iroha_data_model_query_VersionedSignedQueryRequestV1_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_query_VersionedSignedQueryRequestV1_encoders as any);
+    return iroha_data_model_query_SignedQueryRequest_encode(encodable);
 }
 
 // iroha_data_model_transaction_Payload
@@ -4951,8 +5081,11 @@ const iroha_data_model_transaction_TransactionValue_decoders: EnumDecoders = {
     1: { v: 'RejectedTransaction', decode: iroha_data_model_transaction_VersionedRejectedTransaction_decode },
 };
 const iroha_data_model_transaction_TransactionValue_encoders: EnumEncoders = {
-    Transaction: { d: 0, encode: iroha_data_model_transaction_VersionedTransaction_encode },
-    RejectedTransaction: { d: 1, encode: iroha_data_model_transaction_VersionedRejectedTransaction_encode },
+    Transaction: { d: 0, encode: makeEncoderAsIsRespectable(iroha_data_model_transaction_VersionedTransaction_encode) },
+    RejectedTransaction: {
+        d: 1,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_transaction_VersionedRejectedTransaction_encode),
+    },
 };
 
 // iroha_data_model_transaction_TransactionValue tools end
@@ -4985,7 +5118,10 @@ const iroha_data_model_transaction_VersionedRejectedTransaction_decoders: EnumDe
     1: { v: 'V1', decode: iroha_data_model_transaction_VersionedRejectedTransactionV1_decode },
 };
 const iroha_data_model_transaction_VersionedRejectedTransaction_encoders: EnumEncoders = {
-    V1: { d: 1, encode: iroha_data_model_transaction_VersionedRejectedTransactionV1_encode },
+    V1: {
+        d: 1,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_transaction_VersionedRejectedTransactionV1_encode),
+    },
 };
 
 // iroha_data_model_transaction_VersionedRejectedTransaction tools end
@@ -5004,35 +5140,22 @@ export function iroha_data_model_transaction_VersionedRejectedTransaction_encode
 
 // iroha_data_model_transaction_VersionedRejectedTransactionV1
 
-export type iroha_data_model_transaction_VersionedRejectedTransactionV1_Decoded = [
-    iroha_data_model_transaction_RejectedTransaction_Decoded,
-];
+export type iroha_data_model_transaction_VersionedRejectedTransactionV1_Decoded =
+    iroha_data_model_transaction_RejectedTransaction_Decoded;
 
-export type iroha_data_model_transaction_VersionedRejectedTransactionV1_Encodable = [
-    iroha_data_model_transaction_RejectedTransaction_Encodable | EncodeAsIs,
-];
-
-// iroha_data_model_transaction_VersionedRejectedTransactionV1 tuple-related tools
-
-const iroha_data_model_transaction_VersionedRejectedTransactionV1_decoders = [
-    iroha_data_model_transaction_RejectedTransaction_decode,
-];
-const iroha_data_model_transaction_VersionedRejectedTransactionV1_encoders = (
-    [iroha_data_model_transaction_RejectedTransaction_encode] as any
-).map(makeEncoderAsIsRespectable);
-
-// iroha_data_model_transaction_VersionedRejectedTransactionV1 tools end
+export type iroha_data_model_transaction_VersionedRejectedTransactionV1_Encodable =
+    iroha_data_model_transaction_RejectedTransaction_Encodable;
 
 export function iroha_data_model_transaction_VersionedRejectedTransactionV1_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_transaction_VersionedRejectedTransactionV1_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_transaction_VersionedRejectedTransactionV1_decoders as any);
+    return iroha_data_model_transaction_RejectedTransaction_decode(bytes);
 }
 
 export function iroha_data_model_transaction_VersionedRejectedTransactionV1_encode(
     encodable: iroha_data_model_transaction_VersionedRejectedTransactionV1_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_transaction_VersionedRejectedTransactionV1_encoders as any);
+    return iroha_data_model_transaction_RejectedTransaction_encode(encodable);
 }
 
 // iroha_data_model_transaction_VersionedTransaction
@@ -5051,7 +5174,7 @@ const iroha_data_model_transaction_VersionedTransaction_decoders: EnumDecoders =
     1: { v: 'V1', decode: iroha_data_model_transaction_VersionedTransactionV1_decode },
 };
 const iroha_data_model_transaction_VersionedTransaction_encoders: EnumEncoders = {
-    V1: { d: 1, encode: iroha_data_model_transaction_VersionedTransactionV1_encode },
+    V1: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_transaction_VersionedTransactionV1_encode) },
 };
 
 // iroha_data_model_transaction_VersionedTransaction tools end
@@ -5070,33 +5193,22 @@ export function iroha_data_model_transaction_VersionedTransaction_encode(
 
 // iroha_data_model_transaction_VersionedTransactionV1
 
-export type iroha_data_model_transaction_VersionedTransactionV1_Decoded = [
-    iroha_data_model_transaction_Transaction_Decoded,
-];
+export type iroha_data_model_transaction_VersionedTransactionV1_Decoded =
+    iroha_data_model_transaction_Transaction_Decoded;
 
-export type iroha_data_model_transaction_VersionedTransactionV1_Encodable = [
-    iroha_data_model_transaction_Transaction_Encodable | EncodeAsIs,
-];
-
-// iroha_data_model_transaction_VersionedTransactionV1 tuple-related tools
-
-const iroha_data_model_transaction_VersionedTransactionV1_decoders = [iroha_data_model_transaction_Transaction_decode];
-const iroha_data_model_transaction_VersionedTransactionV1_encoders = (
-    [iroha_data_model_transaction_Transaction_encode] as any
-).map(makeEncoderAsIsRespectable);
-
-// iroha_data_model_transaction_VersionedTransactionV1 tools end
+export type iroha_data_model_transaction_VersionedTransactionV1_Encodable =
+    iroha_data_model_transaction_Transaction_Encodable;
 
 export function iroha_data_model_transaction_VersionedTransactionV1_decode(
     bytes: Uint8Array,
 ): DecodeResult<iroha_data_model_transaction_VersionedTransactionV1_Decoded> {
-    return decodeTuple(bytes, iroha_data_model_transaction_VersionedTransactionV1_decoders as any);
+    return iroha_data_model_transaction_Transaction_decode(bytes);
 }
 
 export function iroha_data_model_transaction_VersionedTransactionV1_encode(
     encodable: iroha_data_model_transaction_VersionedTransactionV1_Encodable,
 ): Uint8Array {
-    return encodeTuple(encodable, iroha_data_model_transaction_VersionedTransactionV1_encoders as any);
+    return iroha_data_model_transaction_Transaction_encode(encodable);
 }
 
 // iroha_data_model_Value
@@ -5114,6 +5226,7 @@ export type iroha_data_model_Value_Decoded = Enum<{
     SignatureCheckCondition: Valuable<iroha_data_model_account_SignatureCheckCondition_Decoded>;
     TransactionValue: Valuable<iroha_data_model_transaction_TransactionValue_Decoded>;
     PermissionToken: Valuable<iroha_data_model_permissions_PermissionToken_Decoded>;
+    Hash: Valuable<iroha_crypto_Hash_Decoded>;
 }>;
 
 export type iroha_data_model_Value_Encodable = Enum<{
@@ -5129,6 +5242,7 @@ export type iroha_data_model_Value_Encodable = Enum<{
     SignatureCheckCondition: Valuable<iroha_data_model_account_SignatureCheckCondition_Encodable | EncodeAsIs>;
     TransactionValue: Valuable<iroha_data_model_transaction_TransactionValue_Encodable | EncodeAsIs>;
     PermissionToken: Valuable<iroha_data_model_permissions_PermissionToken_Encodable | EncodeAsIs>;
+    Hash: Valuable<iroha_crypto_Hash_Encodable | EncodeAsIs>;
 }>;
 
 // iroha_data_model_Value enum tools
@@ -5146,20 +5260,28 @@ const iroha_data_model_Value_decoders: EnumDecoders = {
     9: { v: 'SignatureCheckCondition', decode: iroha_data_model_account_SignatureCheckCondition_decode },
     10: { v: 'TransactionValue', decode: iroha_data_model_transaction_TransactionValue_decode },
     11: { v: 'PermissionToken', decode: iroha_data_model_permissions_PermissionToken_decode },
+    12: { v: 'Hash', decode: iroha_crypto_Hash_decode },
 };
 const iroha_data_model_Value_encoders: EnumEncoders = {
-    U32: { d: 0, encode: u32_encode },
-    Bool: { d: 1, encode: bool_encode },
-    String: { d: 2, encode: str_encode },
-    Fixed: { d: 3, encode: iroha_data_model_fixed_Fixed_encode },
-    Vec: { d: 4, encode: Vec_iroha_data_model_Value_encode },
-    Id: { d: 5, encode: iroha_data_model_IdBox_encode },
-    Identifiable: { d: 6, encode: iroha_data_model_IdentifiableBox_encode },
-    PublicKey: { d: 7, encode: iroha_crypto_PublicKey_encode },
-    Parameter: { d: 8, encode: iroha_data_model_Parameter_encode },
-    SignatureCheckCondition: { d: 9, encode: iroha_data_model_account_SignatureCheckCondition_encode },
-    TransactionValue: { d: 10, encode: iroha_data_model_transaction_TransactionValue_encode },
-    PermissionToken: { d: 11, encode: iroha_data_model_permissions_PermissionToken_encode },
+    U32: { d: 0, encode: makeEncoderAsIsRespectable(u32_encode) },
+    Bool: { d: 1, encode: makeEncoderAsIsRespectable(bool_encode) },
+    String: { d: 2, encode: makeEncoderAsIsRespectable(str_encode) },
+    Fixed: { d: 3, encode: makeEncoderAsIsRespectable(iroha_data_model_fixed_Fixed_encode) },
+    Vec: { d: 4, encode: makeEncoderAsIsRespectable(Vec_iroha_data_model_Value_encode) },
+    Id: { d: 5, encode: makeEncoderAsIsRespectable(iroha_data_model_IdBox_encode) },
+    Identifiable: { d: 6, encode: makeEncoderAsIsRespectable(iroha_data_model_IdentifiableBox_encode) },
+    PublicKey: { d: 7, encode: makeEncoderAsIsRespectable(iroha_crypto_PublicKey_encode) },
+    Parameter: { d: 8, encode: makeEncoderAsIsRespectable(iroha_data_model_Parameter_encode) },
+    SignatureCheckCondition: {
+        d: 9,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_account_SignatureCheckCondition_encode),
+    },
+    TransactionValue: {
+        d: 10,
+        encode: makeEncoderAsIsRespectable(iroha_data_model_transaction_TransactionValue_encode),
+    },
+    PermissionToken: { d: 11, encode: makeEncoderAsIsRespectable(iroha_data_model_permissions_PermissionToken_encode) },
+    Hash: { d: 12, encode: makeEncoderAsIsRespectable(iroha_crypto_Hash_encode) },
 };
 
 // iroha_data_model_Value tools end
@@ -5170,64 +5292,6 @@ export function iroha_data_model_Value_decode(bytes: Uint8Array): DecodeResult<i
 
 export function iroha_data_model_Value_encode(encodable: iroha_data_model_Value_Encodable): Uint8Array {
     return encodeEnum(encodable, iroha_data_model_Value_encoders);
-}
-
-// iroha_genesis_GenesisTransaction
-
-export type iroha_genesis_GenesisTransaction_Decoded = {
-    isi: Vec_iroha_data_model_isi_Instruction_Decoded;
-};
-
-export type iroha_genesis_GenesisTransaction_Encodable = {
-    isi: Vec_iroha_data_model_isi_Instruction_Encodable | EncodeAsIs;
-};
-
-const iroha_genesis_GenesisTransaction_order: (keyof iroha_genesis_GenesisTransaction_Decoded)[] = ['isi'];
-const iroha_genesis_GenesisTransaction_decoders = {
-    isi: Vec_iroha_data_model_isi_Instruction_decode,
-};
-const iroha_genesis_GenesisTransaction_encoders = {
-    isi: makeEncoderAsIsRespectable(Vec_iroha_data_model_isi_Instruction_encode),
-};
-
-export function iroha_genesis_GenesisTransaction_decode(
-    bytes: Uint8Array,
-): DecodeResult<iroha_genesis_GenesisTransaction_Decoded> {
-    return decodeStruct(bytes, iroha_genesis_GenesisTransaction_decoders, iroha_genesis_GenesisTransaction_order);
-}
-
-export function iroha_genesis_GenesisTransaction_encode(
-    encodable: iroha_genesis_GenesisTransaction_Encodable,
-): Uint8Array {
-    return encodeStruct(encodable, iroha_genesis_GenesisTransaction_encoders, iroha_genesis_GenesisTransaction_order);
-}
-
-// iroha_genesis_RawGenesisBlock
-
-export type iroha_genesis_RawGenesisBlock_Decoded = {
-    transactions: Vec_iroha_genesis_GenesisTransaction_Decoded;
-};
-
-export type iroha_genesis_RawGenesisBlock_Encodable = {
-    transactions: Vec_iroha_genesis_GenesisTransaction_Encodable | EncodeAsIs;
-};
-
-const iroha_genesis_RawGenesisBlock_order: (keyof iroha_genesis_RawGenesisBlock_Decoded)[] = ['transactions'];
-const iroha_genesis_RawGenesisBlock_decoders = {
-    transactions: Vec_iroha_genesis_GenesisTransaction_decode,
-};
-const iroha_genesis_RawGenesisBlock_encoders = {
-    transactions: makeEncoderAsIsRespectable(Vec_iroha_genesis_GenesisTransaction_encode),
-};
-
-export function iroha_genesis_RawGenesisBlock_decode(
-    bytes: Uint8Array,
-): DecodeResult<iroha_genesis_RawGenesisBlock_Decoded> {
-    return decodeStruct(bytes, iroha_genesis_RawGenesisBlock_decoders, iroha_genesis_RawGenesisBlock_order);
-}
-
-export function iroha_genesis_RawGenesisBlock_encode(encodable: iroha_genesis_RawGenesisBlock_Encodable): Uint8Array {
-    return encodeStruct(encodable, iroha_genesis_RawGenesisBlock_encoders, iroha_genesis_RawGenesisBlock_order);
 }
 
 // Option_iroha_crypto_Hash
@@ -5242,7 +5306,7 @@ const Option_iroha_crypto_Hash_decoders: EnumDecoders = {
 };
 const Option_iroha_crypto_Hash_encoders: EnumEncoders = {
     None: { d: 0 },
-    Some: { d: 1, encode: iroha_crypto_Hash_encode },
+    Some: { d: 1, encode: makeEncoderAsIsRespectable(iroha_crypto_Hash_encode) },
 };
 
 export function Option_iroha_crypto_Hash_decode(bytes: Uint8Array): DecodeResult<Option_iroha_crypto_Hash_Decoded> {
@@ -5268,7 +5332,7 @@ const Option_iroha_data_model_events_pipeline_EntityType_decoders: EnumDecoders 
 };
 const Option_iroha_data_model_events_pipeline_EntityType_encoders: EnumEncoders = {
     None: { d: 0 },
-    Some: { d: 1, encode: iroha_data_model_events_pipeline_EntityType_encode },
+    Some: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_events_pipeline_EntityType_encode) },
 };
 
 export function Option_iroha_data_model_events_pipeline_EntityType_decode(
@@ -5297,7 +5361,7 @@ const Option_iroha_data_model_isi_Instruction_decoders: EnumDecoders = {
 };
 const Option_iroha_data_model_isi_Instruction_encoders: EnumEncoders = {
     None: { d: 0 },
-    Some: { d: 1, encode: iroha_data_model_isi_Instruction_encode },
+    Some: { d: 1, encode: makeEncoderAsIsRespectable(iroha_data_model_isi_Instruction_encode) },
 };
 
 export function Option_iroha_data_model_isi_Instruction_decode(
@@ -5310,6 +5374,31 @@ export function Option_iroha_data_model_isi_Instruction_encode(
     encodable: Option_iroha_data_model_isi_Instruction_Encodable,
 ): Uint8Array {
     return encodeEnum(encodable, Option_iroha_data_model_isi_Instruction_encoders);
+}
+
+// Vec_iroha_core_genesis_GenesisTransaction
+
+export type Vec_iroha_core_genesis_GenesisTransaction_Decoded = iroha_core_genesis_GenesisTransaction_Decoded[];
+
+export type Vec_iroha_core_genesis_GenesisTransaction_Encodable = (
+    | iroha_core_genesis_GenesisTransaction_Encodable
+    | EncodeAsIs
+)[];
+
+const Vec_iroha_core_genesis_GenesisTransaction_item_encode = makeEncoderAsIsRespectable(
+    iroha_core_genesis_GenesisTransaction_encode,
+);
+
+export function Vec_iroha_core_genesis_GenesisTransaction_decode(
+    bytes: Uint8Array,
+): DecodeResult<Vec_iroha_core_genesis_GenesisTransaction_Decoded> {
+    return decodeVec(bytes, iroha_core_genesis_GenesisTransaction_decode);
+}
+
+export function Vec_iroha_core_genesis_GenesisTransaction_encode(
+    encodable: Vec_iroha_core_genesis_GenesisTransaction_Encodable,
+): Uint8Array {
+    return encodeVec(encodable, Vec_iroha_core_genesis_GenesisTransaction_item_encode);
 }
 
 // Vec_iroha_crypto_PublicKey
@@ -5409,29 +5498,4 @@ export function Vec_iroha_data_model_Value_decode(bytes: Uint8Array): DecodeResu
 
 export function Vec_iroha_data_model_Value_encode(encodable: Vec_iroha_data_model_Value_Encodable): Uint8Array {
     return encodeVec(encodable, Vec_iroha_data_model_Value_item_encode);
-}
-
-// Vec_iroha_genesis_GenesisTransaction
-
-export type Vec_iroha_genesis_GenesisTransaction_Decoded = iroha_genesis_GenesisTransaction_Decoded[];
-
-export type Vec_iroha_genesis_GenesisTransaction_Encodable = (
-    | iroha_genesis_GenesisTransaction_Encodable
-    | EncodeAsIs
-)[];
-
-const Vec_iroha_genesis_GenesisTransaction_item_encode = makeEncoderAsIsRespectable(
-    iroha_genesis_GenesisTransaction_encode,
-);
-
-export function Vec_iroha_genesis_GenesisTransaction_decode(
-    bytes: Uint8Array,
-): DecodeResult<Vec_iroha_genesis_GenesisTransaction_Decoded> {
-    return decodeVec(bytes, iroha_genesis_GenesisTransaction_decode);
-}
-
-export function Vec_iroha_genesis_GenesisTransaction_encode(
-    encodable: Vec_iroha_genesis_GenesisTransaction_Encodable,
-): Uint8Array {
-    return encodeVec(encodable, Vec_iroha_genesis_GenesisTransaction_item_encode);
 }

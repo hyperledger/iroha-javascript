@@ -1,4 +1,4 @@
-import { TMP_IROHA_DEPLOY_DIR } from '../const';
+import { TMP_IROHA_DEPLOY_DIR, IROHA_CLI_NAME } from '../const';
 import path from 'path';
 import execa from 'execa';
 import { rmWithParams, saveDataAsJSON } from './util';
@@ -55,7 +55,7 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
 
     // starting peer
     const withGenesis: boolean = params?.withGenesis ?? true;
-    const subprocess = execa('./iroha_cli', withGenesis ? ['--submit-genesis'] : [], {
+    const subprocess = execa(`./${IROHA_CLI_NAME}`, withGenesis ? ['--submit-genesis'] : [], {
         cwd: deployDir,
     });
     debug('Subprocess spawnargs: %o', subprocess.spawnargs);
