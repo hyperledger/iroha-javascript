@@ -1,2 +1,3 @@
 dist
 **/iroha-crypto/*/wasm_pack_output*
+**/data-model/src/generated.ts

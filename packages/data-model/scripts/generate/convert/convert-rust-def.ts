@@ -19,19 +19,19 @@ import RefConverter from './RefConverter';
 const debug = debugRoot('@iroha2/data-model:rust-convert');
 
 function ok<Ok, Err>(ok: Ok): Result<Ok, Err> {
-    return Enum.create('Ok', ok);
+    return Enum.valuable('Ok', ok);
 }
 
 function err<Ok, Err>(err: Err): Result<Ok, Err> {
-    return Enum.create('Err', err);
+    return Enum.valuable('Err', err);
 }
 
 function some<T>(val: T): Option<T> {
-    return Enum.create('Some', val);
+    return Enum.valuable('Some', val);
 }
 
 function none<T>(): Option<T> {
-    return Enum.create('None');
+    return Enum.empty('None');
 }
 
 const IGNORE_TYPES = new Set<string>([
@@ -44,7 +44,7 @@ const IGNORE_TYPES = new Set<string>([
     'Vec<u8>',
 ]);
 
-const AVAILABLE_FIXED_POINTS = new Set(['i64_9']);
+const AVAILABLE_FIXED_POINTS = new Set(['I64P9']);
 
 export function convertRustIntrospectOutputIntoCompilerInput(params: { input: RustDefinitions }): NamespaceDefinition {
     const converter = new RefConverter();
@@ -181,15 +181,15 @@ function transformRustDef(
             FixedPoint: { decimal_places, base },
         } = def;
         /**
-         * Something like `i64_9`
+         * Something like `I64P9`
          */
-        const fixedPointKey = `${base}_${decimal_places}`;
+        const fixedPointKey = `${base.toUpperCase()}P${decimal_places}`;
         if (AVAILABLE_FIXED_POINTS.has(fixedPointKey)) {
             return ok(
                 some<TypeDef>({
-                    t: 'external',
-                    module: `./fixed_points`,
-                    nameInModule: `FixedPoint_${fixedPointKey}`,
+                    t: 'import',
+                    module: `./fixed-point`,
+                    nameInModule: `FixedPoint${fixedPointKey}`,
                 }),
             );
         }

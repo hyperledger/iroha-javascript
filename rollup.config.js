@@ -1,3 +1,3 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-require('esbuild-register');
+require('sucrase/register');
 module.exports = require('./scripts/rollup.config');

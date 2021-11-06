@@ -1,6 +1,5 @@
-import execa from 'execa';
+import { $, path } from 'zx';
 import { series } from 'gulp';
-import path from 'path';
 import makeDir from 'make-dir';
 import { TMP_IROHA_DEPLOY_DIR, TMP_IROHA_INSTALL_DIR, IROHA_CLI_NAME } from '../const';
 
@@ -13,21 +12,12 @@ const IROHA_INSTALL_ROOT_DIR = path.resolve(ROOT_DIR, TMP_IROHA_INSTALL_DIR);
 const IROHA_DEPLOY_DIR = path.resolve(ROOT_DIR, TMP_IROHA_DEPLOY_DIR);
 
 async function install_iroha_binary() {
-    await execa(
-        'cargo',
-        [
-            'install',
-            '--root',
-            IROHA_INSTALL_ROOT_DIR,
-            '--git',
-            GIT_IROHA_REPO,
-            '--branch',
-            GIT_BRANCH,
-            // and finally - which crate from repo to install?
-            IROHA_CLI_NAME,
-        ],
-        { stdio: 'inherit' },
-    );
+    await $`cargo install \\
+        --root ${IROHA_INSTALL_ROOT_DIR} \\
+        --git ${GIT_IROHA_REPO} \\
+        --branch ${GIT_BRANCH} \\
+        ${IROHA_CLI_NAME}
+    `;
 }
 
 async function make_deploy_dir() {
@@ -35,7 +25,8 @@ async function make_deploy_dir() {
 }
 
 async function copy_binary_into_deploy_dir() {
-    await execa('cp', [path.resolve(IROHA_INSTALL_ROOT_DIR, 'bin', IROHA_CLI_NAME), IROHA_DEPLOY_DIR]);
+    const cliFile = path.resolve(IROHA_INSTALL_ROOT_DIR, 'bin', IROHA_CLI_NAME);
+    await $`cp ${cliFile} ${IROHA_DEPLOY_DIR}`;
 }
 
 export default series(install_iroha_binary, make_deploy_dir, copy_binary_into_deploy_dir);

@@ -58,7 +58,7 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
     const subprocess = execa(`./${IROHA_CLI_NAME}`, withGenesis ? ['--submit-genesis'] : [], {
         cwd: deployDir,
     });
-    debug('Subprocess spawnargs: %o', subprocess.spawnargs);
+    debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs);
     const stdout = readline.createInterface(subprocess.stdout!);
     const stderr = readline.createInterface(subprocess.stderr!);
 

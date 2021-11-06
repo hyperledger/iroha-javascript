@@ -2,22 +2,26 @@ import RefConverter from './RefConverter';
 
 describe('Refs transformation', () => {
     test.each([
-        ['iroha_crypto::Hash', 'iroha_crypto_Hash'],
-        ['iroha_data_model::Vec<u8>', 'iroha_data_model_Vec_u8'],
-        ['pipeline::Event<pipeline::Map<A, B>, C>', 'pipeline_Event_pipeline_Map_A_B_C'],
+        ['iroha_crypto::Hash', 'Hash'],
+        ['iroha_data_model::Vec<u8>', 'BytesVec'],
+        ['pipeline::Event<pipeline::Map<A, B>, C>', 'EventMapABC'],
         ['Vec<u8>', 'BytesVec'],
-        ['[u32; 5]', 'Array_u32_5'],
-        ['String', 'str'],
-        ['Vec<u32>', 'Vec_u32'],
-        [
-            'BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::AssetId>',
-            'BTreeMap_iroha_data_model_account_Id_iroha_data_model_account_AssetId',
-        ],
+        ['[u32; 5]', 'ArrayU32L5'],
+        ['String', 'Str'],
+        ['Vec<u32>', 'VecU32'],
+        ['BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::AssetId>', 'BTreeMapAccountIdAssetId'],
         [
             'BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>',
-            'BTreeMap_String_iroha_data_model_expression_EvaluatesTo_iroha_data_model_Value',
+            'BTreeMapStringEvaluatesToValue',
         ],
-        ['Fixed<i64>', 'Fixed_i64'],
+        ['Fixed<i64>', 'FixedI64'],
+        ['iroha_data_model::query::Payload', 'QueryPayload'],
+        ['iroha_data_model::transaction::Payload', 'TransactionPayload'],
+        ['iroha_data_model::events::EventFilter', 'EventFilter'],
+        ['iroha_data_model::events::data::EventFilter', 'DataEventFilter'],
+        ['iroha_data_model::events::pipeline::EventFilter', 'PipelineEventFilter'],
+        ['iroha_data_model::account::Id', 'AccountId'],
+        ['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>', 'EvaluatesToAccountId'],
     ])('%p transformed into %p', (input, output) => {
         const sut = new RefConverter();
 
@@ -34,9 +38,9 @@ test('Extracts additional BTreeSet', () => {
 
     // Assert
     expect(sut.collectedTypes).toEqual({
-        BTreeSet_model_type: {
+        BTreeSetType: {
             t: 'set',
-            entry: 'model_type',
+            entry: 'Type',
         },
     });
 });

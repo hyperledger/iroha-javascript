@@ -10,7 +10,8 @@
                                     "Domain": {
                                         "name": "wonderland",
                                         "accounts": {},
-                                        "asset_definitions": {}
+                                        "asset_definitions": {},
+                                        "metadata": {}
                                     }
                                 }
                             }
@@ -48,7 +49,27 @@
                                             "domain_name": "wonderland"
                                         },
                                         "value_type": "Quantity",
-                                        "metadata": {}
+                                        "metadata": {},
+                                        "mintable": true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "Register": {
+                        "object": {
+                            "Raw": {
+                                "Identifiable": {
+                                    "AssetDefinition": {
+                                        "id": {
+                                            "name": "tulip",
+                                            "domain_name": "wonderland"
+                                        },
+                                        "value_type": "Fixed",
+                                        "metadata": {},
+                                        "mintable": true
                                     }
                                 }
                             }

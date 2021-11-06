@@ -11,6 +11,12 @@
       "value": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>"
     }
   },
+  "BTreeMap<iroha_crypto::PublicKey, iroha_crypto::signature::Signature>": {
+    "Map": {
+      "key": "iroha_crypto::PublicKey",
+      "value": "iroha_crypto::signature::Signature"
+    }
+  },
   "BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::Account>": {
     "Map": {
       "key": "iroha_data_model::account::Id",
@@ -35,14 +41,17 @@
       "decimal_places": 9
     }
   },
-  "Option<iroha_crypto::Hash>": {
-    "Option": "iroha_crypto::Hash"
+  "Option<iroha_crypto::hash::Hash>": {
+    "Option": "iroha_crypto::hash::Hash"
   },
   "Option<iroha_data_model::events::pipeline::EntityType>": {
     "Option": "iroha_data_model::events::pipeline::EntityType"
   },
   "Option<iroha_data_model::isi::Instruction>": {
     "Option": "iroha_data_model::isi::Instruction"
+  },
+  "Option<u32>": {
+    "Option": "u32"
   },
   "String": "String",
   "Vec<iroha_core::genesis::GenesisTransaction>": {
@@ -51,8 +60,8 @@
   "Vec<iroha_crypto::PublicKey>": {
     "Vec": "iroha_crypto::PublicKey"
   },
-  "Vec<iroha_crypto::Signature>": {
-    "Vec": "iroha_crypto::Signature"
+  "Vec<iroha_crypto::signature::Signature>": {
+    "Vec": "iroha_crypto::signature::Signature"
   },
   "Vec<iroha_data_model::Value>": {
     "Vec": "iroha_data_model::Value"
@@ -96,13 +105,6 @@
       ]
     }
   },
-  "iroha_crypto::Hash": {
-    "TupleStruct": {
-      "types": [
-        "[u8; 32]"
-      ]
-    }
-  },
   "iroha_crypto::PublicKey": {
     "Struct": {
       "declarations": [
@@ -117,7 +119,14 @@
       ]
     }
   },
-  "iroha_crypto::Signature": {
+  "iroha_crypto::hash::Hash": {
+    "TupleStruct": {
+      "types": [
+        "[u8; 32]"
+      ]
+    }
+  },
+  "iroha_crypto::signature::Signature": {
     "Struct": {
       "declarations": [
         {
@@ -127,6 +136,30 @@
         {
           "name": "signature",
           "ty": "Vec<u8>"
+        }
+      ]
+    }
+  },
+  "iroha_crypto::signature::SignatureVerificationFail<iroha_data_model::transaction::Payload>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "signature",
+          "ty": "iroha_crypto::signature::Signature"
+        },
+        {
+          "name": "reason",
+          "ty": "String"
+        }
+      ]
+    }
+  },
+  "iroha_crypto::signature::SignaturesOf<iroha_data_model::transaction::Payload>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "signatures",
+          "ty": "BTreeMap<iroha_crypto::PublicKey, iroha_crypto::signature::Signature>"
         }
       ]
     }
@@ -300,7 +333,7 @@
         {
           "name": "Hash",
           "discriminant": 12,
-          "ty": "iroha_crypto::Hash"
+          "ty": "iroha_crypto::hash::Hash"
         }
       ]
     }
@@ -402,6 +435,10 @@
         {
           "name": "metadata",
           "ty": "iroha_data_model::metadata::Metadata"
+        },
+        {
+          "name": "mintable",
+          "ty": "bool"
         }
       ]
     }
@@ -514,6 +551,10 @@
         {
           "name": "asset_definitions",
           "ty": "BTreeMap<iroha_data_model::asset::DefinitionId, iroha_data_model::asset::AssetDefinitionEntry>"
+        },
+        {
+          "name": "metadata",
+          "ty": "iroha_data_model::metadata::Metadata"
         }
       ]
     }
@@ -651,7 +692,7 @@
         },
         {
           "name": "hash",
-          "ty": "iroha_crypto::Hash"
+          "ty": "iroha_crypto::hash::Hash"
         }
       ]
     }
@@ -665,7 +706,7 @@
         },
         {
           "name": "hash",
-          "ty": "Option<iroha_crypto::Hash>"
+          "ty": "Option<iroha_crypto::hash::Hash>"
         }
       ]
     }
@@ -706,20 +747,6 @@
           "name": "Transaction",
           "discriminant": 1,
           "ty": "iroha_data_model::events::pipeline::TransactionRejectionReason"
-        }
-      ]
-    }
-  },
-  "iroha_data_model::events::pipeline::SignatureVerificationFail": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "signature",
-          "ty": "iroha_crypto::Signature"
-        },
-        {
-          "name": "reason",
-          "ty": "String"
         }
       ]
     }
@@ -766,7 +793,7 @@
         {
           "name": "SignatureVerification",
           "discriminant": 3,
-          "ty": "iroha_data_model::events::pipeline::SignatureVerificationFail"
+          "ty": "iroha_crypto::signature::SignatureVerificationFail<iroha_data_model::transaction::Payload>"
         },
         {
           "name": "UnexpectedGenesisAccountSignature",
@@ -924,7 +951,7 @@
       ]
     }
   },
-  "iroha_data_model::expression::EvaluatesTo<iroha_crypto::Hash>": {
+  "iroha_data_model::expression::EvaluatesTo<iroha_crypto::hash::Hash>": {
     "Struct": {
       "declarations": [
         {
@@ -1657,23 +1684,28 @@
           "ty": "iroha_data_model::query::domain::FindDomainByName"
         },
         {
-          "name": "FindAllPeers",
+          "name": "FindDomainKeyValueByIdAndKey",
           "discriminant": 18,
+          "ty": "iroha_data_model::query::domain::FindDomainKeyValueByIdAndKey"
+        },
+        {
+          "name": "FindAllPeers",
+          "discriminant": 19,
           "ty": "iroha_data_model::query::peer::FindAllPeers"
         },
         {
           "name": "FindTransactionsByAccountId",
-          "discriminant": 19,
+          "discriminant": 20,
           "ty": "iroha_data_model::query::transaction::FindTransactionsByAccountId"
         },
         {
           "name": "FindTransactionByHash",
-          "discriminant": 20,
+          "discriminant": 21,
           "ty": "iroha_data_model::query::transaction::FindTransactionByHash"
         },
         {
           "name": "FindPermissionTokensByAccountId",
-          "discriminant": 21,
+          "discriminant": 22,
           "ty": "iroha_data_model::query::permissions::FindPermissionTokensByAccountId"
         }
       ]
@@ -1695,7 +1727,7 @@
         },
         {
           "name": "signature",
-          "ty": "iroha_crypto::Signature"
+          "ty": "iroha_crypto::signature::Signature"
         }
       ]
     }
@@ -1912,6 +1944,20 @@
       ]
     }
   },
+  "iroha_data_model::query::domain::FindDomainKeyValueByIdAndKey": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "name",
+          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+        },
+        {
+          "name": "key",
+          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+        }
+      ]
+    }
+  },
   "iroha_data_model::query::peer::FindAllPeers": {
     "Struct": {
       "declarations": []
@@ -1932,7 +1978,7 @@
       "declarations": [
         {
           "name": "hash",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_crypto::Hash>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_crypto::hash::Hash>"
         }
       ]
     }
@@ -1967,6 +2013,10 @@
           "ty": "u64"
         },
         {
+          "name": "nonce",
+          "ty": "Option<u32>"
+        },
+        {
           "name": "metadata",
           "ty": "BTreeMap<String, iroha_data_model::Value>"
         }
@@ -1982,7 +2032,7 @@
         },
         {
           "name": "signatures",
-          "ty": "BTreeSet<iroha_crypto::Signature>"
+          "ty": "iroha_crypto::signature::SignaturesOf<iroha_data_model::transaction::Payload>"
         },
         {
           "name": "rejection_reason",
@@ -2000,7 +2050,7 @@
         },
         {
           "name": "signatures",
-          "ty": "BTreeSet<iroha_crypto::Signature>"
+          "ty": "BTreeSet<iroha_crypto::signature::Signature>"
         }
       ]
     }

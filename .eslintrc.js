@@ -3,6 +3,9 @@ module.exports = {
     rules: {
         'no-promise-executor-return': 'off',
     },
+    globals: {
+        BigInt: true,
+    },
     overrides: [
         {
             files: [

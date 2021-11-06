@@ -12,13 +12,10 @@ export default async function () {
     consola.log(chalk`Converting {blue.bold input.json} to compiler-compatible format...`);
     const codegenDefinitions = convertRustIntrospectOutputIntoCompilerInput({ input: inputJson });
 
-    consola.log('Generating code...');
-    const generated = await renderNamespaceDefinition(codegenDefinitions, {
-        importLib: '@scale-codec/definition-runtime',
+    const generated = renderNamespaceDefinition(codegenDefinitions, {
         rollupSingleTuplesIntoAliases: true,
     });
 
-    consola.log('Writing result...');
     await fs.writeFile(OUTPUT_PATH, generated, { encoding: 'utf8' });
 
     consola.success(chalk`Generated into {green.bold ${OUTPUT_PATH}}!`);

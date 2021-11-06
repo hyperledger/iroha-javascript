@@ -5,6 +5,7 @@ const config = {
             'esbuild-jest',
             {
                 sourcemap: true,
+                target: 'esnext',
             },
         ],
     },
