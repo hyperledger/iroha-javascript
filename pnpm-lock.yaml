@@ -48,12 +48,6 @@ importers:
       typescript: 4.4.4
       zx: 4.2.0
 
-  packages/cli-tools:
-    specifiers:
-      consola: ^2.15.3
-    dependencies:
-      consola: 2.15.3
-
   packages/client:
     specifiers:
       '@iroha2/crypto': workspace:^0.3.0
