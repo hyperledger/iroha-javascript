@@ -13,7 +13,7 @@ import {
     VersionedSignedQueryRequest,
     VersionedTransaction,
 } from '@iroha2/data-model';
-import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto/types';
+import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core';
 import Axios, { AxiosError } from 'axios';
 import { SetupEventsParams, SetupEventsReturn, setupEventsWebsocketConnection } from './events';
 import { collect, createScope } from './collect-garbage';

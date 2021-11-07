@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "preinstall": "npx only-allow pnpm",
-        "test": "DEBUG=@iroha2/test-peer pnpm test --parallel --filter @iroha2/client --filter @iroha2/crypto --filter @iroha2/i64-fixnum",
+        "test": "DEBUG=@iroha2/test-peer pnpm test --parallel --filter @iroha2/client --filter @iroha2/monorepo-crypto --filter @iroha2/i64-fixnum",
         "gulpts": "gulp -r sucrase-register -f gulpfile.ts",
         "clean": "pnpm gulpts clean",
         "build": "pnpm gulpts build",

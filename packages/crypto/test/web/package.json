@@ -9,8 +9,8 @@
         "cy:run": "cypress run --headless",
         "test": "pnpm build && start-server-and-test preview http://localhost:3030 cy:run"
     },
-    "dependencies": {
-        "@iroha2/crypto": "workspace:^0.3.0",
+    "devDependencies": {
+        "@iroha2/crypto-target-web": "workspace:^0.1.0",
         "cypress": "^8.5.0",
         "hada": "^0.0.8",
         "start-server-and-test": "^1.14.0",

@@ -1,31 +1,28 @@
 {
-    "name": "@iroha2/crypto",
-    "version": "0.3.0",
-    "files": [
-        "types.d.ts",
-        "web",
-        "node",
-        "bundler"
-    ],
-    "license": "Apache 2.0",
+    "name": "@iroha2/monorepo-crypto",
+    "private": true,
+    "version": "0.0.0",
     "scripts": {
-        "gulp-ts": "gulp --require sucrase/register -f gulpfile.ts",
-        "build": "pnpm gulp-ts",
-        "build:wasm": "pnpm gulp-ts -- build_wasm",
-        "build:interfaces": "pnpm gulp-ts -- build_interfaces",
+        "gulpts": "gulp --require sucrase/register -f gulpfile.ts",
+        "build": "pnpm gulpts",
+        "build:wasm": "pnpm gulpts -- build_wasm",
+        "build:entries": "pnpm gulpts -- build_target_entries",
         "rollup-types": "rollup -c rollup.dts.config.js",
         "test": "pnpm test --parallel --filter \"@iroha2/crypto-test-*\""
     },
     "devDependencies": {
+        "@iroha2/crypto-target-web": "workspace:^0.1.0",
         "@types/gulp": "^4.0.9",
         "consola": "^2.15.3",
         "del": "^6.0.0",
+        "esbuild": "^0.13.12",
         "esno": "^0.10.0",
         "execa": "^5.1.1",
         "gulp": "^4.0.2",
         "make-dir": "^3.1.0",
         "rollup": "^2.57.0",
         "rollup-plugin-dts": "^4.0.0",
-        "sucrase": "^3.20.2"
+        "sucrase": "^3.20.2",
+        "zx": "^4.2.0"
     }
 }

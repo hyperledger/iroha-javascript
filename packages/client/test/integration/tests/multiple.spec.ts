@@ -1,5 +1,5 @@
-import { crypto } from '@iroha2/crypto/node';
-import { KeyPair } from '@iroha2/crypto/types';
+import { crypto } from '@iroha2/crypto-target-node';
+import { KeyPair } from '@iroha2/crypto-core';
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';

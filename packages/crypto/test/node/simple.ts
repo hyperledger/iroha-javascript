@@ -1,5 +1,5 @@
 import { hexToBytes } from 'hada';
-import { crypto } from '@iroha2/crypto/node';
+import { crypto } from '@iroha2/crypto-target-node';
 
 const { createMultihashFromPublicKey, createKeyGenConfiguration, generateKeyPairWithConfiguration } = crypto;
 

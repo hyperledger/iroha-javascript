@@ -23,7 +23,7 @@ import {
     AlgorithmEd25519,
     AlgorithmSecp256k1,
     createKeyPairFromKeys,
-} from './web/wasm_pack_output';
+} from '@iroha2/crypto-target-web/wasm_pack_output';
 
 export {
     KeyGenConfiguration,
@@ -36,7 +36,7 @@ export {
     Multihash,
     MultihashDigestFunction,
     Key,
-} from './web/wasm_pack_output';
+} from '@iroha2/crypto-target-web/wasm_pack_output';
 
 export interface IrohaCryptoInterface {
     createHash: typeof createHash;
