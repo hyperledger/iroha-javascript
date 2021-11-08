@@ -5,25 +5,32 @@
     "scripts": {
         "preinstall": "npx only-allow pnpm",
         "test": "DEBUG=@iroha2/test-peer pnpm test --parallel --filter client --filter monorepo-crypto --filter i64-fixnum",
-        "gulpts": "gulp -r sucrase-register -f gulpfile.ts",
+        "gulpts": "gulp -r sucrase/register -f gulpfile.ts",
         "clean": "pnpm gulpts clean",
         "build": "pnpm gulpts build",
         "build:tsc": "pnpm build:tsc --parallel --filter data-model --filter client --filter i64-fixnum",
         "publish-all": "pnpm gulpts publishAll",
         "type-check": "tsc --noEmit",
         "api:run-extractor": "pnpm gulpts runApiExtractor",
-        "api:run-extractor:local": "pnpm gulpts runApiExtractorLocal"
+        "api:run-extractor:local": "pnpm gulpts runApiExtractorLocal",
+        "api:run-documenter": "api-documenter markdown -i etc/report-temp -o docs/api",
+        "docs:dev": "vitepress dev docs",
+        "docs:build": "vitepress build docs",
+        "docs:serve": "vitepress serve docs"
     },
     "devDependencies": {
         "@changesets/cli": "^2.17.0",
         "@jest/types": "^27.2.5",
+        "@microsoft/api-documenter": "^7.13.67",
         "@microsoft/api-extractor": "^7.18.19",
         "@rollup/plugin-node-resolve": "^13.0.5",
         "@types/gulp": "^4.0.9",
         "@types/jest": "^27.0.2",
+        "@types/markdown-it": "^12.2.3",
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
         "consola": "^2.15.3",
+        "debug": "^4.3.2",
         "del": "^6.0.0",
         "esbuild-register": "^3.0.0",
         "eslint": "^7.32.0",
@@ -33,8 +40,10 @@
         "prettier": "^2.4.1",
         "prettier-eslint": "^13.0.0",
         "rollup": "^2.58.0",
+        "sass": "^1.43.4",
         "sucrase": "^3.20.2",
         "typescript": "^4.4.4",
+        "vitepress": "^0.20.1",
         "zx": "^4.2.0"
     }
 }

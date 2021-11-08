@@ -1,0 +1,47 @@
+name: CD
+
+on:
+  push:
+    branches: [iroha2-dev]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.19.0
+
+      - name: Install packages
+        run: pnpm install
+
+      - name: Prepare docs
+        run: |
+          pnpm build
+          pnpm api:run-documenter
+
+      - name: Build docs
+        run: pnpm docs:build
+        env:
+          PUBLIC_PATH: /iroha-javascript/
+
+      - name: Push dist into iroha2-dev:gh-pages
+        working-directory: ./docs/.vitepress/dist
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git init
+          git add --all
+          git commit -m "Auto update pages on $(date +'%Y-%m-%d %H:%M:%S')"
+          git push -f -q https://git:${{ secrets.github_token }}@github.com/${{ github.repository }} iroha2-dev:gh-pages

@@ -3,3 +3,4 @@ node_modules
 dist
 dist-tsc
 etc/report-temp
+docs/api
