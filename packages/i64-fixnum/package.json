@@ -12,7 +12,8 @@
     },
     "license": "Apache 2.0",
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "build:tsc": "tsc"
     },
     "dependencies": {
         "@scale-codec/util": "^0.1.2"

@@ -1,62 +1,49 @@
 import { defineConfig, RollupOptions } from 'rollup';
-// import sucrase from '@rollup/plugin-sucrase';
-// import esbuild from 'rollup-plugin-esbuild';
-import dts from 'rollup-plugin-dts';
 import path from 'path';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
-const ROOT = path.resolve(__dirname, '../');
-const TS_DIST = path.resolve(ROOT, 'ts-dist');
+function resolvePackageInfile(unscopedName: string): string {
+    return path.resolve(__dirname, `../packages/${unscopedName}/dist-tsc/lib.js`);
+}
 
-function* optionsPackageCjsEsmDts({
+function resolvePackageOutfile(unscopedName: string, format: 'esm' | 'cjs'): string {
+    return path.resolve(__dirname, `../packages/${unscopedName}/dist/lib.${format}.js`);
+}
+
+function* optionsForPackage({
     unscopedPackageName,
     external,
 }: {
     unscopedPackageName: string;
     external?: RollupOptions['external'];
 }): Iterable<RollupOptions> {
-    const tsDistPkgSrcDir = path.resolve(TS_DIST, 'packages', unscopedPackageName, 'src');
-    const inputJsFile = path.resolve(tsDistPkgSrcDir, 'lib.js');
-    const inputDtsFile = path.resolve(tsDistPkgSrcDir, 'lib.d.ts');
-    const outDir = path.resolve(ROOT, 'packages', unscopedPackageName, 'dist');
-
     yield {
-        input: inputJsFile,
+        input: resolvePackageInfile(unscopedPackageName),
         external,
         plugins: [nodeResolve()],
         output: [
             {
                 format: 'esm',
-                file: path.resolve(outDir, 'lib.esm.js'),
+                file: resolvePackageOutfile(unscopedPackageName, 'esm'),
             },
             {
                 format: 'cjs',
-                file: path.resolve(outDir, 'lib.cjs.js'),
+                file: resolvePackageOutfile(unscopedPackageName, 'cjs'),
             },
         ],
-    };
-
-    yield {
-        input: inputDtsFile,
-        external,
-        plugins: [dts()],
-        output: {
-            format: 'esm',
-            file: path.resolve(outDir, 'lib.d.ts'),
-        },
     };
 }
 
 export default defineConfig([
-    ...optionsPackageCjsEsmDts({
+    ...optionsForPackage({
         unscopedPackageName: 'client',
         external: [/^@scale-codec/, /^@iroha2/, 'emittery', 'ws', 'axios'],
     }),
-    ...optionsPackageCjsEsmDts({
+    ...optionsForPackage({
         unscopedPackageName: 'data-model',
         external: [/^@scale-codec/, /^@iroha2/],
     }),
-    ...optionsPackageCjsEsmDts({
+    ...optionsForPackage({
         unscopedPackageName: 'i64-fixnum',
         external: [/^@scale-codec/],
     }),

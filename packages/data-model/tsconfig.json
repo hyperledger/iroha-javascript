@@ -1,4 +1,9 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "scripts"]
+    "include": ["src"],
+    "compilerOptions": {
+        "outDir": "dist-tsc",
+        "declaration": true,
+        "declarationMap": true
+    }
 }

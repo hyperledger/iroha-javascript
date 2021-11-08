@@ -13,9 +13,10 @@
     "license": "Apache 2.0",
     "scripts": {
         "test": "jest",
-        "gulp-ts": "gulp --require sucrase/register -f gulpfile.ts",
-        "gen": "pnpm gulp-ts -- generate",
-        "update-json": "pnpm gulp-ts -- compile_json"
+        "build:tsc": "tsc",
+        "gulpts": "gulp --require sucrase/register -f gulpfile.ts",
+        "gen": "pnpm gulpts -- generate",
+        "update-json": "pnpm gulpts -- compile_json"
     },
     "dependencies": {
         "@iroha2/i64-fixnum": "workspace:^0.1.3",

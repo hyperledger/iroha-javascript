@@ -1,13 +1,14 @@
 import del from 'del';
 import { series } from 'gulp';
 import { $ } from 'zx';
+import { runApiExtractor } from './scripts/api-extractor';
 
 export async function clean() {
-    await del(['ts-dist', 'packages/*/dist']);
+    await del(['**/dist', '**/dist-tsc']);
 }
 
 async function buildTS() {
-    await $`tsc`;
+    await $`pnpm build:tsc`;
 }
 
 async function rollup() {
@@ -15,7 +16,15 @@ async function rollup() {
 }
 
 export async function publishAll() {
-    const pkgs = [`data-model`, 'crypto', 'client', 'i64-fixnum'];
+    const pkgs = [
+        `data-model`,
+        'crypto-core',
+        'crypto-target-web',
+        'crypto-target-node',
+        'crypto-target-bundler',
+        'client',
+        'i64-fixnum',
+    ];
 
     for (const unscopedName of pkgs) {
         const scopedName = `@iroha2/${unscopedName}`;
@@ -23,4 +32,8 @@ export async function publishAll() {
     }
 }
 
-export const build = series(clean, buildTS, rollup);
+export { runApiExtractor };
+
+export const runApiExtractorLocal = () => runApiExtractor(true);
+
+export const build = series(clean, buildTS, () => runApiExtractor(), rollup);

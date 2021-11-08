@@ -15,7 +15,8 @@
         "node": ">=14.0.0"
     },
     "scripts": {
-        "test": "jest -i"
+        "test": "jest -i",
+        "build:tsc": "tsc"
     },
     "dependencies": {
         "@iroha2/crypto-core": "workspace:^0.1.0",
