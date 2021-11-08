@@ -1,5 +1,11 @@
 # @iroha2/i64-fixnum
 
+## 0.2.0
+
+### Minor Changes
+
+-   c59c85b: **Breaking**: migrate from `JSBI` to (native) `BigInt`
+
 ## 0.1.3
 
 ### Patch Changes
