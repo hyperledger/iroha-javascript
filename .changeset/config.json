@@ -1,10 +1,10 @@
 {
-  "$schema": "https://unpkg.com/@changesets/config@1.6.1/schema.json",
-  "changelog": "@changesets/cli/changelog",
-  "commit": false,
-  "linked": [],
-  "access": "restricted",
-  "baseBranch": "iroha2-dev",
-  "updateInternalDependencies": "patch",
-  "ignore": []
+    "$schema": "https://unpkg.com/@changesets/config@1.6.1/schema.json",
+    "changelog": "@changesets/cli/changelog",
+    "commit": false,
+    "linked": [["@iroha2/crypto-target-*"]],
+    "access": "restricted",
+    "baseBranch": "iroha2-dev",
+    "updateInternalDependencies": "patch",
+    "ignore": []
 }
