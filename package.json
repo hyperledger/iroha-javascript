@@ -8,7 +8,7 @@
         "gulpts": "gulp -r sucrase/register -f gulpfile.ts",
         "clean": "pnpm gulpts clean",
         "build": "pnpm gulpts build",
-        "build:tsc": "pnpm build:tsc --parallel --filter data-model --filter client --filter i64-fixnum",
+        "build:tsc": "pnpm build:tsc --parallel --filter @iroha2/data-model --filter @iroha2/client --filter @iroha2/i64-fixnum",
         "publish-all": "pnpm gulpts publishAll",
         "type-check": "tsc --noEmit",
         "api:run-extractor": "pnpm gulpts runApiExtractor",
