@@ -1,7 +1,9 @@
 import path from 'path';
 import execa from 'execa';
 import consola from 'consola';
+import chalk from 'chalk';
 import fs from 'fs';
+import { series } from 'gulp';
 
 const IROHA_REPO_URL = 'https://github.com/hyperledger/iroha.git';
 const IROHA_REPO_BRANCH = 'iroha2-dev';
@@ -10,9 +12,7 @@ const IROHA_INTROSPECT_CRATE = 'iroha_schema_bin';
 const OUTPUT_PATH = path.resolve(__dirname, '../input/input.json');
 const IROHA_INSTALL_PATH = path.resolve(__dirname, '../.iroha');
 
-async function main() {
-    consola.info('Installing introspect binary...');
-
+async function install_iroha_schema_binary() {
     await execa(
         'cargo',
         [
@@ -27,9 +27,9 @@ async function main() {
         ],
         { stdio: 'inherit' },
     );
-    consola.success('Introspect binary installed');
+}
 
-    consola.info('Generating schema...');
+async function run_schema_bin_and_update_json() {
     const stream = fs.createWriteStream(OUTPUT_PATH, { encoding: 'utf-8' });
     try {
         const sub = execa(`./${IROHA_INTROSPECT_CRATE}`, [], {
@@ -41,10 +41,7 @@ async function main() {
         stream.close();
     }
 
-    consola.success('Schema updated');
+    consola.success(chalk`Schema updated and written to {blue.bold ${path.relative(process.cwd(), OUTPUT_PATH)}}`);
 }
 
-main().catch((err) => {
-    consola.fatal(err);
-    process.exit(1);
-});
+export default series(install_iroha_schema_binary, run_schema_bin_and_update_json);

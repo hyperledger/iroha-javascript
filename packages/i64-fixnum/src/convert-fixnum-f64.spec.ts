@@ -1,4 +1,3 @@
-import { JSBI } from '@scale-codec/core';
 import { f64ToFixnum, fixnumToF64 } from './convert-fixnum-f64';
 
 const CASES = [
@@ -17,7 +16,7 @@ const CASES = [
 test.each(CASES)(
     'Two-way conversion between f64 $repr_str and i64 $repr_i64 with precision $precision',
     ({ repr_i64, repr_str, precision }) => {
-        const i64 = JSBI.BigInt(repr_i64);
+        const i64 = BigInt(repr_i64);
         const f64 = repr_str;
 
         expect(fixnumToF64(i64, precision)).toEqual(f64);

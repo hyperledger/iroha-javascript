@@ -1,11 +1,10 @@
 import {
-    EncodeAsIs,
     Enum,
-    iroha_data_model_events_EventFilter_Encodable,
-    iroha_data_model_events_EventSocketMessage_Encodable,
-    iroha_data_model_events_Event_Decoded,
-    iroha_data_model_events_VersionedEventSocketMessage_decode,
-    iroha_data_model_events_VersionedEventSocketMessage_encode,
+    Event,
+    EventFilter,
+    EventSocketMessage,
+    FragmentFromBuilder,
+    VersionedEventSocketMessage,
 } from '@iroha2/data-model';
 import Emittery from 'emittery';
 import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
@@ -14,12 +13,12 @@ export interface EventsEmitteryMap {
     close: CloseEvent;
     error: ErrorEvent;
     accepted: undefined;
-    event: iroha_data_model_events_Event_Decoded;
+    event: FragmentFromBuilder<typeof Event>;
 }
 
 export interface SetupEventsParams {
     toriiURL: string;
-    filter: iroha_data_model_events_EventFilter_Encodable | EncodeAsIs;
+    filter: FragmentFromBuilder<typeof EventFilter>;
 }
 
 export interface SetupEventsReturn {
@@ -44,7 +43,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         error: ErrorEvent;
         close: CloseEvent;
         subscription_accepted: undefined;
-        event: iroha_data_model_events_Event_Decoded;
+        event: FragmentFromBuilder<typeof Event>;
     }>();
 
     ee.on('close', (e) => eeExternal.emit('close', e));
@@ -55,7 +54,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiURL)}/events`);
 
     socket.onopen = () => {
-        sendMessage(Enum.create('SubscriptionRequest', params.filter));
+        sendMessage(EventSocketMessage.fromValue(Enum.valuable('SubscriptionRequest', params.filter)));
     };
 
     socket.onclose = (event) => {
@@ -77,8 +76,8 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         return ee.once('close').then(() => {});
     }
 
-    function sendMessage(msg: iroha_data_model_events_EventSocketMessage_Encodable) {
-        const encoded = iroha_data_model_events_VersionedEventSocketMessage_encode(Enum.create('V1', msg));
+    function sendMessage(msg: FragmentFromBuilder<typeof EventSocketMessage>) {
+        const encoded: Uint8Array = VersionedEventSocketMessage.fromValue(Enum.valuable('V1', msg)).bytes;
         socket.send(encoded);
     }
 
@@ -94,14 +93,16 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             throw new Error('Unexpected array data');
         }
 
-        const event = iroha_data_model_events_VersionedEventSocketMessage_decode(new Uint8Array(data))[0].as('V1');
+        const { value: event }: FragmentFromBuilder<typeof EventSocketMessage> = VersionedEventSocketMessage.fromBytes(
+            new Uint8Array(data),
+        ).value.as('V1');
 
         if (event.is('SubscriptionAccepted')) {
             if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
             ee.emit('subscription_accepted');
         } else {
             ee.emit('event', event.as('Event'));
-            sendMessage(Enum.create('EventReceived'));
+            sendMessage(EventSocketMessage.fromValue(Enum.empty('EventReceived')));
         }
     };
 

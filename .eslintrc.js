@@ -3,13 +3,16 @@ module.exports = {
     rules: {
         'no-promise-executor-return': 'off',
     },
+    globals: {
+        BigInt: true,
+    },
     overrides: [
         {
             files: [
                 '**/*.spec.ts',
                 '**/__tests__/*.ts',
-                '**/packages/iroha-client/e2e/tests/**/*.ts',
-                '**/packages/iroha-crypto/test/node/**/*.ts',
+                '**/packages/client/e2e/tests/**/*.ts',
+                '**/packages/crypto/test/node/**/*.ts',
             ],
             env: {
                 jest: true,

@@ -1,4 +1,4 @@
-import { init, crypto } from '@iroha2/crypto/web';
+import { init, crypto } from '@iroha2/crypto-target-web';
 import { hexToBytes, bytesToHex } from 'hada';
 
 const { createPublicKeyFromMultihash, createMultihashFromBytes } = crypto;

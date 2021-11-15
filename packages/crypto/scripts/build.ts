@@ -1,7 +1,6 @@
-import { main } from '@iroha2/cli-tools';
-import execa from 'execa';
+import { series } from 'gulp';
 
-main(async () => {
-    await execa('pnpm', ['build:wasm'], { stdio: 'inherit' });
-    await execa('pnpm', ['build:interfaces'], { stdio: 'inherit' });
-});
+import { build_target_entries } from './build-target-entries';
+import { build_wasm } from './build-wasm';
+
+export default series(build_wasm, build_target_entries);

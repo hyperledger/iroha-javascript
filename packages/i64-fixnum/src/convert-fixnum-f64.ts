@@ -1,29 +1,24 @@
-import { JSBI } from '@scale-codec/core';
 import { assert } from '@scale-codec/util';
 
-function fixnumCoef(precision: number): JSBI {
-    return JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(precision));
+function fixnumCoef(precision: number): bigint {
+    return 10n ** BigInt(precision);
 }
 
 /**
  * https://github.com/loyd/fixnum/blob/77860b04eb53a2e001b3b97fe3601833e18b01b9/src/lib.rs#L628
  */
-export function fixnumToF64(fixnum: JSBI, precision: number): string {
+export function fixnumToF64(fixnum: bigint, precision: number): string {
     const coef = fixnumCoef(precision);
-    const isNegative = JSBI.lessThan(fixnum, JSBI.BigInt(0));
-    const fixnumAbs = isNegative ? JSBI.unaryMinus(fixnum) : fixnum;
-    // const coefF64 = JSBI.toNumber(coef);
+    const isNegative = fixnum < 0;
+    const fixnumAbs = isNegative ? -fixnum : fixnum;
 
-    const integral = JSBI.divide(fixnumAbs, coef);
-    let fractional = JSBI.remainder(fixnumAbs, coef);
+    const integral = fixnumAbs / coef;
+    let fractional = fixnumAbs % coef;
 
-    let fracWidth = JSBI.greaterThan(fractional, JSBI.BigInt(0)) ? precision : 0;
+    let fracWidth = fractional > 0 ? precision : 0;
 
-    while (
-        JSBI.greaterThan(fractional, JSBI.BigInt(0)) &&
-        JSBI.equal(JSBI.remainder(fractional, JSBI.BigInt(10)), JSBI.BigInt(0))
-    ) {
-        fractional = JSBI.divide(fractional, JSBI.BigInt(10));
+    while (fractional > 0 && fractional % 10n === 0n) {
+        fractional /= 10n;
         fracWidth--;
     }
 
@@ -33,7 +28,7 @@ export function fixnumToF64(fixnum: JSBI, precision: number): string {
 /**
  * https://github.com/loyd/fixnum/blob/77860b04eb53a2e001b3b97fe3601833e18b01b9/src/lib.rs#L688
  */
-export function f64ToFixnum(f64: string, precision: number): JSBI {
+export function f64ToFixnum(f64: string, precision: number): bigint {
     assert(f64.match(/^\-?\d+\.\d+?$/), () => `Invalid number: "${f64}"`);
 
     const coef = fixnumCoef(precision);
@@ -43,7 +38,7 @@ export function f64ToFixnum(f64: string, precision: number): JSBI {
     const parts = f64.split('.');
     if (parts.length === 1) {
         const [integralStr] = parts;
-        const integral = JSBI.multiply(JSBI.BigInt(integralStr), coef);
+        const integral = BigInt(integralStr) * coef;
         return integral;
     }
 
@@ -53,15 +48,13 @@ export function f64ToFixnum(f64: string, precision: number): JSBI {
         () => `Provided num (${f64}) precision is too high (${fractionalStr.length} > ${precision})`,
     );
 
-    const integral = JSBI.BigInt(integralStr);
-    const finalIntegral = JSBI.multiply(integral, coef);
+    const integral = BigInt(integralStr);
+    const finalIntegral = integral * coef;
 
-    const exp = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(fractionalStr.length));
-    const fractionalNum = JSBI.BigInt(fractionalStr);
-    const finalFractional = JSBI.multiply(
-        JSBI.divide(coef, exp),
-        isNegative ? JSBI.unaryMinus(fractionalNum) : fractionalNum,
-    );
+    const exp = 10n ** BigInt(fractionalStr.length);
+    const fractionalNum = BigInt(fractionalStr);
 
-    return JSBI.add(finalIntegral, finalFractional);
+    const finalFractional = (coef / exp) * (isNegative ? -fractionalNum : fractionalNum);
+
+    return finalIntegral + finalFractional;
 }

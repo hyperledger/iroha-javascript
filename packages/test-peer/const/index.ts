@@ -4,12 +4,12 @@
 export const TMP_IROHA_INSTALL_DIR = '.iroha';
 
 /**
- * Directory where compiled iroha_cli will be put
+ * Directory where the compiled Iroha binary will be put
  */
 export const TMP_IROHA_DEPLOY_DIR = '.iroha-deploy';
 
 /**
- * - Name of the executable iroha cli binary
- * - Name of source crate
+ * - Name of the executable Iroha binary
+ * - Name of the source crate
  */
 export const IROHA_CLI_NAME = 'iroha';

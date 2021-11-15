@@ -5,16 +5,16 @@ import dts from 'rollup-plugin-dts';
  * Primarily it is for development
  */
 export default defineConfig({
-    input: 'input-for-rollup-dts.d.ts',
+    input: '__entry-core-types-rollup.d.ts',
     plugins: [
-        dts(),
+        dts({ respectExternal: true }),
         {
             name: 'append-eslint-disable',
             intro: '/* eslint-disable */',
         },
     ],
     output: {
-        file: 'types.d.ts',
+        file: 'packages/core/index.d.ts',
         format: 'esm',
     },
 });

@@ -1,0 +1,6 @@
+$iroha-brand: #e4232d;
+
+:root {
+    --c-brand: #{$iroha-brand};
+    --c-brand-light: #{lighten($iroha-brand, 10%)};
+}

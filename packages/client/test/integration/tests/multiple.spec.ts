@@ -1,29 +1,26 @@
-import { crypto } from '@iroha2/crypto/node';
-import { KeyPair } from '@iroha2/crypto/types';
+import { crypto } from '@iroha2/crypto-target-node';
+import { KeyPair } from '@iroha2/crypto-core';
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
 import {
     createClient,
     Enum,
-    Result,
-    iroha_data_model_account_Id_Encodable,
-    iroha_data_model_asset_AssetDefinition_Encodable,
-    iroha_data_model_asset_DefinitionId_Encodable,
-    iroha_data_model_events_EventFilter_Encodable,
-    iroha_data_model_events_pipeline_EventFilter_Encodable,
-    iroha_data_model_isi_Instruction_Encodable,
-    iroha_data_model_isi_RegisterBox_Encodable,
-    iroha_data_model_query_Payload_Encodable,
-    iroha_data_model_query_QueryBox_Encodable,
-    iroha_data_model_transaction_Payload_Encodable,
-    iroha_data_model_Value_Encodable,
-    iroha_data_model_isi_MintBox_Encodable,
-    iroha_data_model_IdBox_Encodable,
-    iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable,
-    iroha_data_model_asset_DefinitionId_Decoded,
-    iroha_data_model_asset_AssetValueType_Encodable,
-    JSBI,
+    UnwrapFragment,
+    FragmentFromBuilder,
+    Instruction,
+    TransactionPayload,
+    QueryBox,
+    QueryPayload,
+    FragmentBuilder,
+    AssetValueType,
+    RegisterBox,
+    DefinitionId,
+    AccountId,
+    MintBox,
+    EventFilter,
+    PipelineEventFilter,
+    EvaluatesToAccountId,
 } from '../../../src/lib';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
@@ -33,58 +30,73 @@ const client = createClient({
     crypto,
 });
 
+type UnwrapFragmentOrBuilder<T> = T extends FragmentBuilder<any>
+    ? UnwrapFragment<FragmentFromBuilder<T>>
+    : UnwrapFragment<T>;
+
 let keyPair: KeyPair;
 
-function wrapInstruction(
-    item: iroha_data_model_isi_Instruction_Encodable,
-): iroha_data_model_transaction_Payload_Encodable {
+function instructionToPayload(
+    instruction: UnwrapFragmentOrBuilder<typeof Instruction>,
+): UnwrapFragmentOrBuilder<typeof TransactionPayload> {
     return {
-        instructions: [item],
-        time_to_live_ms: JSBI.BigInt(100_000),
-        creation_time: JSBI.BigInt(Date.now()),
+        instructions: [instruction],
+        time_to_live_ms: 100_000n,
+        creation_time: BigInt(Date.now()),
         metadata: new Map(),
         account_id: client_config.account,
+        nonce: Enum.empty('None'),
     };
 }
 
-function wrapQuery(query: iroha_data_model_query_QueryBox_Encodable): iroha_data_model_query_Payload_Encodable {
+function queryBoxToPayload(
+    query: UnwrapFragmentOrBuilder<typeof QueryBox>,
+): UnwrapFragmentOrBuilder<typeof QueryPayload> {
     return {
         query,
         account_id: client_config.account,
-        timestamp_ms: JSBI.BigInt(Date.now()),
+        timestamp_ms: BigInt(Date.now()),
     };
 }
 
 async function addAsset(
-    definitionid: iroha_data_model_asset_DefinitionId_Encodable,
-    assetType: iroha_data_model_asset_AssetValueType_Encodable = Enum.create('BigQuantity'),
+    definitionId: UnwrapFragmentOrBuilder<typeof DefinitionId>,
+    assetType: UnwrapFragmentOrBuilder<typeof AssetValueType> = Enum.empty('BigQuantity'),
+    opts?: {
+        mintable?: boolean;
+    },
 ) {
-    const definition: iroha_data_model_asset_AssetDefinition_Encodable = {
-        id: definitionid,
-        value_type: assetType,
-        metadata: { map: new Map() },
-    };
-
-    const createAsset: iroha_data_model_isi_RegisterBox_Encodable = {
+    const createAsset: UnwrapFragmentOrBuilder<typeof RegisterBox> = {
         object: {
-            expression: Enum.create('Raw', Enum.create('Identifiable', Enum.create('AssetDefinition', definition))),
+            expression: Enum.valuable(
+                'Raw',
+                Enum.valuable(
+                    'Identifiable',
+                    Enum.valuable('AssetDefinition', {
+                        id: definitionId,
+                        value_type: assetType,
+                        metadata: { map: new Map() },
+                        mintable: opts?.mintable ?? false,
+                    }),
+                ),
+            ),
         },
     };
 
     await client.submitTransaction({
-        payload: wrapInstruction(Enum.create('Register', createAsset)),
+        payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Register', createAsset))),
         signing: keyPair!,
     });
 }
 
-async function addAccount(accountId: iroha_data_model_account_Id_Encodable) {
-    const registerBox: iroha_data_model_isi_RegisterBox_Encodable = {
+async function addAccount(accountId: UnwrapFragmentOrBuilder<typeof AccountId>) {
+    const registerBox: UnwrapFragmentOrBuilder<typeof RegisterBox> = {
         object: {
-            expression: Enum.create(
+            expression: Enum.valuable(
                 'Raw',
-                Enum.create(
+                Enum.valuable(
                     'Identifiable',
-                    Enum.create('NewAccount', {
+                    Enum.valuable('NewAccount', {
                         id: accountId,
                         signatories: [],
                         metadata: {
@@ -97,14 +109,14 @@ async function addAccount(accountId: iroha_data_model_account_Id_Encodable) {
     };
 
     await client.submitTransaction({
-        payload: wrapInstruction(Enum.create('Register', registerBox)),
+        payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Register', registerBox))),
         signing: keyPair!,
     });
 }
 
-async function submitMint(mintBox: iroha_data_model_isi_MintBox_Encodable) {
+async function submitMint(mintBox: UnwrapFragmentOrBuilder<typeof MintBox>) {
     await client.submitTransaction({
-        payload: wrapInstruction(Enum.create('Mint', mintBox)),
+        payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Mint', mintBox))),
         signing: keyPair!,
     });
 }
@@ -150,11 +162,11 @@ afterAll(async () => {
 });
 
 test('Peer is healthy', async () => {
-    expect(await client.checkHealth()).toEqual(Enum.create('Ok', null) as Result<null, Error>);
+    expect(await (await client.checkHealth()).is('Ok')).toBe(true);
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-    type AssetDefinitionId = iroha_data_model_asset_DefinitionId_Encodable;
+    type AssetDefinitionId = UnwrapFragmentOrBuilder<typeof DefinitionId>;
 
     const normalAssetDefinitionId: AssetDefinitionId = {
         name: 'xor',
@@ -172,12 +184,13 @@ test('AddAsset instruction with name length more than limit is not committed', a
     await delay(PIPELINE_MS * 2);
 
     const queryResult = await client.makeQuery({
-        payload: wrapQuery(Enum.create('FindAllAssetsDefinitions', null)),
+        payload: QueryPayload.wrap(queryBoxToPayload(Enum.valuable('FindAllAssetsDefinitions', null))),
         signing: keyPair,
     });
 
     const existingDefinitions: AssetDefinitionId[] = queryResult
         .as('Ok')
+        .unwrap()
         .as('Vec')
         .map((val) => val.as('Identifiable').as('AssetDefinition').id);
 
@@ -186,7 +199,7 @@ test('AddAsset instruction with name length more than limit is not committed', a
 });
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
-    type AccountId = iroha_data_model_account_Id_Encodable;
+    type AccountId = UnwrapFragmentOrBuilder<typeof AccountId>;
 
     const normal: AccountId = {
         name: 'bob',
@@ -201,12 +214,13 @@ test('AddAccount instruction with name length more than limit is not committed',
     await delay(PIPELINE_MS * 2);
 
     const queryResult = await client.makeQuery({
-        payload: wrapQuery(Enum.create('FindAllAccounts', null)),
+        payload: QueryPayload.wrap(queryBoxToPayload(Enum.valuable('FindAllAccounts', null))),
         signing: keyPair,
     });
 
     const existingAccounts: AccountId[] = queryResult
         .as('Ok')
+        .unwrap()
         .as('Vec')
         .map((val) => val.as('Identifiable').as('Account').id);
 
@@ -218,11 +232,11 @@ test('transaction-committed event is triggered after AddAsset instruction has be
     let closeEventsConnection: Function | undefined;
 
     try {
-        const pipelineFilter: iroha_data_model_events_pipeline_EventFilter_Encodable = {
-            entity: Enum.create('Some', Enum.create('Transaction')),
-            hash: Enum.create('None'),
-        };
-        const filter: iroha_data_model_events_EventFilter_Encodable = Enum.create('Pipeline', pipelineFilter);
+        const pipelineEventFilter = PipelineEventFilter.wrap({
+            entity: Enum.valuable('Some', Enum.empty('Transaction')),
+            hash: Enum.empty('None'),
+        });
+        const filter = EventFilter.fromValue(Enum.valuable('Pipeline', pipelineEventFilter));
 
         // setting up listening
         let transactionCommittedPromise: Promise<void>;
@@ -232,7 +246,7 @@ test('transaction-committed event is triggered after AddAsset instruction has be
                     .listenForEvents({ filter })
                     .then(({ close, ee }) => {
                         ee.on('event', (event) => {
-                            event.match({
+                            event.unwrap().match({
                                 Pipeline({ entity_type, status }) {
                                     if (entity_type.is('Transaction') && status.is('Committed')) {
                                         resolveTransaction();
@@ -267,37 +281,45 @@ test('transaction-committed event is triggered after AddAsset instruction has be
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
     // Creating asset by definition
-    const ASSET_DEFINITION_ID: iroha_data_model_asset_DefinitionId_Decoded = {
+    const ASSET_DEFINITION_ID: UnwrapFragmentOrBuilder<typeof DefinitionId> = {
         name: 'xor',
         domain_name: 'wonderland',
     };
-    await addAsset(ASSET_DEFINITION_ID, Enum.create('Fixed'));
+    await addAsset(ASSET_DEFINITION_ID, Enum.empty('Fixed'), { mintable: true });
     await pipelineStepDelay();
 
     // Adding mint
     const DECIMAL = '512.5881';
-    const mintValue: iroha_data_model_Value_Encodable = Enum.create('Fixed', DECIMAL);
-    const idBox: iroha_data_model_IdBox_Encodable = Enum.create('AssetId', {
-        account_id: client_config.account,
-        definition_id: ASSET_DEFINITION_ID,
-    });
     await submitMint({
-        object: { expression: Enum.create('Raw', mintValue) },
-        destination_id: { expression: Enum.create('Raw', Enum.create('Id', idBox)) },
+        object: { expression: Enum.valuable('Raw', Enum.valuable('Fixed', DECIMAL)) },
+        destination_id: {
+            expression: Enum.valuable(
+                'Raw',
+                Enum.valuable(
+                    'Id',
+                    Enum.valuable('AssetId', {
+                        account_id: client_config.account,
+                        definition_id: ASSET_DEFINITION_ID,
+                    }),
+                ),
+            ),
+        },
     });
     await pipelineStepDelay();
 
     // Checking added asset via query
-    const expressionEvalToAccountId: iroha_data_model_expression_EvaluatesTo_iroha_data_model_account_Id_Encodable = {
-        expression: Enum.create('Raw', Enum.create('Id', Enum.create('AccountId', client_config.account))),
+    const expressionEvalToAccountId: UnwrapFragmentOrBuilder<typeof EvaluatesToAccountId> = {
+        expression: Enum.valuable('Raw', Enum.valuable('Id', Enum.valuable('AccountId', client_config.account))),
     };
     const result = await client.makeQuery({
-        payload: wrapQuery(Enum.create('FindAssetsByAccountId', { account_id: expressionEvalToAccountId })),
+        payload: QueryPayload.wrap(
+            queryBoxToPayload(Enum.valuable('FindAssetsByAccountId', { account_id: expressionEvalToAccountId })),
+        ),
         signing: keyPair,
     });
 
     // Assert
-    const asset = Seq(result.as('Ok').as('Vec'))
+    const asset = Seq(result.as('Ok').unwrap().as('Vec'))
         .map((x) => x.as('Identifiable').as('Asset'))
         .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name);
     expect(asset).toBeTruthy();
