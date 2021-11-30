@@ -276,63 +276,68 @@
           "ty": "u32"
         },
         {
-          "name": "Bool",
+          "name": "U128",
           "discriminant": 1,
+          "ty": "u128"
+        },
+        {
+          "name": "Bool",
+          "discriminant": 2,
           "ty": "bool"
         },
         {
           "name": "String",
-          "discriminant": 2,
+          "discriminant": 3,
           "ty": "String"
         },
         {
           "name": "Fixed",
-          "discriminant": 3,
+          "discriminant": 4,
           "ty": "iroha_data_model::fixed::Fixed"
         },
         {
           "name": "Vec",
-          "discriminant": 4,
+          "discriminant": 5,
           "ty": "Vec<iroha_data_model::Value>"
         },
         {
           "name": "Id",
-          "discriminant": 5,
+          "discriminant": 6,
           "ty": "iroha_data_model::IdBox"
         },
         {
           "name": "Identifiable",
-          "discriminant": 6,
+          "discriminant": 7,
           "ty": "iroha_data_model::IdentifiableBox"
         },
         {
           "name": "PublicKey",
-          "discriminant": 7,
+          "discriminant": 8,
           "ty": "iroha_crypto::PublicKey"
         },
         {
           "name": "Parameter",
-          "discriminant": 8,
+          "discriminant": 9,
           "ty": "iroha_data_model::Parameter"
         },
         {
           "name": "SignatureCheckCondition",
-          "discriminant": 9,
+          "discriminant": 10,
           "ty": "iroha_data_model::account::SignatureCheckCondition"
         },
         {
           "name": "TransactionValue",
-          "discriminant": 10,
+          "discriminant": 11,
           "ty": "iroha_data_model::transaction::TransactionValue"
         },
         {
           "name": "PermissionToken",
-          "discriminant": 11,
+          "discriminant": 12,
           "ty": "iroha_data_model::permissions::PermissionToken"
         },
         {
           "name": "Hash",
-          "discriminant": 12,
+          "discriminant": 13,
           "ty": "iroha_crypto::hash::Hash"
         }
       ]

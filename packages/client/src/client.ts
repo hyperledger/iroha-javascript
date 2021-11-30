@@ -3,13 +3,13 @@ import {
     Enum,
     FragmentFromBuilder,
     QueryPayload,
-    QueryResult,
     Result,
     Signature,
     SignedQueryRequest,
     Transaction,
     TransactionPayload,
     Value,
+    VersionedQueryResult,
     VersionedSignedQueryRequest,
     VersionedTransaction,
 } from '@iroha2/data-model';
@@ -118,7 +118,9 @@ export function createClient(params: CreateClientParams): Client {
                         responseType: 'arraybuffer',
                     });
 
-                    const value: FragmentFromBuilder<typeof Value> = QueryResult.fromBytes(new Uint8Array(data));
+                    const value: FragmentFromBuilder<typeof Value> = VersionedQueryResult.fromBytes(
+                        new Uint8Array(data),
+                    ).value.as('V1');
 
                     return Enum.valuable('Ok', value);
                 } catch (err) {
