@@ -638,6 +638,7 @@ export const UnsatisfiedSignatureConditionFail: ScaleStructBuilder<{
 
 export const Value: ScaleEnumBuilder<Enum<{
     U32: Valuable<FragmentFromBuilder<typeof U32>>,
+    U128: Valuable<FragmentFromBuilder<typeof U128>>,
     Bool: Valuable<FragmentFromBuilder<typeof Bool>>,
     String: Valuable<FragmentFromBuilder<typeof Str>>,
     Fixed: Valuable<FragmentFromBuilder<typeof Fixed>>,
@@ -650,7 +651,7 @@ export const Value: ScaleEnumBuilder<Enum<{
     TransactionValue: Valuable<FragmentFromBuilder<typeof TransactionValue>>,
     PermissionToken: Valuable<FragmentFromBuilder<typeof PermissionToken>>,
     Hash: Valuable<FragmentFromBuilder<typeof Hash>>
-}>> = createEnumBuilder('Value', [[0, 'U32', dynBuilder(() => U32)], [1, 'Bool', dynBuilder(() => Bool)], [2, 'String', dynBuilder(() => Str)], [3, 'Fixed', dynBuilder(() => Fixed)], [4, 'Vec', dynBuilder(() => VecValue)], [5, 'Id', dynBuilder(() => IdBox)], [6, 'Identifiable', dynBuilder(() => IdentifiableBox)], [7, 'PublicKey', dynBuilder(() => PublicKey)], [8, 'Parameter', dynBuilder(() => Parameter)], [9, 'SignatureCheckCondition', dynBuilder(() => SignatureCheckCondition)], [10, 'TransactionValue', dynBuilder(() => TransactionValue)], [11, 'PermissionToken', dynBuilder(() => PermissionToken)], [12, 'Hash', dynBuilder(() => Hash)]])
+}>> = createEnumBuilder('Value', [[0, 'U32', dynBuilder(() => U32)], [1, 'U128', dynBuilder(() => U128)], [2, 'Bool', dynBuilder(() => Bool)], [3, 'String', dynBuilder(() => Str)], [4, 'Fixed', dynBuilder(() => Fixed)], [5, 'Vec', dynBuilder(() => VecValue)], [6, 'Id', dynBuilder(() => IdBox)], [7, 'Identifiable', dynBuilder(() => IdentifiableBox)], [8, 'PublicKey', dynBuilder(() => PublicKey)], [9, 'Parameter', dynBuilder(() => Parameter)], [10, 'SignatureCheckCondition', dynBuilder(() => SignatureCheckCondition)], [11, 'TransactionValue', dynBuilder(() => TransactionValue)], [12, 'PermissionToken', dynBuilder(() => PermissionToken)], [13, 'Hash', dynBuilder(() => Hash)]])
 
 export const VecGenesisTransaction: ScaleArrayBuilder<FragmentFromBuilder<typeof GenesisTransaction>[]> = createVecBuilder('VecGenesisTransaction', dynBuilder(() => GenesisTransaction))
 

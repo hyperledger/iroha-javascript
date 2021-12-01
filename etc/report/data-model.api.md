@@ -765,6 +765,7 @@ export const UnsatisfiedSignatureConditionFail: ScaleStructBuilder<{
 // @public (undocumented)
 export const Value: ScaleEnumBuilder<Enum<{
     U32: Valuable<FragmentFromBuilder<typeof U32>>;
+    U128: Valuable<FragmentFromBuilder<typeof U128>>;
     Bool: Valuable<FragmentFromBuilder<typeof Bool>>;
     String: Valuable<FragmentFromBuilder<typeof Str>>;
     Fixed: Valuable<FragmentFromBuilder<typeof Fixed>>;
