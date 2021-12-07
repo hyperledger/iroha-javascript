@@ -1,6 +1,6 @@
 import { TMP_DIR, TMP_IROHA_BIN } from '../const';
 import path from 'path';
-import { execa } from 'execa';
+import execa from 'execa';
 import { $ } from 'zx';
 import { rmWithParams, saveDataAsJSON } from './util';
 import readline from 'readline';
@@ -66,7 +66,7 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
 
     // starting peer
     const withGenesis: boolean = params?.withGenesis ?? true;
-    const subprocess = execa(`./${TMP_IROHA_BIN}`, withGenesis ? ['--submit-genesis'] : [], {
+    const subprocess = execa(TMP_IROHA_BIN, withGenesis ? ['--submit-genesis'] : [], {
         cwd: TMP_DIR,
     });
     debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs);

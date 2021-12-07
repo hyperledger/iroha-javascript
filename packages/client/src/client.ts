@@ -20,7 +20,10 @@ import { collect, createScope } from './collect-garbage';
 import { normalizeArray } from './util';
 
 export interface CreateClientParams {
-    toriiURL: string;
+    torii: {
+        apiUrl: string;
+        statusUrl: string;
+    };
     crypto: IrohaCryptoInterface;
 }
 
@@ -36,6 +39,13 @@ export interface MakeQueryParams {
 
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
 
+export interface PeerStatus {
+    peers: number;
+    blocks: number;
+    txs: number;
+    uptime: number;
+}
+
 export interface Client {
     submitTransaction: (params: SubmitTransactionParams) => Promise<void>;
 
@@ -43,12 +53,17 @@ export interface Client {
 
     listenForEvents: (params: ListenEventsParams) => Promise<SetupEventsReturn>;
 
+    checkStatus: () => Promise<PeerStatus>;
+
     checkHealth: () => Promise<Result<null, Error>>;
 }
 
 export function createClient(params: CreateClientParams): Client {
-    const axios = Axios.create({
-        baseURL: params.toriiURL,
+    const axiosApi = Axios.create({
+        baseURL: params.torii.apiUrl,
+    });
+    const axiosStatus = Axios.create({
+        baseURL: params.torii.statusUrl,
     });
 
     const {
@@ -92,7 +107,7 @@ export function createClient(params: CreateClientParams): Client {
                     ).bytes;
                 });
 
-                await axios.post('/transaction', txBytes!);
+                await axiosApi.post('/transaction', txBytes!);
             } finally {
                 scope.free();
             }
@@ -114,7 +129,7 @@ export function createClient(params: CreateClientParams): Client {
                 });
 
                 try {
-                    const { data }: { data: ArrayBuffer } = await axios.post('/query', queryBytes!, {
+                    const { data }: { data: ArrayBuffer } = await axiosApi.post('/query', queryBytes!, {
                         responseType: 'arraybuffer',
                     });
 
@@ -143,12 +158,12 @@ export function createClient(params: CreateClientParams): Client {
         },
 
         async listenForEvents({ filter }) {
-            return setupEventsWebsocketConnection({ filter, toriiURL: params.toriiURL });
+            return setupEventsWebsocketConnection({ filter, toriiApiUrl: params.torii.apiUrl });
         },
 
         async checkHealth() {
             try {
-                const { status } = await axios.get<'Healthy'>('/health');
+                const { status } = await axiosApi.get<'Healthy'>('/health');
                 if (status !== 200) {
                     throw new Error('Peer is not healthy');
                 }
@@ -156,6 +171,10 @@ export function createClient(params: CreateClientParams): Client {
             } catch (err) {
                 return Enum.valuable('Err', err);
             }
+        },
+
+        async checkStatus() {
+            return axiosStatus.get<PeerStatus>('/status').then((x) => x.data);
         },
     };
 }

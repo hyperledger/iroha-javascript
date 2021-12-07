@@ -26,7 +26,7 @@ import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
 
 const client = createClient({
-    toriiURL: client_config.toriiURL,
+    torii: client_config.torii,
     crypto,
 });
 
@@ -131,6 +131,14 @@ async function killStartedPeer() {
     await startedPeer?.kill({ clearSideEffects: true });
 }
 
+async function ensureGenesisIsCommitted() {
+    while (true) {
+        const { blocks } = await client.checkStatus();
+        if (blocks >= 1) return;
+        await delay(50);
+    }
+}
+
 // and now tests...
 
 beforeAll(async () => {
@@ -154,6 +162,8 @@ beforeAll(async () => {
 beforeEach(async () => {
     await killStartedPeer();
     startedPeer = await startPeer();
+
+    await ensureGenesisIsCommitted();
 });
 
 afterAll(async () => {

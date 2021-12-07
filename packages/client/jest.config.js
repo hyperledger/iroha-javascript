@@ -9,6 +9,7 @@ const config = {
             },
         ],
     },
+    transformIgnorePatterns: [],
     testEnvironment: 'node',
     testMatch: ['**/test/integration/tests/**/*.ts'],
     testPathIgnorePatterns: ['/node_modules/', '/dist/'],

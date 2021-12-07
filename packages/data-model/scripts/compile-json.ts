@@ -1,5 +1,5 @@
 import path from 'path';
-import { execa } from 'execa';
+import execa from 'execa';
 import consola from 'consola';
 import chalk from 'chalk';
 import fs from 'fs';

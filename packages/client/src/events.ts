@@ -17,7 +17,7 @@ export interface EventsEmitteryMap {
 }
 
 export interface SetupEventsParams {
-    toriiURL: string;
+    toriiApiUrl: string;
     filter: FragmentFromBuilder<typeof EventFilter>;
 }
 
@@ -51,7 +51,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     ee.on('event', (e) => eeExternal.emit('event', e));
     ee.on('subscription_accepted', () => eeExternal.emit('accepted'));
 
-    const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiURL)}/events`);
+    const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiApiUrl)}/events`);
 
     socket.onopen = () => {
         sendMessage(EventSocketMessage.fromValue(Enum.valuable('SubscriptionRequest', params.filter)));

@@ -1,5 +1,8 @@
 {
-    "toriiURL": "http://localhost:8080",
+    "torii": {
+        "apiUrl": "http://127.0.0.1:8080",
+        "statusUrl": "http://127.0.0.1:8081"
+    },
     "account": {
         "name": "alice",
         "domain_name": "wonderland"
