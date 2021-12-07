@@ -18,31 +18,19 @@ import { TransactionPayload } from '@iroha2/data-model';
 import { Value } from '@iroha2/data-model';
 
 // @public (undocumented)
-export interface Client {
-    // (undocumented)
-    checkHealth: () => Promise<Result<null, Error>>;
-    // (undocumented)
-    checkStatus: () => Promise<PeerStatus>;
-    // (undocumented)
-    listenForEvents: (params: ListenEventsParams) => Promise<SetupEventsReturn>;
-    // (undocumented)
-    makeQuery: (params: MakeQueryParams) => Promise<Result<FragmentFromBuilder<typeof Value>, Error>>;
-    // (undocumented)
-    submitTransaction: (params: SubmitTransactionParams) => Promise<void>;
-}
+export type CheckHealthResult = Result<null, Error>;
 
 // @public (undocumented)
-export function createClient(params: CreateClientParams): Client;
-
-// @public (undocumented)
-export interface CreateClientParams {
+export class Client {
+    checkHealth(): Promise<CheckHealthResult>;
+    checkStatus(): Promise<PeerStatus>;
     // (undocumented)
-    crypto: IrohaCryptoInterface;
-    // (undocumented)
-    torii: {
-        apiUrl: string;
-        statusUrl: string;
-    };
+    static create(config: UserConfig): Client;
+    listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn>;
+    makeQuery(params: MakeQueryParams): Promise<MakeQueryResult>;
+    setApiURL(url: string): Client;
+    setStatusURL(url: string): Client;
+    submitTransaction(params: SubmitTransactionParams): Promise<SubmitTransactionResult>;
 }
 
 // @public (undocumented)
@@ -71,6 +59,9 @@ export interface MakeQueryParams {
 }
 
 // @public (undocumented)
+export type MakeQueryResult = Result<FragmentFromBuilder<typeof Value>, Error>;
+
+// @public (undocumented)
 export interface PeerStatus {
     // (undocumented)
     blocks: number;
@@ -81,6 +72,9 @@ export interface PeerStatus {
     // (undocumented)
     uptime: number;
 }
+
+// @public (undocumented)
+export function setCrypto(crypto: IrohaCryptoInterface | null): void;
 
 // @public (undocumented)
 export interface SetupEventsReturn {
@@ -96,6 +90,21 @@ export interface SubmitTransactionParams {
     payload: FragmentFromBuilder<typeof TransactionPayload>;
     // (undocumented)
     signing: KeyPair | KeyPair[];
+}
+
+// @public (undocumented)
+export type SubmitTransactionResult = Result<null, Error>;
+
+// @public (undocumented)
+export function useCrypto(): null | IrohaCryptoInterface;
+
+// @public (undocumented)
+export interface UserConfig {
+    // (undocumented)
+    torii: {
+        apiURL?: string | null;
+        statusURL?: string | null;
+    };
 }
 
 // (No @packageDocumentation comment for this package)

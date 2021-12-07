@@ -1,7 +1,7 @@
 {
     "torii": {
-        "apiUrl": "http://127.0.0.1:8080",
-        "statusUrl": "http://127.0.0.1:8081"
+        "apiURL": "http://127.0.0.1:8080",
+        "statusURL": "http://127.0.0.1:8081"
     },
     "account": {
         "name": "alice",

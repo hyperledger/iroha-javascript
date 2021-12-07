@@ -3,8 +3,8 @@ import { KeyPair } from '@iroha2/crypto-core';
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
+import { Client, setCrypto } from '../../../src/lib';
 import {
-    createClient,
     Enum,
     UnwrapFragment,
     FragmentFromBuilder,
@@ -21,13 +21,13 @@ import {
     EventFilter,
     PipelineEventFilter,
     EvaluatesToAccountId,
-} from '../../../src/lib';
+} from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
 
-const client = createClient({
+setCrypto(crypto);
+const client = Client.create({
     torii: client_config.torii,
-    crypto,
 });
 
 type UnwrapFragmentOrBuilder<T> = T extends FragmentBuilder<any>
@@ -172,7 +172,7 @@ afterAll(async () => {
 });
 
 test('Peer is healthy', async () => {
-    expect(await (await client.checkHealth()).is('Ok')).toBe(true);
+    expect((await client.checkHealth()).is('Ok')).toBe(true);
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {

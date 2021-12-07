@@ -20,7 +20,7 @@ export function createScope(): GarbageCollectorScope {
 
     return {
         run(cb) {
-            if (currentScope) throw new Error('Already in scope');
+            if (currentScope) throw new Error('Already in the scope');
 
             try {
                 currentScope = state;
@@ -30,14 +30,16 @@ export function createScope(): GarbageCollectorScope {
             }
         },
         free() {
-            state.garbage.forEach((x) => x.free());
+            for (const x of state.garbage) {
+                x.free();
+            }
             state.garbage = [];
         },
     };
 }
 
 export function collect<T extends Freeable>(some: T): T {
-    if (!currentScope) throw new Error('Not in the scope');
+    if (!currentScope) throw new Error('Used out of a scope');
 
     currentScope.garbage.push(some);
 
