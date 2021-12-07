@@ -1,14 +1,17 @@
-import { TMP_IROHA_DEPLOY_DIR, IROHA_CLI_NAME } from '../const';
+import { TMP_DIR, TMP_IROHA_BIN } from '../const';
 import path from 'path';
-import execa from 'execa';
+import { execa } from 'execa';
+import { $ } from 'zx';
 import { rmWithParams, saveDataAsJSON } from './util';
 import readline from 'readline';
 import chalk from 'chalk';
 import debugRoot from 'debug';
+import { KnownBinaries, resolveBinaryPath } from '@iroha2/dev-iroha-bins';
+import makeDir from 'make-dir';
 
 const debug = debugRoot('@iroha2/test-peer');
 
-const deployDir = path.resolve(__dirname, '../', TMP_IROHA_DEPLOY_DIR);
+// const deployDir = path.resolve(__dirname, '../', TMP_IROHA_DEPLOY_DIR);
 
 export interface StartPeerParams {
     /**
@@ -47,6 +50,14 @@ export interface IrohaConfiguration {
 }
 
 /**
+ * Copies binary from `@iroha2/dev-iroha-bins`
+ */
+export async function preparePackage() {
+    await makeDir(TMP_DIR);
+    await $`cp ${await resolveBinaryPath(KnownBinaries.Cli)} ${TMP_IROHA_BIN}`;
+}
+
+/**
  * Start network with single peer.
  */
 export async function startPeer(params?: StartPeerParams): Promise<StartPeerReturn> {
@@ -55,8 +66,8 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
 
     // starting peer
     const withGenesis: boolean = params?.withGenesis ?? true;
-    const subprocess = execa(`./${IROHA_CLI_NAME}`, withGenesis ? ['--submit-genesis'] : [], {
-        cwd: deployDir,
+    const subprocess = execa(`./${TMP_IROHA_BIN}`, withGenesis ? ['--submit-genesis'] : [], {
+        cwd: TMP_DIR,
     });
     debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs);
     const stdout = readline.createInterface(subprocess.stdout!);
@@ -115,7 +126,7 @@ export async function setConfiguration(configs: IrohaConfiguration): Promise<voi
 
     await Promise.all(
         asKeyValue.map(async ([configName, data]: [unknown, string]) => {
-            await saveDataAsJSON(data, path.resolve(deployDir, `${configName}.json`));
+            await saveDataAsJSON(data, path.resolve(TMP_DIR, `${configName}.json`));
         }),
     );
 }
@@ -124,7 +135,7 @@ export async function setConfiguration(configs: IrohaConfiguration): Promise<voi
  * Clear config files
  */
 export async function clearConfiguration(): Promise<void> {
-    const rmTarget = path.resolve(deployDir, '*.json');
+    const rmTarget = path.resolve(TMP_DIR, '*.json');
     await rmWithParams(rmTarget);
 }
 
@@ -134,6 +145,6 @@ export async function clearConfiguration(): Promise<void> {
  * (Remove `blocks` dir)
  */
 export async function clearSideEffects() {
-    const rmTarget = path.resolve(deployDir, 'blocks');
+    const rmTarget = path.resolve(TMP_DIR, 'blocks');
     await rmWithParams(rmTarget);
 }

@@ -11,9 +11,9 @@
     },
     "devDependencies": {
         "@iroha2/crypto-target-web": "workspace:^0.1.0",
-        "cypress": "^8.5.0",
+        "cypress": "^9.1.1",
         "hada": "^0.0.8",
         "start-server-and-test": "^1.14.0",
-        "vite": "^2.5.10"
+        "vite": "^2.6.14"
     }
 }

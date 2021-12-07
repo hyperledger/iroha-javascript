@@ -20,6 +20,6 @@
     },
     "devDependencies": {
         "esbuild-jest": "^0.5.0",
-        "jest": "^27.2.3"
+        "jest": "^27.4.3"
     }
 }

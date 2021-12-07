@@ -29,7 +29,7 @@ jobs:
       - name: Prepare docs
         run: |
           pnpm build
-          pnpm api:run-documenter
+          pnpm api:document
 
       - name: Build docs
         run: pnpm docs:build
