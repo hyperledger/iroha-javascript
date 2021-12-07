@@ -1,7 +1,7 @@
 
 [![npm version](https://img.shields.io/npm/v/iroha-helpers.svg)](https://www.npmjs.com/package/iroha-helpers)
 [![minified size](https://badgen.net/bundlephobia/min/iroha-helpers)](https://badgen.net/bundlephobia/min/iroha-helpers)
-[![Iroha 1.2.0-rc.1](https://img.shields.io/badge/Iroha-1.1.1-green.svg)](https://github.com/hyperledger/iroha/releases/tag/1.2.0-rc.1)
+[![Iroha 1.3.0](https://img.shields.io/badge/Iroha-1.3.0-green)](https://github.com/hyperledger/iroha/tree/1.3.0)
 
 # iroha-helpers
 
