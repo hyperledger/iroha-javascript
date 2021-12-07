@@ -22,6 +22,8 @@ export interface Client {
     // (undocumented)
     checkHealth: () => Promise<Result<null, Error>>;
     // (undocumented)
+    checkStatus: () => Promise<PeerStatus>;
+    // (undocumented)
     listenForEvents: (params: ListenEventsParams) => Promise<SetupEventsReturn>;
     // (undocumented)
     makeQuery: (params: MakeQueryParams) => Promise<Result<FragmentFromBuilder<typeof Value>, Error>>;
@@ -37,7 +39,10 @@ export interface CreateClientParams {
     // (undocumented)
     crypto: IrohaCryptoInterface;
     // (undocumented)
-    toriiURL: string;
+    torii: {
+        apiUrl: string;
+        statusUrl: string;
+    };
 }
 
 // @public (undocumented)
@@ -66,6 +71,18 @@ export interface MakeQueryParams {
 }
 
 // @public (undocumented)
+export interface PeerStatus {
+    // (undocumented)
+    blocks: number;
+    // (undocumented)
+    peers: number;
+    // (undocumented)
+    txs: number;
+    // (undocumented)
+    uptime: number;
+}
+
+// @public (undocumented)
 export interface SetupEventsReturn {
     // (undocumented)
     close: () => void;
@@ -80,9 +97,6 @@ export interface SubmitTransactionParams {
     // (undocumented)
     signing: KeyPair | KeyPair[];
 }
-
-
-export * from "@iroha2/data-model";
 
 // (No @packageDocumentation comment for this package)
 
