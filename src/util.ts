@@ -119,7 +119,6 @@ function sendTransactions (txs, txClient, timeoutLimit, requiredStatusesStr = [
               .map(r => reverseEnum(TxStatus)[r.tx.getTxStatus()])
             const hash = res
               .map(r => r.tx.getTxHash())
-              
 
             return res.some(r => r.error)
               ? reject(
