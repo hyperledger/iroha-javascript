@@ -43,8 +43,33 @@ export default defineConfig({
                     link: '/guide',
                 },
                 {
+                    text: 'Recipes',
+                    children: [
+                        {
+                            text: 'Generate a Key Pair',
+                            link: '/recipes/key-pair-gen',
+                        },
+                        {
+                            text: 'Query: Find All Assets',
+                            link: '/recipes/query-all-assets',
+                        },
+                        {
+                            text: 'Transaction: Register Asset Definition',
+                            link: '/recipes/tx-reg-asset-definition',
+                        },
+                        {
+                            text: 'Events: Listen for 5 Commited Blocks',
+                            link: '/recipes/events-blocks',
+                        },
+                    ],
+                },
+                {
                     text: 'API',
                     link: '/api/',
+                },
+                {
+                    text: 'To Do',
+                    link: '/todo',
                 },
             ],
         },

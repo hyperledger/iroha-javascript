@@ -21,6 +21,7 @@ import {
     EventFilter,
     PipelineEventFilter,
     EvaluatesToAccountId,
+    OptionU32,
 } from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
@@ -83,10 +84,12 @@ async function addAsset(
         },
     };
 
-    await client.submitTransaction({
+    const res = await client.submitTransaction({
         payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Register', createAsset))),
         signing: keyPair!,
     });
+
+    res.as('Ok');
 }
 
 async function addAccount(accountId: UnwrapFragmentOrBuilder<typeof AccountId>) {
@@ -108,17 +111,21 @@ async function addAccount(accountId: UnwrapFragmentOrBuilder<typeof AccountId>) 
         },
     };
 
-    await client.submitTransaction({
+    const res = await client.submitTransaction({
         payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Register', registerBox))),
         signing: keyPair!,
     });
+
+    res.as('Ok');
 }
 
 async function submitMint(mintBox: UnwrapFragmentOrBuilder<typeof MintBox>) {
-    await client.submitTransaction({
+    const res = await client.submitTransaction({
         payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Mint', mintBox))),
         signing: keyPair!,
     });
+
+    res.as('Ok');
 }
 
 async function pipelineStepDelay() {

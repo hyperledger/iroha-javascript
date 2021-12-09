@@ -2,7 +2,7 @@
 
 def pipeline = new org.js.LibPipeline( steps: this,
     packageManager: "pnpm",
-    buildDockerImage: 'build-tools/node:14-ubuntu-rust',
+    buildDockerImage: 'build-tools/node:14-ubuntu-rust-1.59.0',
     libPushBranches: ['iroha2-dev'],
     npmRegistries: ['https://nexus.iroha.tech/repository/npm-soramitsu/': 'bot-soramitsu-rw'],
     preBuildCmds: ['pnpm install --unsafe-perm'],

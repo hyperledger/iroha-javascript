@@ -184,7 +184,7 @@ importers:
       '@iroha2/i64-fixnum': workspace:^0.2.0
       '@octokit/core': ^3.5.1
       '@scale-codec/definition-compiler': ^0.4.0
-      '@scale-codec/definition-runtime': ^0.6.0
+      '@scale-codec/definition-runtime': 0.6.0
       '@types/debug': ^4.1.7
       '@types/gulp': ^4.0.9
       '@types/lodash-es': ^4.17.5
@@ -236,6 +236,22 @@ importers:
       del: 6.0.0
       make-dir: 3.1.0
       zx: 4.2.0
+
+  packages/docs-recipes:
+    specifiers:
+      '@iroha2/client': workspace:^0.3.0
+      '@iroha2/crypto-core': workspace:^0.1.0
+      '@iroha2/crypto-target-node': workspace:^0.1.0
+      '@iroha2/crypto-target-web': workspace:^0.1.0
+      '@iroha2/data-model': workspace:^0.4.0
+      hada: ^0.0.8
+    dependencies:
+      '@iroha2/client': link:../client
+      '@iroha2/crypto-core': link:../crypto/packages/core
+      '@iroha2/crypto-target-node': link:../crypto/packages/target-node
+      '@iroha2/crypto-target-web': link:../crypto/packages/target-web
+      '@iroha2/data-model': link:../data-model
+      hada: 0.0.8
 
   packages/i64-fixnum:
     specifiers:
@@ -5278,7 +5294,6 @@ packages:
 
   /hada/0.0.8:
     resolution: {integrity: sha512-CLzCvrb53E6Lh1rO/NFty1PG7VJV3r4pDCU5nR/0yaUCT05lk5ayLBd/0QX7z2QH4t6xu7jflYBa9Dwoo7giZA==}
-    dev: true
 
   /hard-rejection/2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}
