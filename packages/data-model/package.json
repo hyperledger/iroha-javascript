@@ -16,17 +16,17 @@
         "build:tsc": "tsc",
         "gulpts": "gulp --require esbuild-register -f gulpfile.ts",
         "gen": "pnpm gulpts -- gen",
-        "gen:json": "pnpm gulpts -- generate",
-        "gen:ts": "pnpm gulpts -- compile_json"
+        "gen:json": "pnpm gulpts -- compile_json",
+        "gen:ts": "pnpm gulpts -- generate"
     },
     "dependencies": {
         "@iroha2/i64-fixnum": "workspace:^0.2.0",
-        "@scale-codec/definition-runtime": "0.6.0"
+        "@scale-codec/definition-runtime": "0.8.2"
     },
     "devDependencies": {
         "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
         "@octokit/core": "^3.5.1",
-        "@scale-codec/definition-compiler": "^0.4.0",
+        "@scale-codec/definition-compiler": "^0.8.1",
         "@types/debug": "^4.1.7",
         "@types/gulp": "^4.0.9",
         "@types/lodash-es": "^4.17.5",
@@ -40,7 +40,7 @@
         "execa": "5.1.1",
         "gulp": "^4.0.2",
         "immutable": "^4.0.0",
-        "jest": "^27.4.3",
+        "jest": "^27.4.4",
         "lodash-es": "^4.17.21",
         "node-fetch": "^3.1.0",
         "type-fest": "^2.8.0"

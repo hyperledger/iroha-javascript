@@ -24,8 +24,8 @@
         "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
         "@iroha2/test-peer": "workspace:^0.0.1",
         "@jest/types": "^27.4.2",
-        "@microsoft/api-documenter": "^7.13.72",
-        "@microsoft/api-extractor": "^7.18.21",
+        "@microsoft/api-documenter": "^7.13.76",
+        "@microsoft/api-extractor": "^7.19.2",
         "@rollup/plugin-node-resolve": "^13.0.6",
         "@types/gulp": "^4.0.9",
         "@types/jest": "^27.0.3",
@@ -42,10 +42,10 @@
         "gulp": "^4.0.2",
         "prettier": "^2.5.1",
         "prettier-eslint": "^13.0.0",
-        "rollup": "^2.60.2",
+        "rollup": "^2.61.0",
         "sass": "^1.44.0",
-        "typescript": "^4.5.2",
-        "vitepress": "^0.20.2",
+        "typescript": "^4.5.3",
+        "vitepress": "^0.20.4",
         "zx": "^4.2.0"
     }
 }

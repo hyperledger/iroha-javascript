@@ -161,14 +161,11 @@ export class Client {
                 const payloadHash = collect(createHash(payload.bytes));
                 const signatures = normalizeArray(signing).map((x) => makeSignature(x, payloadHash.bytes()));
 
-                txBytes = VersionedTransaction.fromValue(
-                    Enum.valuable(
-                        'V1',
-                        Transaction.fromValue({
-                            payload,
-                            signatures: BTreeSetSignature.fromValue(new Set(signatures)),
-                        }),
-                    ),
+                txBytes = VersionedTransaction.variants.V1(
+                    Transaction.fromValue({
+                        payload,
+                        signatures: BTreeSetSignature.fromValue(new Set(signatures)),
+                    }),
                 ).bytes;
             });
 
@@ -206,8 +203,8 @@ export class Client {
                 const payloadHash = collect(createHash(payload.bytes));
                 const signature = makeSignature(signing, payloadHash.bytes());
 
-                queryBytes = VersionedSignedQueryRequest.fromValue(
-                    Enum.valuable('V1', SignedQueryRequest.fromValue({ payload, signature })),
+                queryBytes = VersionedSignedQueryRequest.variants.V1(
+                    SignedQueryRequest.fromValue({ payload, signature }),
                 ).bytes;
             });
 
