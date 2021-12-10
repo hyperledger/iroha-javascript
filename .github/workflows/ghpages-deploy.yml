@@ -1,8 +1,8 @@
-name: CD
+name: GitHub Pages Docs CI/CD
 
 on:
   push:
-    branches: [iroha2-dev]
+    branches: [iroha2]
 
 jobs:
   build:
@@ -36,7 +36,7 @@ jobs:
         env:
           PUBLIC_PATH: /iroha-javascript/
 
-      - name: Push dist into iroha2-dev:gh-pages
+      - name: Push dist into iroha2:gh-pages
         working-directory: ./docs/.vitepress/dist
         run: |
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
@@ -44,4 +44,4 @@ jobs:
           git init
           git add --all
           git commit -m "Auto update pages on $(date +'%Y-%m-%d %H:%M:%S')"
-          git push -f -q https://git:${{ secrets.github_token }}@github.com/${{ github.repository }} iroha2-dev:gh-pages
+          git push -f -q https://git:${{ secrets.github_token }}@github.com/${{ github.repository }} iroha2:gh-pages
