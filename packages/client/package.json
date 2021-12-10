@@ -1,6 +1,6 @@
 {
     "name": "@iroha2/client",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "main": "src/lib.ts",
     "publishConfig": {
         "main": "dist/lib.cjs.js",
@@ -20,13 +20,13 @@
     },
     "dependencies": {
         "@iroha2/crypto-core": "workspace:^0.1.0",
-        "@iroha2/data-model": "workspace:^0.4.0",
+        "@iroha2/data-model": "workspace:^0.5.0",
         "axios": "^0.24.0",
         "emittery": "^0.10.0",
         "ws": "^8.3.0"
     },
     "devDependencies": {
-        "@iroha2/crypto-target-node": "workspace:^0.1.0",
+        "@iroha2/crypto-target-node": "workspace:^0.1.1",
         "@iroha2/test-peer": "workspace:^0.0.1",
         "@types/ws": "^8.2.2",
         "esbuild-jest": "^0.5.0",

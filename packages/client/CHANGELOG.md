@@ -1,5 +1,24 @@
 # @iroha2/client
 
+## 0.4.0
+
+### Minor Changes
+
+-   98d3638: **breaking**: remove `*` re-export from `@iroha2/data-model`
+-   98d3638: **feat**: add `status` endpoint implementation
+-   98d3638: **breaking**: update configuration format
+
+    -   Now both Torii API URl & Torii Status URL are optional, so it is possible to use client partially, e.g. if you only need to check status.
+    -   `crypto` injection is excluded from the config. Now it should be set globally with `setCrypto()` function.
+
+### Patch Changes
+
+-   92c5a9a: Add library top-level short documentation
+-   92c5a9a: Export `SetupEventsParams` type
+-   Updated dependencies [92c5a9a]
+-   Updated dependencies [98d3638]
+    -   @iroha2/data-model@0.5.0
+
 ## 0.3.0
 
 ### Minor Changes
