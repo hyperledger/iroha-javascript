@@ -1,5 +1,10 @@
 import { Client } from '@iroha2/client';
-import { EventFilter, OptionEntityType, OptionHash, Enum, FragmentOrBuilderUnwrapped } from '@iroha2/data-model';
+import {
+    EventFilter,
+    OptionEntityType,
+    OptionHash,
+    EntityType,
+} from '@iroha2/data-model';
 
 async function listenForEachBlockCommitment({
     client,
@@ -8,13 +13,16 @@ async function listenForEachBlockCommitment({
     client: Client;
     onCommited: (blockHash: Uint8Array) => void;
 }): Promise<{ close: () => void }> {
-    const hash: FragmentOrBuilderUnwrapped<typeof OptionHash> = Enum.empty('None');
-    const entity: FragmentOrBuilderUnwrapped<typeof OptionEntityType> = Enum.valuable('Some', Enum.empty('Block'));
-    const filter: FragmentOrBuilderUnwrapped<typeof EventFilter> = Enum.valuable('Pipeline', { entity, hash });
+    const filter = EventFilter.wrap(
+        EventFilter.variantsUnwrapped.Pipeline({
+            entity: OptionEntityType.variantsUnwrapped.Some(
+                EntityType.variantsUnwrapped.Block,
+            ),
+            hash: OptionHash.variantsUnwrapped.None,
+        }),
+    );
 
-    const { close, ee } = await client.listenForEvents({
-        filter: EventFilter.wrap(filter),
-    });
+    const { close, ee } = await client.listenForEvents({ filter });
 
     ee.on('event', (e) => {
         const pipelineEvent = e.unwrap().as('Pipeline');

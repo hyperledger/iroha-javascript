@@ -1,6 +1,12 @@
 import { Client } from '@iroha2/client';
 import { KeyPair } from '@iroha2/crypto-core';
-import { AccountId, Asset, Enum, FragmentOrBuilderUnwrapped, QueryPayload } from '@iroha2/data-model';
+import {
+    AccountId,
+    Asset,
+    FragmentOrBuilderUnwrapped,
+    QueryBox,
+    QueryPayload,
+} from '@iroha2/data-model';
 
 async function findAllAssets(
     client: Client,
@@ -9,7 +15,7 @@ async function findAllAssets(
 ): Promise<FragmentOrBuilderUnwrapped<typeof Asset>[]> {
     const result = await client.makeQuery({
         payload: QueryPayload.wrap({
-            query: Enum.valuable('FindAllAssets', null),
+            query: QueryBox.variantsUnwrapped.FindAllAssets(null),
             timestamp_ms: BigInt(Date.now()),
             account_id: accountId,
         }),

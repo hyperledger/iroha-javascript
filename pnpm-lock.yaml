@@ -241,6 +241,7 @@ importers:
     specifiers:
       '@iroha2/client': workspace:^0.3.0
       '@iroha2/crypto-core': workspace:^0.1.0
+      '@iroha2/crypto-target-bundler': workspace:^0.1.0
       '@iroha2/crypto-target-node': workspace:^0.1.0
       '@iroha2/crypto-target-web': workspace:^0.1.0
       '@iroha2/data-model': workspace:^0.4.0
@@ -248,6 +249,7 @@ importers:
     dependencies:
       '@iroha2/client': link:../client
       '@iroha2/crypto-core': link:../crypto/packages/core
+      '@iroha2/crypto-target-bundler': link:../crypto/packages/target-bundler
       '@iroha2/crypto-target-node': link:../crypto/packages/target-node
       '@iroha2/crypto-target-web': link:../crypto/packages/target-web
       '@iroha2/data-model': link:../data-model

@@ -7,7 +7,10 @@ import {
     FragmentOrBuilderUnwrapped,
     Instruction,
     TransactionPayload,
-    Enum,
+    Value,
+    IdentifiableBox,
+    OptionU32,
+    AssetValueType,
 } from '@iroha2/data-model';
 
 async function registerAssetDefinition({
@@ -21,13 +24,14 @@ async function registerAssetDefinition({
     accountId: FragmentOrBuilderUnwrapped<typeof AccountId>;
     assetDefinition: FragmentOrBuilderUnwrapped<typeof AssetDefinition>;
 }): Promise<void> {
-    const expression: FragmentOrBuilderUnwrapped<typeof Expression> = Enum.valuable(
-        'Raw',
-        Enum.valuable('Identifiable', Enum.valuable('AssetDefinition', assetDefinition)),
-    );
-
-    const instruction: FragmentOrBuilderUnwrapped<typeof Instruction> = Enum.valuable('Register', {
-        object: { expression },
+    const instruction = Instruction.variantsUnwrapped.Register({
+        object: {
+            expression: Expression.variantsUnwrapped.Raw(
+                Value.variantsUnwrapped.Identifiable(
+                    IdentifiableBox.variantsUnwrapped.AssetDefinition(assetDefinition),
+                ),
+            ),
+        },
     });
 
     // wrap it all into a payload
@@ -37,10 +41,13 @@ async function registerAssetDefinition({
         time_to_live_ms: 100_000n,
         creation_time: BigInt(Date.now()),
         metadata: new Map(),
-        nonce: Enum.empty('None'),
+        nonce: OptionU32.variantsUnwrapped.None,
     });
 
-    const result = await client.submitTransaction({ signing: keyPair, payload });
+    const result = await client.submitTransaction({
+        signing: keyPair,
+        payload,
+    });
 
     if (!result.is('Ok')) {
         throw result.as('Err');
@@ -57,9 +64,11 @@ registerAssetDefinition({
             name: 'xor',
             domain_name: 'Wonderland',
         },
-        value_type: Enum.empty('Quantity'),
+        value_type: AssetValueType.variantsUnwrapped.Quantity,
         mintable: false,
-        metadata: { map: new Map() },
+        metadata: {
+            map: new Map(),
+        },
     },
 
     // for educational purposes

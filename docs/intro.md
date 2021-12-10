@@ -1,4 +1,8 @@
-# Guide
+# Intro
+
+::: warning
+`@iroha2/*` packages are currently in 0.x status, so the API could (and will) change.
+:::
 
 ## Prerequisites
 

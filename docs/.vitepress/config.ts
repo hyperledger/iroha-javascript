@@ -40,7 +40,12 @@ export default defineConfig({
             '/': [
                 {
                     text: 'Guide',
-                    link: '/guide',
+                    children: [
+                        {
+                            text: 'Intro',
+                            link: '/intro',
+                        },
+                    ],
                 },
                 {
                     text: 'Recipes',
@@ -48,6 +53,10 @@ export default defineConfig({
                         {
                             text: 'Generate a Key Pair',
                             link: '/recipes/key-pair-gen',
+                        },
+                        {
+                            text: 'Initialize a Client',
+                            link: '/recipes/init-client',
                         },
                         {
                             text: 'Query: Find All Assets',

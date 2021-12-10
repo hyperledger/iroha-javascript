@@ -38,4 +38,13 @@ module.exports = {
     endOfLine: 'lf',
     // formats quoted code embedded
     embeddedLanguageFormatting: 'auto',
+    overrides: [
+        {
+            files: 'packages/docs-recipes/src/**/*.ts',
+            options: {
+                // decrease printWidth to fit code into snippets in the vitepress
+                printWidth: 90,
+            },
+        },
+    ],
 };

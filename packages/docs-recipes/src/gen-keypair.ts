@@ -27,7 +27,8 @@ function generateKeyPair(params: {
 }
 
 const kp = generateKeyPair({
-    publicKeyMultihash: 'ed0120e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
+    publicKeyMultihash:
+        'ed0120e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
     privateKey: {
         digestFunction: 'ed25519',
         payload:
