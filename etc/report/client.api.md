@@ -45,8 +45,6 @@ export interface EventsEmitteryMap {
     event: FragmentFromBuilder<typeof Event_2>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SetupEventsParams" needs to be exported by the entry point lib.d.ts
-//
 // @public (undocumented)
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
 
@@ -75,6 +73,14 @@ export interface PeerStatus {
 
 // @public (undocumented)
 export function setCrypto(crypto: IrohaCryptoInterface | null): void;
+
+// @public (undocumented)
+export interface SetupEventsParams {
+    // (undocumented)
+    filter: FragmentFromBuilder<typeof EventFilter>;
+    // (undocumented)
+    toriiApiURL: string;
+}
 
 // @public (undocumented)
 export interface SetupEventsReturn {
@@ -106,7 +112,5 @@ export interface UserConfig {
         statusURL?: string | null;
     };
 }
-
-// (No @packageDocumentation comment for this package)
 
 ```

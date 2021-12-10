@@ -1,4 +1,4 @@
-import { f64ToFixnum, fixnumToF64 } from './convert-fixnum-f64';
+import { f64StrToBigint, bigintToF64Str } from './lib';
 
 const CASES = [
     { repr_str: '0.0', repr_i64: '0', precision: 4 },
@@ -19,7 +19,7 @@ test.each(CASES)(
         const i64 = BigInt(repr_i64);
         const f64 = repr_str;
 
-        expect(fixnumToF64(i64, precision)).toEqual(f64);
-        expect(f64ToFixnum(f64, precision)).toEqual(i64);
+        expect(bigintToF64Str(i64, precision)).toEqual(f64);
+        expect(f64StrToBigint(f64, precision)).toEqual(i64);
     },
 );
