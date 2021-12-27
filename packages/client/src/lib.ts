@@ -1,5 +1,10 @@
-export * from './client';
-export type { SetupEventsReturn, EventsEmitteryMap } from './events';
+/**
+ * @packageDocumentation
+ *
+ * Client library to interact with Iroha v2 Peer. Library implements Transactions, Queries,
+ * Events, Status & Health check.
+ */
 
-// re-export data model
-export * from '@iroha2/data-model';
+export * from './client';
+export * from './crypto-singleton';
+export type { SetupEventsReturn, EventsEmitteryMap, SetupEventsParams } from './events';

@@ -4,21 +4,19 @@
     "private": true,
     "main": "src/lib.ts",
     "scripts": {
-        "postinstall": "gulp --require sucrase/register -f gulpfile.ts prepare_iroha",
-        "cli": "sucrase-node scripts/cli.ts"
+        "cli": "esno scripts/cli.ts"
     },
     "dependencies": {
+        "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
         "@types/debug": "^4.1.7",
-        "@types/gulp": "^4.0.9",
-        "cac": "^6.7.3",
-        "chalk": "^4.1.2",
+        "cac": "^6.7.12",
+        "chalk": "4.1.2",
         "consola": "^2.15.3",
-        "debug": "^4.3.2",
+        "debug": "^4.3.3",
         "del": "^6.0.0",
-        "execa": "^5.1.1",
-        "gulp": "^4.0.2",
+        "esno": "^0.12.1",
+        "execa": "5.1.1",
         "make-dir": "^3.1.0",
-        "sucrase": "^3.20.2",
         "zx": "^4.2.0"
     }
 }

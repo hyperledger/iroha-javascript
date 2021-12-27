@@ -3,9 +3,8 @@ import { KeyPair } from '@iroha2/crypto-core';
 import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
+import { Client, setCrypto } from '../../../src/lib';
 import {
-    createClient,
-    Enum,
     UnwrapFragment,
     FragmentFromBuilder,
     Instruction,
@@ -14,20 +13,26 @@ import {
     QueryPayload,
     FragmentBuilder,
     AssetValueType,
-    RegisterBox,
     DefinitionId,
-    AccountId,
     MintBox,
     EventFilter,
-    PipelineEventFilter,
     EvaluatesToAccountId,
-} from '../../../src/lib';
+    OptionU32,
+    Expression,
+    Value,
+    IdentifiableBox,
+    AccountId,
+    OptionEntityType,
+    EntityType,
+    OptionHash,
+    IdBox,
+} from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
 
-const client = createClient({
-    toriiURL: client_config.toriiURL,
-    crypto,
+setCrypto(crypto);
+const client = Client.create({
+    torii: client_config.torii,
 });
 
 type UnwrapFragmentOrBuilder<T> = T extends FragmentBuilder<any>
@@ -36,17 +41,15 @@ type UnwrapFragmentOrBuilder<T> = T extends FragmentBuilder<any>
 
 let keyPair: KeyPair;
 
-function instructionToPayload(
-    instruction: UnwrapFragmentOrBuilder<typeof Instruction>,
-): UnwrapFragmentOrBuilder<typeof TransactionPayload> {
-    return {
+function instructionToPayload(instruction: UnwrapFragmentOrBuilder<typeof Instruction>) {
+    return TransactionPayload.defineUnwrap({
         instructions: [instruction],
         time_to_live_ms: 100_000n,
         creation_time: BigInt(Date.now()),
         metadata: new Map(),
         account_id: client_config.account,
-        nonce: Enum.empty('None'),
-    };
+        nonce: OptionU32.variantsUnwrapped.None,
+    });
 }
 
 function queryBoxToPayload(
@@ -61,64 +64,70 @@ function queryBoxToPayload(
 
 async function addAsset(
     definitionId: UnwrapFragmentOrBuilder<typeof DefinitionId>,
-    assetType: UnwrapFragmentOrBuilder<typeof AssetValueType> = Enum.empty('BigQuantity'),
+    assetType: UnwrapFragmentOrBuilder<typeof AssetValueType> = AssetValueType.variantsUnwrapped.BigQuantity,
     opts?: {
         mintable?: boolean;
     },
 ) {
-    const createAsset: UnwrapFragmentOrBuilder<typeof RegisterBox> = {
-        object: {
-            expression: Enum.valuable(
-                'Raw',
-                Enum.valuable(
-                    'Identifiable',
-                    Enum.valuable('AssetDefinition', {
-                        id: definitionId,
-                        value_type: assetType,
-                        metadata: { map: new Map() },
-                        mintable: opts?.mintable ?? false,
-                    }),
-                ),
+    const res = await client.submitTransaction({
+        payload: TransactionPayload.wrap(
+            instructionToPayload(
+                Instruction.variantsUnwrapped.Register({
+                    object: {
+                        expression: Expression.variantsUnwrapped.Raw(
+                            Value.variantsUnwrapped.Identifiable(
+                                IdentifiableBox.variantsUnwrapped.AssetDefinition({
+                                    id: definitionId,
+                                    value_type: assetType,
+                                    metadata: { map: new Map() },
+                                    mintable: opts?.mintable ?? false,
+                                }),
+                            ),
+                        ),
+                    },
+                }),
             ),
-        },
-    };
-
-    await client.submitTransaction({
-        payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Register', createAsset))),
+        ),
         signing: keyPair!,
     });
+
+    res.as('Ok');
 }
 
 async function addAccount(accountId: UnwrapFragmentOrBuilder<typeof AccountId>) {
-    const registerBox: UnwrapFragmentOrBuilder<typeof RegisterBox> = {
-        object: {
-            expression: Enum.valuable(
-                'Raw',
-                Enum.valuable(
-                    'Identifiable',
-                    Enum.valuable('NewAccount', {
-                        id: accountId,
-                        signatories: [],
-                        metadata: {
-                            map: new Map(),
-                        },
-                    }),
-                ),
+    const res = await client.submitTransaction({
+        payload: TransactionPayload.wrap(
+            instructionToPayload(
+                Instruction.variantsUnwrapped.Register({
+                    object: {
+                        expression: Expression.variantsUnwrapped.Raw(
+                            Value.variantsUnwrapped.Identifiable(
+                                IdentifiableBox.variantsUnwrapped.NewAccount({
+                                    id: accountId,
+                                    signatories: [],
+                                    metadata: {
+                                        map: new Map(),
+                                    },
+                                }),
+                            ),
+                        ),
+                    },
+                }),
             ),
-        },
-    };
-
-    await client.submitTransaction({
-        payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Register', registerBox))),
+        ),
         signing: keyPair!,
     });
+
+    res.as('Ok');
 }
 
 async function submitMint(mintBox: UnwrapFragmentOrBuilder<typeof MintBox>) {
-    await client.submitTransaction({
-        payload: TransactionPayload.wrap(instructionToPayload(Enum.valuable('Mint', mintBox))),
+    const res = await client.submitTransaction({
+        payload: TransactionPayload.wrap(instructionToPayload(Instruction.variantsUnwrapped.Mint(mintBox))),
         signing: keyPair!,
     });
+
+    res.as('Ok');
 }
 
 async function pipelineStepDelay() {
@@ -129,6 +138,14 @@ let startedPeer: StartPeerReturn | null = null;
 
 async function killStartedPeer() {
     await startedPeer?.kill({ clearSideEffects: true });
+}
+
+async function ensureGenesisIsCommitted() {
+    while (true) {
+        const { blocks } = await client.checkStatus();
+        if (blocks >= 1) return;
+        await delay(50);
+    }
 }
 
 // and now tests...
@@ -154,6 +171,8 @@ beforeAll(async () => {
 beforeEach(async () => {
     await killStartedPeer();
     startedPeer = await startPeer();
+
+    await ensureGenesisIsCommitted();
 });
 
 afterAll(async () => {
@@ -162,33 +181,31 @@ afterAll(async () => {
 });
 
 test('Peer is healthy', async () => {
-    expect(await (await client.checkHealth()).is('Ok')).toBe(true);
+    expect((await client.checkHealth()).is('Ok')).toBe(true);
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-    type AssetDefinitionId = UnwrapFragmentOrBuilder<typeof DefinitionId>;
-
-    const normalAssetDefinitionId: AssetDefinitionId = {
+    const normalAssetDefinitionId = DefinitionId.defineUnwrap({
         name: 'xor',
         domain_name: 'wonderland',
-    };
+    });
     await addAsset(normalAssetDefinitionId);
 
     const tooLongAssetName = '0'.repeat(2 ** 14);
-    const invalidAssetDefinitionId: AssetDefinitionId = {
+    const invalidAssetDefinitionId = DefinitionId.defineUnwrap({
         name: tooLongAssetName,
         domain_name: 'wonderland',
-    };
+    });
     await addAsset(invalidAssetDefinitionId);
 
     await delay(PIPELINE_MS * 2);
 
     const queryResult = await client.makeQuery({
-        payload: QueryPayload.wrap(queryBoxToPayload(Enum.valuable('FindAllAssetsDefinitions', null))),
+        payload: QueryPayload.wrap(queryBoxToPayload(QueryBox.variantsUnwrapped.FindAllAssetsDefinitions(null))),
         signing: keyPair,
     });
 
-    const existingDefinitions: AssetDefinitionId[] = queryResult
+    const existingDefinitions: ReturnType<typeof DefinitionId['defineUnwrap']>[] = queryResult
         .as('Ok')
         .unwrap()
         .as('Vec')
@@ -201,20 +218,20 @@ test('AddAsset instruction with name length more than limit is not committed', a
 test('AddAccount instruction with name length more than limit is not committed', async () => {
     type AccountId = UnwrapFragmentOrBuilder<typeof AccountId>;
 
-    const normal: AccountId = {
+    const normal = AccountId.defineUnwrap({
         name: 'bob',
         domain_name: 'wonderland',
-    };
-    const incorrect: AccountId = {
+    });
+    const incorrect = AccountId.defineUnwrap({
         name: '0'.repeat(2 ** 14),
         domain_name: 'wonderland',
-    };
+    });
 
     await Promise.all([normal, incorrect].map((x) => addAccount(x)));
     await delay(PIPELINE_MS * 2);
 
     const queryResult = await client.makeQuery({
-        payload: QueryPayload.wrap(queryBoxToPayload(Enum.valuable('FindAllAccounts', null))),
+        payload: QueryPayload.wrap(queryBoxToPayload(QueryBox.variantsUnwrapped.FindAllAccounts(null))),
         signing: keyPair,
     });
 
@@ -232,11 +249,12 @@ test('transaction-committed event is triggered after AddAsset instruction has be
     let closeEventsConnection: Function | undefined;
 
     try {
-        const pipelineEventFilter = PipelineEventFilter.wrap({
-            entity: Enum.valuable('Some', Enum.empty('Transaction')),
-            hash: Enum.empty('None'),
-        });
-        const filter = EventFilter.fromValue(Enum.valuable('Pipeline', pipelineEventFilter));
+        const filter = EventFilter.wrap(
+            EventFilter.variantsUnwrapped.Pipeline({
+                entity: OptionEntityType.variantsUnwrapped.Some(EntityType.variantsUnwrapped.Transaction),
+                hash: OptionHash.variantsUnwrapped.None,
+            }),
+        );
 
         // setting up listening
         let transactionCommittedPromise: Promise<void>;
@@ -281,23 +299,21 @@ test('transaction-committed event is triggered after AddAsset instruction has be
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
     // Creating asset by definition
-    const ASSET_DEFINITION_ID: UnwrapFragmentOrBuilder<typeof DefinitionId> = {
+    const ASSET_DEFINITION_ID = DefinitionId.defineUnwrap({
         name: 'xor',
         domain_name: 'wonderland',
-    };
-    await addAsset(ASSET_DEFINITION_ID, Enum.empty('Fixed'), { mintable: true });
+    });
+    await addAsset(ASSET_DEFINITION_ID, AssetValueType.variantsUnwrapped.Fixed, { mintable: true });
     await pipelineStepDelay();
 
     // Adding mint
     const DECIMAL = '512.5881';
     await submitMint({
-        object: { expression: Enum.valuable('Raw', Enum.valuable('Fixed', DECIMAL)) },
+        object: { expression: Expression.variantsUnwrapped.Raw(Value.variantsUnwrapped.Fixed(DECIMAL)) },
         destination_id: {
-            expression: Enum.valuable(
-                'Raw',
-                Enum.valuable(
-                    'Id',
-                    Enum.valuable('AssetId', {
+            expression: Expression.variantsUnwrapped.Raw(
+                Value.variantsUnwrapped.Id(
+                    IdBox.variantsUnwrapped.AssetId({
                         account_id: client_config.account,
                         definition_id: ASSET_DEFINITION_ID,
                     }),
@@ -308,12 +324,17 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
     await pipelineStepDelay();
 
     // Checking added asset via query
-    const expressionEvalToAccountId: UnwrapFragmentOrBuilder<typeof EvaluatesToAccountId> = {
-        expression: Enum.valuable('Raw', Enum.valuable('Id', Enum.valuable('AccountId', client_config.account))),
-    };
+    const expressionEvalToAccountId: UnwrapFragmentOrBuilder<typeof EvaluatesToAccountId> =
+        EvaluatesToAccountId.defineUnwrap({
+            expression: Expression.variantsUnwrapped.Raw(
+                Value.variantsUnwrapped.Id(IdBox.variantsUnwrapped.AccountId(client_config.account)),
+            ),
+        });
     const result = await client.makeQuery({
         payload: QueryPayload.wrap(
-            queryBoxToPayload(Enum.valuable('FindAssetsByAccountId', { account_id: expressionEvalToAccountId })),
+            queryBoxToPayload(
+                QueryBox.variantsUnwrapped.FindAssetsByAccountId({ account_id: expressionEvalToAccountId }),
+            ),
         ),
         signing: keyPair,
     });

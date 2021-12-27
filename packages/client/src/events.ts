@@ -1,5 +1,4 @@
 import {
-    Enum,
     Event,
     EventFilter,
     EventSocketMessage,
@@ -17,7 +16,7 @@ export interface EventsEmitteryMap {
 }
 
 export interface SetupEventsParams {
-    toriiURL: string;
+    toriiApiURL: string;
     filter: FragmentFromBuilder<typeof EventFilter>;
 }
 
@@ -51,10 +50,10 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     ee.on('event', (e) => eeExternal.emit('event', e));
     ee.on('subscription_accepted', () => eeExternal.emit('accepted'));
 
-    const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiURL)}/events`);
+    const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiApiURL)}/events`);
 
     socket.onopen = () => {
-        sendMessage(EventSocketMessage.fromValue(Enum.valuable('SubscriptionRequest', params.filter)));
+        sendMessage(EventSocketMessage.variants.SubscriptionRequest(params.filter));
     };
 
     socket.onclose = (event) => {
@@ -77,7 +76,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     }
 
     function sendMessage(msg: FragmentFromBuilder<typeof EventSocketMessage>) {
-        const encoded: Uint8Array = VersionedEventSocketMessage.fromValue(Enum.valuable('V1', msg)).bytes;
+        const encoded: Uint8Array = VersionedEventSocketMessage.variants.V1(msg).bytes;
         socket.send(encoded);
     }
 
@@ -102,7 +101,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             ee.emit('subscription_accepted');
         } else {
             ee.emit('event', event.as('Event'));
-            sendMessage(EventSocketMessage.fromValue(Enum.empty('EventReceived')));
+            sendMessage(EventSocketMessage.variants.EventReceived);
         }
     };
 

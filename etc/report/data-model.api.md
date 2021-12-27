@@ -855,6 +855,4 @@ export const Where: ScaleStructBuilder<{
 
 export * from "@scale-codec/definition-runtime";
 
-// (No @packageDocumentation comment for this package)
-
 ```

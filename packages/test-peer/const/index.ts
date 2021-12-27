@@ -1,15 +1,5 @@
-/**
- * Directory where Iroha will be installed to
- */
-export const TMP_IROHA_INSTALL_DIR = '.iroha';
+import path from 'path';
 
-/**
- * Directory where the compiled Iroha binary will be put
- */
-export const TMP_IROHA_DEPLOY_DIR = '.iroha-deploy';
+export const TMP_DIR = path.resolve(__dirname, '../tmp');
 
-/**
- * - Name of the executable Iroha binary
- * - Name of the source crate
- */
-export const IROHA_CLI_NAME = 'iroha';
+export const TMP_IROHA_BIN = path.resolve(TMP_DIR, 'iroha');

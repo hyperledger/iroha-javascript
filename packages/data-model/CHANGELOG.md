@@ -1,5 +1,19 @@
 # @iroha2/data-model
 
+## 0.5.0
+
+### Minor Changes
+
+-   98d3638: update data model & bump scale runtime version
+
+### Patch Changes
+
+-   92c5a9a: Add library top-level short documentation
+-   Updated dependencies [33a58c5]
+-   Updated dependencies [92c5a9a]
+-   Updated dependencies [92c5a9a]
+    -   @iroha2/i64-fixnum@0.3.0
+
 ## 0.4.0
 
 ### Minor Changes

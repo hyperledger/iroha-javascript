@@ -18,26 +18,19 @@ import { TransactionPayload } from '@iroha2/data-model';
 import { Value } from '@iroha2/data-model';
 
 // @public (undocumented)
-export interface Client {
-    // (undocumented)
-    checkHealth: () => Promise<Result<null, Error>>;
-    // (undocumented)
-    listenForEvents: (params: ListenEventsParams) => Promise<SetupEventsReturn>;
-    // (undocumented)
-    makeQuery: (params: MakeQueryParams) => Promise<Result<FragmentFromBuilder<typeof Value>, Error>>;
-    // (undocumented)
-    submitTransaction: (params: SubmitTransactionParams) => Promise<void>;
-}
+export type CheckHealthResult = Result<null, Error>;
 
 // @public (undocumented)
-export function createClient(params: CreateClientParams): Client;
-
-// @public (undocumented)
-export interface CreateClientParams {
+export class Client {
+    checkHealth(): Promise<CheckHealthResult>;
+    checkStatus(): Promise<PeerStatus>;
     // (undocumented)
-    crypto: IrohaCryptoInterface;
-    // (undocumented)
-    toriiURL: string;
+    static create(config: UserConfig): Client;
+    listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn>;
+    makeQuery(params: MakeQueryParams): Promise<MakeQueryResult>;
+    setApiURL(url: string): Client;
+    setStatusURL(url: string): Client;
+    submitTransaction(params: SubmitTransactionParams): Promise<SubmitTransactionResult>;
 }
 
 // @public (undocumented)
@@ -52,8 +45,6 @@ export interface EventsEmitteryMap {
     event: FragmentFromBuilder<typeof Event_2>;
 }
 
-// Warning: (ae-forgotten-export) The symbol "SetupEventsParams" needs to be exported by the entry point lib.d.ts
-//
 // @public (undocumented)
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
 
@@ -63,6 +54,32 @@ export interface MakeQueryParams {
     payload: FragmentFromBuilder<typeof QueryPayload>;
     // (undocumented)
     signing: KeyPair;
+}
+
+// @public (undocumented)
+export type MakeQueryResult = Result<FragmentFromBuilder<typeof Value>, Error>;
+
+// @public (undocumented)
+export interface PeerStatus {
+    // (undocumented)
+    blocks: number;
+    // (undocumented)
+    peers: number;
+    // (undocumented)
+    txs: number;
+    // (undocumented)
+    uptime: number;
+}
+
+// @public (undocumented)
+export function setCrypto(crypto: IrohaCryptoInterface | null): void;
+
+// @public (undocumented)
+export interface SetupEventsParams {
+    // (undocumented)
+    filter: FragmentFromBuilder<typeof EventFilter>;
+    // (undocumented)
+    toriiApiURL: string;
 }
 
 // @public (undocumented)
@@ -81,9 +98,19 @@ export interface SubmitTransactionParams {
     signing: KeyPair | KeyPair[];
 }
 
+// @public (undocumented)
+export type SubmitTransactionResult = Result<null, Error>;
 
-export * from "@iroha2/data-model";
+// @public (undocumented)
+export function useCrypto(): null | IrohaCryptoInterface;
 
-// (No @packageDocumentation comment for this package)
+// @public (undocumented)
+export interface UserConfig {
+    // (undocumented)
+    torii: {
+        apiURL?: string | null;
+        statusURL?: string | null;
+    };
+}
 
 ```

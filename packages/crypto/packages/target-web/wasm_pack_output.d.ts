@@ -260,10 +260,10 @@ export interface InitOutput {
   readonly createHash: (a: number, b: number) => number;
   readonly hash_bytes: (a: number, b: number) => void;
   readonly publickey_payload: (a: number, b: number) => void;
-  readonly main: () => void;
   readonly signature_publicKey: (a: number) => number;
-  readonly __wbg_publickey_free: (a: number) => void;
   readonly publickey_digestFunction: (a: number, b: number) => void;
+  readonly main: () => void;
+  readonly __wbg_publickey_free: (a: number) => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number) => void;

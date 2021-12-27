@@ -5,11 +5,9 @@
 ```ts
 
 // @public
-export function f64ToFixnum(f64: string, precision: number): bigint;
+export function bigintToF64Str(fixnum: bigint, precision: number | bigint): string;
 
 // @public
-export function fixnumToF64(fixnum: bigint, precision: number): string;
-
-// (No @packageDocumentation comment for this package)
+export function f64StrToBigint(f64: string, precision: number | bigint): bigint;
 
 ```

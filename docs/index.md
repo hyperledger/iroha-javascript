@@ -4,6 +4,6 @@ heroImage: https://raw.githubusercontent.com/hyperledger/iroha/develop/docs/imag
 heroAlt: Hyperledger Iroha logo
 tagline: Client library(ies)
 actionText: Get Started
-actionLink: /guide
+actionLink: /intro
 footer: License - Apache 2.0
 ---

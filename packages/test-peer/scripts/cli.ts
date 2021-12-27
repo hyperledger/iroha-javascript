@@ -1,9 +1,9 @@
 import { cac } from 'cac';
 import consola from 'consola';
 import { clearConfiguration, clearSideEffects, startPeer } from '../src/lib';
-import execa from 'execa';
+import { $ } from 'zx';
 import path from 'path';
-import { TMP_IROHA_DEPLOY_DIR } from '../const';
+import { TMP_DIR } from '../const';
 
 const cli = cac();
 
@@ -24,8 +24,8 @@ cli.command('start').action(async () => {
 cli.command('config:copy-from-client-e2e-tests').action(async () => {
     async function copyOne(name: string) {
         const from = path.resolve(__dirname, '../../client/test/integration/config', `peer_${name}.json`);
-        const to = path.resolve(__dirname, '../', TMP_IROHA_DEPLOY_DIR, `${name}.json`);
-        await execa('cp', [from, to]);
+        const to = path.resolve(__dirname, '../', TMP_DIR, `${name}.json`);
+        await $`cp ${from} ${to}`;
     }
 
     await Promise.all(['config', 'genesis', 'trusted_peers'].map(copyOne));
