@@ -48,7 +48,7 @@ async function determineInstallTargets(allTargets: BinaryNameMap, skipInstalled 
 
     const requestedBinaries = Object.values(allTargets);
 
-    return skipInstalled ? requestedBinaries.filter((x) => savedBins.includes(x)) : requestedBinaries;
+    return skipInstalled ? requestedBinaries.filter((x) => !savedBins.includes(x)) : requestedBinaries;
 }
 
 /**
