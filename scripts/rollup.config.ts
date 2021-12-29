@@ -25,10 +25,12 @@ function* optionsForPackage({
             {
                 format: 'esm',
                 file: resolvePackageOutfile(unscopedPackageName, 'esm'),
+                sourcemap: true,
             },
             {
                 format: 'cjs',
                 file: resolvePackageOutfile(unscopedPackageName, 'cjs'),
+                sourcemap: true,
             },
         ],
     };
@@ -37,7 +39,7 @@ function* optionsForPackage({
 export default defineConfig([
     ...optionsForPackage({
         unscopedPackageName: 'client',
-        external: [/^@scale-codec/, /^@iroha2/, 'emittery', 'ws', 'axios'],
+        external: [/^@scale-codec/, /^@iroha2/, 'emittery', 'debug'],
     }),
     ...optionsForPackage({
         unscopedPackageName: 'data-model',

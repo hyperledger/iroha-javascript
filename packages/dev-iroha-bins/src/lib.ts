@@ -3,6 +3,7 @@ import makeDir from 'make-dir';
 import del from 'del';
 import fs from 'fs/promises';
 import { $ } from 'zx';
+import consola from 'consola';
 
 export enum KnownBinaries {
     /**
@@ -28,17 +29,45 @@ const resolveTmp = (...paths: string[]) => path.resolve(TMP_DIR, ...paths);
 const TMP_CARGO_ROOT = resolveTmp('cargo');
 const TMP_BINARIES_MAP_JSON = resolveTmp('bins.json');
 
+async function readSavedBinariesMap(): Promise<BinaryNameMap> {
+    const contents = await fs.readFile(TMP_BINARIES_MAP_JSON, { encoding: 'utf-8' });
+    const parsed: BinaryNameMap = JSON.parse(contents);
+    return parsed;
+}
+
 async function initTmpDir() {
     await makeDir(TMP_DIR);
+}
+
+async function determineInstallTargets(allTargets: BinaryNameMap, skipInstalled = false): Promise<string[]> {
+    let savedBins: string[] = [];
+    try {
+        const saved = await readSavedBinariesMap();
+        savedBins = Object.keys(saved);
+    } catch {}
+
+    const requestedBinaries = Object.values(allTargets);
+
+    return skipInstalled ? requestedBinaries.filter((x) => savedBins.includes(x)) : requestedBinaries;
 }
 
 /**
  * Installs all known binaries (from {@link KnownBinaries})
  */
-export async function installBinaries(config: InstallConfig): Promise<void> {
+export async function installBinaries(
+    config: InstallConfig,
+    opts?: {
+        skipInstalled?: boolean;
+    },
+): Promise<void> {
     await initTmpDir();
 
-    const binsArgs = Object.values(config.binaryNameMap);
+    const binsArgs = await determineInstallTargets(config.binaryNameMap, opts?.skipInstalled);
+
+    if (!binsArgs.length) {
+        consola.info('Skipping installation');
+        return;
+    }
 
     await $`cargo install \\
         --root ${TMP_CARGO_ROOT} \\
@@ -57,7 +86,6 @@ export async function clean() {
 }
 
 export async function resolveBinaryPath(bin: KnownBinaries): Promise<string> {
-    const contents = await fs.readFile(TMP_BINARIES_MAP_JSON, { encoding: 'utf-8' });
-    const parsed: BinaryNameMap = JSON.parse(contents);
-    return path.resolve(TMP_CARGO_ROOT, 'bin', parsed[bin]);
+    const saved = await readSavedBinariesMap();
+    return path.resolve(TMP_CARGO_ROOT, 'bin', saved[bin]);
 }

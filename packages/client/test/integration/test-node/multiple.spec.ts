@@ -1,9 +1,9 @@
 import { crypto } from '@iroha2/crypto-target-node';
 import { KeyPair } from '@iroha2/crypto-core';
-import { startPeer, setConfiguration, clearConfiguration, StartPeerReturn } from '@iroha2/test-peer';
+import { startPeer, setConfiguration, cleanConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
-import { Client, setCrypto } from '../../../src/lib';
+import { Client, setCrypto } from '@iroha2/client';
 import {
     UnwrapFragment,
     FragmentFromBuilder,
@@ -26,6 +26,9 @@ import {
     EntityType,
     OptionHash,
     IdBox,
+    RegisterBox,
+    Enum,
+    Result,
 } from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
@@ -69,7 +72,7 @@ async function addAsset(
         mintable?: boolean;
     },
 ) {
-    const res = await client.submitTransaction({
+    await client.submitTransaction({
         payload: TransactionPayload.wrap(
             instructionToPayload(
                 Instruction.variantsUnwrapped.Register({
@@ -90,12 +93,10 @@ async function addAsset(
         ),
         signing: keyPair!,
     });
-
-    res.as('Ok');
 }
 
 async function addAccount(accountId: UnwrapFragmentOrBuilder<typeof AccountId>) {
-    const res = await client.submitTransaction({
+    await client.submitTransaction({
         payload: TransactionPayload.wrap(
             instructionToPayload(
                 Instruction.variantsUnwrapped.Register({
@@ -117,17 +118,13 @@ async function addAccount(accountId: UnwrapFragmentOrBuilder<typeof AccountId>) 
         ),
         signing: keyPair!,
     });
-
-    res.as('Ok');
 }
 
 async function submitMint(mintBox: UnwrapFragmentOrBuilder<typeof MintBox>) {
-    const res = await client.submitTransaction({
+    await client.submitTransaction({
         payload: TransactionPayload.wrap(instructionToPayload(Instruction.variantsUnwrapped.Mint(mintBox))),
         signing: keyPair!,
     });
-
-    res.as('Ok');
 }
 
 async function pipelineStepDelay() {
@@ -137,7 +134,7 @@ async function pipelineStepDelay() {
 let startedPeer: StartPeerReturn | null = null;
 
 async function killStartedPeer() {
-    await startedPeer?.kill({ clearSideEffects: true });
+    await startedPeer?.kill({ cleanSideEffects: true });
 }
 
 async function ensureGenesisIsCommitted() {
@@ -151,7 +148,7 @@ async function ensureGenesisIsCommitted() {
 // and now tests...
 
 beforeAll(async () => {
-    await clearConfiguration();
+    await cleanConfiguration();
 
     // setup configs for test peer
     await setConfiguration({
@@ -177,11 +174,11 @@ beforeEach(async () => {
 
 afterAll(async () => {
     await killStartedPeer();
-    await clearConfiguration();
+    await cleanConfiguration();
 });
 
 test('Peer is healthy', async () => {
-    expect((await client.checkHealth()).is('Ok')).toBe(true);
+    expect(await client.checkHealth()).toEqual(Enum.valuable('Ok', null) as Result<null, any>);
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
@@ -346,4 +343,63 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
     expect(asset).toBeTruthy();
     expect(asset!.value.is('Fixed')).toBe(true);
     expect(asset!.value.as('Fixed')).toBe(DECIMAL);
+});
+
+test('Registering domain', async () => {
+    async function registerDomain(domainName: string) {
+        const registerBox = RegisterBox.defineUnwrap({
+            object: {
+                expression: Expression.variantsUnwrapped.Raw(
+                    Value.variantsUnwrapped.Identifiable(
+                        IdentifiableBox.variantsUnwrapped.Domain({
+                            name: domainName,
+                            accounts: new Map(),
+                            metadata: { map: new Map() },
+                            asset_definitions: new Map(),
+                        }),
+                    ),
+                ),
+            },
+        });
+
+        const instruction = Instruction.variantsUnwrapped.Register(registerBox);
+
+        const payload = TransactionPayload.defineUnwrap({
+            account_id: client_config.account,
+            instructions: [instruction],
+            time_to_live_ms: 100_000n,
+            creation_time: BigInt(Date.now()),
+            metadata: new Map(),
+            nonce: OptionU32.variantsUnwrapped.None,
+        });
+
+        await client.submitTransaction({
+            payload: TransactionPayload.wrap(payload),
+            signing: keyPair,
+        });
+    }
+
+    async function ensureDomainExistence(domainName: string) {
+        const result = await client.makeQuery({
+            payload: QueryPayload.wrap({
+                query: QueryBox.variantsUnwrapped.FindAllDomains(null),
+                timestamp_ms: BigInt(Date.now()),
+                account_id: client_config.account,
+            }),
+            signing: keyPair,
+        });
+
+        const domain = result
+            .as('Ok')
+            .unwrap()
+            .as('Vec')
+            .map((x) => x.as('Identifiable').as('Domain'))
+            .find((x) => x.name === domainName);
+
+        if (!domain) throw new Error('Not found');
+    }
+
+    await registerDomain('test');
+    await pipelineStepDelay();
+    await ensureDomainExistence('test');
 });

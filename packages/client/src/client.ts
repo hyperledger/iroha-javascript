@@ -14,7 +14,7 @@ import {
     VersionedTransaction,
 } from '@iroha2/data-model';
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core';
-import Axios, { AxiosError, AxiosInstance } from 'axios';
+import { fetch } from '@iroha2/client-isomorphic-fetch';
 import { SetupEventsParams, SetupEventsReturn, setupEventsWebsocketConnection } from './events';
 import { collect, createScope } from './collect-garbage';
 import { normalizeArray } from './util';
@@ -35,8 +35,6 @@ export interface SubmitTransactionParams {
     payload: FragmentFromBuilder<typeof TransactionPayload>;
     signing: KeyPair | KeyPair[];
 }
-
-export type SubmitTransactionResult = Result<null, Error>;
 
 export type CheckHealthResult = Result<null, Error>;
 
@@ -80,6 +78,8 @@ function makeSignature(keyPair: KeyPair, payload: Uint8Array): FragmentFromBuild
     });
 }
 
+const HEALTHY_RESPONSE = `"Healthy"`;
+
 export class Client {
     public static create(config: UserConfig): Client {
         return new Client(config);
@@ -87,12 +87,10 @@ export class Client {
 
     private toriiApiURL: null | string;
     private toriiStatusURL: null | string;
-    private axios: AxiosInstance;
 
     private constructor(config: UserConfig) {
         this.toriiApiURL = config.torii.apiURL ?? null;
         this.toriiStatusURL = config.torii.statusURL ?? null;
-        this.axios = Axios.create();
     }
 
     /**
@@ -119,7 +117,7 @@ export class Client {
      * Requires Torii Status URL in the config.
      */
     public async checkStatus(): Promise<PeerStatus> {
-        return this.axios.get<PeerStatus>('/status', { baseURL: this.forceGetToriiStatusURL() }).then((x) => x.data);
+        return fetch(`${this.forceGetToriiStatusURL()}/status`).then((x) => x.json());
     }
 
     /**
@@ -131,10 +129,19 @@ export class Client {
      */
     public async checkHealth(): Promise<CheckHealthResult> {
         try {
-            const { status } = await this.axios.get<'Healthy'>('/health', { baseURL: this.forceGetToriiApiURL() });
-            if (status !== 200) {
-                throw new Error('Peer is not healthy');
-            }
+            await fetch(`${this.forceGetToriiApiURL()}/health`)
+                .then((x) => {
+                    if (x.status !== 200) {
+                        throw new Error(`Response status is ${x.status}`);
+                    }
+                    return x.text();
+                })
+                .then((text) => {
+                    if (text !== HEALTHY_RESPONSE) {
+                        throw new Error(`Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`);
+                    }
+                });
+
             return Enum.valuable('Ok', null);
         } catch (err) {
             return Enum.valuable('Err', err);
@@ -148,7 +155,7 @@ export class Client {
      *
      * Requires Torii API URL in the config.
      */
-    public async submitTransaction(params: SubmitTransactionParams): Promise<SubmitTransactionResult> {
+    public async submitTransaction(params: SubmitTransactionParams): Promise<void> {
         const scope = createScope();
         const { payload, signing } = params;
         const { createHash } = useCryptoAssertive();
@@ -169,15 +176,12 @@ export class Client {
                 ).bytes;
             });
 
-            try {
-                await this.axios.post('/transaction', txBytes!, { baseURL });
-                return Enum.valuable('Ok', null);
-            } catch (err) {
-                if (err && (err as AxiosError).isAxiosError) {
-                    return Enum.valuable('Err', err);
-                }
-                throw err;
-            }
+            await fetch(`${baseURL}/transaction`, {
+                method: 'POST',
+                body: txBytes!,
+            }).then((x) => {
+                if (x.status !== 200) throw new Error(`Response status: ${x.status}`);
+            });
         } finally {
             scope.free();
         }
@@ -208,31 +212,26 @@ export class Client {
                 ).bytes;
             });
 
-            try {
-                const { data }: { data: ArrayBuffer } = await this.axios.post('/query', queryBytes!, {
-                    responseType: 'arraybuffer',
-                    baseURL,
-                });
+            const resp = await fetch(`${baseURL}/query`, {
+                method: 'POST',
+                body: queryBytes!,
+            });
 
-                const value: FragmentFromBuilder<typeof Value> = VersionedQueryResult.fromBytes(
-                    new Uint8Array(data),
-                ).value.as('V1');
+            const { status } = resp;
 
-                return Enum.valuable('Ok', value);
-            } catch (err) {
-                if ((err as AxiosError).isAxiosError) {
-                    const { response: { status, data } = {} } = err as AxiosError;
-
-                    if (status === 500) {
-                        return Enum.valuable('Err', new Error(`Request failed with message from Iroha: ${data}`));
-                    }
-                    if (status === 400) {
-                        return Enum.valuable('Err', new Error(String(data)));
-                    }
-                }
-
-                throw err;
+            if (status === 500) {
+                return Enum.valuable('Err', new Error(`Request failed with message from Iroha: ${await resp.text()}`));
             }
+
+            if (status === 400) {
+                return Enum.valuable('Err', new Error(String(await resp.text())));
+            }
+
+            const value: FragmentFromBuilder<typeof Value> = VersionedQueryResult.fromBytes(
+                new Uint8Array(await resp.arrayBuffer()),
+            ).value.as('V1');
+
+            return Enum.valuable('Ok', value);
         } finally {
             scope.free();
         }

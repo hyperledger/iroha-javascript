@@ -44,14 +44,10 @@ async function registerAssetDefinition({
         nonce: OptionU32.variantsUnwrapped.None,
     });
 
-    const result = await client.submitTransaction({
+    await client.submitTransaction({
         signing: keyPair,
         payload,
     });
-
-    if (!result.is('Ok')) {
-        throw result.as('Err');
-    }
 }
 
 registerAssetDefinition({
