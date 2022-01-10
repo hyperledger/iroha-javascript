@@ -57,7 +57,7 @@ export interface PeerStatus {
 export interface UserConfig {
     torii: {
         apiURL?: string | null;
-        statusURL?: string | null;
+        telemetryURL?: string | null;
     };
 }
 
@@ -86,11 +86,11 @@ export class Client {
     }
 
     private toriiApiURL: null | string;
-    private toriiStatusURL: null | string;
+    private toriiTelemetryURL: null | string;
 
     private constructor(config: UserConfig) {
         this.toriiApiURL = config.torii.apiURL ?? null;
-        this.toriiStatusURL = config.torii.statusURL ?? null;
+        this.toriiTelemetryURL = config.torii.telemetryURL ?? null;
     }
 
     /**
@@ -105,7 +105,7 @@ export class Client {
      * The way to define Torii Status URL if it wasn't defined in the initial config.
      */
     public setStatusURL(url: string): Client {
-        this.toriiStatusURL = url;
+        this.toriiTelemetryURL = url;
         return this;
     }
 
@@ -117,7 +117,7 @@ export class Client {
      * Requires Torii Status URL in the config.
      */
     public async checkStatus(): Promise<PeerStatus> {
-        return fetch(`${this.forceGetToriiStatusURL()}/status`).then((x) => x.json());
+        return fetch(`${this.forceGetToriiTelemetryURL()}/status`).then((x) => x.json());
     }
 
     /**
@@ -260,12 +260,12 @@ export class Client {
         return this.toriiApiURL;
     }
 
-    private forceGetToriiStatusURL(): string {
-        if (!this.toriiStatusURL) {
+    private forceGetToriiTelemetryURL(): string {
+        if (!this.toriiTelemetryURL) {
             throw new Error(
                 'It looks like you use some endpoint that requires Torii Status URL to be set, but it is undefined.',
             );
         }
-        return this.toriiStatusURL;
+        return this.toriiTelemetryURL;
     }
 }

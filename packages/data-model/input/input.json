@@ -1,10 +1,4 @@
 {
-  "BTreeMap<String, iroha_data_model::Value>": {
-    "Map": {
-      "key": "String",
-      "value": "iroha_data_model::Value"
-    }
-  },
   "BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>": {
     "Map": {
       "key": "String",
@@ -15,6 +9,12 @@
     "Map": {
       "key": "iroha_crypto::PublicKey",
       "value": "iroha_crypto::signature::Signature"
+    }
+  },
+  "BTreeMap<iroha_data_model::Name, iroha_data_model::Value>": {
+    "Map": {
+      "key": "iroha_data_model::Name",
+      "value": "iroha_data_model::Value"
     }
   },
   "BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::Account>": {
@@ -41,8 +41,32 @@
       "decimal_places": 9
     }
   },
+  "Option<iroha_core::sumeragi::network_topology::Topology>": {
+    "Option": "iroha_core::sumeragi::network_topology::Topology"
+  },
   "Option<iroha_crypto::hash::Hash>": {
     "Option": "iroha_crypto::hash::Hash"
+  },
+  "Option<iroha_data_model::account::Id>": {
+    "Option": "iroha_data_model::account::Id"
+  },
+  "Option<iroha_data_model::asset::DefinitionId>": {
+    "Option": "iroha_data_model::asset::DefinitionId"
+  },
+  "Option<iroha_data_model::asset::Id>": {
+    "Option": "iroha_data_model::asset::Id"
+  },
+  "Option<iroha_data_model::domain::Id>": {
+    "Option": "iroha_data_model::domain::Id"
+  },
+  "Option<iroha_data_model::events::data::EntityFilter>": {
+    "Option": "iroha_data_model::events::data::EntityFilter"
+  },
+  "Option<iroha_data_model::events::data::StatusFilter>": {
+    "Option": "iroha_data_model::events::data::StatusFilter"
+  },
+  "Option<iroha_data_model::events::data::Updated>": {
+    "Option": "iroha_data_model::events::data::Updated"
   },
   "Option<iroha_data_model::events::pipeline::EntityType>": {
     "Option": "iroha_data_model::events::pipeline::EntityType"
@@ -50,12 +74,18 @@
   "Option<iroha_data_model::isi::Instruction>": {
     "Option": "iroha_data_model::isi::Instruction"
   },
+  "Option<iroha_data_model::peer::Id>": {
+    "Option": "iroha_data_model::peer::Id"
+  },
   "Option<u32>": {
     "Option": "u32"
   },
   "String": "String",
   "Vec<iroha_core::genesis::GenesisTransaction>": {
     "Vec": "iroha_core::genesis::GenesisTransaction"
+  },
+  "Vec<iroha_core::sumeragi::view_change::Proof>": {
+    "Vec": "iroha_core::sumeragi::view_change::Proof"
   },
   "Vec<iroha_crypto::PublicKey>": {
     "Vec": "iroha_crypto::PublicKey"
@@ -69,8 +99,20 @@
   "Vec<iroha_data_model::isi::Instruction>": {
     "Vec": "iroha_data_model::isi::Instruction"
   },
+  "Vec<iroha_data_model::peer::Id>": {
+    "Vec": "iroha_data_model::peer::Id"
+  },
   "Vec<iroha_data_model::permissions::PermissionToken>": {
     "Vec": "iroha_data_model::permissions::PermissionToken"
+  },
+  "Vec<iroha_data_model::transaction::VersionedRejectedTransaction>": {
+    "Vec": "iroha_data_model::transaction::VersionedRejectedTransaction"
+  },
+  "Vec<iroha_data_model::transaction::VersionedValidTransaction>": {
+    "Vec": "iroha_data_model::transaction::VersionedValidTransaction"
+  },
+  "Vec<iroha_schema::iroha_crypto::hash::HashOf<iroha_core::block::VersionedValidBlock>>": {
+    "Vec": "iroha_schema::iroha_crypto::hash::HashOf<iroha_core::block::VersionedValidBlock>"
   },
   "Vec<u8>": {
     "Vec": "u8"
@@ -84,6 +126,131 @@
   "bool": "Bool",
   "i64": {
     "Int": "FixedWidth"
+  },
+  "iroha_core::block::BlockHeader": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "timestamp",
+          "ty": "u128"
+        },
+        {
+          "name": "height",
+          "ty": "u64"
+        },
+        {
+          "name": "previous_block_hash",
+          "ty": "iroha_schema::iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"
+        },
+        {
+          "name": "transactions_hash",
+          "ty": "iroha_schema::iroha_crypto::hash::HashOf<iroha_data_model::merkle::MerkleTree<iroha_data_model::transaction::VersionedTransaction>>"
+        },
+        {
+          "name": "rejected_transactions_hash",
+          "ty": "iroha_schema::iroha_crypto::hash::HashOf<iroha_data_model::merkle::MerkleTree<iroha_data_model::transaction::VersionedTransaction>>"
+        },
+        {
+          "name": "view_change_proofs",
+          "ty": "iroha_core::sumeragi::view_change::ProofChain"
+        },
+        {
+          "name": "invalidated_blocks_hashes",
+          "ty": "Vec<iroha_schema::iroha_crypto::hash::HashOf<iroha_core::block::VersionedValidBlock>>"
+        },
+        {
+          "name": "genesis_topology",
+          "ty": "Option<iroha_core::sumeragi::network_topology::Topology>"
+        }
+      ]
+    }
+  },
+  "iroha_core::block::CommittedBlock": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "header",
+          "ty": "iroha_core::block::BlockHeader"
+        },
+        {
+          "name": "rejected_transactions",
+          "ty": "Vec<iroha_data_model::transaction::VersionedRejectedTransaction>"
+        },
+        {
+          "name": "transactions",
+          "ty": "Vec<iroha_data_model::transaction::VersionedValidTransaction>"
+        },
+        {
+          "name": "signatures",
+          "ty": "iroha_crypto::signature::SignaturesOf<iroha_core::block::CommittedBlock>"
+        }
+      ]
+    }
+  },
+  "iroha_core::block::VersionedCommittedBlock": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "V1",
+          "discriminant": 1,
+          "ty": "iroha_core::block::CommittedBlock"
+        }
+      ]
+    }
+  },
+  "iroha_core::block::stream::BlockPublisherMessage": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "SubscriptionAccepted",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Block",
+          "discriminant": 1,
+          "ty": "iroha_core::block::VersionedCommittedBlock"
+        }
+      ]
+    }
+  },
+  "iroha_core::block::stream::BlockSubscriberMessage": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "SubscriptionRequest",
+          "discriminant": 0,
+          "ty": "u64"
+        },
+        {
+          "name": "BlockReceived",
+          "discriminant": 1,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_core::block::stream::VersionedBlockPublisherMessage": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "V1",
+          "discriminant": 1,
+          "ty": "iroha_core::block::stream::BlockPublisherMessage"
+        }
+      ]
+    }
+  },
+  "iroha_core::block::stream::VersionedBlockSubscriberMessage": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "V1",
+          "discriminant": 1,
+          "ty": "iroha_core::block::stream::BlockSubscriberMessage"
+        }
+      ]
+    }
   },
   "iroha_core::genesis::GenesisTransaction": {
     "Struct": {
@@ -101,6 +268,111 @@
         {
           "name": "transactions",
           "ty": "Vec<iroha_core::genesis::GenesisTransaction>"
+        }
+      ]
+    }
+  },
+  "iroha_core::sumeragi::network_topology::Topology": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "sorted_peers",
+          "ty": "Vec<iroha_data_model::peer::Id>"
+        },
+        {
+          "name": "reshuffle_after_n_view_changes",
+          "ty": "u64"
+        },
+        {
+          "name": "at_block",
+          "ty": "iroha_schema::iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"
+        },
+        {
+          "name": "view_change_proofs",
+          "ty": "iroha_core::sumeragi::view_change::ProofChain"
+        }
+      ]
+    }
+  },
+  "iroha_core::sumeragi::view_change::BlockCreationTimeout": {
+    "TupleStruct": {
+      "types": []
+    }
+  },
+  "iroha_core::sumeragi::view_change::CommitTimeout": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "hash",
+          "ty": "iroha_schema::iroha_crypto::hash::HashOf<iroha_core::block::VersionedValidBlock>"
+        }
+      ]
+    }
+  },
+  "iroha_core::sumeragi::view_change::NoTransactionReceiptReceived": {
+    "TupleStruct": {
+      "types": []
+    }
+  },
+  "iroha_core::sumeragi::view_change::Proof": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "payload",
+          "ty": "iroha_core::sumeragi::view_change::ProofPayload"
+        },
+        {
+          "name": "signatures",
+          "ty": "iroha_crypto::signature::SignaturesOf<iroha_core::sumeragi::view_change::Proof>"
+        }
+      ]
+    }
+  },
+  "iroha_core::sumeragi::view_change::ProofChain": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "proofs",
+          "ty": "Vec<iroha_core::sumeragi::view_change::Proof>"
+        }
+      ]
+    }
+  },
+  "iroha_core::sumeragi::view_change::ProofPayload": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "previous_proof",
+          "ty": "iroha_schema::iroha_crypto::hash::HashOf<iroha_core::sumeragi::view_change::Proof>"
+        },
+        {
+          "name": "latest_block",
+          "ty": "iroha_schema::iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"
+        },
+        {
+          "name": "reason",
+          "ty": "iroha_core::sumeragi::view_change::Reason"
+        }
+      ]
+    }
+  },
+  "iroha_core::sumeragi::view_change::Reason": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "CommitTimeout",
+          "discriminant": 0,
+          "ty": "iroha_core::sumeragi::view_change::CommitTimeout"
+        },
+        {
+          "name": "NoTransactionReceiptReceived",
+          "discriminant": 1,
+          "ty": "iroha_core::sumeragi::view_change::NoTransactionReceiptReceived"
+        },
+        {
+          "name": "BlockCreationTimeout",
+          "discriminant": 2,
+          "ty": "iroha_core::sumeragi::view_change::BlockCreationTimeout"
         }
       ]
     }
@@ -154,6 +426,26 @@
       ]
     }
   },
+  "iroha_crypto::signature::SignaturesOf<iroha_core::block::CommittedBlock>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "signatures",
+          "ty": "BTreeMap<iroha_crypto::PublicKey, iroha_crypto::signature::Signature>"
+        }
+      ]
+    }
+  },
+  "iroha_crypto::signature::SignaturesOf<iroha_core::sumeragi::view_change::Proof>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "signatures",
+          "ty": "BTreeMap<iroha_crypto::PublicKey, iroha_crypto::signature::Signature>"
+        }
+      ]
+    }
+  },
   "iroha_crypto::signature::SignaturesOf<iroha_data_model::transaction::Payload>": {
     "Struct": {
       "declarations": [
@@ -183,9 +475,9 @@
           "ty": "iroha_data_model::asset::DefinitionId"
         },
         {
-          "name": "DomainName",
+          "name": "DomainId",
           "discriminant": 3,
-          "ty": "String"
+          "ty": "iroha_data_model::domain::Id"
         },
         {
           "name": "PeerId",
@@ -241,6 +533,13 @@
       ]
     }
   },
+  "iroha_data_model::Name": {
+    "TupleStruct": {
+      "types": [
+        "String"
+      ]
+    }
+  },
   "iroha_data_model::Parameter": {
     "Enum": {
       "variants": [
@@ -291,53 +590,63 @@
           "ty": "String"
         },
         {
-          "name": "Fixed",
+          "name": "Name",
           "discriminant": 4,
+          "ty": "iroha_data_model::Name"
+        },
+        {
+          "name": "Fixed",
+          "discriminant": 5,
           "ty": "iroha_data_model::fixed::Fixed"
         },
         {
           "name": "Vec",
-          "discriminant": 5,
+          "discriminant": 6,
           "ty": "Vec<iroha_data_model::Value>"
         },
         {
+          "name": "LimitedMetadata",
+          "discriminant": 7,
+          "ty": "iroha_data_model::metadata::Metadata"
+        },
+        {
           "name": "Id",
-          "discriminant": 6,
+          "discriminant": 8,
           "ty": "iroha_data_model::IdBox"
         },
         {
           "name": "Identifiable",
-          "discriminant": 7,
+          "discriminant": 9,
           "ty": "iroha_data_model::IdentifiableBox"
         },
         {
           "name": "PublicKey",
-          "discriminant": 8,
+          "discriminant": 10,
           "ty": "iroha_crypto::PublicKey"
         },
         {
           "name": "Parameter",
-          "discriminant": 9,
+          "discriminant": 11,
           "ty": "iroha_data_model::Parameter"
         },
         {
           "name": "SignatureCheckCondition",
-          "discriminant": 10,
+          "discriminant": 12,
           "ty": "iroha_data_model::account::SignatureCheckCondition"
         },
         {
           "name": "TransactionValue",
-          "discriminant": 11,
+          "discriminant": 13,
           "ty": "iroha_data_model::transaction::TransactionValue"
         },
         {
           "name": "PermissionToken",
-          "discriminant": 12,
+          "discriminant": 14,
           "ty": "iroha_data_model::permissions::PermissionToken"
         },
         {
           "name": "Hash",
-          "discriminant": 13,
+          "discriminant": 15,
           "ty": "iroha_crypto::hash::Hash"
         }
       ]
@@ -378,11 +687,11 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "String"
+          "ty": "iroha_data_model::Name"
         },
         {
-          "name": "domain_name",
-          "ty": "String"
+          "name": "domain_id",
+          "ty": "iroha_data_model::domain::Id"
         }
       ]
     }
@@ -519,11 +828,11 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "String"
+          "ty": "iroha_data_model::Name"
         },
         {
-          "name": "domain_name",
-          "ty": "String"
+          "name": "domain_id",
+          "ty": "iroha_data_model::domain::Id"
         }
       ]
     }
@@ -546,8 +855,8 @@
     "Struct": {
       "declarations": [
         {
-          "name": "name",
-          "ty": "String"
+          "name": "id",
+          "ty": "iroha_data_model::domain::Id"
         },
         {
           "name": "accounts",
@@ -560,6 +869,16 @@
         {
           "name": "metadata",
           "ty": "iroha_data_model::metadata::Metadata"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::domain::Id": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "name",
+          "ty": "iroha_data_model::Name"
         }
       ]
     }
@@ -596,74 +915,246 @@
       ]
     }
   },
-  "iroha_data_model::events::EventSocketMessage": {
+  "iroha_data_model::events::EventPublisherMessage": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "SubscriptionAccepted",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Event",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::Event"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::EventSubscriberMessage": {
     "Enum": {
       "variants": [
         {
           "name": "SubscriptionRequest",
           "discriminant": 0,
-          "ty": "iroha_data_model::events::SubscriptionRequest"
-        },
-        {
-          "name": "SubscriptionAccepted",
-          "discriminant": 1,
-          "ty": null
-        },
-        {
-          "name": "Event",
-          "discriminant": 2,
-          "ty": "iroha_data_model::events::Event"
+          "ty": "iroha_data_model::events::EventFilter"
         },
         {
           "name": "EventReceived",
-          "discriminant": 3,
+          "discriminant": 1,
           "ty": null
         }
       ]
     }
   },
-  "iroha_data_model::events::SubscriptionRequest": {
-    "TupleStruct": {
-      "types": [
-        "iroha_data_model::events::EventFilter"
-      ]
-    }
-  },
-  "iroha_data_model::events::VersionedEventSocketMessage": {
+  "iroha_data_model::events::VersionedEventPublisherMessage": {
     "Enum": {
       "variants": [
         {
           "name": "V1",
           "discriminant": 1,
-          "ty": "iroha_data_model::events::_VersionedEventSocketMessageV1"
+          "ty": "iroha_data_model::events::EventPublisherMessage"
         }
       ]
     }
   },
-  "iroha_data_model::events::_VersionedEventSocketMessageV1": {
-    "TupleStruct": {
-      "types": [
-        "iroha_data_model::events::EventSocketMessage"
+  "iroha_data_model::events::VersionedEventSubscriberMessage": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "V1",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::EventSubscriberMessage"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::AssetUpdated": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Received",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Sent",
+          "discriminant": 1,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::Entity": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Account",
+          "discriminant": 0,
+          "ty": "iroha_data_model::account::Id"
+        },
+        {
+          "name": "AssetDefinition",
+          "discriminant": 1,
+          "ty": "iroha_data_model::asset::DefinitionId"
+        },
+        {
+          "name": "Asset",
+          "discriminant": 2,
+          "ty": "iroha_data_model::asset::Id"
+        },
+        {
+          "name": "Domain",
+          "discriminant": 3,
+          "ty": "iroha_data_model::domain::Id"
+        },
+        {
+          "name": "Peer",
+          "discriminant": 4,
+          "ty": "iroha_data_model::peer::Id"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::EntityFilter": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Account",
+          "discriminant": 0,
+          "ty": "Option<iroha_data_model::account::Id>"
+        },
+        {
+          "name": "AssetDefinition",
+          "discriminant": 1,
+          "ty": "Option<iroha_data_model::asset::DefinitionId>"
+        },
+        {
+          "name": "Asset",
+          "discriminant": 2,
+          "ty": "Option<iroha_data_model::asset::Id>"
+        },
+        {
+          "name": "Domain",
+          "discriminant": 3,
+          "ty": "Option<iroha_data_model::domain::Id>"
+        },
+        {
+          "name": "Peer",
+          "discriminant": 4,
+          "ty": "Option<iroha_data_model::peer::Id>"
+        }
       ]
     }
   },
   "iroha_data_model::events::data::Event": {
-    "TupleStruct": {
-      "types": []
+    "Struct": {
+      "declarations": [
+        {
+          "name": "entity",
+          "ty": "iroha_data_model::events::data::Entity"
+        },
+        {
+          "name": "status",
+          "ty": "iroha_data_model::events::data::Status"
+        }
+      ]
     }
   },
   "iroha_data_model::events::data::EventFilter": {
-    "TupleStruct": {
-      "types": []
+    "Struct": {
+      "declarations": [
+        {
+          "name": "entity",
+          "ty": "Option<iroha_data_model::events::data::EntityFilter>"
+        },
+        {
+          "name": "status",
+          "ty": "Option<iroha_data_model::events::data::StatusFilter>"
+        }
+      ]
     }
   },
-  "iroha_data_model::events::pipeline::BlockRejectionReason": {
+  "iroha_data_model::events::data::MetadataUpdated": {
     "Enum": {
       "variants": [
         {
-          "name": "ConsensusBlockRejection",
+          "name": "Inserted",
           "discriminant": 0,
           "ty": null
+        },
+        {
+          "name": "Removed",
+          "discriminant": 1,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::Status": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Created",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Updated",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::data::Updated"
+        },
+        {
+          "name": "Deleted",
+          "discriminant": 2,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::StatusFilter": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Created",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Updated",
+          "discriminant": 1,
+          "ty": "Option<iroha_data_model::events::data::Updated>"
+        },
+        {
+          "name": "Deleted",
+          "discriminant": 2,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::Updated": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Metadata",
+          "discriminant": 0,
+          "ty": "iroha_data_model::events::data::MetadataUpdated"
+        },
+        {
+          "name": "Authentication",
+          "discriminant": 1,
+          "ty": null
+        },
+        {
+          "name": "Permission",
+          "discriminant": 2,
+          "ty": null
+        },
+        {
+          "name": "Asset",
+          "discriminant": 3,
+          "ty": "iroha_data_model::events::data::AssetUpdated"
         }
       ]
     }
@@ -716,46 +1207,6 @@
       ]
     }
   },
-  "iroha_data_model::events::pipeline::InstructionExecutionFail": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "instruction",
-          "ty": "iroha_data_model::isi::Instruction"
-        },
-        {
-          "name": "reason",
-          "ty": "String"
-        }
-      ]
-    }
-  },
-  "iroha_data_model::events::pipeline::NotPermittedFail": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "reason",
-          "ty": "String"
-        }
-      ]
-    }
-  },
-  "iroha_data_model::events::pipeline::RejectionReason": {
-    "Enum": {
-      "variants": [
-        {
-          "name": "Block",
-          "discriminant": 0,
-          "ty": "iroha_data_model::events::pipeline::BlockRejectionReason"
-        },
-        {
-          "name": "Transaction",
-          "discriminant": 1,
-          "ty": "iroha_data_model::events::pipeline::TransactionRejectionReason"
-        }
-      ]
-    }
-  },
   "iroha_data_model::events::pipeline::Status": {
     "Enum": {
       "variants": [
@@ -767,53 +1218,12 @@
         {
           "name": "Rejected",
           "discriminant": 1,
-          "ty": "iroha_data_model::events::pipeline::RejectionReason"
+          "ty": "iroha_data_model::transaction::RejectionReason"
         },
         {
           "name": "Committed",
           "discriminant": 2,
           "ty": null
-        }
-      ]
-    }
-  },
-  "iroha_data_model::events::pipeline::TransactionRejectionReason": {
-    "Enum": {
-      "variants": [
-        {
-          "name": "NotPermitted",
-          "discriminant": 0,
-          "ty": "iroha_data_model::events::pipeline::NotPermittedFail"
-        },
-        {
-          "name": "UnsatisfiedSignatureCondition",
-          "discriminant": 1,
-          "ty": "iroha_data_model::events::pipeline::UnsatisfiedSignatureConditionFail"
-        },
-        {
-          "name": "InstructionExecution",
-          "discriminant": 2,
-          "ty": "iroha_data_model::events::pipeline::InstructionExecutionFail"
-        },
-        {
-          "name": "SignatureVerification",
-          "discriminant": 3,
-          "ty": "iroha_crypto::signature::SignatureVerificationFail<iroha_data_model::transaction::Payload>"
-        },
-        {
-          "name": "UnexpectedGenesisAccountSignature",
-          "discriminant": 4,
-          "ty": null
-        }
-      ]
-    }
-  },
-  "iroha_data_model::events::pipeline::UnsatisfiedSignatureConditionFail": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "reason",
-          "ty": "String"
         }
       ]
     }
@@ -926,16 +1336,6 @@
       ]
     }
   },
-  "iroha_data_model::expression::EvaluatesTo<alloc::string::String>": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "expression",
-          "ty": "iroha_data_model::expression::Expression"
-        }
-      ]
-    }
-  },
   "iroha_data_model::expression::EvaluatesTo<alloc::vec::Vec<iroha_data_model::Value>>": {
     "Struct": {
       "declarations": [
@@ -986,6 +1386,16 @@
       ]
     }
   },
+  "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "expression",
+          "ty": "iroha_data_model::expression::Expression"
+        }
+      ]
+    }
+  },
   "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>": {
     "Struct": {
       "declarations": [
@@ -1017,6 +1427,16 @@
     }
   },
   "iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::Id>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "expression",
+          "ty": "iroha_data_model::expression::Expression"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>": {
     "Struct": {
       "declarations": [
         {
@@ -1458,7 +1878,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         }
       ]
     }
@@ -1492,7 +1912,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         },
         {
           "name": "value",
@@ -1534,7 +1954,7 @@
       "declarations": [
         {
           "name": "map",
-          "ty": "BTreeMap<String, iroha_data_model::Value>"
+          "ty": "BTreeMap<iroha_data_model::Name, iroha_data_model::Value>"
         }
       ]
     }
@@ -1568,11 +1988,11 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "String"
+          "ty": "iroha_data_model::Name"
         },
         {
           "name": "params",
-          "ty": "BTreeMap<String, iroha_data_model::Value>"
+          "ty": "BTreeMap<iroha_data_model::Name, iroha_data_model::Value>"
         }
       ]
     }
@@ -1619,9 +2039,9 @@
           "ty": "iroha_data_model::query::account::FindAccountsByName"
         },
         {
-          "name": "FindAccountsByDomainName",
+          "name": "FindAccountsByDomainId",
           "discriminant": 4,
-          "ty": "iroha_data_model::query::account::FindAccountsByDomainName"
+          "ty": "iroha_data_model::query::account::FindAccountsByDomainId"
         },
         {
           "name": "FindAllAssets",
@@ -1654,14 +2074,14 @@
           "ty": "iroha_data_model::query::asset::FindAssetsByAssetDefinitionId"
         },
         {
-          "name": "FindAssetsByDomainName",
+          "name": "FindAssetsByDomainId",
           "discriminant": 11,
-          "ty": "iroha_data_model::query::asset::FindAssetsByDomainName"
+          "ty": "iroha_data_model::query::asset::FindAssetsByDomainId"
         },
         {
-          "name": "FindAssetsByDomainNameAndAssetDefinitionId",
+          "name": "FindAssetsByDomainIdAndAssetDefinitionId",
           "discriminant": 12,
-          "ty": "iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId"
+          "ty": "iroha_data_model::query::asset::FindAssetsByDomainIdAndAssetDefinitionId"
         },
         {
           "name": "FindAssetQuantityById",
@@ -1684,9 +2104,9 @@
           "ty": "iroha_data_model::query::domain::FindAllDomains"
         },
         {
-          "name": "FindDomainByName",
+          "name": "FindDomainById",
           "discriminant": 17,
-          "ty": "iroha_data_model::query::domain::FindDomainByName"
+          "ty": "iroha_data_model::query::domain::FindDomainById"
         },
         {
           "name": "FindDomainKeyValueByIdAndKey",
@@ -1743,7 +2163,7 @@
         {
           "name": "V1",
           "discriminant": 1,
-          "ty": "iroha_data_model::query::_VersionedQueryResultV1"
+          "ty": "iroha_data_model::query::QueryResult"
         }
       ]
     }
@@ -1754,22 +2174,8 @@
         {
           "name": "V1",
           "discriminant": 1,
-          "ty": "iroha_data_model::query::_VersionedSignedQueryRequestV1"
+          "ty": "iroha_data_model::query::SignedQueryRequest"
         }
-      ]
-    }
-  },
-  "iroha_data_model::query::_VersionedQueryResultV1": {
-    "TupleStruct": {
-      "types": [
-        "iroha_data_model::query::QueryResult"
-      ]
-    }
-  },
-  "iroha_data_model::query::_VersionedSignedQueryRequestV1": {
-    "TupleStruct": {
-      "types": [
-        "iroha_data_model::query::SignedQueryRequest"
       ]
     }
   },
@@ -1792,17 +2198,17 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         }
       ]
     }
   },
-  "iroha_data_model::query::account::FindAccountsByDomainName": {
+  "iroha_data_model::query::account::FindAccountsByDomainId": {
     "Struct": {
       "declarations": [
         {
-          "name": "domain_name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "name": "domain_id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>"
         }
       ]
     }
@@ -1812,7 +2218,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         }
       ]
     }
@@ -1851,7 +2257,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         }
       ]
     }
@@ -1865,7 +2271,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         }
       ]
     }
@@ -1900,22 +2306,22 @@
       ]
     }
   },
-  "iroha_data_model::query::asset::FindAssetsByDomainName": {
+  "iroha_data_model::query::asset::FindAssetsByDomainId": {
     "Struct": {
       "declarations": [
         {
-          "name": "domain_name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "name": "domain_id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>"
         }
       ]
     }
   },
-  "iroha_data_model::query::asset::FindAssetsByDomainNameAndAssetDefinitionId": {
+  "iroha_data_model::query::asset::FindAssetsByDomainIdAndAssetDefinitionId": {
     "Struct": {
       "declarations": [
         {
-          "name": "domain_name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "name": "domain_id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>"
         },
         {
           "name": "asset_definition_id",
@@ -1929,7 +2335,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         }
       ]
     }
@@ -1939,12 +2345,12 @@
       "declarations": []
     }
   },
-  "iroha_data_model::query::domain::FindDomainByName": {
+  "iroha_data_model::query::domain::FindDomainById": {
     "Struct": {
       "declarations": [
         {
-          "name": "name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "name": "id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>"
         }
       ]
     }
@@ -1953,12 +2359,12 @@
     "Struct": {
       "declarations": [
         {
-          "name": "name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "name": "id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>"
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<alloc::string::String>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
         }
       ]
     }
@@ -1998,6 +2404,57 @@
       ]
     }
   },
+  "iroha_data_model::transaction::BlockRejectionReason": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "ConsensusBlockRejection",
+          "discriminant": 0,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::transaction::Executable": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Instructions",
+          "discriminant": 0,
+          "ty": "Vec<iroha_data_model::isi::Instruction>"
+        },
+        {
+          "name": "Wasm",
+          "discriminant": 1,
+          "ty": "Vec<u8>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::transaction::InstructionExecutionFail": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "instruction",
+          "ty": "iroha_data_model::isi::Instruction"
+        },
+        {
+          "name": "reason",
+          "ty": "String"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::transaction::NotPermittedFail": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "reason",
+          "ty": "String"
+        }
+      ]
+    }
+  },
   "iroha_data_model::transaction::Payload": {
     "Struct": {
       "declarations": [
@@ -2007,7 +2464,7 @@
         },
         {
           "name": "instructions",
-          "ty": "Vec<iroha_data_model::isi::Instruction>"
+          "ty": "iroha_data_model::transaction::Executable"
         },
         {
           "name": "creation_time",
@@ -2023,7 +2480,7 @@
         },
         {
           "name": "metadata",
-          "ty": "BTreeMap<String, iroha_data_model::Value>"
+          "ty": "BTreeMap<iroha_data_model::Name, iroha_data_model::Value>"
         }
       ]
     }
@@ -2041,7 +2498,23 @@
         },
         {
           "name": "rejection_reason",
-          "ty": "iroha_data_model::events::pipeline::TransactionRejectionReason"
+          "ty": "iroha_data_model::transaction::TransactionRejectionReason"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::transaction::RejectionReason": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Block",
+          "discriminant": 0,
+          "ty": "iroha_data_model::transaction::BlockRejectionReason"
+        },
+        {
+          "name": "Transaction",
+          "discriminant": 1,
+          "ty": "iroha_data_model::transaction::TransactionRejectionReason"
         }
       ]
     }
@@ -2056,6 +2529,42 @@
         {
           "name": "signatures",
           "ty": "BTreeSet<iroha_crypto::signature::Signature>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::transaction::TransactionRejectionReason": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "NotPermitted",
+          "discriminant": 0,
+          "ty": "iroha_data_model::transaction::NotPermittedFail"
+        },
+        {
+          "name": "UnsatisfiedSignatureCondition",
+          "discriminant": 1,
+          "ty": "iroha_data_model::transaction::UnsatisfiedSignatureConditionFail"
+        },
+        {
+          "name": "InstructionExecution",
+          "discriminant": 2,
+          "ty": "iroha_data_model::transaction::InstructionExecutionFail"
+        },
+        {
+          "name": "WasmExecution",
+          "discriminant": 3,
+          "ty": "iroha_data_model::transaction::WasmExecutionFail"
+        },
+        {
+          "name": "SignatureVerification",
+          "discriminant": 4,
+          "ty": "iroha_crypto::signature::SignatureVerificationFail<iroha_data_model::transaction::Payload>"
+        },
+        {
+          "name": "UnexpectedGenesisAccountSignature",
+          "discriminant": 5,
+          "ty": null
         }
       ]
     }
@@ -2076,13 +2585,37 @@
       ]
     }
   },
+  "iroha_data_model::transaction::UnsatisfiedSignatureConditionFail": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "reason",
+          "ty": "String"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::transaction::ValidTransaction": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "payload",
+          "ty": "iroha_data_model::transaction::Payload"
+        },
+        {
+          "name": "signatures",
+          "ty": "iroha_crypto::signature::SignaturesOf<iroha_data_model::transaction::Payload>"
+        }
+      ]
+    }
+  },
   "iroha_data_model::transaction::VersionedRejectedTransaction": {
     "Enum": {
       "variants": [
         {
           "name": "V1",
           "discriminant": 1,
-          "ty": "iroha_data_model::transaction::_VersionedRejectedTransactionV1"
+          "ty": "iroha_data_model::transaction::RejectedTransaction"
         }
       ]
     }
@@ -2093,22 +2626,29 @@
         {
           "name": "V1",
           "discriminant": 1,
-          "ty": "iroha_data_model::transaction::_VersionedTransactionV1"
+          "ty": "iroha_data_model::transaction::Transaction"
         }
       ]
     }
   },
-  "iroha_data_model::transaction::_VersionedRejectedTransactionV1": {
-    "TupleStruct": {
-      "types": [
-        "iroha_data_model::transaction::RejectedTransaction"
+  "iroha_data_model::transaction::VersionedValidTransaction": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "V1",
+          "discriminant": 1,
+          "ty": "iroha_data_model::transaction::ValidTransaction"
+        }
       ]
     }
   },
-  "iroha_data_model::transaction::_VersionedTransactionV1": {
-    "TupleStruct": {
-      "types": [
-        "iroha_data_model::transaction::Transaction"
+  "iroha_data_model::transaction::WasmExecutionFail": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "reason",
+          "ty": "String"
+        }
       ]
     }
   },

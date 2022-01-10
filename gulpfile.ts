@@ -44,7 +44,8 @@ async function prepareIrohaBinaries() {
     await installBinaries(
         {
             gitRepo: 'https://github.com/hyperledger/iroha.git',
-            gitBranch: '2.0.0-pre.1.rc.1',
+            gitBranch: 'iroha2-dev',
+            // gitBranch: '2.0.0-pre.1.rc.1',
             binaryNameMap: {
                 [KnownBinaries.Introspect]: 'iroha_schema_bin',
                 [KnownBinaries.Cli]: 'iroha',
