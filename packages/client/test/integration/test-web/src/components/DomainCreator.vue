@@ -59,15 +59,10 @@ async function register() {
 
         memorizePayloadHash(payload);
 
-        const result = await client.submitTransaction({
+        await client.submitTransaction({
             payload,
             signing: KEY_PAIR,
         });
-
-        // ensure result is ok
-        if (result.is('Err')) {
-            throw result.as('Err');
-        }
     } finally {
         isPending.value = false;
     }

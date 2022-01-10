@@ -5,19 +5,18 @@ import { shallowReactive, shallowRef, computed } from 'vue';
 import { bytesToHex } from 'hada';
 import { client } from '../client';
 
-const events = shallowReactive<
-    {
-        hash: string;
-        status: string;
-    }[]
->([]);
+type EventData = {
+    hash: string;
+    status: string;
+};
+
+const events = shallowReactive<EventData[]>([]);
 
 const currentListener = shallowRef<null | SetupEventsReturn>(null);
+
 const isListening = computed(() => !!currentListener.value);
 
 async function startListening() {
-    console.log('Listening...');
-
     currentListener.value = await client.listenForEvents({
         filter: EventFilter.wrap(
             EventFilter.variantsUnwrapped.Pipeline({

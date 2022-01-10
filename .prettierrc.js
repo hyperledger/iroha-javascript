@@ -44,6 +44,7 @@ module.exports = {
             options: {
                 // decrease printWidth to fit code into snippets in the vitepress
                 printWidth: 90,
+                tabWidth: 2,
             },
         },
     ],
