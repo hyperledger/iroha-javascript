@@ -4,10 +4,10 @@
 
 ```ts
 
-import { CloseEvent as CloseEvent_2 } from 'ws';
+import { CloseEvent as CloseEvent_2 } from '@iroha2/client-isomorphic-ws';
 import Emittery from 'emittery';
-import { ErrorEvent as ErrorEvent_2 } from 'ws';
-import { Event as Event_2 } from '@iroha2/data-model';
+import { Event as Event_2 } from '@iroha2/client-isomorphic-ws';
+import { Event as Event_3 } from '@iroha2/data-model';
 import { EventFilter } from '@iroha2/data-model';
 import { FragmentFromBuilder } from '@iroha2/data-model';
 import { IrohaCryptoInterface } from '@iroha2/crypto-core';
@@ -30,7 +30,7 @@ export class Client {
     makeQuery(params: MakeQueryParams): Promise<MakeQueryResult>;
     setApiURL(url: string): Client;
     setStatusURL(url: string): Client;
-    submitTransaction(params: SubmitTransactionParams): Promise<SubmitTransactionResult>;
+    submitTransaction(params: SubmitTransactionParams): Promise<void>;
 }
 
 // @public (undocumented)
@@ -40,9 +40,9 @@ export interface EventsEmitteryMap {
     // (undocumented)
     close: CloseEvent_2;
     // (undocumented)
-    error: ErrorEvent_2;
+    error: Event_2;
     // (undocumented)
-    event: FragmentFromBuilder<typeof Event_2>;
+    event: FragmentFromBuilder<typeof Event_3>;
 }
 
 // @public (undocumented)
@@ -97,9 +97,6 @@ export interface SubmitTransactionParams {
     // (undocumented)
     signing: KeyPair | KeyPair[];
 }
-
-// @public (undocumented)
-export type SubmitTransactionResult = Result<null, Error>;
 
 // @public (undocumented)
 export function useCrypto(): null | IrohaCryptoInterface;

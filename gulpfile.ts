@@ -1,5 +1,5 @@
 import del from 'del';
-import { series } from 'gulp';
+import { parallel, series } from 'gulp';
 import { $ } from 'zx';
 import { installBinaries, KnownBinaries } from '@iroha2/dev-iroha-bins';
 import { preparePackage } from '@iroha2/test-peer';
@@ -11,6 +11,10 @@ export async function clean() {
 
 async function buildTS() {
     await $`pnpm build:tsc`;
+}
+
+async function buildClientIsomorphicTransports() {
+    await $`pnpm build:isomorphic-ws-and-fetch`;
 }
 
 async function rollup() {
@@ -25,6 +29,8 @@ export async function publishAll() {
         'crypto-target-node',
         'crypto-target-bundler',
         'client',
+        'client-isomorphic-fetch',
+        'client-isomorphic-ws',
         'i64-fixnum',
     ];
 
@@ -35,14 +41,17 @@ export async function publishAll() {
 }
 
 async function prepareIrohaBinaries() {
-    await installBinaries({
-        gitRepo: 'https://github.com/hyperledger/iroha.git',
-        gitBranch: '2.0.0-pre.1.rc.1',
-        binaryNameMap: {
-            [KnownBinaries.Introspect]: 'iroha_schema_bin',
-            [KnownBinaries.Cli]: 'iroha',
+    await installBinaries(
+        {
+            gitRepo: 'https://github.com/hyperledger/iroha.git',
+            gitBranch: '2.0.0-pre.1.rc.1',
+            binaryNameMap: {
+                [KnownBinaries.Introspect]: 'iroha_schema_bin',
+                [KnownBinaries.Cli]: 'iroha',
+            },
         },
-    });
+        { skipInstalled: true },
+    );
 }
 
 async function prepareTestPeer() {
@@ -55,4 +64,4 @@ export { runApiExtractor };
 
 export const runApiExtractorLocal = () => runApiExtractor(true);
 
-export const build = series(clean, buildTS, () => runApiExtractor(), rollup);
+export const build = series(clean, parallel(buildTS, buildClientIsomorphicTransports), () => runApiExtractor(), rollup);

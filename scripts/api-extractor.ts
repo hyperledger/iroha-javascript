@@ -3,6 +3,8 @@ import path from 'path';
 
 const UNSCOPED_PACKAGES_NAMES = [
     'client',
+    'client-isomorphic-ws',
+    'client-isomorphic-fetch',
     'data-model',
     'i64-fixnum',
     'crypto-core',

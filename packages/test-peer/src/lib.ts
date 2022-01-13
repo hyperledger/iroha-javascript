@@ -28,7 +28,7 @@ export interface KillPeerParams {
      *
      * TODO remove not `blocks` dir, but dir, specified in kura config
      */
-    clearSideEffects?: boolean;
+    cleanSideEffects?: boolean;
 }
 
 export interface StartPeerReturn {
@@ -101,7 +101,7 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
         subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 });
 
         await exitPromise;
-        params?.clearSideEffects && (await clearSideEffects());
+        params?.cleanSideEffects && (await cleanSideEffects());
 
         return exitPromise;
     }
@@ -132,9 +132,9 @@ export async function setConfiguration(configs: IrohaConfiguration): Promise<voi
 }
 
 /**
- * Clear config files
+ * Clean config files
  */
-export async function clearConfiguration(): Promise<void> {
+export async function cleanConfiguration(): Promise<void> {
     const rmTarget = path.resolve(TMP_DIR, '*.json');
     await rmWithParams(rmTarget);
 }
@@ -144,7 +144,7 @@ export async function clearConfiguration(): Promise<void> {
  *
  * (Remove `blocks` dir)
  */
-export async function clearSideEffects() {
+export async function cleanSideEffects() {
     const rmTarget = path.resolve(TMP_DIR, 'blocks');
     await rmWithParams(rmTarget);
 }

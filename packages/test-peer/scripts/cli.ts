@@ -1,18 +1,18 @@
 import { cac } from 'cac';
 import consola from 'consola';
-import { clearConfiguration, clearSideEffects, startPeer } from '../src/lib';
+import { cleanConfiguration, cleanSideEffects, startPeer } from '../src/lib';
 import { $ } from 'zx';
 import path from 'path';
 import { TMP_DIR } from '../const';
 
 const cli = cac();
 
-cli.command('clear:configs').action(async () => {
-    await clearConfiguration();
+cli.command('clean:configs').action(async () => {
+    await cleanConfiguration();
 });
 
-cli.command('clear:effects').action(async () => {
-    await clearSideEffects();
+cli.command('clean:effects').action(async () => {
+    await cleanSideEffects();
 });
 
 cli.command('start').action(async () => {

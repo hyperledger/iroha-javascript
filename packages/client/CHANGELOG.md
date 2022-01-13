@@ -1,5 +1,11 @@
 # @iroha2/client
 
+## 0.4.1
+
+### Patch Changes
+
+-   81f5a88: **fix**: use isomorphic implementations of Fetch API and WebSocket API
+
 ## 0.4.0
 
 ### Minor Changes

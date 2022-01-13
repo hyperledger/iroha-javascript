@@ -1,77 +1,73 @@
 import { Client } from '@iroha2/client';
 import { KeyPair } from '@iroha2/crypto-core';
 import {
-    AccountId,
-    AssetDefinition,
-    Expression,
-    FragmentOrBuilderUnwrapped,
-    Instruction,
-    TransactionPayload,
-    Value,
-    IdentifiableBox,
-    OptionU32,
-    AssetValueType,
+  AccountId,
+  AssetDefinition,
+  Expression,
+  FragmentOrBuilderUnwrapped,
+  Instruction,
+  TransactionPayload,
+  Value,
+  IdentifiableBox,
+  OptionU32,
+  AssetValueType,
 } from '@iroha2/data-model';
 
 async function registerAssetDefinition({
-    client,
-    keyPair,
-    accountId,
-    assetDefinition,
+  client,
+  keyPair,
+  accountId,
+  assetDefinition,
 }: {
-    client: Client;
-    keyPair: KeyPair;
-    accountId: FragmentOrBuilderUnwrapped<typeof AccountId>;
-    assetDefinition: FragmentOrBuilderUnwrapped<typeof AssetDefinition>;
+  client: Client;
+  keyPair: KeyPair;
+  accountId: FragmentOrBuilderUnwrapped<typeof AccountId>;
+  assetDefinition: FragmentOrBuilderUnwrapped<typeof AssetDefinition>;
 }): Promise<void> {
-    const instruction = Instruction.variantsUnwrapped.Register({
-        object: {
-            expression: Expression.variantsUnwrapped.Raw(
-                Value.variantsUnwrapped.Identifiable(
-                    IdentifiableBox.variantsUnwrapped.AssetDefinition(assetDefinition),
-                ),
-            ),
-        },
-    });
+  const instruction = Instruction.variantsUnwrapped.Register({
+    object: {
+      expression: Expression.variantsUnwrapped.Raw(
+        Value.variantsUnwrapped.Identifiable(
+          IdentifiableBox.variantsUnwrapped.AssetDefinition(assetDefinition),
+        ),
+      ),
+    },
+  });
 
-    // wrap it all into a payload
-    const payload = TransactionPayload.wrap({
-        account_id: accountId,
-        instructions: [instruction],
-        time_to_live_ms: 100_000n,
-        creation_time: BigInt(Date.now()),
-        metadata: new Map(),
-        nonce: OptionU32.variantsUnwrapped.None,
-    });
+  // wrap it all into a payload
+  const payload = TransactionPayload.wrap({
+    account_id: accountId,
+    instructions: [instruction],
+    time_to_live_ms: 100_000n,
+    creation_time: BigInt(Date.now()),
+    metadata: new Map(),
+    nonce: OptionU32.variantsUnwrapped.None,
+  });
 
-    const result = await client.submitTransaction({
-        signing: keyPair,
-        payload,
-    });
-
-    if (!result.is('Ok')) {
-        throw result.as('Err');
-    }
+  await client.submitTransaction({
+    signing: keyPair,
+    payload,
+  });
 }
 
 registerAssetDefinition({
-    accountId: {
-        name: 'Alice',
-        domain_name: 'Wonderland',
+  accountId: {
+    name: 'Alice',
+    domain_name: 'Wonderland',
+  },
+  assetDefinition: {
+    id: {
+      name: 'xor',
+      domain_name: 'Wonderland',
     },
-    assetDefinition: {
-        id: {
-            name: 'xor',
-            domain_name: 'Wonderland',
-        },
-        value_type: AssetValueType.variantsUnwrapped.Quantity,
-        mintable: false,
-        metadata: {
-            map: new Map(),
-        },
+    value_type: AssetValueType.variantsUnwrapped.Quantity,
+    mintable: false,
+    metadata: {
+      map: new Map(),
     },
+  },
 
-    // for educational purposes
-    client: null as any,
-    keyPair: null as any,
+  // for educational purposes
+  client: null as any,
+  keyPair: null as any,
 });

@@ -2,6 +2,7 @@ module.exports = {
     extends: ['alloy', 'alloy/typescript'],
     rules: {
         'no-promise-executor-return': 'off',
+        'spaced-comment': ['error', 'always', { markers: ['/'] }],
     },
     globals: {
         BigInt: true,
@@ -22,7 +23,10 @@ module.exports = {
             },
         },
         {
-            files: ['**/packages/iroha-crypto/test/web/cypress/**/*.js'],
+            files: [
+                '**/packages/crypto/test/web/cypress/**/*.js',
+                '**/packages/client/test/integration/test-web/cypress/integration/**/*.js',
+            ],
             plugins: ['cypress'],
             env: {
                 'cypress/globals': true,

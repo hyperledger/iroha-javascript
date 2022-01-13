@@ -6,11 +6,14 @@ import {
     VersionedEventSocketMessage,
 } from '@iroha2/data-model';
 import Emittery from 'emittery';
-import WebSocket, { CloseEvent, ErrorEvent } from 'ws';
+import { initWebSocket, CloseEvent, Event as WsEvent, MessageEvent } from '@iroha2/client-isomorphic-ws';
+import Debug from 'debug';
+
+const debug = Debug('@iroha2/client:events');
 
 export interface EventsEmitteryMap {
     close: CloseEvent;
-    error: ErrorEvent;
+    error: WsEvent;
     accepted: undefined;
     event: FragmentFromBuilder<typeof Event>;
 }
@@ -39,7 +42,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     const eeExternal = new Emittery<EventsEmitteryMap>();
 
     const ee = new Emittery<{
-        error: ErrorEvent;
+        error: WsEvent;
         close: CloseEvent;
         subscription_accepted: undefined;
         event: FragmentFromBuilder<typeof Event>;
@@ -50,28 +53,48 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     ee.on('event', (e) => eeExternal.emit('event', e));
     ee.on('subscription_accepted', () => eeExternal.emit('accepted'));
 
-    const socket = new WebSocket(`${transformProtocolInUrlFromHttpToWs(params.toriiApiURL)}/events`);
+    const url = `${transformProtocolInUrlFromHttpToWs(params.toriiApiURL)}/events`;
+    debug('opening connection to %o', url);
 
-    socket.onopen = () => {
-        sendMessage(EventSocketMessage.variants.SubscriptionRequest(params.filter));
-    };
+    const socket = initWebSocket({
+        url,
+        onopen: () => {
+            debug('connection opened, sending subscription request');
+            sendMessage(EventSocketMessage.variants.SubscriptionRequest(params.filter));
+        },
+        onclose: (e) => {
+            debug('connection closed: %o', e);
+            ee.emit('close', e);
+        },
+        onerror: (e) => {
+            debug('connection error: %o', e);
+            ee.emit('error', e);
+        },
+        onmessage: (msg) => handleMessage(msg),
+    });
 
-    socket.onclose = (event) => {
-        ee.emit('close', event);
-    };
+    function handleMessage({ data }: MessageEvent) {
+        if (typeof data === 'string') {
+            console.error(data);
+            throw new Error('Unexpected string data');
+        }
 
-    socket.onerror = (err) => {
-        ee.emit('error', err);
-    };
+        const event = VersionedEventSocketMessage.fromBytes(new Uint8Array(data)).value.as('V1').value;
+
+        if (event.is('SubscriptionAccepted')) {
+            if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
+            debug('subscription accepted');
+            ee.emit('subscription_accepted');
+        } else {
+            ee.emit('event', event.as('Event'));
+            sendMessage(EventSocketMessage.variants.EventReceived);
+        }
+    }
 
     async function close(): Promise<void> {
-        if (socket.readyState === socket.CLOSED) return;
-
-        // At the moment Iroha does not support gracefull connection closing, so
-        // forced termination
-        // Iroha issue: https://github.com/hyperledger/iroha/issues/1195
-        // In future it should be done via `socket.close()`
-        socket.terminate();
+        if (socket.isClosed()) return;
+        debug('closing connection...');
+        socket.close();
         return ee.once('close').then(() => {});
     }
 
@@ -81,29 +104,6 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
     }
 
     let listeningForSubscriptionAccepted = false;
-
-    socket.onmessage = ({ data }) => {
-        if (typeof data === 'string') {
-            console.error(data);
-            throw new Error('Unexpected string data');
-        }
-        if (Array.isArray(data)) {
-            console.error(data);
-            throw new Error('Unexpected array data');
-        }
-
-        const { value: event }: FragmentFromBuilder<typeof EventSocketMessage> = VersionedEventSocketMessage.fromBytes(
-            new Uint8Array(data),
-        ).value.as('V1');
-
-        if (event.is('SubscriptionAccepted')) {
-            if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
-            ee.emit('subscription_accepted');
-        } else {
-            ee.emit('event', event.as('Event'));
-            sendMessage(EventSocketMessage.variants.EventReceived);
-        }
-    };
 
     await new Promise<void>((resolve, reject) => {
         ee.once('subscription_accepted').then(resolve);
