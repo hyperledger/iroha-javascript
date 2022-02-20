@@ -1,6 +1,7 @@
 import {
-    BTreeSetSignature,
+    BTreeSetSignatureOfTransactionPayload,
     Enum,
+    Fragment,
     FragmentFromBuilder,
     QueryPayload,
     Result,
@@ -79,6 +80,13 @@ function makeSignature(keyPair: KeyPair, payload: Uint8Array): FragmentFromBuild
 }
 
 const HEALTHY_RESPONSE = `"Healthy"`;
+
+import { inspect } from 'util';
+
+function tapFragment<T extends Fragment<any, any>>(x: T, label: string): T {
+    // console.log(`${label}:`, inspect(x.unwrap(), false, 999, true));
+    return x;
+}
 
 export class Client {
     public static create(config: UserConfig): Client {
@@ -168,11 +176,14 @@ export class Client {
                 const payloadHash = collect(createHash(payload.bytes));
                 const signatures = normalizeArray(signing).map((x) => makeSignature(x, payloadHash.bytes()));
 
-                txBytes = VersionedTransaction.variants.V1(
-                    Transaction.fromValue({
-                        payload,
-                        signatures: BTreeSetSignature.fromValue(new Set(signatures)),
-                    }),
+                txBytes = tapFragment(
+                    VersionedTransaction.variants.V1(
+                        Transaction.fromValue({
+                            payload,
+                            signatures: BTreeSetSignatureOfTransactionPayload.fromValue(signatures),
+                        }),
+                    ),
+                    'versioned tx',
                 ).bytes;
             });
 
@@ -207,8 +218,9 @@ export class Client {
                 const payloadHash = collect(createHash(payload.bytes));
                 const signature = makeSignature(signing, payloadHash.bytes());
 
-                queryBytes = VersionedSignedQueryRequest.variants.V1(
-                    SignedQueryRequest.fromValue({ payload, signature }),
+                queryBytes = tapFragment(
+                    VersionedSignedQueryRequest.variants.V1(SignedQueryRequest.fromValue({ payload, signature })),
+                    'versioned signed query request',
                 ).bytes;
             });
 
@@ -219,17 +231,15 @@ export class Client {
 
             const { status } = resp;
 
-            if (status === 500) {
-                return Enum.valuable('Err', new Error(`Request failed with message from Iroha: ${await resp.text()}`));
+            if (status >= 400) {
+                return Enum.valuable(
+                    'Err',
+                    new Error(`Request failed with status code ${status}. Text: ${await resp.text()}`),
+                );
             }
 
-            if (status === 400) {
-                return Enum.valuable('Err', new Error(String(await resp.text())));
-            }
-
-            const value: FragmentFromBuilder<typeof Value> = VersionedQueryResult.fromBytes(
-                new Uint8Array(await resp.arrayBuffer()),
-            ).value.as('V1');
+            const bytes = new Uint8Array(await resp.arrayBuffer());
+            const value: FragmentFromBuilder<typeof Value> = VersionedQueryResult.fromBytes(bytes).value.as('V1');
 
             return Enum.valuable('Ok', value);
         } finally {
@@ -263,7 +273,7 @@ export class Client {
     private forceGetToriiTelemetryURL(): string {
         if (!this.toriiTelemetryURL) {
             throw new Error(
-                'It looks like you use some endpoint that requires Torii Status URL to be set, but it is undefined.',
+                'It looks like you use some endpoint that requires Torii Telemetry URL to be set, but it is undefined.',
             );
         }
         return this.toriiTelemetryURL;

@@ -10,7 +10,9 @@ export const API_URL = `http://${window.location.host}/torii`;
 
 export const ACCOUNT_ID = AccountId.defineUnwrap({
     name: 'alice',
-    domain_name: 'wonderland',
+    domain_id: {
+        name: 'wonderlang',
+    },
 });
 
 export const KEY_PAIR = generateKeyPair({

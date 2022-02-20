@@ -1,9 +1,10 @@
 import {
     Event,
     EventFilter,
-    EventSocketMessage,
+    EventSubscriberMessage,
+    VersionedEventPublisherMessage,
+    VersionedEventSubscriberMessage,
     FragmentFromBuilder,
-    VersionedEventSocketMessage,
 } from '@iroha2/data-model';
 import Emittery from 'emittery';
 import { initWebSocket, CloseEvent, Event as WsEvent, MessageEvent } from '@iroha2/client-isomorphic-ws';
@@ -60,7 +61,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         url,
         onopen: () => {
             debug('connection opened, sending subscription request');
-            sendMessage(EventSocketMessage.variants.SubscriptionRequest(params.filter));
+            sendMessage(EventSubscriberMessage.variants.SubscriptionRequest(params.filter));
         },
         onclose: (e) => {
             debug('connection closed: %o', e);
@@ -79,7 +80,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             throw new Error('Unexpected string data');
         }
 
-        const event = VersionedEventSocketMessage.fromBytes(new Uint8Array(data)).value.as('V1').value;
+        const event = VersionedEventPublisherMessage.fromBytes(new Uint8Array(data)).value.as('V1').value;
 
         if (event.is('SubscriptionAccepted')) {
             if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
@@ -87,7 +88,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             ee.emit('subscription_accepted');
         } else {
             ee.emit('event', event.as('Event'));
-            sendMessage(EventSocketMessage.variants.EventReceived);
+            sendMessage(EventSubscriberMessage.variants.EventReceived);
         }
     }
 
@@ -98,8 +99,8 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         return ee.once('close').then(() => {});
     }
 
-    function sendMessage(msg: FragmentFromBuilder<typeof EventSocketMessage>) {
-        const encoded: Uint8Array = VersionedEventSocketMessage.variants.V1(msg).bytes;
+    function sendMessage(msg: FragmentFromBuilder<typeof EventSubscriberMessage>) {
+        const encoded: Uint8Array = VersionedEventSubscriberMessage.variants.V1(msg).bytes;
         socket.send(encoded);
     }
 

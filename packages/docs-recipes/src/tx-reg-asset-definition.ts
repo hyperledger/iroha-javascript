@@ -11,6 +11,7 @@ import {
     IdentifiableBox,
     OptionU32,
     AssetValueType,
+    Executable,
 } from '@iroha2/data-model';
 
 async function registerAssetDefinition({
@@ -37,7 +38,7 @@ async function registerAssetDefinition({
     // wrap it all into a payload
     const payload = TransactionPayload.wrap({
         account_id: accountId,
-        instructions: [instruction],
+        instructions: Executable.variantsUnwrapped.Instructions([instruction]),
         time_to_live_ms: 100_000n,
         creation_time: BigInt(Date.now()),
         metadata: new Map(),
@@ -53,12 +54,16 @@ async function registerAssetDefinition({
 registerAssetDefinition({
     accountId: {
         name: 'Alice',
-        domain_name: 'Wonderland',
+        domain_id: {
+            name: 'Wonderland',
+        },
     },
     assetDefinition: {
         id: {
             name: 'xor',
-            domain_name: 'Wonderland',
+            domain_id: {
+                name: 'Wonderland',
+            },
         },
         value_type: AssetValueType.variantsUnwrapped.Quantity,
         mintable: false,

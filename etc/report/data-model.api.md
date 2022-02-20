@@ -14,7 +14,6 @@ import { Option as Option_2 } from '@scale-codec/definition-runtime';
 import { ScaleArrayBuilder } from '@scale-codec/definition-runtime';
 import { ScaleEnumBuilder } from '@scale-codec/definition-runtime';
 import { ScaleMapBuilder } from '@scale-codec/definition-runtime';
-import { ScaleSetBuilder } from '@scale-codec/definition-runtime';
 import { ScaleStructBuilder } from '@scale-codec/definition-runtime';
 import { Str } from '@scale-codec/definition-runtime';
 import { U128 } from '@scale-codec/definition-runtime';
@@ -35,8 +34,8 @@ export const Account: ScaleStructBuilder<{
 
 // @public (undocumented)
 export const AccountId: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Str>;
-    domain_name: FragmentFromBuilder<typeof Str>;
+    name: FragmentFromBuilder<typeof Name>;
+    domain_id: FragmentFromBuilder<typeof Id>;
 }>;
 
 // @public (undocumented)
@@ -81,6 +80,12 @@ export const AssetId: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const AssetUpdated: ScaleEnumBuilder<Enum<{
+    Received: null;
+    Sent: null;
+}>>;
+
+// @public (undocumented)
 export const AssetValue: ScaleEnumBuilder<Enum<{
     Quantity: Valuable<FragmentFromBuilder<typeof U32>>;
     BigQuantity: Valuable<FragmentFromBuilder<typeof U128>>;
@@ -97,8 +102,32 @@ export const AssetValueType: ScaleEnumBuilder<Enum<{
 }>>;
 
 // @public (undocumented)
+export const BlockHeader: ScaleStructBuilder<{
+    timestamp: FragmentFromBuilder<typeof U128>;
+    height: FragmentFromBuilder<typeof U64>;
+    previous_block_hash: FragmentFromBuilder<typeof HashOfVersionedCommittedBlock>;
+    transactions_hash: FragmentFromBuilder<typeof HashOfMerkleTreeVersionedTransaction>;
+    rejected_transactions_hash: FragmentFromBuilder<typeof HashOfMerkleTreeVersionedTransaction>;
+    view_change_proofs: FragmentFromBuilder<typeof ProofChain>;
+    invalidated_blocks_hashes: FragmentFromBuilder<typeof VecHashOfVersionedValidBlock>;
+    genesis_topology: FragmentFromBuilder<typeof OptionTopology>;
+}>;
+
+// @public (undocumented)
+export const BlockPublisherMessage: ScaleEnumBuilder<Enum<{
+    SubscriptionAccepted: null;
+    Block: Valuable<FragmentFromBuilder<typeof VersionedCommittedBlock>>;
+}>>;
+
+// @public (undocumented)
 export const BlockRejectionReason: ScaleEnumBuilder<Enum<{
     ConsensusBlockRejection: null;
+}>>;
+
+// @public (undocumented)
+export const BlockSubscriberMessage: ScaleEnumBuilder<Enum<{
+    SubscriptionRequest: Valuable<FragmentFromBuilder<typeof U64>>;
+    BlockReceived: null;
 }>>;
 
 // @public (undocumented)
@@ -111,24 +140,46 @@ export const BTreeMapAssetIdAsset: ScaleMapBuilder<Map<FragmentFromBuilder<typeo
 export const BTreeMapDefinitionIdAssetDefinitionEntry: ScaleMapBuilder<Map<FragmentFromBuilder<typeof DefinitionId>, FragmentFromBuilder<typeof AssetDefinitionEntry>>>;
 
 // @public (undocumented)
-export const BTreeMapPublicKeySignature: ScaleMapBuilder<Map<FragmentFromBuilder<typeof PublicKey>, FragmentFromBuilder<typeof Signature>>>;
+export const BTreeMapNameValue: ScaleMapBuilder<Map<FragmentFromBuilder<typeof Name>, FragmentFromBuilder<typeof Value>>>;
+
+// @public (undocumented)
+export const BTreeMapPublicKeySignatureOfCommittedBlock: ScaleMapBuilder<Map<FragmentFromBuilder<typeof PublicKey>, FragmentFromBuilder<typeof SignatureOfCommittedBlock>>>;
+
+// @public (undocumented)
+export const BTreeMapPublicKeySignatureOfProof: ScaleMapBuilder<Map<FragmentFromBuilder<typeof PublicKey>, FragmentFromBuilder<typeof SignatureOfProof>>>;
+
+// @public (undocumented)
+export const BTreeMapPublicKeySignatureOfTransactionPayload: ScaleMapBuilder<Map<FragmentFromBuilder<typeof PublicKey>, FragmentFromBuilder<typeof SignatureOfTransactionPayload>>>;
 
 // @public (undocumented)
 export const BTreeMapStringEvaluatesToValue: ScaleMapBuilder<Map<FragmentFromBuilder<typeof Str>, FragmentFromBuilder<typeof EvaluatesToValue>>>;
 
 // @public (undocumented)
-export const BTreeMapStringValue: ScaleMapBuilder<Map<FragmentFromBuilder<typeof Str>, FragmentFromBuilder<typeof Value>>>;
+export const BTreeSetPermissionToken: ScaleArrayBuilder<FragmentFromBuilder<typeof PermissionToken>[]>;
 
 // @public (undocumented)
-export const BTreeSetPermissionToken: ScaleSetBuilder<Set<FragmentFromBuilder<typeof PermissionToken>>>;
+export const BTreeSetSignatureOfTransactionPayload: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfTransactionPayload>[]>;
 
 // @public (undocumented)
-export const BTreeSetSignature: ScaleSetBuilder<Set<FragmentFromBuilder<typeof Signature>>>;
+export const BTreeSetSignatureOfValidBlock: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfValidBlock>[]>;
 
 // @public (undocumented)
 export const BurnBox: ScaleStructBuilder<{
     object: FragmentFromBuilder<typeof EvaluatesToValue>;
     destination_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
+}>;
+
+// @public (undocumented)
+export const CommittedBlock: ScaleStructBuilder<{
+    header: FragmentFromBuilder<typeof BlockHeader>;
+    rejected_transactions: FragmentFromBuilder<typeof VecVersionedRejectedTransaction>;
+    transactions: FragmentFromBuilder<typeof VecVersionedValidTransaction>;
+    signatures: FragmentFromBuilder<typeof SignaturesOfCommittedBlock>;
+}>;
+
+// @public (undocumented)
+export const CommitTimeout: ScaleStructBuilder<{
+    hash: FragmentFromBuilder<typeof HashOfVersionedValidBlock>;
 }>;
 
 // @public (undocumented)
@@ -155,9 +206,21 @@ export const ContextValue: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const DataEvent: ScaleStructBuilder<{
+    entity: FragmentFromBuilder<typeof Entity>;
+    status: FragmentFromBuilder<typeof Status>;
+}>;
+
+// @public (undocumented)
+export const DataEventFilter: ScaleStructBuilder<{
+    entity: FragmentFromBuilder<typeof OptionEntityFilter>;
+    status: FragmentFromBuilder<typeof OptionStatusFilter>;
+}>;
+
+// @public (undocumented)
 export const DefinitionId: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Str>;
-    domain_name: FragmentFromBuilder<typeof Str>;
+    name: FragmentFromBuilder<typeof Name>;
+    domain_id: FragmentFromBuilder<typeof Id>;
 }>;
 
 // @public (undocumented)
@@ -168,11 +231,30 @@ export const Divide: ScaleStructBuilder<{
 
 // @public (undocumented)
 export const Domain: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Str>;
+    id: FragmentFromBuilder<typeof Id>;
     accounts: FragmentFromBuilder<typeof BTreeMapAccountIdAccount>;
     asset_definitions: FragmentFromBuilder<typeof BTreeMapDefinitionIdAssetDefinitionEntry>;
     metadata: FragmentFromBuilder<typeof Metadata>;
+    logo: FragmentFromBuilder<typeof OptionIpfsPath>;
 }>;
+
+// @public (undocumented)
+export const Entity: ScaleEnumBuilder<Enum<{
+    Account: Valuable<FragmentFromBuilder<typeof AccountId>>;
+    AssetDefinition: Valuable<FragmentFromBuilder<typeof DefinitionId>>;
+    Asset: Valuable<FragmentFromBuilder<typeof AssetId>>;
+    Domain: Valuable<FragmentFromBuilder<typeof Id>>;
+    Peer: Valuable<FragmentFromBuilder<typeof PeerId>>;
+}>>;
+
+// @public (undocumented)
+export const EntityFilter: ScaleEnumBuilder<Enum<{
+    Account: Valuable<FragmentFromBuilder<typeof OptionAccountId>>;
+    AssetDefinition: Valuable<FragmentFromBuilder<typeof OptionDefinitionId>>;
+    Asset: Valuable<FragmentFromBuilder<typeof OptionAssetId>>;
+    Domain: Valuable<FragmentFromBuilder<typeof OptionId>>;
+    Peer: Valuable<FragmentFromBuilder<typeof OptionPeerId>>;
+}>>;
 
 // @public (undocumented)
 export const EntityType: ScaleEnumBuilder<Enum<{
@@ -212,6 +294,11 @@ export const EvaluatesToHash: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const EvaluatesToId: ScaleStructBuilder<{
+    expression: FragmentFromBuilder<typeof Expression>;
+}>;
+
+// @public (undocumented)
 export const EvaluatesToIdBox: ScaleStructBuilder<{
     expression: FragmentFromBuilder<typeof Expression>;
 }>;
@@ -222,7 +309,7 @@ export const EvaluatesToIdentifiableBox: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
-export const EvaluatesToString: ScaleStructBuilder<{
+export const EvaluatesToName: ScaleStructBuilder<{
     expression: FragmentFromBuilder<typeof Expression>;
 }>;
 
@@ -244,22 +331,32 @@ export const EvaluatesToVecValue: ScaleStructBuilder<{
 // @public (undocumented)
 const Event_2: ScaleEnumBuilder<Enum<{
     Pipeline: Valuable<FragmentFromBuilder<typeof PipelineEvent>>;
-    Data: Valuable<FragmentFromBuilder<typeof Void>>;
+    Data: Valuable<FragmentFromBuilder<typeof DataEvent>>;
 }>>;
 export { Event_2 as Event }
 
 // @public (undocumented)
 export const EventFilter: ScaleEnumBuilder<Enum<{
     Pipeline: Valuable<FragmentFromBuilder<typeof PipelineEventFilter>>;
-    Data: Valuable<FragmentFromBuilder<typeof Void>>;
+    Data: Valuable<FragmentFromBuilder<typeof DataEventFilter>>;
 }>>;
 
 // @public (undocumented)
-export const EventSocketMessage: ScaleEnumBuilder<Enum<{
-    SubscriptionRequest: Valuable<FragmentFromBuilder<typeof SubscriptionRequest>>;
+export const EventPublisherMessage: ScaleEnumBuilder<Enum<{
     SubscriptionAccepted: null;
     Event: Valuable<FragmentFromBuilder<typeof Event_2>>;
+}>>;
+
+// @public (undocumented)
+export const EventSubscriberMessage: ScaleEnumBuilder<Enum<{
+    SubscriptionRequest: Valuable<FragmentFromBuilder<typeof EventFilter>>;
     EventReceived: null;
+}>>;
+
+// @public (undocumented)
+export const Executable: ScaleEnumBuilder<Enum<{
+    Instructions: Valuable<FragmentFromBuilder<typeof VecInstruction>>;
+    Wasm: Valuable<FragmentFromBuilder<typeof WasmSmartContract>>;
 }>>;
 
 // @public (undocumented)
@@ -306,17 +403,17 @@ export const FindAccountById: ScaleStructBuilder<{
 // @public (undocumented)
 export const FindAccountKeyValueByIdAndKey: ScaleStructBuilder<{
     id: FragmentFromBuilder<typeof EvaluatesToAccountId>;
-    key: FragmentFromBuilder<typeof EvaluatesToString>;
+    key: FragmentFromBuilder<typeof EvaluatesToName>;
 }>;
 
 // @public (undocumented)
-export const FindAccountsByDomainName: ScaleStructBuilder<{
-    domain_name: FragmentFromBuilder<typeof EvaluatesToString>;
+export const FindAccountsByDomainId: ScaleStructBuilder<{
+    domain_id: FragmentFromBuilder<typeof EvaluatesToId>;
 }>;
 
 // @public (undocumented)
 export const FindAccountsByName: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof EvaluatesToString>;
+    name: FragmentFromBuilder<typeof EvaluatesToName>;
 }>;
 
 // @public (undocumented)
@@ -327,13 +424,13 @@ export const FindAssetById: ScaleStructBuilder<{
 // @public (undocumented)
 export const FindAssetDefinitionKeyValueByIdAndKey: ScaleStructBuilder<{
     id: FragmentFromBuilder<typeof EvaluatesToDefinitionId>;
-    key: FragmentFromBuilder<typeof EvaluatesToString>;
+    key: FragmentFromBuilder<typeof EvaluatesToName>;
 }>;
 
 // @public (undocumented)
 export const FindAssetKeyValueByIdAndKey: ScaleStructBuilder<{
     id: FragmentFromBuilder<typeof EvaluatesToAssetId>;
-    key: FragmentFromBuilder<typeof EvaluatesToString>;
+    key: FragmentFromBuilder<typeof EvaluatesToName>;
 }>;
 
 // @public (undocumented)
@@ -352,30 +449,30 @@ export const FindAssetsByAssetDefinitionId: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
-export const FindAssetsByDomainName: ScaleStructBuilder<{
-    domain_name: FragmentFromBuilder<typeof EvaluatesToString>;
+export const FindAssetsByDomainId: ScaleStructBuilder<{
+    domain_id: FragmentFromBuilder<typeof EvaluatesToId>;
 }>;
 
 // @public (undocumented)
-export const FindAssetsByDomainNameAndAssetDefinitionId: ScaleStructBuilder<{
-    domain_name: FragmentFromBuilder<typeof EvaluatesToString>;
+export const FindAssetsByDomainIdAndAssetDefinitionId: ScaleStructBuilder<{
+    domain_id: FragmentFromBuilder<typeof EvaluatesToId>;
     asset_definition_id: FragmentFromBuilder<typeof EvaluatesToDefinitionId>;
 }>;
 
 // @public (undocumented)
 export const FindAssetsByName: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof EvaluatesToString>;
+    name: FragmentFromBuilder<typeof EvaluatesToName>;
 }>;
 
 // @public (undocumented)
-export const FindDomainByName: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof EvaluatesToString>;
+export const FindDomainById: ScaleStructBuilder<{
+    id: FragmentFromBuilder<typeof EvaluatesToId>;
 }>;
 
 // @public (undocumented)
 export const FindDomainKeyValueByIdAndKey: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof EvaluatesToString>;
-    key: FragmentFromBuilder<typeof EvaluatesToString>;
+    id: FragmentFromBuilder<typeof EvaluatesToId>;
+    key: FragmentFromBuilder<typeof EvaluatesToName>;
 }>;
 
 // @public (undocumented)
@@ -420,11 +517,34 @@ export const Greater: ScaleStructBuilder<{
 export const Hash: typeof ArrayU8L32;
 
 // @public (undocumented)
+export const HashOfMerkleTreeVersionedTransaction: typeof Hash;
+
+// @public (undocumented)
+export const HashOfNodeVersionedTransaction: typeof Hash;
+
+// @public (undocumented)
+export const HashOfProof: typeof Hash;
+
+// @public (undocumented)
+export const HashOfVersionedCommittedBlock: typeof Hash;
+
+// @public (undocumented)
+export const HashOfVersionedTransaction: typeof Hash;
+
+// @public (undocumented)
+export const HashOfVersionedValidBlock: typeof Hash;
+
+// @public (undocumented)
+export const Id: ScaleStructBuilder<{
+    name: FragmentFromBuilder<typeof Name>;
+}>;
+
+// @public (undocumented)
 export const IdBox: ScaleEnumBuilder<Enum<{
     AccountId: Valuable<FragmentFromBuilder<typeof AccountId>>;
     AssetId: Valuable<FragmentFromBuilder<typeof AssetId>>;
     AssetDefinitionId: Valuable<FragmentFromBuilder<typeof DefinitionId>>;
-    DomainName: Valuable<FragmentFromBuilder<typeof Str>>;
+    DomainId: Valuable<FragmentFromBuilder<typeof Id>>;
     PeerId: Valuable<FragmentFromBuilder<typeof PeerId>>;
     WorldId: null;
 }>>;
@@ -454,6 +574,7 @@ export const Instruction: ScaleEnumBuilder<Enum<{
     SetKeyValue: Valuable<FragmentFromBuilder<typeof SetKeyValueBox>>;
     RemoveKeyValue: Valuable<FragmentFromBuilder<typeof RemoveKeyValueBox>>;
     Grant: Valuable<FragmentFromBuilder<typeof GrantBox>>;
+    Revoke: Valuable<FragmentFromBuilder<typeof RevokeBox>>;
 }>>;
 
 // @public (undocumented)
@@ -463,10 +584,18 @@ export const InstructionExecutionFail: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const IpfsPath: typeof Str;
+
+// @public (undocumented)
 export const IsiIf: ScaleStructBuilder<{
     condition: FragmentFromBuilder<typeof EvaluatesToBool>;
     then: FragmentFromBuilder<typeof Instruction>;
     otherwise: FragmentFromBuilder<typeof OptionInstruction>;
+}>;
+
+// @public (undocumented)
+export const LeafVersionedTransaction: ScaleStructBuilder<{
+    hash: FragmentFromBuilder<typeof HashOfVersionedTransaction>;
 }>;
 
 // @public (undocumented)
@@ -476,9 +605,20 @@ export const Less: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
-export const Metadata: ScaleStructBuilder<{
-    map: FragmentFromBuilder<typeof BTreeMapStringValue>;
+export const MerkleTreeVersionedTransaction: ScaleStructBuilder<{
+    root_node: FragmentFromBuilder<typeof NodeVersionedTransaction>;
 }>;
+
+// @public (undocumented)
+export const Metadata: ScaleStructBuilder<{
+    map: FragmentFromBuilder<typeof BTreeMapNameValue>;
+}>;
+
+// @public (undocumented)
+export const MetadataUpdated: ScaleEnumBuilder<Enum<{
+    Inserted: null;
+    Removed: null;
+}>>;
 
 // @public (undocumented)
 export const MintBox: ScaleStructBuilder<{
@@ -499,11 +639,21 @@ export const Multiply: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const Name: typeof Str;
+
+// @public (undocumented)
 export const NewAccount: ScaleStructBuilder<{
     id: FragmentFromBuilder<typeof AccountId>;
     signatories: FragmentFromBuilder<typeof VecPublicKey>;
     metadata: FragmentFromBuilder<typeof Metadata>;
 }>;
+
+// @public (undocumented)
+export const NodeVersionedTransaction: ScaleEnumBuilder<Enum<{
+    Subtree: Valuable<FragmentFromBuilder<typeof SubtreeVersionedTransaction>>;
+    Leaf: Valuable<FragmentFromBuilder<typeof LeafVersionedTransaction>>;
+    Empty: null;
+}>>;
 
 // @public (undocumented)
 export const Not: ScaleStructBuilder<{
@@ -516,16 +666,46 @@ export const NotPermittedFail: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const OptionAccountId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof AccountId>>>;
+
+// @public (undocumented)
+export const OptionAssetId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof AssetId>>>;
+
+// @public (undocumented)
+export const OptionDefinitionId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof DefinitionId>>>;
+
+// @public (undocumented)
+export const OptionEntityFilter: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof EntityFilter>>>;
+
+// @public (undocumented)
 export const OptionEntityType: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof EntityType>>>;
 
 // @public (undocumented)
 export const OptionHash: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Hash>>>;
 
 // @public (undocumented)
+export const OptionId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Id>>>;
+
+// @public (undocumented)
 export const OptionInstruction: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Instruction>>>;
 
 // @public (undocumented)
+export const OptionIpfsPath: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof IpfsPath>>>;
+
+// @public (undocumented)
+export const OptionPeerId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof PeerId>>>;
+
+// @public (undocumented)
+export const OptionStatusFilter: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof StatusFilter>>>;
+
+// @public (undocumented)
+export const OptionTopology: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Topology>>>;
+
+// @public (undocumented)
 export const OptionU32: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof U32>>>;
+
+// @public (undocumented)
+export const OptionUpdated: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Updated>>>;
 
 // @public (undocumented)
 export const Or: ScaleStructBuilder<{
@@ -560,8 +740,8 @@ export const PeerId: ScaleStructBuilder<{
 
 // @public (undocumented)
 export const PermissionToken: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Str>;
-    params: FragmentFromBuilder<typeof BTreeMapStringValue>;
+    name: FragmentFromBuilder<typeof Name>;
+    params: FragmentFromBuilder<typeof BTreeMapNameValue>;
 }>;
 
 // @public (undocumented)
@@ -578,6 +758,24 @@ export const PipelineEventFilter: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const Proof: ScaleStructBuilder<{
+    payload: FragmentFromBuilder<typeof ProofPayload>;
+    signatures: FragmentFromBuilder<typeof SignaturesOfProof>;
+}>;
+
+// @public (undocumented)
+export const ProofChain: ScaleStructBuilder<{
+    proofs: FragmentFromBuilder<typeof VecProof>;
+}>;
+
+// @public (undocumented)
+export const ProofPayload: ScaleStructBuilder<{
+    previous_proof: FragmentFromBuilder<typeof HashOfProof>;
+    latest_block: FragmentFromBuilder<typeof HashOfVersionedCommittedBlock>;
+    reason: FragmentFromBuilder<typeof Reason>;
+}>;
+
+// @public (undocumented)
 export const PublicKey: ScaleStructBuilder<{
     digest_function: FragmentFromBuilder<typeof Str>;
     payload: FragmentFromBuilder<typeof BytesVec>;
@@ -589,20 +787,20 @@ export const QueryBox: ScaleEnumBuilder<Enum<{
     FindAccountById: Valuable<FragmentFromBuilder<typeof FindAccountById>>;
     FindAccountKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindAccountKeyValueByIdAndKey>>;
     FindAccountsByName: Valuable<FragmentFromBuilder<typeof FindAccountsByName>>;
-    FindAccountsByDomainName: Valuable<FragmentFromBuilder<typeof FindAccountsByDomainName>>;
+    FindAccountsByDomainId: Valuable<FragmentFromBuilder<typeof FindAccountsByDomainId>>;
     FindAllAssets: Valuable<FragmentFromBuilder<typeof Void>>;
     FindAllAssetsDefinitions: Valuable<FragmentFromBuilder<typeof Void>>;
     FindAssetById: Valuable<FragmentFromBuilder<typeof FindAssetById>>;
     FindAssetsByName: Valuable<FragmentFromBuilder<typeof FindAssetsByName>>;
     FindAssetsByAccountId: Valuable<FragmentFromBuilder<typeof FindAssetsByAccountId>>;
     FindAssetsByAssetDefinitionId: Valuable<FragmentFromBuilder<typeof FindAssetsByAssetDefinitionId>>;
-    FindAssetsByDomainName: Valuable<FragmentFromBuilder<typeof FindAssetsByDomainName>>;
-    FindAssetsByDomainNameAndAssetDefinitionId: Valuable<FragmentFromBuilder<typeof FindAssetsByDomainNameAndAssetDefinitionId>>;
+    FindAssetsByDomainId: Valuable<FragmentFromBuilder<typeof FindAssetsByDomainId>>;
+    FindAssetsByDomainIdAndAssetDefinitionId: Valuable<FragmentFromBuilder<typeof FindAssetsByDomainIdAndAssetDefinitionId>>;
     FindAssetQuantityById: Valuable<FragmentFromBuilder<typeof FindAssetQuantityById>>;
     FindAssetKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindAssetKeyValueByIdAndKey>>;
     FindAssetDefinitionKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindAssetDefinitionKeyValueByIdAndKey>>;
     FindAllDomains: Valuable<FragmentFromBuilder<typeof Void>>;
-    FindDomainByName: Valuable<FragmentFromBuilder<typeof FindDomainByName>>;
+    FindDomainById: Valuable<FragmentFromBuilder<typeof FindDomainById>>;
     FindDomainKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindDomainKeyValueByIdAndKey>>;
     FindAllPeers: Valuable<FragmentFromBuilder<typeof Void>>;
     FindTransactionsByAccountId: Valuable<FragmentFromBuilder<typeof FindTransactionsByAccountId>>;
@@ -632,6 +830,13 @@ export const RawGenesisBlock: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const Reason: ScaleEnumBuilder<Enum<{
+    CommitTimeout: Valuable<FragmentFromBuilder<typeof CommitTimeout>>;
+    NoTransactionReceiptReceived: Valuable<FragmentFromBuilder<typeof Void>>;
+    BlockCreationTimeout: Valuable<FragmentFromBuilder<typeof Void>>;
+}>>;
+
+// @public (undocumented)
 export const RegisterBox: ScaleStructBuilder<{
     object: FragmentFromBuilder<typeof EvaluatesToIdentifiableBox>;
 }>;
@@ -652,7 +857,13 @@ export const RejectionReason: ScaleEnumBuilder<Enum<{
 // @public (undocumented)
 export const RemoveKeyValueBox: ScaleStructBuilder<{
     object_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-    key: FragmentFromBuilder<typeof EvaluatesToString>;
+    key: FragmentFromBuilder<typeof EvaluatesToName>;
+}>;
+
+// @public (undocumented)
+export const RevokeBox: ScaleStructBuilder<{
+    object: FragmentFromBuilder<typeof EvaluatesToValue>;
+    destination_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
 }>;
 
 // @public (undocumented)
@@ -661,14 +872,9 @@ export const SequenceBox: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
-export const SetBox: ScaleStructBuilder<{
-    object: FragmentFromBuilder<typeof EvaluatesToValue>;
-}>;
-
-// @public (undocumented)
 export const SetKeyValueBox: ScaleStructBuilder<{
     object_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-    key: FragmentFromBuilder<typeof EvaluatesToString>;
+    key: FragmentFromBuilder<typeof EvaluatesToName>;
     value: FragmentFromBuilder<typeof EvaluatesToValue>;
 }>;
 
@@ -682,20 +888,39 @@ export const Signature: ScaleStructBuilder<{
 export const SignatureCheckCondition: typeof EvaluatesToBool;
 
 // @public (undocumented)
-export const SignaturesOfTransactionPayload: ScaleStructBuilder<{
-    signatures: FragmentFromBuilder<typeof BTreeMapPublicKeySignature>;
+export const SignatureOfCommittedBlock: typeof Signature;
+
+// @public (undocumented)
+export const SignatureOfProof: typeof Signature;
+
+// @public (undocumented)
+export const SignatureOfQueryPayload: typeof Signature;
+
+// @public (undocumented)
+export const SignatureOfTransactionPayload: typeof Signature;
+
+// @public (undocumented)
+export const SignatureOfValidBlock: typeof Signature;
+
+// @public (undocumented)
+export const SignaturesOfCommittedBlock: ScaleStructBuilder<{
+    signatures: FragmentFromBuilder<typeof BTreeMapPublicKeySignatureOfCommittedBlock>;
 }>;
 
 // @public (undocumented)
-export const SignatureVerificationFailTransactionPayload: ScaleStructBuilder<{
-    signature: FragmentFromBuilder<typeof Signature>;
-    reason: FragmentFromBuilder<typeof Str>;
+export const SignaturesOfProof: ScaleStructBuilder<{
+    signatures: FragmentFromBuilder<typeof BTreeMapPublicKeySignatureOfProof>;
+}>;
+
+// @public (undocumented)
+export const SignaturesOfTransactionPayload: ScaleStructBuilder<{
+    signatures: FragmentFromBuilder<typeof BTreeMapPublicKeySignatureOfTransactionPayload>;
 }>;
 
 // @public (undocumented)
 export const SignedQueryRequest: ScaleStructBuilder<{
     payload: FragmentFromBuilder<typeof QueryPayload>;
-    signature: FragmentFromBuilder<typeof Signature>;
+    signature: FragmentFromBuilder<typeof SignatureOfQueryPayload>;
 }>;
 
 // @public (undocumented)
@@ -706,7 +931,11 @@ export const Status: ScaleEnumBuilder<Enum<{
 }>>;
 
 // @public (undocumented)
-export const SubscriptionRequest: typeof EventFilter;
+export const StatusFilter: ScaleEnumBuilder<Enum<{
+    Created: null;
+    Updated: Valuable<FragmentFromBuilder<typeof OptionUpdated>>;
+    Deleted: null;
+}>>;
 
 // @public (undocumented)
 export const Subtract: ScaleStructBuilder<{
@@ -715,27 +944,46 @@ export const Subtract: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const SubtreeVersionedTransaction: ScaleStructBuilder<{
+    left: FragmentFromBuilder<typeof NodeVersionedTransaction>;
+    right: FragmentFromBuilder<typeof NodeVersionedTransaction>;
+    hash: FragmentFromBuilder<typeof HashOfNodeVersionedTransaction>;
+}>;
+
+// @public (undocumented)
+export const Topology: ScaleStructBuilder<{
+    sorted_peers: FragmentFromBuilder<typeof VecPeerId>;
+    reshuffle_after_n_view_changes: FragmentFromBuilder<typeof U64>;
+    at_block: FragmentFromBuilder<typeof HashOfVersionedCommittedBlock>;
+    view_change_proofs: FragmentFromBuilder<typeof ProofChain>;
+}>;
+
+// @public (undocumented)
 export const Transaction: ScaleStructBuilder<{
     payload: FragmentFromBuilder<typeof TransactionPayload>;
-    signatures: FragmentFromBuilder<typeof BTreeSetSignature>;
+    signatures: FragmentFromBuilder<typeof BTreeSetSignatureOfTransactionPayload>;
 }>;
+
+// @public (undocumented)
+export const TransactionLimitError: typeof Str;
 
 // @public (undocumented)
 export const TransactionPayload: ScaleStructBuilder<{
     account_id: FragmentFromBuilder<typeof AccountId>;
-    instructions: FragmentFromBuilder<typeof VecInstruction>;
+    instructions: FragmentFromBuilder<typeof Executable>;
     creation_time: FragmentFromBuilder<typeof U64>;
     time_to_live_ms: FragmentFromBuilder<typeof U64>;
     nonce: FragmentFromBuilder<typeof OptionU32>;
-    metadata: FragmentFromBuilder<typeof BTreeMapStringValue>;
+    metadata: FragmentFromBuilder<typeof BTreeMapNameValue>;
 }>;
 
 // @public (undocumented)
 export const TransactionRejectionReason: ScaleEnumBuilder<Enum<{
     NotPermitted: Valuable<FragmentFromBuilder<typeof NotPermittedFail>>;
     UnsatisfiedSignatureCondition: Valuable<FragmentFromBuilder<typeof UnsatisfiedSignatureConditionFail>>;
+    LimitCheck: Valuable<FragmentFromBuilder<typeof TransactionLimitError>>;
     InstructionExecution: Valuable<FragmentFromBuilder<typeof InstructionExecutionFail>>;
-    SignatureVerification: Valuable<FragmentFromBuilder<typeof SignatureVerificationFailTransactionPayload>>;
+    WasmExecution: Valuable<FragmentFromBuilder<typeof WasmExecutionFail>>;
     UnexpectedGenesisAccountSignature: null;
 }>>;
 
@@ -763,13 +1011,37 @@ export const UnsatisfiedSignatureConditionFail: ScaleStructBuilder<{
 }>;
 
 // @public (undocumented)
+export const Updated: ScaleEnumBuilder<Enum<{
+    Metadata: Valuable<FragmentFromBuilder<typeof MetadataUpdated>>;
+    Authentication: null;
+    Permission: null;
+    Asset: Valuable<FragmentFromBuilder<typeof AssetUpdated>>;
+}>>;
+
+// @public (undocumented)
+export const ValidBlock: ScaleStructBuilder<{
+    header: FragmentFromBuilder<typeof BlockHeader>;
+    rejected_transactions: FragmentFromBuilder<typeof VecVersionedRejectedTransaction>;
+    transactions: FragmentFromBuilder<typeof VecVersionedValidTransaction>;
+    signatures: FragmentFromBuilder<typeof BTreeSetSignatureOfValidBlock>;
+}>;
+
+// @public (undocumented)
+export const ValidTransaction: ScaleStructBuilder<{
+    payload: FragmentFromBuilder<typeof TransactionPayload>;
+    signatures: FragmentFromBuilder<typeof SignaturesOfTransactionPayload>;
+}>;
+
+// @public (undocumented)
 export const Value: ScaleEnumBuilder<Enum<{
     U32: Valuable<FragmentFromBuilder<typeof U32>>;
     U128: Valuable<FragmentFromBuilder<typeof U128>>;
     Bool: Valuable<FragmentFromBuilder<typeof Bool>>;
     String: Valuable<FragmentFromBuilder<typeof Str>>;
+    Name: Valuable<FragmentFromBuilder<typeof Name>>;
     Fixed: Valuable<FragmentFromBuilder<typeof Fixed>>;
     Vec: Valuable<FragmentFromBuilder<typeof VecValue>>;
+    LimitedMetadata: Valuable<FragmentFromBuilder<typeof Metadata>>;
     Id: Valuable<FragmentFromBuilder<typeof IdBox>>;
     Identifiable: Valuable<FragmentFromBuilder<typeof IdentifiableBox>>;
     PublicKey: Valuable<FragmentFromBuilder<typeof PublicKey>>;
@@ -784,67 +1056,110 @@ export const Value: ScaleEnumBuilder<Enum<{
 export const VecGenesisTransaction: ScaleArrayBuilder<FragmentFromBuilder<typeof GenesisTransaction>[]>;
 
 // @public (undocumented)
+export const VecHashOfVersionedValidBlock: ScaleArrayBuilder<FragmentFromBuilder<typeof HashOfVersionedValidBlock>[]>;
+
+// @public (undocumented)
 export const VecInstruction: ScaleArrayBuilder<FragmentFromBuilder<typeof Instruction>[]>;
+
+// @public (undocumented)
+export const VecPeerId: ScaleArrayBuilder<FragmentFromBuilder<typeof PeerId>[]>;
 
 // @public (undocumented)
 export const VecPermissionToken: ScaleArrayBuilder<FragmentFromBuilder<typeof PermissionToken>[]>;
 
 // @public (undocumented)
+export const VecProof: ScaleArrayBuilder<FragmentFromBuilder<typeof Proof>[]>;
+
+// @public (undocumented)
 export const VecPublicKey: ScaleArrayBuilder<FragmentFromBuilder<typeof PublicKey>[]>;
 
 // @public (undocumented)
-export const VecSignature: ScaleArrayBuilder<FragmentFromBuilder<typeof Signature>[]>;
+export const VecSignatureOfTransactionPayload: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfTransactionPayload>[]>;
+
+// @public (undocumented)
+export const VecSignatureOfValidBlock: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfValidBlock>[]>;
 
 // @public (undocumented)
 export const VecValue: ScaleArrayBuilder<FragmentFromBuilder<typeof Value>[]>;
 
 // @public (undocumented)
-export const VersionedEventSocketMessage: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof VersionedEventSocketMessageV1>>;
+export const VecVersionedRejectedTransaction: ScaleArrayBuilder<FragmentFromBuilder<typeof VersionedRejectedTransaction>[]>;
+
+// @public (undocumented)
+export const VecVersionedValidTransaction: ScaleArrayBuilder<FragmentFromBuilder<typeof VersionedValidTransaction>[]>;
+
+// @public (undocumented)
+export const VersionedBlockPublisherMessage: ScaleEnumBuilder<Enum<{
+    V1: Valuable<FragmentFromBuilder<typeof BlockPublisherMessage>>;
 }>>;
 
 // @public (undocumented)
-export const VersionedEventSocketMessageV1: typeof EventSocketMessage;
+export const VersionedBlockSubscriberMessage: ScaleEnumBuilder<Enum<{
+    V1: Valuable<FragmentFromBuilder<typeof BlockSubscriberMessage>>;
+}>>;
+
+// @public (undocumented)
+export const VersionedCommittedBlock: ScaleEnumBuilder<Enum<{
+    V1: Valuable<FragmentFromBuilder<typeof CommittedBlock>>;
+}>>;
+
+// @public (undocumented)
+export const VersionedEventPublisherMessage: ScaleEnumBuilder<Enum<{
+    V1: Valuable<FragmentFromBuilder<typeof EventPublisherMessage>>;
+}>>;
+
+// @public (undocumented)
+export const VersionedEventSubscriberMessage: ScaleEnumBuilder<Enum<{
+    V1: Valuable<FragmentFromBuilder<typeof EventSubscriberMessage>>;
+}>>;
 
 // @public (undocumented)
 export const VersionedQueryResult: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof VersionedQueryResultV1>>;
+    V1: Valuable<FragmentFromBuilder<typeof QueryResult>>;
 }>>;
-
-// @public (undocumented)
-export const VersionedQueryResultV1: typeof QueryResult;
 
 // @public (undocumented)
 export const VersionedRejectedTransaction: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof VersionedRejectedTransactionV1>>;
+    V1: Valuable<FragmentFromBuilder<typeof RejectedTransaction>>;
 }>>;
-
-// @public (undocumented)
-export const VersionedRejectedTransactionV1: typeof RejectedTransaction;
 
 // @public (undocumented)
 export const VersionedSignedQueryRequest: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof VersionedSignedQueryRequestV1>>;
+    V1: Valuable<FragmentFromBuilder<typeof SignedQueryRequest>>;
 }>>;
-
-// @public (undocumented)
-export const VersionedSignedQueryRequestV1: typeof SignedQueryRequest;
 
 // @public (undocumented)
 export const VersionedTransaction: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof VersionedTransactionV1>>;
+    V1: Valuable<FragmentFromBuilder<typeof Transaction>>;
 }>>;
 
 // @public (undocumented)
-export const VersionedTransactionV1: typeof Transaction;
+export const VersionedValidBlock: ScaleEnumBuilder<Enum<{
+    V1: Valuable<FragmentFromBuilder<typeof ValidBlock>>;
+}>>;
 
-export { Void as DataEvent }
-export { Void as DataEventFilter }
+// @public (undocumented)
+export const VersionedValidTransaction: ScaleEnumBuilder<Enum<{
+    V1: Valuable<FragmentFromBuilder<typeof ValidTransaction>>;
+}>>;
+
+export { Void as BlockCreationTimeout }
 export { Void as FindAllAccounts }
 export { Void as FindAllAssets }
 export { Void as FindAllAssetsDefinitions }
 export { Void as FindAllDomains }
 export { Void as FindAllPeers }
+export { Void as NoTransactionReceiptReceived }
+
+// @public (undocumented)
+export const WasmExecutionFail: ScaleStructBuilder<{
+    reason: FragmentFromBuilder<typeof Str>;
+}>;
+
+// @public (undocumented)
+export const WasmSmartContract: ScaleStructBuilder<{
+    raw_data: FragmentFromBuilder<typeof BytesVec>;
+}>;
 
 // @public (undocumented)
 export const Where: ScaleStructBuilder<{

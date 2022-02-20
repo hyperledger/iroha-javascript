@@ -44,7 +44,6 @@ export interface StartPeerReturn {
 }
 
 export interface IrohaConfiguration {
-    trusted_peers: unknown;
     genesis: unknown;
     config: unknown;
 }

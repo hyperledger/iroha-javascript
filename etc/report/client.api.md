@@ -106,7 +106,7 @@ export interface UserConfig {
     // (undocumented)
     torii: {
         apiURL?: string | null;
-        statusURL?: string | null;
+        telemetryURL?: string | null;
     };
 }
 

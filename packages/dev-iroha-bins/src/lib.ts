@@ -19,8 +19,11 @@ export enum KnownBinaries {
 export type BinaryNameMap = { [K in KnownBinaries]: string };
 
 export interface InstallConfig {
-    gitRepo: string;
-    gitBranch: string;
+    git: {
+        repo: string;
+        branch?: string;
+        revision?: string;
+    };
     binaryNameMap: BinaryNameMap;
 }
 
@@ -69,11 +72,19 @@ export async function installBinaries(
         return;
     }
 
-    await $`cargo install \\
-        --root ${TMP_CARGO_ROOT} \\
-        --git ${config.gitRepo} \\
-        --branch ${config.gitBranch} \\
-        ${binsArgs}`;
+    const gitRepo = config.git.repo;
+
+    const args = [
+        '--root',
+        TMP_CARGO_ROOT,
+        '--git',
+        gitRepo,
+        ...(config.git.branch ? ['--branch', config.git.branch] : []),
+        ...(config.git.revision ? ['--rev', config.git.revision] : []),
+        ...binsArgs,
+    ];
+
+    await $`cargo install ${args}`;
 
     await fs.writeFile(TMP_BINARIES_MAP_JSON, JSON.stringify(config.binaryNameMap));
 }

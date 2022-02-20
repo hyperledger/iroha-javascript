@@ -2,7 +2,7 @@ import { crypto } from '@iroha2/crypto-target-node';
 import { KeyPair } from '@iroha2/crypto-core';
 import { startPeer, setConfiguration, cleanConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
-import { client_config, peer_config, peer_genesis, peer_trusted_peers, PIPELINE_MS } from '../config';
+import { client_config, peer_config, peer_genesis, PIPELINE_MS } from '../config';
 import { Client, setCrypto } from '@iroha2/client';
 import {
     UnwrapFragment,
@@ -29,9 +29,13 @@ import {
     RegisterBox,
     Enum,
     Result,
+    Executable,
+    Logger,
 } from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
+
+new Logger().mount();
 
 setCrypto(crypto);
 const client = Client.create({
@@ -46,7 +50,7 @@ let keyPair: KeyPair;
 
 function instructionToPayload(instruction: UnwrapFragmentOrBuilder<typeof Instruction>) {
     return TransactionPayload.defineUnwrap({
-        instructions: [instruction],
+        instructions: Executable.variantsUnwrapped.Instructions([instruction]),
         time_to_live_ms: 100_000n,
         creation_time: BigInt(Date.now()),
         metadata: new Map(),
@@ -141,7 +145,7 @@ async function ensureGenesisIsCommitted() {
     while (true) {
         const { blocks } = await client.checkStatus();
         if (blocks >= 1) return;
-        await delay(50);
+        await delay(250);
     }
 }
 
@@ -154,7 +158,6 @@ beforeAll(async () => {
     await setConfiguration({
         config: peer_config,
         genesis: peer_genesis,
-        trusted_peers: peer_trusted_peers,
     });
 
     // preparing keys
@@ -184,14 +187,18 @@ test('Peer is healthy', async () => {
 test('AddAsset instruction with name length more than limit is not committed', async () => {
     const normalAssetDefinitionId = DefinitionId.defineUnwrap({
         name: 'xor',
-        domain_name: 'wonderland',
+        domain_id: {
+            name: 'wonderland',
+        },
     });
     await addAsset(normalAssetDefinitionId);
 
     const tooLongAssetName = '0'.repeat(2 ** 14);
     const invalidAssetDefinitionId = DefinitionId.defineUnwrap({
         name: tooLongAssetName,
-        domain_name: 'wonderland',
+        domain_id: {
+            name: 'wonderland',
+        },
     });
     await addAsset(invalidAssetDefinitionId);
 
@@ -217,11 +224,15 @@ test('AddAccount instruction with name length more than limit is not committed',
 
     const normal = AccountId.defineUnwrap({
         name: 'bob',
-        domain_name: 'wonderland',
+        domain_id: {
+            name: 'wonderland',
+        },
     });
     const incorrect = AccountId.defineUnwrap({
         name: '0'.repeat(2 ** 14),
-        domain_name: 'wonderland',
+        domain_id: {
+            name: 'wonderland',
+        },
     });
 
     await Promise.all([normal, incorrect].map((x) => addAccount(x)));
@@ -281,7 +292,9 @@ test('transaction-committed event is triggered after AddAsset instruction has be
         // triggering transaction
         await addAsset({
             name: 'xor',
-            domain_name: 'wonderland',
+            domain_id: {
+                name: 'wonderland',
+            },
         });
 
         // awaiting for triggering
@@ -298,7 +311,9 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
     // Creating asset by definition
     const ASSET_DEFINITION_ID = DefinitionId.defineUnwrap({
         name: 'xor',
-        domain_name: 'wonderland',
+        domain_id: {
+            name: 'wonderland',
+        },
     });
     await addAsset(ASSET_DEFINITION_ID, AssetValueType.variantsUnwrapped.Fixed, { mintable: true });
     await pipelineStepDelay();
@@ -352,7 +367,9 @@ test('Registering domain', async () => {
                 expression: Expression.variantsUnwrapped.Raw(
                     Value.variantsUnwrapped.Identifiable(
                         IdentifiableBox.variantsUnwrapped.Domain({
-                            name: domainName,
+                            id: {
+                                name: domainName,
+                            },
                             accounts: new Map(),
                             metadata: { map: new Map() },
                             asset_definitions: new Map(),
@@ -366,7 +383,7 @@ test('Registering domain', async () => {
 
         const payload = TransactionPayload.defineUnwrap({
             account_id: client_config.account,
-            instructions: [instruction],
+            instructions: Executable.variantsUnwrapped.Instructions([instruction]),
             time_to_live_ms: 100_000n,
             creation_time: BigInt(Date.now()),
             metadata: new Map(),
@@ -394,7 +411,7 @@ test('Registering domain', async () => {
             .unwrap()
             .as('Vec')
             .map((x) => x.as('Identifiable').as('Domain'))
-            .find((x) => x.name === domainName);
+            .find((x) => x.id.name === domainName);
 
         if (!domain) throw new Error('Not found');
     }
