@@ -19,19 +19,19 @@ import RefConverter from './RefConverter';
 const debug = debugRoot('@iroha2/data-model:rust-convert');
 
 function ok<Ok, Err>(ok: Ok): Result<Ok, Err> {
-    return Enum.valuable('Ok', ok);
+    return Enum.variant('Ok', ok);
 }
 
 function err<Ok, Err>(err: Err): Result<Ok, Err> {
-    return Enum.valuable('Err', err);
+    return Enum.variant('Err', err);
 }
 
 function some<T>(val: T): Option<T> {
-    return Enum.valuable('Some', val);
+    return Enum.variant('Some', val);
 }
 
 function none<T>(): Option<T> {
-    return Enum.empty('None');
+    return Enum.variant('None');
 }
 
 const IGNORE_TYPES = new Set<string>([

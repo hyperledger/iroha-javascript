@@ -3,9 +3,9 @@ import RefConverter from './RefConverter';
 describe('Refs transformation', () => {
     test.each([
         ['iroha_crypto::Hash', 'Hash'],
-        ['iroha_data_model::Vec<u8>', 'BytesVec'],
+        ['iroha_data_model::Vec<u8>', 'VecU8'],
         ['pipeline::Event<pipeline::Map<A, B>, C>', 'EventMapABC'],
-        ['Vec<u8>', 'BytesVec'],
+        ['Vec<u8>', 'VecU8'],
         ['[u32; 5]', 'ArrayU32L5'],
         ['String', 'Str'],
         ['Vec<u32>', 'VecU32'],

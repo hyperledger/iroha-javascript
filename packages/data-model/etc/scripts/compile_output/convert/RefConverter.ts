@@ -57,7 +57,7 @@ function replaceStdAlias(ref: string): string {
         return STD_ALIASES[ref];
     }
     if (ref.endsWith('Vec<u8>')) {
-        return 'BytesVec';
+        return 'VecU8';
     }
     if (ref.match(/Compact\<u128\>/)) {
         return 'Compact';

@@ -1,7 +1,4 @@
-import { series } from 'gulp';
-import compile_json from './scripts/compile-json';
-import generate from './scripts/generate';
+import compile_input from './etc/scripts/compile_input';
+import compile_output from './etc/scripts/compile_output';
 
-export const gen = series(compile_json, generate);
-
-export { compile_json, generate };
+export { compile_input, compile_output };

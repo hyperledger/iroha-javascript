@@ -3,20 +3,21 @@ import consola from 'consola';
 import chalk from 'chalk';
 import fs from 'fs/promises';
 import { renderNamespaceDefinition } from '@scale-codec/definition-compiler';
-import inputJson from '../../input/input.json';
 import { convertRustIntrospectOutputIntoCompilerInput } from './convert';
-
-const OUTPUT_PATH = path.join(__dirname, '../../src/generated.ts');
+import { COMPILED_SCHEMA_OUTPUT_FILE } from '../../meta';
+import INPUT from '../../__schema__.json';
 
 export default async function () {
     consola.log(chalk`Converting {blue.bold input.json} to compiler-compatible format...`);
-    const codegenDefinitions = convertRustIntrospectOutputIntoCompilerInput({ input: inputJson });
+    const codegenDefinitions = convertRustIntrospectOutputIntoCompilerInput({ input: INPUT });
 
     const generated = renderNamespaceDefinition(codegenDefinitions, {
         rollupSingleTuplesIntoAliases: true,
     });
 
-    await fs.writeFile(OUTPUT_PATH, generated, { encoding: 'utf8' });
+    await fs.writeFile(COMPILED_SCHEMA_OUTPUT_FILE, generated, { encoding: 'utf8' });
 
-    consola.success(chalk`Generated into {green.bold ${OUTPUT_PATH}}!`);
+    consola.success(
+        chalk`Code is written into {bold.blue ${path.relative(process.cwd(), COMPILED_SCHEMA_OUTPUT_FILE)}}!`,
+    );
 }

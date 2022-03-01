@@ -1,4 +1,4 @@
 dist
 **/crypto/**/wasm_pack_output*
 **/crypto/packages/target-*/index.js
-**/data-model/src/generated.ts
+**/data-model/src/__generated__.ts

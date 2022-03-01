@@ -1,8 +1,6 @@
 import del from 'del';
-import { parallel, series } from 'gulp';
 import { $ } from 'zx';
-import { installBinaries, KnownBinaries } from '@iroha2/dev-iroha-bins';
-import { preparePackage } from '@iroha2/test-peer';
+import { parallel, series } from 'gulp';
 import { runApiExtractor } from './scripts/api-extractor';
 
 export async function clean() {
@@ -39,30 +37,6 @@ export async function publishAll() {
         await $`pnpm publish --filter ${scopedName} --no-git-checks`;
     }
 }
-
-async function prepareIrohaBinaries() {
-    await installBinaries(
-        {
-            git: {
-                repo: 'https://github.com/hyperledger/iroha.git',
-                revision: 'f5a8aeb86fad79c35537bc1a9cec9da1f183eb8b',
-                // branch: 'iroha2-dev',
-                // branch: '2.0.0-pre.1.rc.1',
-            },
-            binaryNameMap: {
-                [KnownBinaries.Introspect]: 'iroha_schema_bin',
-                [KnownBinaries.Cli]: 'iroha',
-            },
-        },
-        { skipInstalled: true },
-    );
-}
-
-async function prepareTestPeer() {
-    await preparePackage();
-}
-
-export const prepare = series(prepareIrohaBinaries, prepareTestPeer);
 
 export { runApiExtractor };
 

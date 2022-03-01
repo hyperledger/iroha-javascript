@@ -80,6 +80,9 @@
   "Option<iroha_data_model::domain::Id>": {
     "Option": "iroha_data_model::domain::Id"
   },
+  "Option<iroha_data_model::domain::IpfsPath>": {
+    "Option": "iroha_data_model::domain::IpfsPath"
+  },
   "Option<iroha_data_model::events::data::EntityFilter>": {
     "Option": "iroha_data_model::events::data::EntityFilter"
   },
@@ -137,6 +140,9 @@
   },
   "Vec<iroha_data_model::transaction::VersionedValidTransaction>": {
     "Vec": "iroha_data_model::transaction::VersionedValidTransaction"
+  },
+  "Vec<iroha_data_model::trigger::Action>": {
+    "Vec": "iroha_data_model::trigger::Action"
   },
   "Vec<u8>": {
     "Vec": "u8"
@@ -205,6 +211,10 @@
           "ty": "Vec<iroha_data_model::transaction::VersionedValidTransaction>"
         },
         {
+          "name": "trigger_recommendations",
+          "ty": "Vec<iroha_data_model::trigger::Action>"
+        },
+        {
           "name": "signatures",
           "ty": "iroha_crypto::signature::SignaturesOf<iroha_core::block::CommittedBlock>"
         }
@@ -229,6 +239,10 @@
         {
           "name": "signatures",
           "ty": "BTreeSet<iroha_crypto::signature::SignatureOf<iroha_core::block::ValidBlock>>"
+        },
+        {
+          "name": "trigger_recommendations",
+          "ty": "Vec<iroha_data_model::trigger::Action>"
         }
       ]
     }
@@ -546,20 +560,6 @@
       ]
     }
   },
-  "iroha_crypto::signature::SignatureVerificationFail<iroha_data_model::transaction::Payload>": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "signature",
-          "ty": "iroha_crypto::signature::SignatureOf<iroha_data_model::transaction::Payload>"
-        },
-        {
-          "name": "reason",
-          "ty": "String"
-        }
-      ]
-    }
-  },
   "iroha_crypto::signature::SignaturesOf<iroha_core::block::CommittedBlock>": {
     "Struct": {
       "declarations": [
@@ -619,8 +619,13 @@
           "ty": "iroha_data_model::peer::Id"
         },
         {
-          "name": "WorldId",
+          "name": "TriggerId",
           "discriminant": 5,
+          "ty": "iroha_data_model::trigger::Id"
+        },
+        {
+          "name": "WorldId",
+          "discriminant": 6,
           "ty": null
         }
       ]
@@ -660,8 +665,13 @@
           "ty": "iroha_data_model::peer::Peer"
         },
         {
-          "name": "World",
+          "name": "Trigger",
           "discriminant": 6,
+          "ty": "iroha_data_model::trigger::Trigger"
+        },
+        {
+          "name": "World",
+          "discriminant": 7,
           "ty": null
         }
       ]
@@ -731,7 +741,7 @@
         {
           "name": "Fixed",
           "discriminant": 5,
-          "ty": "iroha_data_model::fixed::Fixed"
+          "ty": "iroha_data_primitives::fixed::Fixed"
         },
         {
           "name": "Vec",
@@ -921,7 +931,7 @@
         {
           "name": "Fixed",
           "discriminant": 2,
-          "ty": "iroha_data_model::fixed::Fixed"
+          "ty": "iroha_data_primitives::fixed::Fixed"
         },
         {
           "name": "Store",
@@ -1003,6 +1013,10 @@
         {
           "name": "metadata",
           "ty": "iroha_data_model::metadata::Metadata"
+        },
+        {
+          "name": "logo",
+          "ty": "Option<iroha_data_model::domain::IpfsPath>"
         }
       ]
     }
@@ -1014,6 +1028,13 @@
           "name": "name",
           "ty": "iroha_data_model::Name"
         }
+      ]
+    }
+  },
+  "iroha_data_model::domain::IpfsPath": {
+    "TupleStruct": {
+      "types": [
+        "String"
       ]
     }
   },
@@ -1146,6 +1167,11 @@
           "name": "Peer",
           "discriminant": 4,
           "ty": "iroha_data_model::peer::Id"
+        },
+        {
+          "name": "Trigger",
+          "discriminant": 5,
+          "ty": "iroha_data_model::trigger::Id"
         }
       ]
     }
@@ -1267,6 +1293,22 @@
       ]
     }
   },
+  "iroha_data_model::events::data::TriggerUpdated": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Extended",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Shortened",
+          "discriminant": 1,
+          "ty": null
+        }
+      ]
+    }
+  },
   "iroha_data_model::events::data::Updated": {
     "Enum": {
       "variants": [
@@ -1289,6 +1331,11 @@
           "name": "Asset",
           "discriminant": 3,
           "ty": "iroha_data_model::events::data::AssetUpdated"
+        },
+        {
+          "name": "Trigger",
+          "discriminant": 4,
+          "ty": "iroha_data_model::events::data::TriggerUpdated"
         }
       ]
     }
@@ -1833,13 +1880,6 @@
           "name": "values",
           "ty": "BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>"
         }
-      ]
-    }
-  },
-  "iroha_data_model::fixed::Fixed": {
-    "TupleStruct": {
-      "types": [
-        "FixedPoint<i64>"
       ]
     }
   },
@@ -2628,7 +2668,7 @@
         {
           "name": "Wasm",
           "discriminant": 1,
-          "ty": "Vec<u8>"
+          "ty": "iroha_data_model::transaction::WasmSmartContract"
         }
       ]
     }
@@ -2735,6 +2775,13 @@
       ]
     }
   },
+  "iroha_data_model::transaction::TransactionLimitError": {
+    "TupleStruct": {
+      "types": [
+        "String"
+      ]
+    }
+  },
   "iroha_data_model::transaction::TransactionRejectionReason": {
     "Enum": {
       "variants": [
@@ -2749,19 +2796,19 @@
           "ty": "iroha_data_model::transaction::UnsatisfiedSignatureConditionFail"
         },
         {
-          "name": "InstructionExecution",
+          "name": "LimitCheck",
           "discriminant": 2,
+          "ty": "iroha_data_model::transaction::TransactionLimitError"
+        },
+        {
+          "name": "InstructionExecution",
+          "discriminant": 3,
           "ty": "iroha_data_model::transaction::InstructionExecutionFail"
         },
         {
           "name": "WasmExecution",
-          "discriminant": 3,
-          "ty": "iroha_data_model::transaction::WasmExecutionFail"
-        },
-        {
-          "name": "SignatureVerification",
           "discriminant": 4,
-          "ty": "iroha_crypto::signature::SignatureVerificationFail<iroha_data_model::transaction::Payload>"
+          "ty": "iroha_data_model::transaction::WasmExecutionFail"
         },
         {
           "name": "UnexpectedGenesisAccountSignature",
@@ -2851,6 +2898,89 @@
           "name": "reason",
           "ty": "String"
         }
+      ]
+    }
+  },
+  "iroha_data_model::transaction::WasmSmartContract": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "raw_data",
+          "ty": "Vec<u8>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::trigger::Action": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "executable",
+          "ty": "iroha_data_model::transaction::Executable"
+        },
+        {
+          "name": "repeats",
+          "ty": "iroha_data_model::trigger::Repeats"
+        },
+        {
+          "name": "technical_account",
+          "ty": "iroha_data_model::account::Id"
+        },
+        {
+          "name": "filter",
+          "ty": "iroha_data_model::events::EventFilter"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::trigger::Id": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "name",
+          "ty": "iroha_data_model::Name"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::trigger::Repeats": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Indefinitely",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Exactly",
+          "discriminant": 1,
+          "ty": "u32"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::trigger::Trigger": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "id",
+          "ty": "iroha_data_model::trigger::Id"
+        },
+        {
+          "name": "action",
+          "ty": "iroha_data_model::trigger::Action"
+        },
+        {
+          "name": "metadata",
+          "ty": "iroha_data_model::metadata::Metadata"
+        }
+      ]
+    }
+  },
+  "iroha_data_primitives::fixed::Fixed": {
+    "TupleStruct": {
+      "types": [
+        "FixedPoint<i64>"
       ]
     }
   },

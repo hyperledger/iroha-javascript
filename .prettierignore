@@ -1,2 +1,3 @@
-**/data-model/src/generated.ts
-etc/report*
+**/data-model/src/__generated__.ts
+**/data-model/etc/__schema__.json
+etc/api/*
