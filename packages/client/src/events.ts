@@ -2,57 +2,44 @@ import {
     Event,
     EventFilter,
     EventSubscriberMessage,
-    VersionedEventPublisherMessage,
-    VersionedEventSubscriberMessage,
-    FragmentFromBuilder,
+    Enum,
+    VersionedEventPublisherMessageCodec,
+    VersionedEventSubscriberMessageCodec,
 } from '@iroha2/data-model';
 import Emittery from 'emittery';
 import { initWebSocket, CloseEvent, Event as WsEvent, MessageEvent } from '@iroha2/client-isomorphic-ws';
 import Debug from 'debug';
+import { incomingDataToArrayBufferView, transformProtocolInUrlFromHttpToWs } from './util';
 
 const debug = Debug('@iroha2/client:events');
 
 export interface EventsEmitteryMap {
     close: CloseEvent;
     error: WsEvent;
-    accepted: undefined;
-    event: FragmentFromBuilder<typeof Event>;
+    event: Event;
 }
 
 export interface SetupEventsParams {
     toriiApiURL: string;
-    filter: FragmentFromBuilder<typeof EventFilter>;
+    filter: EventFilter;
 }
 
 export interface SetupEventsReturn {
-    close: () => void;
+    stop: () => void;
     ee: Emittery<EventsEmitteryMap>;
-}
-
-function transformProtocolInUrlFromHttpToWs(url: string): string {
-    return url.replace(/^https?:\/\//, (substr) => {
-        const isSafe = /https/.test(substr);
-        return `ws${isSafe ? 's' : ''}://`;
-    });
 }
 
 /**
  * Promise resolved when connection handshake is acquired
  */
-export async function setupEventsWebsocketConnection(params: SetupEventsParams): Promise<SetupEventsReturn> {
-    const eeExternal = new Emittery<EventsEmitteryMap>();
+export async function setupEvents(params: SetupEventsParams): Promise<SetupEventsReturn> {
+    // const eeExternal = new Emittery<EventsEmitteryMap>();
 
-    const ee = new Emittery<{
-        error: WsEvent;
-        close: CloseEvent;
-        subscription_accepted: undefined;
-        event: FragmentFromBuilder<typeof Event>;
-    }>();
-
-    ee.on('close', (e) => eeExternal.emit('close', e));
-    ee.on('error', (e) => eeExternal.emit('error', e));
-    ee.on('event', (e) => eeExternal.emit('event', e));
-    ee.on('subscription_accepted', () => eeExternal.emit('accepted'));
+    const ee = new Emittery<
+        EventsEmitteryMap & {
+            acquired: undefined;
+        }
+    >();
 
     const url = `${transformProtocolInUrlFromHttpToWs(params.toriiApiURL)}/events`;
     debug('opening connection to %o', url);
@@ -61,7 +48,7 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         url,
         onopen: () => {
             debug('connection opened, sending subscription request');
-            sendMessage(EventSubscriberMessage.variants.SubscriptionRequest(params.filter));
+            sendMessage(Enum.variant('SubscriptionRequest', params.filter));
         },
         onclose: (e) => {
             debug('connection closed: %o', e);
@@ -71,26 +58,18 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
             debug('connection error: %o', e);
             ee.emit('error', e);
         },
-        onmessage: (msg) => handleMessage(msg),
+        onmessage: ({ data }) => {
+            const event = VersionedEventPublisherMessageCodec.fromBuffer(data).as('V1');
+
+            if (event.is('SubscriptionAccepted')) {
+                debug('subscription accepted');
+                ee.emit('acquired');
+            } else {
+                ee.emit('event', event.as('Event'));
+                sendMessage(Enum.variant('EventReceived'));
+            }
+        },
     });
-
-    function handleMessage({ data }: MessageEvent) {
-        if (typeof data === 'string') {
-            console.error(data);
-            throw new Error('Unexpected string data');
-        }
-
-        const event = VersionedEventPublisherMessage.fromBytes(new Uint8Array(data)).value.as('V1').value;
-
-        if (event.is('SubscriptionAccepted')) {
-            if (!listeningForSubscriptionAccepted) throw new Error('No callback!');
-            debug('subscription accepted');
-            ee.emit('subscription_accepted');
-        } else {
-            ee.emit('event', event.as('Event'));
-            sendMessage(EventSubscriberMessage.variants.EventReceived);
-        }
-    }
 
     async function close(): Promise<void> {
         if (socket.isClosed()) return;
@@ -99,24 +78,22 @@ export async function setupEventsWebsocketConnection(params: SetupEventsParams):
         return ee.once('close').then(() => {});
     }
 
-    function sendMessage(msg: FragmentFromBuilder<typeof EventSubscriberMessage>) {
-        const encoded: Uint8Array = VersionedEventSubscriberMessage.variants.V1(msg).bytes;
+    function sendMessage(msg: EventSubscriberMessage) {
+        const encoded = VersionedEventSubscriberMessageCodec.toBuffer(Enum.variant('V1', msg));
         socket.send(encoded);
     }
 
-    let listeningForSubscriptionAccepted = false;
-
     await new Promise<void>((resolve, reject) => {
-        ee.once('subscription_accepted').then(resolve);
+        ee.once('acquired').then(resolve);
         ee.once('close').then(() => {
             reject(new Error('Handshake acquiring failed - connected closed'));
         });
-
-        listeningForSubscriptionAccepted = true;
     });
 
     return {
-        close,
-        ee: eeExternal,
+        stop: close,
+        ee:
+            // Emittery typing bug :<
+            ee as any,
     };
 }

@@ -1,17 +1,14 @@
-import { TMP_DIR, TMP_IROHA_BIN } from '../const';
+import { TMP_DIR, TMP_IROHA_BIN } from '../etc/meta';
 import path from 'path';
 import execa from 'execa';
-import { $ } from 'zx';
-import { rmWithParams, saveDataAsJSON } from './util';
+import { $, fs } from 'zx';
+import { rmForce, saveDataAsJSON } from './util';
 import readline from 'readline';
-import chalk from 'chalk';
 import debugRoot from 'debug';
-import { KnownBinaries, resolveBinaryPath } from '@iroha2/dev-iroha-bins';
+import { KnownBinaries, resolveBinaryPath, install } from '@iroha2/dev-iroha-bins';
 import makeDir from 'make-dir';
 
 const debug = debugRoot('@iroha2/test-peer');
-
-// const deployDir = path.resolve(__dirname, '../', TMP_IROHA_DEPLOY_DIR);
 
 export interface StartPeerParams {
     /**
@@ -49,11 +46,14 @@ export interface IrohaConfiguration {
 }
 
 /**
- * Copies binary from `@iroha2/dev-iroha-bins`
+ * Installs binary (if not installed) and copies it from `@iroha2/dev-iroha-bins`
  */
 export async function preparePackage() {
+    await install(KnownBinaries.Cli);
+    await rmForce(TMP_DIR);
     await makeDir(TMP_DIR);
     await $`cp ${await resolveBinaryPath(KnownBinaries.Cli)} ${TMP_IROHA_BIN}`;
+    debug('package is prepared');
 }
 
 /**
@@ -62,6 +62,11 @@ export async function preparePackage() {
 export async function startPeer(params?: StartPeerParams): Promise<StartPeerReturn> {
     // state
     let isAlive = true;
+
+    {
+        const contents = await fs.readdir(TMP_DIR);
+        debug('contents: %o', contents);
+    }
 
     // starting peer
     const withGenesis: boolean = params?.withGenesis ?? true;
@@ -72,9 +77,10 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
     const stdout = readline.createInterface(subprocess.stdout!);
     const stderr = readline.createInterface(subprocess.stderr!);
 
-    const makeStdioDebug = (prefix: string) => (line: string) => debug(prefix + line);
-    stdout.on('line', makeStdioDebug(chalk`{green stdout}: `));
-    stderr.on('line', makeStdioDebug(chalk`{red stderr}: `));
+    const debugStdout = debug.extend('stdout');
+    const debugStderr = debug.extend('stderr');
+    stdout.on('line', (line) => debugStdout(line));
+    stderr.on('line', (line) => debugStderr(line));
 
     subprocess.on('error', (err) => {
         debug('Subprocess error:', err);
@@ -128,6 +134,8 @@ export async function setConfiguration(configs: IrohaConfiguration): Promise<voi
             await saveDataAsJSON(data, path.resolve(TMP_DIR, `${configName}.json`));
         }),
     );
+
+    debug('configuration is set');
 }
 
 /**
@@ -135,7 +143,8 @@ export async function setConfiguration(configs: IrohaConfiguration): Promise<voi
  */
 export async function cleanConfiguration(): Promise<void> {
     const rmTarget = path.resolve(TMP_DIR, '*.json');
-    await rmWithParams(rmTarget);
+    await rmForce(rmTarget);
+    debug('configuration is cleaned');
 }
 
 /**
@@ -145,5 +154,6 @@ export async function cleanConfiguration(): Promise<void> {
  */
 export async function cleanSideEffects() {
     const rmTarget = path.resolve(TMP_DIR, 'blocks');
-    await rmWithParams(rmTarget);
+    await rmForce(rmTarget);
+    debug('blocks are cleaned');
 }

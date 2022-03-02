@@ -1,134 +1,86 @@
 import { crypto } from '@iroha2/crypto-target-node';
-import { KeyPair } from '@iroha2/crypto-core';
-import { startPeer, setConfiguration, cleanConfiguration, StartPeerReturn } from '@iroha2/test-peer';
-import { delay } from '../util';
-import { client_config, peer_config, peer_genesis, PIPELINE_MS } from '../config';
 import { Client, setCrypto } from '@iroha2/client';
 import {
-    UnwrapFragment,
-    FragmentFromBuilder,
     Instruction,
-    TransactionPayload,
-    QueryBox,
-    QueryPayload,
-    FragmentBuilder,
     AssetValueType,
     DefinitionId,
     MintBox,
     EventFilter,
-    EvaluatesToAccountId,
-    OptionU32,
     Expression,
     Value,
     IdentifiableBox,
     AccountId,
     OptionEntityType,
     EntityType,
-    OptionHash,
     IdBox,
     RegisterBox,
     Enum,
     Result,
-    Executable,
-    Logger,
+    Logger as SCALELogger,
 } from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
 
-new Logger().mount();
+import { startPeer, setConfiguration, cleanConfiguration, StartPeerReturn } from '@iroha2/test-peer';
+import { delay } from '../util';
+import { client_config, peer_config, peer_genesis, PIPELINE_MS } from '../config';
+
+// for debugging convenience
+new SCALELogger().mount();
+
+// preparing keys
+const multihash = crypto.createMultihashFromBytes(Uint8Array.from(hexToBytes(client_config.publicKey)));
+const publicKey = crypto.createPublicKeyFromMultihash(multihash);
+const privateKey = crypto.createPrivateKeyFromJsKey(client_config.privateKey);
+const keyPair = crypto.createKeyPairFromKeys(publicKey, privateKey);
+[publicKey, privateKey, multihash].forEach((x) => x.free());
+
+// preparing client
 
 setCrypto(crypto);
 const client = Client.create({
     torii: client_config.torii,
+    keyPair,
+    accountId: client_config.account,
 });
 
-type UnwrapFragmentOrBuilder<T> = T extends FragmentBuilder<any>
-    ? UnwrapFragment<FragmentFromBuilder<T>>
-    : UnwrapFragment<T>;
-
-let keyPair: KeyPair;
-
-function instructionToPayload(instruction: UnwrapFragmentOrBuilder<typeof Instruction>) {
-    return TransactionPayload.defineUnwrap({
-        instructions: Executable.variantsUnwrapped.Instructions([instruction]),
-        time_to_live_ms: 100_000n,
-        creation_time: BigInt(Date.now()),
-        metadata: new Map(),
-        account_id: client_config.account,
-        nonce: OptionU32.variantsUnwrapped.None,
-    });
-}
-
-function queryBoxToPayload(
-    query: UnwrapFragmentOrBuilder<typeof QueryBox>,
-): UnwrapFragmentOrBuilder<typeof QueryPayload> {
-    return {
-        query,
-        account_id: client_config.account,
-        timestamp_ms: BigInt(Date.now()),
-    };
-}
-
 async function addAsset(
-    definitionId: UnwrapFragmentOrBuilder<typeof DefinitionId>,
-    assetType: UnwrapFragmentOrBuilder<typeof AssetValueType> = AssetValueType.variantsUnwrapped.BigQuantity,
+    definitionId: DefinitionId,
+    assetType: AssetValueType = Enum.variant('BigQuantity'),
     opts?: {
         mintable?: boolean;
     },
 ) {
-    await client.submitTransaction({
-        payload: TransactionPayload.wrap(
-            instructionToPayload(
-                Instruction.variantsUnwrapped.Register({
-                    object: {
-                        expression: Expression.variantsUnwrapped.Raw(
-                            Value.variantsUnwrapped.Identifiable(
-                                IdentifiableBox.variantsUnwrapped.AssetDefinition({
-                                    id: definitionId,
-                                    value_type: assetType,
-                                    metadata: { map: new Map() },
-                                    mintable: opts?.mintable ?? false,
-                                }),
-                            ),
-                        ),
-                    },
-                }),
-            ),
+    const expression = Enum.variant<Expression>(
+        'Raw',
+        Enum.variant<Value>(
+            'Identifiable',
+            Enum.variant<IdentifiableBox>('AssetDefinition', {
+                id: definitionId,
+                value_type: assetType,
+                metadata: { map: new Map() },
+                mintable: opts?.mintable ?? false,
+            }),
         ),
-        signing: keyPair!,
-    });
+    );
+
+    await client.submit(Enum.variant('Instructions', [Enum.variant('Register', { object: { expression } })]));
 }
 
-async function addAccount(accountId: UnwrapFragmentOrBuilder<typeof AccountId>) {
-    await client.submitTransaction({
-        payload: TransactionPayload.wrap(
-            instructionToPayload(
-                Instruction.variantsUnwrapped.Register({
-                    object: {
-                        expression: Expression.variantsUnwrapped.Raw(
-                            Value.variantsUnwrapped.Identifiable(
-                                IdentifiableBox.variantsUnwrapped.NewAccount({
-                                    id: accountId,
-                                    signatories: [],
-                                    metadata: {
-                                        map: new Map(),
-                                    },
-                                }),
-                            ),
-                        ),
-                    },
-                }),
-            ),
-        ),
-        signing: keyPair!,
+async function addAccount(accountId: AccountId) {
+    const newAccount: IdentifiableBox = Enum.variant('NewAccount', {
+        id: accountId,
+        signatories: [],
+        metadata: { map: new Map() },
     });
+    const expression = Enum.variant<Expression>('Raw', Enum.variant<Value>('Identifiable', newAccount));
+    const instruction = Enum.variant<Instruction>('Register', { object: { expression } });
+
+    await client.submit(Enum.variant('Instructions', [instruction]));
 }
 
-async function submitMint(mintBox: UnwrapFragmentOrBuilder<typeof MintBox>) {
-    await client.submitTransaction({
-        payload: TransactionPayload.wrap(instructionToPayload(Instruction.variantsUnwrapped.Mint(mintBox))),
-        signing: keyPair!,
-    });
+async function submitMint(mint: MintBox) {
+    await client.submit(Enum.variant('Instructions', [Enum.variant('Mint', mint)]));
 }
 
 async function pipelineStepDelay() {
@@ -143,7 +95,7 @@ async function killStartedPeer() {
 
 async function ensureGenesisIsCommitted() {
     while (true) {
-        const { blocks } = await client.checkStatus();
+        const { blocks } = await client.getStatus();
         if (blocks >= 1) return;
         await delay(250);
     }
@@ -151,7 +103,8 @@ async function ensureGenesisIsCommitted() {
 
 // and now tests...
 
-beforeAll(async () => {
+beforeEach(async () => {
+    await killStartedPeer();
     await cleanConfiguration();
 
     // setup configs for test peer
@@ -160,16 +113,6 @@ beforeAll(async () => {
         genesis: peer_genesis,
     });
 
-    // preparing keys
-    const multihash = crypto.createMultihashFromBytes(Uint8Array.from(hexToBytes(client_config.publicKey)));
-    const publicKey = crypto.createPublicKeyFromMultihash(multihash);
-    const privateKey = crypto.createPrivateKeyFromJsKey(client_config.privateKey);
-    keyPair = crypto.createKeyPairFromKeys(publicKey, privateKey);
-    [publicKey, privateKey, multihash].forEach((x) => x.free());
-});
-
-beforeEach(async () => {
-    await killStartedPeer();
     startedPeer = await startPeer();
 
     await ensureGenesisIsCommitted();
@@ -181,37 +124,33 @@ afterAll(async () => {
 });
 
 test('Peer is healthy', async () => {
-    expect(await client.checkHealth()).toEqual(Enum.valuable('Ok', null) as Result<null, any>);
+    expect(await client.getHealth()).toEqual(Enum.variant('Ok', null) as Result<null, any>);
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-    const normalAssetDefinitionId = DefinitionId.defineUnwrap({
+    const normalAssetDefinitionId: DefinitionId = {
         name: 'xor',
         domain_id: {
             name: 'wonderland',
         },
-    });
+    };
     await addAsset(normalAssetDefinitionId);
 
     const tooLongAssetName = '0'.repeat(2 ** 14);
-    const invalidAssetDefinitionId = DefinitionId.defineUnwrap({
+    const invalidAssetDefinitionId: DefinitionId = {
         name: tooLongAssetName,
         domain_id: {
             name: 'wonderland',
         },
-    });
+    };
     await addAsset(invalidAssetDefinitionId);
 
     await delay(PIPELINE_MS * 2);
 
-    const queryResult = await client.makeQuery({
-        payload: QueryPayload.wrap(queryBoxToPayload(QueryBox.variantsUnwrapped.FindAllAssetsDefinitions(null))),
-        signing: keyPair,
-    });
+    const queryResult = await client.request(Enum.variant('FindAllAssetsDefinitions', null));
 
-    const existingDefinitions: ReturnType<typeof DefinitionId['defineUnwrap']>[] = queryResult
+    const existingDefinitions: DefinitionId[] = queryResult
         .as('Ok')
-        .unwrap()
         .as('Vec')
         .map((val) => val.as('Identifiable').as('AssetDefinition').id);
 
@@ -220,32 +159,26 @@ test('AddAsset instruction with name length more than limit is not committed', a
 });
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
-    type AccountId = UnwrapFragmentOrBuilder<typeof AccountId>;
-
-    const normal = AccountId.defineUnwrap({
+    const normal: AccountId = {
         name: 'bob',
         domain_id: {
             name: 'wonderland',
         },
-    });
-    const incorrect = AccountId.defineUnwrap({
+    };
+    const incorrect: AccountId = {
         name: '0'.repeat(2 ** 14),
         domain_id: {
             name: 'wonderland',
         },
-    });
+    };
 
     await Promise.all([normal, incorrect].map((x) => addAccount(x)));
     await delay(PIPELINE_MS * 2);
 
-    const queryResult = await client.makeQuery({
-        payload: QueryPayload.wrap(queryBoxToPayload(QueryBox.variantsUnwrapped.FindAllAccounts(null))),
-        signing: keyPair,
-    });
+    const queryResult = await client.request(Enum.variant('FindAllAccounts', null));
 
     const existingAccounts: AccountId[] = queryResult
         .as('Ok')
-        .unwrap()
         .as('Vec')
         .map((val) => val.as('Identifiable').as('Account').id);
 
@@ -253,79 +186,71 @@ test('AddAccount instruction with name length more than limit is not committed',
     expect(existingAccounts).not.toContainEqual(incorrect);
 });
 
-test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
-    let closeEventsConnection: Function | undefined;
+test.only('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
+    const filter: EventFilter = Enum.variant('Pipeline', {
+        entity: Enum.variant<OptionEntityType>('Some', Enum.variant<EntityType>('Transaction')),
+        hash: Enum.variant('None'),
+    });
 
-    try {
-        const filter = EventFilter.wrap(
-            EventFilter.variantsUnwrapped.Pipeline({
-                entity: OptionEntityType.variantsUnwrapped.Some(EntityType.variantsUnwrapped.Transaction),
-                hash: OptionHash.variantsUnwrapped.None,
-            }),
-        );
+    // Listening
 
-        // setting up listening
-        let transactionCommittedPromise: Promise<void>;
-        await new Promise<void>((resolveSubscribed, rejectSubscribed) => {
-            transactionCommittedPromise = new Promise((resolveTransaction) => {
-                client
-                    .listenForEvents({ filter })
-                    .then(({ close, ee }) => {
-                        ee.on('event', (event) => {
-                            event.unwrap().match({
-                                Pipeline({ entity_type, status }) {
-                                    if (entity_type.is('Transaction') && status.is('Committed')) {
-                                        resolveTransaction();
-                                    }
-                                },
-                                Data() {},
-                            });
-                        });
+    const { ee, stop } = await client.listenForEvents({ filter });
 
-                        closeEventsConnection = close;
-                        resolveSubscribed();
-                    })
-                    .catch(rejectSubscribed);
-            });
+    const committedPromise = new Promise<void>((resolve, reject) => {
+        ee.on('event', (event) => {
+            if (event.is('Pipeline')) {
+                const { entity_type, status } = event.as('Pipeline');
+                if (entity_type.is('Transaction') && status.is('Committed')) {
+                    resolve();
+                }
+            }
         });
 
-        // triggering transaction
-        await addAsset({
-            name: 'xor',
-            domain_id: {
-                name: 'wonderland',
-            },
-        });
+        ee.on('error', () => reject(new Error('Some error')));
+        ee.on('close', () => reject(new Error('Closed')));
+    });
 
-        // awaiting for triggering
-        await new Promise<void>((resolve, reject) => {
-            transactionCommittedPromise.then(resolve);
-            setTimeout(() => reject(new Error('Timed out')), 3_000);
-        });
-    } finally {
-        closeEventsConnection?.();
-    }
-});
-
-test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
-    // Creating asset by definition
-    const ASSET_DEFINITION_ID = DefinitionId.defineUnwrap({
+    // Triggering transaction
+    await addAsset({
         name: 'xor',
         domain_id: {
             name: 'wonderland',
         },
     });
-    await addAsset(ASSET_DEFINITION_ID, AssetValueType.variantsUnwrapped.Fixed, { mintable: true });
+
+    // Waiting for resolving
+    await new Promise<void>((resolve, reject) => {
+        setTimeout(() => reject(new Error('Timeout')), 1_000);
+        committedPromise.then(() => resolve());
+    });
+
+    // unnecessary teardown
+    stop();
+});
+
+test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
+    // Creating asset by definition
+    const ASSET_DEFINITION_ID: DefinitionId = {
+        name: 'xor',
+        domain_id: {
+            name: 'wonderland',
+        },
+    };
+    await addAsset(ASSET_DEFINITION_ID, Enum.variant<AssetValueType>('Fixed'), { mintable: true });
     await pipelineStepDelay();
 
     // Adding mint
     const DECIMAL = '512.5881';
     await submitMint({
-        object: { expression: Expression.variantsUnwrapped.Raw(Value.variantsUnwrapped.Fixed(DECIMAL)) },
+        object: {
+            expression: Enum.variant<Expression>('Raw', Enum.variant<Value>('Fixed', DECIMAL)),
+        },
         destination_id: {
-            expression: Expression.variantsUnwrapped.Raw(
-                Value.variantsUnwrapped.Id(
-                    IdBox.variantsUnwrapped.AssetId({
+            expression: Enum.variant<Expression>(
+                'Raw',
+                Enum.variant<Value>(
+                    'Id',
+                    Enum.variant<IdBox>('AssetId', {
                         account_id: client_config.account,
                         definition_id: ASSET_DEFINITION_ID,
                     }),
@@ -336,25 +261,22 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
     await pipelineStepDelay();
 
     // Checking added asset via query
-    const expressionEvalToAccountId: UnwrapFragmentOrBuilder<typeof EvaluatesToAccountId> =
-        EvaluatesToAccountId.defineUnwrap({
-            expression: Expression.variantsUnwrapped.Raw(
-                Value.variantsUnwrapped.Id(IdBox.variantsUnwrapped.AccountId(client_config.account)),
-            ),
-        });
-    const result = await client.makeQuery({
-        payload: QueryPayload.wrap(
-            queryBoxToPayload(
-                QueryBox.variantsUnwrapped.FindAssetsByAccountId({ account_id: expressionEvalToAccountId }),
-            ),
-        ),
-        signing: keyPair,
-    });
+    const result = await client.request(
+        Enum.variant('FindAssetsByAccountId', {
+            account_id: {
+                expression: Enum.variant<Expression>(
+                    'Raw',
+                    Enum.variant<Value>('Id', Enum.variant<IdBox>('AccountId', client_config.account)),
+                ),
+            },
+        }),
+    );
 
     // Assert
-    const asset = Seq(result.as('Ok').unwrap().as('Vec'))
+    const asset = Seq(result.as('Ok').as('Vec'))
         .map((x) => x.as('Identifiable').as('Asset'))
         .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name);
+
     expect(asset).toBeTruthy();
     expect(asset!.value.is('Fixed')).toBe(true);
     expect(asset!.value.as('Fixed')).toBe(DECIMAL);
@@ -362,53 +284,36 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
 
 test('Registering domain', async () => {
     async function registerDomain(domainName: string) {
-        const registerBox = RegisterBox.defineUnwrap({
+        const registerBox: RegisterBox = {
             object: {
-                expression: Expression.variantsUnwrapped.Raw(
-                    Value.variantsUnwrapped.Identifiable(
-                        IdentifiableBox.variantsUnwrapped.Domain({
+                expression: Enum.variant<Expression>(
+                    'Raw',
+                    Enum.variant<Value>(
+                        'Identifiable',
+                        Enum.variant<IdentifiableBox>('Domain', {
                             id: {
                                 name: domainName,
                             },
                             accounts: new Map(),
                             metadata: { map: new Map() },
                             asset_definitions: new Map(),
+                            logo: Enum.variant('None'),
                         }),
                     ),
                 ),
             },
-        });
+        };
 
-        const instruction = Instruction.variantsUnwrapped.Register(registerBox);
+        const instruction = Enum.variant<Instruction>('Register', registerBox);
 
-        const payload = TransactionPayload.defineUnwrap({
-            account_id: client_config.account,
-            instructions: Executable.variantsUnwrapped.Instructions([instruction]),
-            time_to_live_ms: 100_000n,
-            creation_time: BigInt(Date.now()),
-            metadata: new Map(),
-            nonce: OptionU32.variantsUnwrapped.None,
-        });
-
-        await client.submitTransaction({
-            payload: TransactionPayload.wrap(payload),
-            signing: keyPair,
-        });
+        await client.submit(Enum.variant('Instructions', [instruction]));
     }
 
     async function ensureDomainExistence(domainName: string) {
-        const result = await client.makeQuery({
-            payload: QueryPayload.wrap({
-                query: QueryBox.variantsUnwrapped.FindAllDomains(null),
-                timestamp_ms: BigInt(Date.now()),
-                account_id: client_config.account,
-            }),
-            signing: keyPair,
-        });
+        const result = await client.request(Enum.variant('FindAllDomains', null));
 
         const domain = result
             .as('Ok')
-            .unwrap()
             .as('Vec')
             .map((x) => x.as('Identifiable').as('Domain'))
             .find((x) => x.id.name === domainName);

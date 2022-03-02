@@ -16,4 +16,6 @@ const decoder: Decode<string> = (walker) => {
     return bigintToF64Str(bi, PRECISION);
 };
 
-export const FixedPointI64P9 = new CodecImpl<string>('FixedPointI64P9', encoder, decoder);
+export type FixedPointI64P9 = string;
+
+export const FixedPointI64P9Codec = new CodecImpl<string>('FixedPointI64P9', encoder, decoder);

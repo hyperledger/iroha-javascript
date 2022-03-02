@@ -2,12 +2,12 @@ import { initWebSocket as trueInit, IncomingData } from '../types';
 import WebSocket from 'ws';
 
 function handleIncomingData(data: string | Buffer | ArrayBuffer | Buffer[]): IncomingData {
-    if (Array.isArray(data)) {
-        console.error('Data:', data);
-        throw new Error('Unexpected array received');
+    if (Buffer.isBuffer(data)) {
+        return new Uint8Array(data);
     }
 
-    return data;
+    console.error('Bad incoming data:', data);
+    throw new Error('Unable to parse incoming data');
 }
 
 export const initWebSocket: typeof trueInit = (params) => {

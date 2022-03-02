@@ -4,7 +4,8 @@
     "private": true,
     "main": "src/lib.ts",
     "scripts": {
-        "cli": "esno scripts/cli.ts"
+        "cli": "DEBUG=* esno etc/cli.ts",
+        "cli:config": "pnpm cli -- config:set-from-client-tests"
     },
     "dependencies": {
         "@iroha2/dev-iroha-bins": "workspace:^0.0.0",

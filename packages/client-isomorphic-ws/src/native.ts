@@ -3,12 +3,10 @@ import { initWebSocket as trueInit, IncomingData } from '../types';
 async function handleIncomingData(data: any): Promise<IncomingData> {
     if (data instanceof Blob) {
         const buff = await new Response(data).arrayBuffer();
-        return buff;
+        return new Uint8Array(buff);
     }
 
-    if (typeof data === 'string') return data;
-
-    console.error('Unexpected incoming data type:', data);
+    console.error('Bad incoming data:', data);
     throw new Error('Unable to parse incoming data');
 }
 

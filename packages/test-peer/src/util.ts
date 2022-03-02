@@ -5,6 +5,6 @@ export async function saveDataAsJSON(data: unknown, destination: string): Promis
     await fs.writeFile(destination, JSON.stringify(data), { encoding: 'utf-8' });
 }
 
-export async function rmWithParams(target: string | string[]): Promise<void> {
+export async function rmForce(target: string | string[]): Promise<void> {
     await del(target, { force: true });
 }
