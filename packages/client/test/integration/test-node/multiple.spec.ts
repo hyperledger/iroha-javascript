@@ -38,7 +38,7 @@ const keyPair = crypto.createKeyPairFromKeys(publicKey, privateKey);
 // preparing client
 
 setCrypto(crypto);
-const client = Client.create({
+const client = new Client({
     torii: client_config.torii,
     keyPair,
     accountId: client_config.account,
@@ -186,7 +186,7 @@ test('AddAccount instruction with name length more than limit is not committed',
     expect(existingAccounts).not.toContainEqual(incorrect);
 });
 
-test.only('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
+test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
     const filter: EventFilter = Enum.variant('Pipeline', {
         entity: Enum.variant<OptionEntityType>('Some', Enum.variant<EntityType>('Transaction')),
         hash: Enum.variant('None'),
@@ -324,4 +324,12 @@ test('Registering domain', async () => {
     await registerDomain('test');
     await pipelineStepDelay();
     await ensureDomainExistence('test');
+});
+
+test('When setting correct peer configuration, there is no error', async () => {
+    await client.setPeerConfig({ LogLevel: 'TRACE' });
+});
+
+test('When setting incorrect peer log level, there is an error', async () => {
+    await expect(client.setPeerConfig({ LogLevel: 'TR' as any })).rejects.toThrow();
 });

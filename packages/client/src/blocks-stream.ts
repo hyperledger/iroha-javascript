@@ -1,7 +1,7 @@
 import Emittery from 'emittery';
 import Debug from 'debug';
 import { initWebSocket, CloseEvent, Event as WsEvent } from '@iroha2/client-isomorphic-ws';
-import { incomingDataToArrayBufferView, transformProtocolInUrlFromHttpToWs } from './util';
+import { transformProtocolInUrlFromHttpToWs } from './util';
 import {
     BlockPublisherMessageCodec,
     BlockSubscriberMessage,
@@ -9,6 +9,7 @@ import {
     VersionedBlockSubscriberMessageCodec,
     VersionedCommittedBlock,
 } from '@iroha2/data-model';
+import { ENDPOINT_BLOCKS_STREAM } from './const';
 
 const debug = Debug('@iroha2/client:blocks-stream');
 
@@ -29,7 +30,7 @@ export interface SetupBlocksStreamReturn {
 }
 
 export async function setupBlocksStream(params: SetupBlocksStreamParams): Promise<SetupBlocksStreamReturn> {
-    const url = transformProtocolInUrlFromHttpToWs(params.toriiApiURL) + '/blocks-stream';
+    const url = transformProtocolInUrlFromHttpToWs(params.toriiApiURL) + ENDPOINT_BLOCKS_STREAM;
     debug('opening connection to %o', url);
 
     const ee = new Emittery<
@@ -53,8 +54,7 @@ export async function setupBlocksStream(params: SetupBlocksStreamParams): Promis
             ee.emit('error', e);
         },
         onmessage: ({ data }) => {
-            const view = incomingDataToArrayBufferView(data);
-            const msg = BlockPublisherMessageCodec.fromBuffer(view);
+            const msg = BlockPublisherMessageCodec.fromBuffer(data);
 
             msg.match({
                 SubscriptionAccepted() {

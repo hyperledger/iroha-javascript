@@ -3,9 +3,11 @@ import {
     BTreeMapNameValue,
     Enum,
     Executable,
+    Option,
     QueryBox,
     QueryPayload,
     QueryPayloadCodec,
+    QueryResult,
     Result,
     Signature,
     TransactionPayload,
@@ -17,11 +19,20 @@ import {
 } from '@iroha2/data-model';
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core';
 import { fetch } from '@iroha2/client-isomorphic-fetch';
-import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events';
 import { collect as collectGarbage, createScope as createGarbageScope } from './collect-garbage';
 import { randomU32 } from './util';
 import { getCrypto } from './crypto-singleton';
+import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events';
 import { setupBlocksStream, SetupBlocksStreamParams, SetupBlocksStreamReturn } from './blocks-stream';
+import {
+    ENDPOINT_CONFIGURATION,
+    ENDPOINT_HEALTH,
+    ENDPOINT_METRICS,
+    ENDPOINT_QUERY,
+    ENDPOINT_STATUS,
+    ENDPOINT_TRANSACTION,
+    HEALTHY_RESPONSE,
+} from './const';
 
 function useCryptoAssertive(): IrohaCryptoInterface {
     const crypto = getCrypto();
@@ -40,14 +51,24 @@ export class ClientIncompleteConfigError extends Error {
     }
 }
 
+export class ResponseError extends Error {
+    public static throwIfStatusIsNot(response: Response, status: number) {
+        if (response.status !== status) throw new ResponseError(response);
+    }
+
+    public constructor(response: Response) {
+        super(`${response.status}: ${response.statusText}`);
+    }
+}
+
 export interface SubmitParams {
     nonce?: number;
     metadata?: BTreeMapNameValue;
 }
 
-export type HealthResult = Result<null, Error>;
+export type HealthResult = Result<null, string>;
 
-export type RequestResult = Result<Value, Error>;
+export type RequestResult = Result<Value, QueryResult>;
 
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
 
@@ -100,8 +121,6 @@ function makeSignature(keyPair: KeyPair, payload: Uint8Array): Signature {
     };
 }
 
-const HEALTHY_RESPONSE = `"Healthy"`;
-
 /**
  *
  * @remarks
@@ -109,18 +128,14 @@ const HEALTHY_RESPONSE = `"Healthy"`;
  * TODO: `submitBlocking` method, i.e. `submit` + listening for submit
  */
 export class Client {
-    public static create(config: UserConfig): Client {
-        return new Client(config);
-    }
-
-    public toriiApiURL: null | string;
-    public toriiTelemetryURL: null | string;
+    public toriiApiURL: string | null;
+    public toriiTelemetryURL: string | null;
     public keyPair: null | KeyPair;
     public accountId: null | AccountId;
     public transactionDefaultTTL: bigint;
     public transactionAddNonce: boolean;
 
-    private constructor(config: UserConfig) {
+    public constructor(config: UserConfig) {
         this.toriiApiURL = config.torii.apiURL ?? null;
         this.toriiTelemetryURL = config.torii.telemetryURL ?? null;
         this.transactionAddNonce = config.transaction?.addNonce ?? false;
@@ -134,21 +149,17 @@ export class Client {
     // public signTransaction(tx: Transaction): Transaction {}
 
     public async getHealth(): Promise<HealthResult> {
-        try {
-            const response = await fetch(`${this.forceGetToriiApiURL()}/health`);
-            if (response.status !== 200) {
-                throw new Error(`Response status is ${response.status}`);
-            }
+        const url = this.forceGetApiURL();
 
-            const text = await response.text();
-            if (text !== HEALTHY_RESPONSE) {
-                throw new Error(`Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`);
-            }
+        const response = await fetch(url + ENDPOINT_HEALTH);
+        ResponseError.throwIfStatusIsNot(response, 200);
 
-            return Enum.variant('Ok', null);
-        } catch (err) {
-            return Enum.variant('Err', err);
+        const text = await response.text();
+        if (text !== HEALTHY_RESPONSE) {
+            return Enum.variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`);
         }
+
+        return Enum.variant('Ok', null);
     }
 
     public async submit(executable: Executable, params?: SubmitParams): Promise<void> {
@@ -157,7 +168,7 @@ export class Client {
         const { createHash } = useCryptoAssertive();
         const accountId = this.forceGetAccountId();
         const keyPair = this.forceGetKeyPair();
-        const url = this.forceGetToriiApiURL();
+        const url = this.forceGetApiURL();
 
         const payload: TransactionPayload = {
             instructions: executable,
@@ -184,13 +195,12 @@ export class Client {
                 );
             });
 
-            const response = await fetch(`${url}/transaction`, {
-                method: 'POST',
+            const response = await fetch(url + ENDPOINT_TRANSACTION, {
                 body: finalBytes!,
+                method: 'POST',
             });
 
-            if (response.status !== 200)
-                throw new Error(`Transaction submiting failed, response status: ${response.status}`);
+            ResponseError.throwIfStatusIsNot(response, 200);
         } finally {
             scope.free();
         }
@@ -199,7 +209,7 @@ export class Client {
     public async request(query: QueryBox): Promise<RequestResult> {
         const scope = createGarbageScope();
         const { createHash } = useCryptoAssertive();
-        const url = this.forceGetToriiApiURL();
+        const url = this.forceGetApiURL();
         const accountId = this.forceGetAccountId();
         const keyPair = this.forceGetKeyPair();
 
@@ -219,24 +229,19 @@ export class Client {
                 queryBytes = VersionedSignedQueryRequestCodec.toBuffer(Enum.variant('V1', { payload, signature }));
             });
 
-            const resp = await fetch(`${url}/query`, {
+            const response = await fetch(url + ENDPOINT_QUERY, {
                 method: 'POST',
                 body: queryBytes!,
-            });
+            }).then();
 
-            const { status } = resp;
-
-            if (status >= 400) {
-                return Enum.variant(
-                    'Err',
-                    new Error(`Request failed with status code ${status}. Text: ${await resp.text()}`),
-                );
+            if (response.status === 200) {
+                // OK
+                const bytes = new Uint8Array(await response.arrayBuffer());
+                const value = VersionedQueryResultCodec.fromBuffer(bytes).as('V1');
+                return Enum.variant('Ok', value);
+            } else {
+                // TODO
             }
-
-            const bytes = new Uint8Array(await resp.arrayBuffer());
-            const value = VersionedQueryResultCodec.fromBuffer(bytes).as('V1');
-
-            return Enum.variant('Ok', value);
         } finally {
             scope.free();
         }
@@ -245,14 +250,14 @@ export class Client {
     public async listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn> {
         return setupEvents({
             filter: params.filter,
-            toriiApiURL: this.forceGetToriiApiURL(),
+            toriiApiURL: this.forceGetApiURL(),
         });
     }
 
     public async listenForBlocksStream(params: ListenBlocksStreamParams): Promise<SetupBlocksStreamReturn> {
         return setupBlocksStream({
             height: params.height,
-            toriiApiURL: this.forceGetToriiApiURL(),
+            toriiApiURL: this.forceGetApiURL(),
         });
     }
 
@@ -262,29 +267,35 @@ export class Client {
     // }
 
     public async setPeerConfig(params: SetPeerConfigParams): Promise<void> {
-        await fetch(this.forceGetToriiApiURL() + '/configuration', {
+        const response = await fetch(this.forceGetApiURL() + ENDPOINT_CONFIGURATION, {
             method: 'POST',
             body: JSON.stringify(params),
             headers: {
                 'Content-Type': 'application/json',
             },
         });
+        ResponseError.throwIfStatusIsNot(response, 200);
     }
 
     public async getStatus(): Promise<PeerStatus> {
-        return fetch(this.forceGetToriiTelemetryURL() + '/status').then((x) => x.json());
+        const response = await fetch(this.forceGetTelemetryURL() + ENDPOINT_STATUS);
+        ResponseError.throwIfStatusIsNot(response, 200);
+        return response.json();
     }
 
-    public async getMetrics() {
-        return fetch(this.forceGetToriiTelemetryURL() + '/metrics').then((x) => x.text());
+    public async getMetrics(): Promise<string> {
+        return fetch(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
+            ResponseError.throwIfStatusIsNot(response, 200);
+            return response.text();
+        });
     }
 
-    private forceGetToriiApiURL(): string {
+    private forceGetApiURL(): string {
         if (!this.toriiApiURL) throw new ClientIncompleteConfigError('Torii API URL');
         return this.toriiApiURL;
     }
 
-    private forceGetToriiTelemetryURL(): string {
+    private forceGetTelemetryURL(): string {
         if (!this.toriiTelemetryURL) throw new ClientIncompleteConfigError('Torii Telemetry URL');
         return this.toriiTelemetryURL;
     }

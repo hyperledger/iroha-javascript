@@ -7,9 +7,10 @@ import {
     VersionedEventSubscriberMessageCodec,
 } from '@iroha2/data-model';
 import Emittery from 'emittery';
-import { initWebSocket, CloseEvent, Event as WsEvent, MessageEvent } from '@iroha2/client-isomorphic-ws';
+import { initWebSocket, CloseEvent, Event as WsEvent } from '@iroha2/client-isomorphic-ws';
 import Debug from 'debug';
-import { incomingDataToArrayBufferView, transformProtocolInUrlFromHttpToWs } from './util';
+import { transformProtocolInUrlFromHttpToWs } from './util';
+import { ENDPOINT_EVENTS } from './const';
 
 const debug = Debug('@iroha2/client:events');
 
@@ -41,7 +42,7 @@ export async function setupEvents(params: SetupEventsParams): Promise<SetupEvent
         }
     >();
 
-    const url = `${transformProtocolInUrlFromHttpToWs(params.toriiApiURL)}/events`;
+    const url = transformProtocolInUrlFromHttpToWs(params.toriiApiURL) + ENDPOINT_EVENTS;
     debug('opening connection to %o', url);
 
     const socket = initWebSocket({
