@@ -273,8 +273,8 @@ importers:
       consola: ^2.15.3
       debug: ^4.3.3
       esbuild: ^0.14.2
-      esbuild-jest: ^0.5.0
       esbuild-register: ^3.2.0
+      esbuild-runner: ^2.2.1
       execa: 5.1.1
       gulp: ^4.0.2
       immutable: ^4.0.0
@@ -284,10 +284,10 @@ importers:
       type-fest: ^2.8.0
     dependencies:
       '@iroha2/i64-fixnum': link:../i64-fixnum
+      '@scale-codec/definition-compiler': 1.0.0
       '@scale-codec/definition-runtime': 1.0.0
     devDependencies:
       '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
-      '@scale-codec/definition-compiler': 1.0.0
       '@types/debug': 4.1.7
       '@types/gulp': 4.0.9
       '@types/lodash-es': 4.17.5
@@ -297,8 +297,8 @@ importers:
       consola: 2.15.3
       debug: 4.3.3
       esbuild: 0.14.23
-      esbuild-jest: 0.5.0_esbuild@0.14.23
       esbuild-register: 3.2.0_esbuild@0.14.23
+      esbuild-runner: 2.2.1_esbuild@0.14.23
       execa: 5.1.1
       gulp: 4.0.2
       immutable: 4.0.0
@@ -1807,7 +1807,7 @@ packages:
       '@scale-codec/util': 1.0.0
       immutable: 4.0.0
       sort-es: 1.4.7
-    dev: true
+    dev: false
 
   /@scale-codec/definition-runtime/1.0.0:
     resolution: {integrity: sha512-LJBtkmyAXGDk28587OYxYrRBK2bq+zWrl2Fy7dUsFbyixHkqnZFMXh1ssCTezSL+mD0PJS8Geornb93NHkoTDA==}
@@ -1827,6 +1827,7 @@ packages:
 
   /@scale-codec/util/1.0.0:
     resolution: {integrity: sha512-Y19tdkyHtFNJDX5cztqUTYzTp4xyiOaG79vcQdyD0GB4q+lGFdeqUCNSYrcuxrzZirXnOfATy/rdLK2ZZyRT6w==}
+    dev: false
 
   /@sideway/address/4.1.2:
     resolution: {integrity: sha512-idTz8ibqWFrPU8kMirL0CoPH/A29XOzzAzpyN3zQ4kAWnzmNfFmRaoMNN6VI8ske5M73HZyhIaW4OuSFIdM4oA==}
@@ -4121,19 +4122,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /esbuild-jest/0.5.0_esbuild@0.14.23:
-    resolution: {integrity: sha512-AMZZCdEpXfNVOIDvURlqYyHwC8qC1/BFjgsrOiSL1eyiIArVtHL8YAC83Shhn16cYYoAWEW17yZn0W/RJKJKHQ==}
-    peerDependencies:
-      esbuild: '>=0.8.50'
-    dependencies:
-      '@babel/core': 7.15.5
-      '@babel/plugin-transform-modules-commonjs': 7.15.0_@babel+core@7.15.5
-      babel-jest: 26.6.3_@babel+core@7.15.5
-      esbuild: 0.14.23
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /esbuild-linux-32/0.13.15:
     resolution: {integrity: sha512-ZvTBPk0YWCLMCXiFmD5EUtB30zIPvC5Itxz0mdTu/xZBbbHJftQgLWY49wEPSn2T/TxahYCRDWun5smRa0Tu+g==}
     cpu: [ia32]
@@ -4409,6 +4397,17 @@ packages:
     peerDependencies:
       esbuild: '*'
     dependencies:
+      source-map-support: 0.5.19
+      tslib: 2.3.1
+    dev: true
+
+  /esbuild-runner/2.2.1_esbuild@0.14.23:
+    resolution: {integrity: sha512-VP0VfJJZiZ3cKzdOH59ZceDxx/GzBKra7tiGM8MfFMLv6CR1/cpsvtQ3IsJI3pz7HyeYxtbPyecj3fHwR+3XcQ==}
+    hasBin: true
+    peerDependencies:
+      esbuild: '*'
+    dependencies:
+      esbuild: 0.14.23
       source-map-support: 0.5.19
       tslib: 2.3.1
     dev: true
@@ -8483,7 +8482,7 @@ packages:
 
   /sort-es/1.4.7:
     resolution: {integrity: sha512-h9y2CRZyNF/pXK/N2Fyr7gXVDmozHCvjJyLh6QjXS2iEMCapAdsgOGXFYGimJ9NZsGai4Y74ofFoCsKBmvl0bg==}
-    dev: true
+    dev: false
 
   /source-map-js/1.0.1:
     resolution: {integrity: sha512-4+TN2b3tqOCd/kaGRJ/sTYA0tR0mdXx26ipdolxcwtJVqEnqNYvlCAt1q3ypy4QMlYus+Zh34RNtYLoq2oQ4IA==}

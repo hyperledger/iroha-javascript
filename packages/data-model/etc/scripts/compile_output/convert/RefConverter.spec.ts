@@ -18,9 +18,13 @@ describe('Refs transformation', () => {
         ['iroha_data_model::query::Payload', 'QueryPayload'],
         ['iroha_data_model::transaction::Payload', 'TransactionPayload'],
         ['iroha_data_model::events::EventFilter', 'EventFilter'],
+        ['iroha_data_model::events::data::events::Event', 'DataEvent'],
         ['iroha_data_model::events::data::EventFilter', 'DataEventFilter'],
         ['iroha_data_model::events::pipeline::EventFilter', 'PipelineEventFilter'],
         ['iroha_data_model::account::Id', 'AccountId'],
+        ['iroha_data_model::peer::Id', 'PeerId'],
+        ['iroha_data_model::asset::Id', 'AssetId'],
+        ['iroha_data_model::trigger::Id', 'TriggerId'],
         ['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>', 'EvaluatesToAccountId'],
     ])('%p transformed into %p', (input, output) => {
         const sut = new RefConverter();

@@ -1,12 +1,7 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
     transform: {
-        '^.+\\.(ts|js)$': [
-            'esbuild-jest',
-            {
-                sourcemap: true,
-            },
-        ],
+        '^.+\\.(ts|js)$': 'esbuild-runner/jest',
     },
     testEnvironment: 'node',
     testMatch: ['**/*.spec.ts'],

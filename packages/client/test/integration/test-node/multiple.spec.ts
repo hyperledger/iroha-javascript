@@ -17,6 +17,7 @@ import {
     Enum,
     Result,
     Logger as SCALELogger,
+    VersionedCommittedBlock,
 } from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
@@ -24,6 +25,7 @@ import { Seq } from 'immutable';
 import { startPeer, setConfiguration, cleanConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, PIPELINE_MS } from '../config';
+import { SetupBlocksStreamReturn } from '../../../src/blocks-stream';
 
 // for debugging convenience
 new SCALELogger().mount();
@@ -186,48 +188,6 @@ test('AddAccount instruction with name length more than limit is not committed',
     expect(existingAccounts).not.toContainEqual(incorrect);
 });
 
-test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
-    const filter: EventFilter = Enum.variant('Pipeline', {
-        entity: Enum.variant<OptionEntityType>('Some', Enum.variant<EntityType>('Transaction')),
-        hash: Enum.variant('None'),
-    });
-
-    // Listening
-
-    const { ee, stop } = await client.listenForEvents({ filter });
-
-    const committedPromise = new Promise<void>((resolve, reject) => {
-        ee.on('event', (event) => {
-            if (event.is('Pipeline')) {
-                const { entity_type, status } = event.as('Pipeline');
-                if (entity_type.is('Transaction') && status.is('Committed')) {
-                    resolve();
-                }
-            }
-        });
-
-        ee.on('error', () => reject(new Error('Some error')));
-        ee.on('close', () => reject(new Error('Closed')));
-    });
-
-    // Triggering transaction
-    await addAsset({
-        name: 'xor',
-        domain_id: {
-            name: 'wonderland',
-        },
-    });
-
-    // Waiting for resolving
-    await new Promise<void>((resolve, reject) => {
-        setTimeout(() => reject(new Error('Timeout')), 1_000);
-        committedPromise.then(() => resolve());
-    });
-
-    // unnecessary teardown
-    stop();
-});
-
 test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
     // Creating asset by definition
     const ASSET_DEFINITION_ID: DefinitionId = {
@@ -326,10 +286,124 @@ test('Registering domain', async () => {
     await ensureDomainExistence('test');
 });
 
-test('When setting correct peer configuration, there is no error', async () => {
-    await client.setPeerConfig({ LogLevel: 'TRACE' });
+describe('Events API', () => {
+    test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
+        const filter: EventFilter = Enum.variant('Pipeline', {
+            entity: Enum.variant<OptionEntityType>('Some', Enum.variant<EntityType>('Transaction')),
+            hash: Enum.variant('None'),
+        });
+
+        // Listening
+
+        const { ee, stop } = await client.listenForEvents({ filter });
+
+        const committedPromise = new Promise<void>((resolve, reject) => {
+            ee.on('event', (event) => {
+                if (event.is('Pipeline')) {
+                    const { entity_type, status } = event.as('Pipeline');
+                    if (entity_type.is('Transaction') && status.is('Committed')) {
+                        resolve();
+                    }
+                }
+            });
+
+            ee.on('error', () => reject(new Error('Some error')));
+            ee.on('close', () => reject(new Error('Closed')));
+        });
+
+        // Triggering transaction
+        await addAsset({
+            name: 'xor',
+            domain_id: {
+                name: 'wonderland',
+            },
+        });
+
+        // Waiting for resolving
+        await new Promise<void>((resolve, reject) => {
+            setTimeout(() => reject(new Error('Timeout')), 1_000);
+            committedPromise.then(() => resolve());
+        });
+
+        // unnecessary teardown
+        stop();
+    });
 });
 
-test('When setting incorrect peer log level, there is an error', async () => {
-    await expect(client.setPeerConfig({ LogLevel: 'TR' as any })).rejects.toThrow();
+describe('Setting configuration', () => {
+    test('When setting correct peer configuration, there is no error', async () => {
+        await client.setPeerConfig({ LogLevel: 'TRACE' });
+    });
+
+    test('When setting incorrect peer log level, there is an error', async () => {
+        await expect(client.setPeerConfig({ LogLevel: 'TR' as any })).rejects.toThrow();
+    });
+});
+
+describe('Blocks Stream API', () => {
+    test('When commiting 3 blocks sequentially, nothing fails', async () => {
+        async function* iterOverBlocks(stream: SetupBlocksStreamReturn) {
+            let resolveCurrent: () => void;
+            let rejectCurrent: (err: any) => void;
+
+            function initPromise(): Promise<void> {
+                return new Promise((resolve, reject) => {
+                    resolveCurrent = resolve;
+                    rejectCurrent = reject;
+                });
+            }
+
+            let blocksQueue: VersionedCommittedBlock[] = [];
+            stream.ee.on('block', (block) => {
+                blocksQueue.push(block);
+                resolveCurrent();
+            });
+            stream.ee.on('error', () => rejectCurrent(new Error('Errored')));
+            stream.ee.on('close', () => resolveCurrent());
+
+            while (!stream.isClosed()) {
+                await initPromise();
+
+                if (blocksQueue.length) {
+                    yield* blocksQueue;
+                    blocksQueue = [];
+                }
+            }
+        }
+
+        const SAMPLE_ASSET_NAMES = ['xor', 'val', 'vat'];
+        const ACTIONS = SAMPLE_ASSET_NAMES.length;
+
+        async function triggerNewBlockWithSomething() {
+            await addAsset({
+                name: SAMPLE_ASSET_NAMES.pop()!,
+                domain_id: {
+                    name: 'wonderland',
+                },
+            });
+        }
+
+        // Let's go...
+
+        const stream = await client.listenForBlocksStream({ height: 0n });
+
+        let count = 0;
+        for await (const _block of iterOverBlocks(stream)) {
+            await triggerNewBlockWithSomething();
+            if (++count >= ACTIONS) break;
+        }
+
+        expect(count).toBe(ACTIONS);
+
+        stream.stop();
+    });
+});
+
+describe('Metrics', () => {
+    test('When getting metrics, everything is OK', async () => {
+        const data = await client.getMetrics();
+
+        // just some line from Prometheus metrics
+        expect(data).toMatch('block_height 1');
+    });
 });

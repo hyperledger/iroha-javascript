@@ -17,6 +17,47 @@ export interface Account extends PseudoType<{
 
 export const AccountCodec: Codec<Account> = createStructCodec<any>('Account', [['id', dynCodec(() => AccountIdCodec) as any], ['assets', dynCodec(() => BTreeMapAssetIdAssetCodec) as any], ['signatories', dynCodec(() => VecPublicKeyCodec) as any], ['permission_tokens', dynCodec(() => BTreeSetPermissionTokenCodec) as any], ['signature_check_condition', dynCodec(() => SignatureCheckConditionCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any]]) as any
 
+// AccountEvent
+
+export interface AccountEvent extends Enum<
+    | ['Asset', AssetEvent]
+    | ['Created', AccountId]
+    | ['Deleted', AccountId]
+    | ['AuthenticationAdded', AccountId]
+    | ['AuthenticationRemoved', AccountId]
+    | ['PermissionAdded', AccountId]
+    | ['PermissionRemoved', AccountId]
+    | ['MetadataInserted', AccountId]
+    | ['MetadataRemoved', AccountId]
+> {}
+
+export const AccountEventCodec: Codec<AccountEvent> = createEnumCodec<any>('AccountEvent', [[0, 'Asset', dynCodec(() => AssetEventCodec)], [1, 'Created', dynCodec(() => AccountIdCodec)], [2, 'Deleted', dynCodec(() => AccountIdCodec)], [3, 'AuthenticationAdded', dynCodec(() => AccountIdCodec)], [4, 'AuthenticationRemoved', dynCodec(() => AccountIdCodec)], [5, 'PermissionAdded', dynCodec(() => AccountIdCodec)], [6, 'PermissionRemoved', dynCodec(() => AccountIdCodec)], [7, 'MetadataInserted', dynCodec(() => AccountIdCodec)], [8, 'MetadataRemoved', dynCodec(() => AccountIdCodec)]]) as any
+
+// AccountEventFilter
+
+export interface AccountEventFilter extends Enum<
+    | ['ByAsset', FilterOptAssetFilter]
+    | 'ByCreated'
+    | 'ByDeleted'
+    | 'ByAuthenticationAdded'
+    | 'ByAuthenticationRemoved'
+    | 'ByPermissionAdded'
+    | 'ByPermissionRemoved'
+    | 'ByMetadataInserted'
+    | 'ByMetadataRemoved'
+> {}
+
+export const AccountEventFilterCodec: Codec<AccountEventFilter> = createEnumCodec<any>('AccountEventFilter', [[0, 'ByAsset', dynCodec(() => FilterOptAssetFilterCodec)], [1, 'ByCreated'], [2, 'ByDeleted'], [3, 'ByAuthenticationAdded'], [4, 'ByAuthenticationRemoved'], [5, 'ByPermissionAdded'], [6, 'ByPermissionRemoved'], [7, 'ByMetadataInserted'], [8, 'ByMetadataRemoved']]) as any
+
+// AccountFilter
+
+export interface AccountFilter extends PseudoType<{
+    id_filter: FilterOptIdFilterAccountId,
+    event_filter: FilterOptAccountEventFilter
+}> {}
+
+export const AccountFilterCodec: Codec<AccountFilter> = createStructCodec<any>('AccountFilter', [['id_filter', dynCodec(() => FilterOptIdFilterAccountIdCodec) as any], ['event_filter', dynCodec(() => FilterOptAccountEventFilterCodec) as any]]) as any
+
 // AccountId
 
 export interface AccountId extends PseudoType<{
@@ -90,6 +131,72 @@ export interface AssetDefinitionEntry extends PseudoType<{
 
 export const AssetDefinitionEntryCodec: Codec<AssetDefinitionEntry> = createStructCodec<any>('AssetDefinitionEntry', [['definition', dynCodec(() => AssetDefinitionCodec) as any], ['registered_by', dynCodec(() => AccountIdCodec) as any]]) as any
 
+// AssetDefinitionEvent
+
+export interface AssetDefinitionEvent extends Enum<
+    | ['Created', DefinitionId]
+    | ['Deleted', DefinitionId]
+    | ['MetadataInserted', DefinitionId]
+    | ['MetadataRemoved', DefinitionId]
+> {}
+
+export const AssetDefinitionEventCodec: Codec<AssetDefinitionEvent> = createEnumCodec<any>('AssetDefinitionEvent', [[0, 'Created', dynCodec(() => DefinitionIdCodec)], [1, 'Deleted', dynCodec(() => DefinitionIdCodec)], [2, 'MetadataInserted', dynCodec(() => DefinitionIdCodec)], [3, 'MetadataRemoved', dynCodec(() => DefinitionIdCodec)]]) as any
+
+// AssetDefinitionEventFilter
+
+export interface AssetDefinitionEventFilter extends Enum<
+    | 'ByCreated'
+    | 'ByDeleted'
+    | 'ByMetadataInserted'
+    | 'ByMetadataRemoved'
+> {}
+
+export const AssetDefinitionEventFilterCodec: Codec<AssetDefinitionEventFilter> = createEnumCodec<any>('AssetDefinitionEventFilter', [[0, 'ByCreated'], [1, 'ByDeleted'], [2, 'ByMetadataInserted'], [3, 'ByMetadataRemoved']]) as any
+
+// AssetDefinitionFilter
+
+export interface AssetDefinitionFilter extends PseudoType<{
+    id_filter: FilterOptIdFilterDefinitionId,
+    event_filter: FilterOptAssetDefinitionEventFilter
+}> {}
+
+export const AssetDefinitionFilterCodec: Codec<AssetDefinitionFilter> = createStructCodec<any>('AssetDefinitionFilter', [['id_filter', dynCodec(() => FilterOptIdFilterDefinitionIdCodec) as any], ['event_filter', dynCodec(() => FilterOptAssetDefinitionEventFilterCodec) as any]]) as any
+
+// AssetEvent
+
+export interface AssetEvent extends Enum<
+    | ['Created', AssetId]
+    | ['Deleted', AssetId]
+    | ['Added', AssetId]
+    | ['Removed', AssetId]
+    | ['MetadataInserted', AssetId]
+    | ['MetadataRemoved', AssetId]
+> {}
+
+export const AssetEventCodec: Codec<AssetEvent> = createEnumCodec<any>('AssetEvent', [[0, 'Created', dynCodec(() => AssetIdCodec)], [1, 'Deleted', dynCodec(() => AssetIdCodec)], [2, 'Added', dynCodec(() => AssetIdCodec)], [3, 'Removed', dynCodec(() => AssetIdCodec)], [4, 'MetadataInserted', dynCodec(() => AssetIdCodec)], [5, 'MetadataRemoved', dynCodec(() => AssetIdCodec)]]) as any
+
+// AssetEventFilter
+
+export interface AssetEventFilter extends Enum<
+    | 'ByCreated'
+    | 'ByDeleted'
+    | 'ByAdded'
+    | 'ByRemoved'
+    | 'ByMetadataInserted'
+    | 'ByMetadataRemoved'
+> {}
+
+export const AssetEventFilterCodec: Codec<AssetEventFilter> = createEnumCodec<any>('AssetEventFilter', [[0, 'ByCreated'], [1, 'ByDeleted'], [2, 'ByAdded'], [3, 'ByRemoved'], [4, 'ByMetadataInserted'], [5, 'ByMetadataRemoved']]) as any
+
+// AssetFilter
+
+export interface AssetFilter extends PseudoType<{
+    id_filter: FilterOptIdFilterAssetId,
+    event_filter: FilterOptAssetEventFilter
+}> {}
+
+export const AssetFilterCodec: Codec<AssetFilter> = createStructCodec<any>('AssetFilter', [['id_filter', dynCodec(() => FilterOptIdFilterAssetIdCodec) as any], ['event_filter', dynCodec(() => FilterOptAssetEventFilterCodec) as any]]) as any
+
 // AssetId
 
 export interface AssetId extends PseudoType<{
@@ -98,15 +205,6 @@ export interface AssetId extends PseudoType<{
 }> {}
 
 export const AssetIdCodec: Codec<AssetId> = createStructCodec<any>('AssetId', [['definition_id', dynCodec(() => DefinitionIdCodec) as any], ['account_id', dynCodec(() => AccountIdCodec) as any]]) as any
-
-// AssetUpdated
-
-export interface AssetUpdated extends Enum<
-    | 'Received'
-    | 'Sent'
-> {}
-
-export const AssetUpdatedCodec: Codec<AssetUpdated> = createEnumCodec<any>('AssetUpdated', [[0, 'Received'], [1, 'Sent']]) as any
 
 // AssetValue
 
@@ -309,21 +407,16 @@ export const ContextValueCodec: Codec<ContextValue> = createStructCodec<any>('Co
 
 // DataEvent
 
-export interface DataEvent extends PseudoType<{
-    entity: Entity,
-    status: Status
-}> {}
+export interface DataEvent extends Enum<
+    | ['Domain', DomainEvent]
+    | ['Peer', PeerEvent]
+    | ['Account', AccountEvent]
+    | ['AssetDefinition', AssetDefinitionEvent]
+    | ['Asset', AssetEvent]
+    | ['Trigger', TriggerEvent]
+> {}
 
-export const DataEventCodec: Codec<DataEvent> = createStructCodec<any>('DataEvent', [['entity', dynCodec(() => EntityCodec) as any], ['status', dynCodec(() => StatusCodec) as any]]) as any
-
-// DataEventFilter
-
-export interface DataEventFilter extends PseudoType<{
-    entity: OptionEntityFilter,
-    status: OptionStatusFilter
-}> {}
-
-export const DataEventFilterCodec: Codec<DataEventFilter> = createStructCodec<any>('DataEventFilter', [['entity', dynCodec(() => OptionEntityFilterCodec) as any], ['status', dynCodec(() => OptionStatusFilterCodec) as any]]) as any
+export const DataEventCodec: Codec<DataEvent> = createEnumCodec<any>('DataEvent', [[0, 'Domain', dynCodec(() => DomainEventCodec)], [1, 'Peer', dynCodec(() => PeerEventCodec)], [2, 'Account', dynCodec(() => AccountEventCodec)], [3, 'AssetDefinition', dynCodec(() => AssetDefinitionEventCodec)], [4, 'Asset', dynCodec(() => AssetEventCodec)], [5, 'Trigger', dynCodec(() => TriggerEventCodec)]]) as any
 
 // DefinitionId
 
@@ -355,30 +448,53 @@ export interface Domain extends PseudoType<{
 
 export const DomainCodec: Codec<Domain> = createStructCodec<any>('Domain', [['id', dynCodec(() => IdCodec) as any], ['accounts', dynCodec(() => BTreeMapAccountIdAccountCodec) as any], ['asset_definitions', dynCodec(() => BTreeMapDefinitionIdAssetDefinitionEntryCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any], ['logo', dynCodec(() => OptionIpfsPathCodec) as any]]) as any
 
-// Entity
+// DomainEvent
 
-export interface Entity extends Enum<
-    | ['Account', AccountId]
-    | ['AssetDefinition', DefinitionId]
-    | ['Asset', AssetId]
-    | ['Domain', Id]
-    | ['Peer', PeerId]
-    | ['Trigger', Id]
+export interface DomainEvent extends Enum<
+    | ['Account', AccountEvent]
+    | ['AssetDefinition', AssetDefinitionEvent]
+    | ['Created', Id]
+    | ['Deleted', Id]
+    | ['MetadataInserted', Id]
+    | ['MetadataRemoved', Id]
 > {}
 
-export const EntityCodec: Codec<Entity> = createEnumCodec<any>('Entity', [[0, 'Account', dynCodec(() => AccountIdCodec)], [1, 'AssetDefinition', dynCodec(() => DefinitionIdCodec)], [2, 'Asset', dynCodec(() => AssetIdCodec)], [3, 'Domain', dynCodec(() => IdCodec)], [4, 'Peer', dynCodec(() => PeerIdCodec)], [5, 'Trigger', dynCodec(() => IdCodec)]]) as any
+export const DomainEventCodec: Codec<DomainEvent> = createEnumCodec<any>('DomainEvent', [[0, 'Account', dynCodec(() => AccountEventCodec)], [1, 'AssetDefinition', dynCodec(() => AssetDefinitionEventCodec)], [2, 'Created', dynCodec(() => IdCodec)], [3, 'Deleted', dynCodec(() => IdCodec)], [4, 'MetadataInserted', dynCodec(() => IdCodec)], [5, 'MetadataRemoved', dynCodec(() => IdCodec)]]) as any
+
+// DomainEventFilter
+
+export interface DomainEventFilter extends Enum<
+    | ['ByAccount', FilterOptAccountFilter]
+    | ['ByAssetDefinition', FilterOptAssetDefinitionFilter]
+    | 'ByCreated'
+    | 'ByDeleted'
+    | 'ByMetadataInserted'
+    | 'ByMetadataRemoved'
+> {}
+
+export const DomainEventFilterCodec: Codec<DomainEventFilter> = createEnumCodec<any>('DomainEventFilter', [[0, 'ByAccount', dynCodec(() => FilterOptAccountFilterCodec)], [1, 'ByAssetDefinition', dynCodec(() => FilterOptAssetDefinitionFilterCodec)], [2, 'ByCreated'], [3, 'ByDeleted'], [4, 'ByMetadataInserted'], [5, 'ByMetadataRemoved']]) as any
+
+// DomainFilter
+
+export interface DomainFilter extends PseudoType<{
+    id_filter: FilterOptIdFilterId,
+    event_filter: FilterOptDomainEventFilter
+}> {}
+
+export const DomainFilterCodec: Codec<DomainFilter> = createStructCodec<any>('DomainFilter', [['id_filter', dynCodec(() => FilterOptIdFilterIdCodec) as any], ['event_filter', dynCodec(() => FilterOptDomainEventFilterCodec) as any]]) as any
 
 // EntityFilter
 
 export interface EntityFilter extends Enum<
-    | ['Account', OptionAccountId]
-    | ['AssetDefinition', OptionDefinitionId]
-    | ['Asset', OptionAssetId]
-    | ['Domain', OptionId]
-    | ['Peer', OptionPeerId]
+    | ['ByDomain', FilterOptDomainFilter]
+    | ['ByPeer', FilterOptPeerFilter]
+    | ['ByAccount', FilterOptAccountFilter]
+    | ['ByAssetDefinition', FilterOptAssetDefinitionFilter]
+    | ['ByAsset', FilterOptAssetFilter]
+    | ['ByTrigger', FilterOptTriggerFilter]
 > {}
 
-export const EntityFilterCodec: Codec<EntityFilter> = createEnumCodec<any>('EntityFilter', [[0, 'Account', dynCodec(() => OptionAccountIdCodec)], [1, 'AssetDefinition', dynCodec(() => OptionDefinitionIdCodec)], [2, 'Asset', dynCodec(() => OptionAssetIdCodec)], [3, 'Domain', dynCodec(() => OptionIdCodec)], [4, 'Peer', dynCodec(() => OptionPeerIdCodec)]]) as any
+export const EntityFilterCodec: Codec<EntityFilter> = createEnumCodec<any>('EntityFilter', [[0, 'ByDomain', dynCodec(() => FilterOptDomainFilterCodec)], [1, 'ByPeer', dynCodec(() => FilterOptPeerFilterCodec)], [2, 'ByAccount', dynCodec(() => FilterOptAccountFilterCodec)], [3, 'ByAssetDefinition', dynCodec(() => FilterOptAssetDefinitionFilterCodec)], [4, 'ByAsset', dynCodec(() => FilterOptAssetFilterCodec)], [5, 'ByTrigger', dynCodec(() => FilterOptTriggerFilterCodec)]]) as any
 
 // EntityType
 
@@ -507,10 +623,10 @@ export const EventCodec: Codec<Event> = createEnumCodec<any>('Event', [[0, 'Pipe
 
 export interface EventFilter extends Enum<
     | ['Pipeline', PipelineEventFilter]
-    | ['Data', DataEventFilter]
+    | ['Data', FilterOptEntityFilter]
 > {}
 
-export const EventFilterCodec: Codec<EventFilter> = createEnumCodec<any>('EventFilter', [[0, 'Pipeline', dynCodec(() => PipelineEventFilterCodec)], [1, 'Data', dynCodec(() => DataEventFilterCodec)]]) as any
+export const EventFilterCodec: Codec<EventFilter> = createEnumCodec<any>('EventFilter', [[0, 'Pipeline', dynCodec(() => PipelineEventFilterCodec)], [1, 'Data', dynCodec(() => FilterOptEntityFilterCodec)]]) as any
 
 // EventPublisherMessage
 
@@ -583,6 +699,177 @@ export interface FailBox extends PseudoType<{
 }> {}
 
 export const FailBoxCodec: Codec<FailBox> = createStructCodec<any>('FailBox', [['message', dynCodec(() => StrCodec) as any]]) as any
+
+// FilterOptAccountEventFilter
+
+export interface FilterOptAccountEventFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', AccountEventFilter]
+> {}
+
+export const FilterOptAccountEventFilterCodec: Codec<FilterOptAccountEventFilter> = createEnumCodec<any>('FilterOptAccountEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AccountEventFilterCodec)]]) as any
+
+// FilterOptAccountFilter
+
+export interface FilterOptAccountFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', AccountFilter]
+> {}
+
+export const FilterOptAccountFilterCodec: Codec<FilterOptAccountFilter> = createEnumCodec<any>('FilterOptAccountFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AccountFilterCodec)]]) as any
+
+// FilterOptAssetDefinitionEventFilter
+
+export interface FilterOptAssetDefinitionEventFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', AssetDefinitionEventFilter]
+> {}
+
+export const FilterOptAssetDefinitionEventFilterCodec: Codec<FilterOptAssetDefinitionEventFilter> = createEnumCodec<any>('FilterOptAssetDefinitionEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetDefinitionEventFilterCodec)]]) as any
+
+// FilterOptAssetDefinitionFilter
+
+export interface FilterOptAssetDefinitionFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', AssetDefinitionFilter]
+> {}
+
+export const FilterOptAssetDefinitionFilterCodec: Codec<FilterOptAssetDefinitionFilter> = createEnumCodec<any>('FilterOptAssetDefinitionFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetDefinitionFilterCodec)]]) as any
+
+// FilterOptAssetEventFilter
+
+export interface FilterOptAssetEventFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', AssetEventFilter]
+> {}
+
+export const FilterOptAssetEventFilterCodec: Codec<FilterOptAssetEventFilter> = createEnumCodec<any>('FilterOptAssetEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetEventFilterCodec)]]) as any
+
+// FilterOptAssetFilter
+
+export interface FilterOptAssetFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', AssetFilter]
+> {}
+
+export const FilterOptAssetFilterCodec: Codec<FilterOptAssetFilter> = createEnumCodec<any>('FilterOptAssetFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetFilterCodec)]]) as any
+
+// FilterOptDomainEventFilter
+
+export interface FilterOptDomainEventFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', DomainEventFilter]
+> {}
+
+export const FilterOptDomainEventFilterCodec: Codec<FilterOptDomainEventFilter> = createEnumCodec<any>('FilterOptDomainEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => DomainEventFilterCodec)]]) as any
+
+// FilterOptDomainFilter
+
+export interface FilterOptDomainFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', DomainFilter]
+> {}
+
+export const FilterOptDomainFilterCodec: Codec<FilterOptDomainFilter> = createEnumCodec<any>('FilterOptDomainFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => DomainFilterCodec)]]) as any
+
+// FilterOptEntityFilter
+
+export interface FilterOptEntityFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', EntityFilter]
+> {}
+
+export const FilterOptEntityFilterCodec: Codec<FilterOptEntityFilter> = createEnumCodec<any>('FilterOptEntityFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => EntityFilterCodec)]]) as any
+
+// FilterOptIdFilterAccountId
+
+export interface FilterOptIdFilterAccountId extends Enum<
+    | 'AcceptAll'
+    | ['BySome', IdFilterAccountId]
+> {}
+
+export const FilterOptIdFilterAccountIdCodec: Codec<FilterOptIdFilterAccountId> = createEnumCodec<any>('FilterOptIdFilterAccountId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterAccountIdCodec)]]) as any
+
+// FilterOptIdFilterAssetId
+
+export interface FilterOptIdFilterAssetId extends Enum<
+    | 'AcceptAll'
+    | ['BySome', IdFilterAssetId]
+> {}
+
+export const FilterOptIdFilterAssetIdCodec: Codec<FilterOptIdFilterAssetId> = createEnumCodec<any>('FilterOptIdFilterAssetId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterAssetIdCodec)]]) as any
+
+// FilterOptIdFilterDefinitionId
+
+export interface FilterOptIdFilterDefinitionId extends Enum<
+    | 'AcceptAll'
+    | ['BySome', IdFilterDefinitionId]
+> {}
+
+export const FilterOptIdFilterDefinitionIdCodec: Codec<FilterOptIdFilterDefinitionId> = createEnumCodec<any>('FilterOptIdFilterDefinitionId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterDefinitionIdCodec)]]) as any
+
+// FilterOptIdFilterId
+
+export interface FilterOptIdFilterId extends Enum<
+    | 'AcceptAll'
+    | ['BySome', IdFilterId]
+> {}
+
+export const FilterOptIdFilterIdCodec: Codec<FilterOptIdFilterId> = createEnumCodec<any>('FilterOptIdFilterId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterIdCodec)]]) as any
+
+// FilterOptIdFilterPeerId
+
+export interface FilterOptIdFilterPeerId extends Enum<
+    | 'AcceptAll'
+    | ['BySome', IdFilterPeerId]
+> {}
+
+export const FilterOptIdFilterPeerIdCodec: Codec<FilterOptIdFilterPeerId> = createEnumCodec<any>('FilterOptIdFilterPeerId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterPeerIdCodec)]]) as any
+
+// FilterOptIdFilterTriggerId
+
+export interface FilterOptIdFilterTriggerId extends Enum<
+    | 'AcceptAll'
+    | ['BySome', IdFilterTriggerId]
+> {}
+
+export const FilterOptIdFilterTriggerIdCodec: Codec<FilterOptIdFilterTriggerId> = createEnumCodec<any>('FilterOptIdFilterTriggerId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterTriggerIdCodec)]]) as any
+
+// FilterOptPeerEventFilter
+
+export interface FilterOptPeerEventFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', PeerEventFilter]
+> {}
+
+export const FilterOptPeerEventFilterCodec: Codec<FilterOptPeerEventFilter> = createEnumCodec<any>('FilterOptPeerEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => PeerEventFilterCodec)]]) as any
+
+// FilterOptPeerFilter
+
+export interface FilterOptPeerFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', PeerFilter]
+> {}
+
+export const FilterOptPeerFilterCodec: Codec<FilterOptPeerFilter> = createEnumCodec<any>('FilterOptPeerFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => PeerFilterCodec)]]) as any
+
+// FilterOptTriggerEventFilter
+
+export interface FilterOptTriggerEventFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', TriggerEventFilter]
+> {}
+
+export const FilterOptTriggerEventFilterCodec: Codec<FilterOptTriggerEventFilter> = createEnumCodec<any>('FilterOptTriggerEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => TriggerEventFilterCodec)]]) as any
+
+// FilterOptTriggerFilter
+
+export interface FilterOptTriggerFilter extends Enum<
+    | 'AcceptAll'
+    | ['BySome', TriggerFilter]
+> {}
+
+export const FilterOptTriggerFilterCodec: Codec<FilterOptTriggerFilter> = createEnumCodec<any>('FilterOptTriggerFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => TriggerFilterCodec)]]) as any
 
 // FindAccountById
 
@@ -859,11 +1146,11 @@ export interface IdBox extends Enum<
     | ['AssetDefinitionId', DefinitionId]
     | ['DomainId', Id]
     | ['PeerId', PeerId]
-    | ['TriggerId', Id]
+    | ['TriggerId', TriggerId]
     | 'WorldId'
 > {}
 
-export const IdBoxCodec: Codec<IdBox> = createEnumCodec<any>('IdBox', [[0, 'AccountId', dynCodec(() => AccountIdCodec)], [1, 'AssetId', dynCodec(() => AssetIdCodec)], [2, 'AssetDefinitionId', dynCodec(() => DefinitionIdCodec)], [3, 'DomainId', dynCodec(() => IdCodec)], [4, 'PeerId', dynCodec(() => PeerIdCodec)], [5, 'TriggerId', dynCodec(() => IdCodec)], [6, 'WorldId']]) as any
+export const IdBoxCodec: Codec<IdBox> = createEnumCodec<any>('IdBox', [[0, 'AccountId', dynCodec(() => AccountIdCodec)], [1, 'AssetId', dynCodec(() => AssetIdCodec)], [2, 'AssetDefinitionId', dynCodec(() => DefinitionIdCodec)], [3, 'DomainId', dynCodec(() => IdCodec)], [4, 'PeerId', dynCodec(() => PeerIdCodec)], [5, 'TriggerId', dynCodec(() => TriggerIdCodec)], [6, 'WorldId']]) as any
 
 // IdentifiableBox
 
@@ -879,6 +1166,42 @@ export interface IdentifiableBox extends Enum<
 > {}
 
 export const IdentifiableBoxCodec: Codec<IdentifiableBox> = createEnumCodec<any>('IdentifiableBox', [[0, 'Account', dynCodec(() => AccountCodec)], [1, 'NewAccount', dynCodec(() => NewAccountCodec)], [2, 'Asset', dynCodec(() => AssetCodec)], [3, 'AssetDefinition', dynCodec(() => AssetDefinitionCodec)], [4, 'Domain', dynCodec(() => DomainCodec)], [5, 'Peer', dynCodec(() => PeerCodec)], [6, 'Trigger', dynCodec(() => TriggerCodec)], [7, 'World']]) as any
+
+// IdFilterAccountId
+
+export type IdFilterAccountId = AccountId
+
+export const IdFilterAccountIdCodec = dynCodec(() => AccountIdCodec)
+
+// IdFilterAssetId
+
+export type IdFilterAssetId = AssetId
+
+export const IdFilterAssetIdCodec = dynCodec(() => AssetIdCodec)
+
+// IdFilterDefinitionId
+
+export type IdFilterDefinitionId = DefinitionId
+
+export const IdFilterDefinitionIdCodec = dynCodec(() => DefinitionIdCodec)
+
+// IdFilterId
+
+export type IdFilterId = Id
+
+export const IdFilterIdCodec = dynCodec(() => IdCodec)
+
+// IdFilterPeerId
+
+export type IdFilterPeerId = PeerId
+
+export const IdFilterPeerIdCodec = dynCodec(() => PeerIdCodec)
+
+// IdFilterTriggerId
+
+export type IdFilterTriggerId = TriggerId
+
+export const IdFilterTriggerIdCodec = dynCodec(() => TriggerIdCodec)
 
 // Instruction
 
@@ -958,15 +1281,6 @@ export interface Metadata extends PseudoType<{
 
 export const MetadataCodec: Codec<Metadata> = createStructCodec<any>('Metadata', [['map', dynCodec(() => BTreeMapNameValueCodec) as any]]) as any
 
-// MetadataUpdated
-
-export interface MetadataUpdated extends Enum<
-    | 'Inserted'
-    | 'Removed'
-> {}
-
-export const MetadataUpdatedCodec: Codec<MetadataUpdated> = createEnumCodec<any>('MetadataUpdated', [[0, 'Inserted'], [1, 'Removed']]) as any
-
 // MintBox
 
 export interface MintBox extends PseudoType<{
@@ -1042,30 +1356,6 @@ import { Void as NoTransactionReceiptReceived, VoidCodec as NoTransactionReceipt
 
 export { NoTransactionReceiptReceived, NoTransactionReceiptReceivedCodec }
 
-// OptionAccountId
-
-export interface OptionAccountId extends Option<AccountId> {}
-
-export const OptionAccountIdCodec: Codec<OptionAccountId> = createOptionCodec<any>('OptionAccountId', dynCodec(() => AccountIdCodec)) as any
-
-// OptionAssetId
-
-export interface OptionAssetId extends Option<AssetId> {}
-
-export const OptionAssetIdCodec: Codec<OptionAssetId> = createOptionCodec<any>('OptionAssetId', dynCodec(() => AssetIdCodec)) as any
-
-// OptionDefinitionId
-
-export interface OptionDefinitionId extends Option<DefinitionId> {}
-
-export const OptionDefinitionIdCodec: Codec<OptionDefinitionId> = createOptionCodec<any>('OptionDefinitionId', dynCodec(() => DefinitionIdCodec)) as any
-
-// OptionEntityFilter
-
-export interface OptionEntityFilter extends Option<EntityFilter> {}
-
-export const OptionEntityFilterCodec: Codec<OptionEntityFilter> = createOptionCodec<any>('OptionEntityFilter', dynCodec(() => EntityFilterCodec)) as any
-
 // OptionEntityType
 
 export interface OptionEntityType extends Option<EntityType> {}
@@ -1077,12 +1367,6 @@ export const OptionEntityTypeCodec: Codec<OptionEntityType> = createOptionCodec<
 export interface OptionHash extends Option<Hash> {}
 
 export const OptionHashCodec: Codec<OptionHash> = createOptionCodec<any>('OptionHash', dynCodec(() => HashCodec)) as any
-
-// OptionId
-
-export interface OptionId extends Option<Id> {}
-
-export const OptionIdCodec: Codec<OptionId> = createOptionCodec<any>('OptionId', dynCodec(() => IdCodec)) as any
 
 // OptionInstruction
 
@@ -1096,18 +1380,6 @@ export interface OptionIpfsPath extends Option<IpfsPath> {}
 
 export const OptionIpfsPathCodec: Codec<OptionIpfsPath> = createOptionCodec<any>('OptionIpfsPath', dynCodec(() => IpfsPathCodec)) as any
 
-// OptionPeerId
-
-export interface OptionPeerId extends Option<PeerId> {}
-
-export const OptionPeerIdCodec: Codec<OptionPeerId> = createOptionCodec<any>('OptionPeerId', dynCodec(() => PeerIdCodec)) as any
-
-// OptionStatusFilter
-
-export interface OptionStatusFilter extends Option<StatusFilter> {}
-
-export const OptionStatusFilterCodec: Codec<OptionStatusFilter> = createOptionCodec<any>('OptionStatusFilter', dynCodec(() => StatusFilterCodec)) as any
-
 // OptionTopology
 
 export interface OptionTopology extends Option<Topology> {}
@@ -1119,12 +1391,6 @@ export const OptionTopologyCodec: Codec<OptionTopology> = createOptionCodec<any>
 export interface OptionU32 extends Option<U32> {}
 
 export const OptionU32Codec: Codec<OptionU32> = createOptionCodec<any>('OptionU32', dynCodec(() => U32Codec)) as any
-
-// OptionUpdated
-
-export interface OptionUpdated extends Option<Updated> {}
-
-export const OptionUpdatedCodec: Codec<OptionUpdated> = createOptionCodec<any>('OptionUpdated', dynCodec(() => UpdatedCodec)) as any
 
 // Or
 
@@ -1162,6 +1428,33 @@ export interface Peer extends PseudoType<{
 }> {}
 
 export const PeerCodec: Codec<Peer> = createStructCodec<any>('Peer', [['id', dynCodec(() => PeerIdCodec) as any]]) as any
+
+// PeerEvent
+
+export interface PeerEvent extends Enum<
+    | ['Added', PeerId]
+    | ['Removed', PeerId]
+> {}
+
+export const PeerEventCodec: Codec<PeerEvent> = createEnumCodec<any>('PeerEvent', [[0, 'Added', dynCodec(() => PeerIdCodec)], [1, 'Removed', dynCodec(() => PeerIdCodec)]]) as any
+
+// PeerEventFilter
+
+export interface PeerEventFilter extends Enum<
+    | 'ByAdded'
+    | 'ByRemoved'
+> {}
+
+export const PeerEventFilterCodec: Codec<PeerEventFilter> = createEnumCodec<any>('PeerEventFilter', [[0, 'ByAdded'], [1, 'ByRemoved']]) as any
+
+// PeerFilter
+
+export interface PeerFilter extends PseudoType<{
+    id_filter: FilterOptIdFilterPeerId,
+    event_filter: FilterOptPeerEventFilter
+}> {}
+
+export const PeerFilterCodec: Codec<PeerFilter> = createStructCodec<any>('PeerFilter', [['id_filter', dynCodec(() => FilterOptIdFilterPeerIdCodec) as any], ['event_filter', dynCodec(() => FilterOptPeerEventFilterCodec) as any]]) as any
 
 // PeerId
 
@@ -1469,16 +1762,6 @@ export interface Status extends Enum<
 
 export const StatusCodec: Codec<Status> = createEnumCodec<any>('Status', [[0, 'Validating'], [1, 'Rejected', dynCodec(() => RejectionReasonCodec)], [2, 'Committed']]) as any
 
-// StatusFilter
-
-export interface StatusFilter extends Enum<
-    | 'Created'
-    | ['Updated', OptionUpdated]
-    | 'Deleted'
-> {}
-
-export const StatusFilterCodec: Codec<StatusFilter> = createEnumCodec<any>('StatusFilter', [[0, 'Created'], [1, 'Updated', dynCodec(() => OptionUpdatedCodec)], [2, 'Deleted']]) as any
-
 // Subtract
 
 export interface Subtract extends PseudoType<{
@@ -1572,21 +1855,51 @@ export const TransferBoxCodec: Codec<TransferBox> = createStructCodec<any>('Tran
 // Trigger
 
 export interface Trigger extends PseudoType<{
-    id: Id,
+    id: TriggerId,
     action: Action,
     metadata: Metadata
 }> {}
 
-export const TriggerCodec: Codec<Trigger> = createStructCodec<any>('Trigger', [['id', dynCodec(() => IdCodec) as any], ['action', dynCodec(() => ActionCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any]]) as any
+export const TriggerCodec: Codec<Trigger> = createStructCodec<any>('Trigger', [['id', dynCodec(() => TriggerIdCodec) as any], ['action', dynCodec(() => ActionCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any]]) as any
 
-// TriggerUpdated
+// TriggerEvent
 
-export interface TriggerUpdated extends Enum<
-    | 'Extended'
-    | 'Shortened'
+export interface TriggerEvent extends Enum<
+    | ['Created', TriggerId]
+    | ['Deleted', TriggerId]
+    | ['Extended', TriggerId]
+    | ['Shortened', TriggerId]
 > {}
 
-export const TriggerUpdatedCodec: Codec<TriggerUpdated> = createEnumCodec<any>('TriggerUpdated', [[0, 'Extended'], [1, 'Shortened']]) as any
+export const TriggerEventCodec: Codec<TriggerEvent> = createEnumCodec<any>('TriggerEvent', [[0, 'Created', dynCodec(() => TriggerIdCodec)], [1, 'Deleted', dynCodec(() => TriggerIdCodec)], [2, 'Extended', dynCodec(() => TriggerIdCodec)], [3, 'Shortened', dynCodec(() => TriggerIdCodec)]]) as any
+
+// TriggerEventFilter
+
+export interface TriggerEventFilter extends Enum<
+    | 'ByCreated'
+    | 'ByDeleted'
+    | 'ByExtended'
+    | 'ByShortened'
+> {}
+
+export const TriggerEventFilterCodec: Codec<TriggerEventFilter> = createEnumCodec<any>('TriggerEventFilter', [[0, 'ByCreated'], [1, 'ByDeleted'], [2, 'ByExtended'], [3, 'ByShortened']]) as any
+
+// TriggerFilter
+
+export interface TriggerFilter extends PseudoType<{
+    id_filter: FilterOptIdFilterTriggerId,
+    event_filter: FilterOptTriggerEventFilter
+}> {}
+
+export const TriggerFilterCodec: Codec<TriggerFilter> = createStructCodec<any>('TriggerFilter', [['id_filter', dynCodec(() => FilterOptIdFilterTriggerIdCodec) as any], ['event_filter', dynCodec(() => FilterOptTriggerEventFilterCodec) as any]]) as any
+
+// TriggerId
+
+export interface TriggerId extends PseudoType<{
+    name: Name
+}> {}
+
+export const TriggerIdCodec: Codec<TriggerId> = createStructCodec<any>('TriggerId', [['name', dynCodec(() => NameCodec) as any]]) as any
 
 // UnregisterBox
 
@@ -1603,18 +1916,6 @@ export interface UnsatisfiedSignatureConditionFail extends PseudoType<{
 }> {}
 
 export const UnsatisfiedSignatureConditionFailCodec: Codec<UnsatisfiedSignatureConditionFail> = createStructCodec<any>('UnsatisfiedSignatureConditionFail', [['reason', dynCodec(() => StrCodec) as any]]) as any
-
-// Updated
-
-export interface Updated extends Enum<
-    | ['Metadata', MetadataUpdated]
-    | 'Authentication'
-    | 'Permission'
-    | ['Asset', AssetUpdated]
-    | ['Trigger', TriggerUpdated]
-> {}
-
-export const UpdatedCodec: Codec<Updated> = createEnumCodec<any>('Updated', [[0, 'Metadata', dynCodec(() => MetadataUpdatedCodec)], [1, 'Authentication'], [2, 'Permission'], [3, 'Asset', dynCodec(() => AssetUpdatedCodec)], [4, 'Trigger', dynCodec(() => TriggerUpdatedCodec)]]) as any
 
 // ValidBlock
 

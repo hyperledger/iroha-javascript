@@ -82,8 +82,9 @@ function parseArray(ref: string): string {
  */
 function normalizeIdentifier(ref: string): string {
     const randCase = ref
+        .replace(/::events::data::events::(\w+)/g, '::events_data_events::Data_$1')
         .replace(/::events::(data|pipeline)::Event(Filter)?/g, '::events::$1_Event$2')
-        .replace(/iroha_data_model::(account|asset|peer)::Id/g, '$1_Id')
+        .replace(/iroha_data_model::(account|asset|peer|trigger)::Id/g, '$1_Id')
         .replace(/iroha_data_model::(query|transaction)::Payload/g, '$1_Payload')
         .replace(/iroha_data_model::(expression|isi)::If/g, '$1_If')
         .replace(/(?:\w+::)*(\w+)/g, '$1')

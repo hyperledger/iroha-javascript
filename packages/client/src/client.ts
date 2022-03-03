@@ -3,7 +3,6 @@ import {
     BTreeMapNameValue,
     Enum,
     Executable,
-    Option,
     QueryBox,
     QueryPayload,
     QueryPayloadCodec,

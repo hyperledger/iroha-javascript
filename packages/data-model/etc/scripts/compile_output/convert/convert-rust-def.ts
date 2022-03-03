@@ -56,6 +56,12 @@ export function convertRustIntrospectOutputIntoCompilerInput(params: { input: Ru
             if (transformed.is('Some')) {
                 // transform self name
                 const selfRefTransformed = converter.handle(key);
+
+                // check for existing key
+                if (selfRefTransformed in acc) {
+                    throw new Error(`${selfRefTransformed} is duplicated`);
+                }
+
                 acc[selfRefTransformed] = transformed.as('Some');
             }
         } else {

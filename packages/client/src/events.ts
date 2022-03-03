@@ -7,16 +7,13 @@ import {
     VersionedEventSubscriberMessageCodec,
 } from '@iroha2/data-model';
 import Emittery from 'emittery';
-import { initWebSocket, CloseEvent, Event as WsEvent } from '@iroha2/client-isomorphic-ws';
 import Debug from 'debug';
-import { transformProtocolInUrlFromHttpToWs } from './util';
+import { setupWebSocket, SocketEmitMapBase } from './util';
 import { ENDPOINT_EVENTS } from './const';
 
 const debug = Debug('@iroha2/client:events');
 
-export interface EventsEmitteryMap {
-    close: CloseEvent;
-    error: WsEvent;
+export interface EventsEmitteryMap extends SocketEmitMapBase {
     event: Event;
 }
 
@@ -27,6 +24,7 @@ export interface SetupEventsParams {
 
 export interface SetupEventsReturn {
     stop: () => void;
+    isClosed: () => boolean;
     ee: Emittery<EventsEmitteryMap>;
 }
 
@@ -34,67 +32,45 @@ export interface SetupEventsReturn {
  * Promise resolved when connection handshake is acquired
  */
 export async function setupEvents(params: SetupEventsParams): Promise<SetupEventsReturn> {
-    // const eeExternal = new Emittery<EventsEmitteryMap>();
+    const {
+        ee,
+        isClosed,
+        close,
+        accepted,
+        send: sendRaw,
+    } = setupWebSocket<EventsEmitteryMap>({
+        baseURL: params.toriiApiURL,
+        endpoint: ENDPOINT_EVENTS,
+        parentDebugger: debug,
+    });
 
-    const ee = new Emittery<
-        EventsEmitteryMap & {
-            acquired: undefined;
+    function send(msg: EventSubscriberMessage) {
+        sendRaw(VersionedEventSubscriberMessageCodec.toBuffer(Enum.variant('V1', msg)));
+    }
+
+    ee.on('open', () => {
+        send(Enum.variant('SubscriptionRequest', params.filter));
+    });
+
+    ee.on('message', (raw) => {
+        const event = VersionedEventPublisherMessageCodec.fromBuffer(raw).as('V1');
+
+        if (event.is('SubscriptionAccepted')) {
+            debug('subscription accepted');
+            ee.emit('accepted');
+        } else {
+            ee.emit('event', event.as('Event'));
+            send(Enum.variant('EventReceived'));
         }
-    >();
-
-    const url = transformProtocolInUrlFromHttpToWs(params.toriiApiURL) + ENDPOINT_EVENTS;
-    debug('opening connection to %o', url);
-
-    const socket = initWebSocket({
-        url,
-        onopen: () => {
-            debug('connection opened, sending subscription request');
-            sendMessage(Enum.variant('SubscriptionRequest', params.filter));
-        },
-        onclose: (e) => {
-            debug('connection closed: %o', e);
-            ee.emit('close', e);
-        },
-        onerror: (e) => {
-            debug('connection error: %o', e);
-            ee.emit('error', e);
-        },
-        onmessage: ({ data }) => {
-            const event = VersionedEventPublisherMessageCodec.fromBuffer(data).as('V1');
-
-            if (event.is('SubscriptionAccepted')) {
-                debug('subscription accepted');
-                ee.emit('acquired');
-            } else {
-                ee.emit('event', event.as('Event'));
-                sendMessage(Enum.variant('EventReceived'));
-            }
-        },
     });
 
-    async function close(): Promise<void> {
-        if (socket.isClosed()) return;
-        debug('closing connection...');
-        socket.close();
-        return ee.once('close').then(() => {});
-    }
-
-    function sendMessage(msg: EventSubscriberMessage) {
-        const encoded = VersionedEventSubscriberMessageCodec.toBuffer(Enum.variant('V1', msg));
-        socket.send(encoded);
-    }
-
-    await new Promise<void>((resolve, reject) => {
-        ee.once('acquired').then(resolve);
-        ee.once('close').then(() => {
-            reject(new Error('Handshake acquiring failed - connected closed'));
-        });
-    });
+    await accepted();
 
     return {
         stop: close,
         ee:
             // Emittery typing bug :<
             ee as any,
+        isClosed,
     };
 }

@@ -17,5 +17,5 @@ export interface Config {
         branch?: string;
         revision?: string;
     };
-    binaryNameMap: BinaryNameMap;
+    binaries: BinaryNameMap;
 }

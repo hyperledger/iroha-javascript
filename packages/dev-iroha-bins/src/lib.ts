@@ -29,7 +29,7 @@ function cargoInstallArgs(config: Pick<Config, 'git'>, binaryName: string): stri
 
 export async function install(binary: KnownBinaries): Promise<void> {
     await prepareTmpDir();
-    const actualBinary = config.binaryNameMap[binary];
+    const actualBinary = config.binaries[binary];
     consola.info(`Installing binary with cargo: ${binary} (${actualBinary})`);
     await $`cargo install ${cargoInstallArgs(config, actualBinary)}`;
 }
@@ -42,6 +42,6 @@ export async function clean() {
 }
 
 export async function resolveBinaryPath(binary: KnownBinaries): Promise<string> {
-    const { binaryNameMap } = config;
+    const { binaries: binaryNameMap } = config;
     return path.resolve(TMP_CARGO_ROOT, 'bin', binaryNameMap[binary]);
 }

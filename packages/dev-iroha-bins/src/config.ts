@@ -3,11 +3,11 @@ import { Config, KnownBinaries } from './types';
 const config: Config = {
     git: {
         repo: 'https://github.com/hyperledger/iroha.git',
-        revision: '9a149eecb00485f71fd23179dd16a73815d739b2',
+        revision: '27f0035786afae84a2377cb21ba9470f2233e25b',
         // branch: 'iroha2-dev',
         // branch: '2.0.0-pre.1.rc.1',
     },
-    binaryNameMap: {
+    binaries: {
         [KnownBinaries.Introspect]: 'iroha_schema_bin',
         [KnownBinaries.Cli]: 'iroha',
     },

@@ -62,3 +62,23 @@ test('Handles array with u8 as bytes-array', () => {
         },
     );
 });
+
+test('When some type is duplicated, it throws', () => {
+    expect(() =>
+        convert({
+            input: {
+                Event: {
+                    Struct: {
+                        declarations: [],
+                    },
+                },
+
+                'iroha_data_model::Event': {
+                    Struct: {
+                        declarations: [],
+                    },
+                },
+            },
+        }),
+    ).toThrowErrorMatchingInlineSnapshot(`"Event is duplicated"`);
+});
