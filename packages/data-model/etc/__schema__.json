@@ -319,6 +319,120 @@
       ]
     }
   },
+  "iroha_core::smartcontracts::isi::error::FindError": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Asset",
+          "discriminant": 0,
+          "ty": "iroha_data_model::asset::Id"
+        },
+        {
+          "name": "AssetDefinition",
+          "discriminant": 1,
+          "ty": "iroha_data_model::asset::DefinitionId"
+        },
+        {
+          "name": "Account",
+          "discriminant": 2,
+          "ty": "iroha_data_model::account::Id"
+        },
+        {
+          "name": "Domain",
+          "discriminant": 3,
+          "ty": "iroha_data_model::domain::Id"
+        },
+        {
+          "name": "MetadataKey",
+          "discriminant": 4,
+          "ty": "iroha_data_model::Name"
+        },
+        {
+          "name": "Block",
+          "discriminant": 5,
+          "ty": "iroha_core::smartcontracts::isi::error::ParentHashNotFound"
+        },
+        {
+          "name": "Transaction",
+          "discriminant": 6,
+          "ty": "iroha_crypto::hash::HashOf<iroha_data_model::transaction::VersionedTransaction>"
+        },
+        {
+          "name": "Context",
+          "discriminant": 7,
+          "ty": "String"
+        },
+        {
+          "name": "Peer",
+          "discriminant": 8,
+          "ty": "iroha_data_model::peer::Id"
+        },
+        {
+          "name": "Trigger",
+          "discriminant": 9,
+          "ty": "iroha_data_model::trigger::Id"
+        }
+      ]
+    }
+  },
+  "iroha_core::smartcontracts::isi::error::ParentHashNotFound": {
+    "TupleStruct": {
+      "types": [
+        "iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"
+      ]
+    }
+  },
+  "iroha_core::smartcontracts::isi::query::Error": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Decode",
+          "discriminant": 0,
+          "ty": "iroha_version::error::Error"
+        },
+        {
+          "name": "Version",
+          "discriminant": 1,
+          "ty": "iroha_core::smartcontracts::isi::query::UnsupportedVersionError"
+        },
+        {
+          "name": "Signature",
+          "discriminant": 2,
+          "ty": "String"
+        },
+        {
+          "name": "Permission",
+          "discriminant": 3,
+          "ty": "String"
+        },
+        {
+          "name": "Evaluate",
+          "discriminant": 4,
+          "ty": "String"
+        },
+        {
+          "name": "Find",
+          "discriminant": 5,
+          "ty": "iroha_core::smartcontracts::isi::error::FindError"
+        },
+        {
+          "name": "Conversion",
+          "discriminant": 6,
+          "ty": "String"
+        }
+      ]
+    }
+  },
+  "iroha_core::smartcontracts::isi::query::UnsupportedVersionError": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "version",
+          "ty": "u8"
+        }
+      ]
+    }
+  },
   "iroha_core::sumeragi::network_topology::Topology": {
     "Struct": {
       "declarations": [
@@ -3630,6 +3744,82 @@
   },
   "iroha_schema::Compact<u128>": {
     "Int": "Compact"
+  },
+  "iroha_version::RawVersioned": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Json",
+          "discriminant": 0,
+          "ty": "String"
+        },
+        {
+          "name": "ScaleBytes",
+          "discriminant": 1,
+          "ty": "Vec<u8>"
+        }
+      ]
+    }
+  },
+  "iroha_version::UnsupportedVersion": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "version",
+          "ty": "u8"
+        },
+        {
+          "name": "raw",
+          "ty": "iroha_version::RawVersioned"
+        }
+      ]
+    }
+  },
+  "iroha_version::error::Error": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "NotVersioned",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "UnsupportedJsonEncode",
+          "discriminant": 1,
+          "ty": null
+        },
+        {
+          "name": "ExpectedJson",
+          "discriminant": 2,
+          "ty": null
+        },
+        {
+          "name": "UnsupportedScaleEncode",
+          "discriminant": 3,
+          "ty": null
+        },
+        {
+          "name": "Serde",
+          "discriminant": 4,
+          "ty": null
+        },
+        {
+          "name": "ParityScale",
+          "discriminant": 5,
+          "ty": null
+        },
+        {
+          "name": "ParseInt",
+          "discriminant": 6,
+          "ty": null
+        },
+        {
+          "name": "UnsupportedVersion",
+          "discriminant": 7,
+          "ty": "iroha_version::UnsupportedVersion"
+        }
+      ]
+    }
   },
   "u128": {
     "Int": "FixedWidth"

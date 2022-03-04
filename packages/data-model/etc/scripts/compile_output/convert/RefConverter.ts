@@ -87,6 +87,8 @@ function normalizeIdentifier(ref: string): string {
         .replace(/iroha_data_model::(account|asset|peer|trigger)::Id/g, '$1_Id')
         .replace(/iroha_data_model::(query|transaction)::Payload/g, '$1_Payload')
         .replace(/iroha_data_model::(expression|isi)::If/g, '$1_If')
+        .replace(/iroha_version::error::Error/g, 'VersionError')
+        .replace(/query::(\w+)?Error/g, 'Query$1Error')
         .replace(/(?:\w+::)*(\w+)/g, '$1')
         .replace(/[^\w]/g, '_');
 

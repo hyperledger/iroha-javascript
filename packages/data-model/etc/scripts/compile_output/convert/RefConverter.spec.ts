@@ -26,6 +26,9 @@ describe('Refs transformation', () => {
         ['iroha_data_model::asset::Id', 'AssetId'],
         ['iroha_data_model::trigger::Id', 'TriggerId'],
         ['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>', 'EvaluatesToAccountId'],
+        ['iroha_version::error::Error', 'VersionError'],
+        ['iroha_core::smartcontracts::isi::query::UnsupportedVersionError', 'QueryUnsupportedVersionError'],
+        ['iroha_core::smartcontracts::isi::query::Error', 'QueryError'],
     ])('%p transformed into %p', (input, output) => {
         const sut = new RefConverter();
 

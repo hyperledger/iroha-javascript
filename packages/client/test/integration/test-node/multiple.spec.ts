@@ -286,6 +286,38 @@ test('Registering domain', async () => {
     await ensureDomainExistence('test');
 });
 
+test('When querying for unexisting domain, returns FindError', async () => {
+    const result = await client.request(
+        Enum.variant('FindAssetById', {
+            id: {
+                expression: Enum.variant<Expression>(
+                    'Raw',
+                    Enum.variant<Value>(
+                        'Id',
+                        Enum.variant<IdBox>('AssetId', {
+                            account_id: {
+                                name: 'alice',
+                                domain_id: {
+                                    name: 'wonderland',
+                                },
+                            },
+                            definition_id: {
+                                name: 'XOR',
+                                domain_id: {
+                                    name: 'wonderland',
+                                },
+                            },
+                        }),
+                    ),
+                ),
+            },
+        }),
+    );
+
+    expect(result.is('Err')).toBe(true);
+    expect(result.as('Err').as('Find').as('AssetDefinition').name).toBe('XOR');
+});
+
 describe('Events API', () => {
     test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
         const filter: EventFilter = Enum.variant('Pipeline', {

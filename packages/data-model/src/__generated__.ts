@@ -1,4 +1,4 @@
-import { Bool, BoolCodec, Codec, Compact, CompactCodec, Enum, Option, Str, StrCodec, U128, U128Codec, U32, U32Codec, U64, U64Codec, VecU8, VecU8Codec, createArrayU8Codec, createEnumCodec, createMapCodec, createOptionCodec, createStructCodec, createVecCodec, dynCodec } from '@scale-codec/definition-runtime'
+import { Bool, BoolCodec, Codec, Compact, CompactCodec, Enum, Option, Str, StrCodec, U128, U128Codec, U32, U32Codec, U64, U64Codec, U8, U8Codec, VecU8, VecU8Codec, createArrayU8Codec, createEnumCodec, createMapCodec, createOptionCodec, createStructCodec, createVecCodec, dynCodec } from '@scale-codec/definition-runtime'
 
 // Helpers
 
@@ -1026,6 +1026,23 @@ export interface FindDomainKeyValueByIdAndKey extends PseudoType<{
 
 export const FindDomainKeyValueByIdAndKeyCodec: Codec<FindDomainKeyValueByIdAndKey> = createStructCodec<any>('FindDomainKeyValueByIdAndKey', [['id', dynCodec(() => EvaluatesToIdCodec) as any], ['key', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
 
+// FindError
+
+export interface FindError extends Enum<
+    | ['Asset', AssetId]
+    | ['AssetDefinition', DefinitionId]
+    | ['Account', AccountId]
+    | ['Domain', Id]
+    | ['MetadataKey', Name]
+    | ['Block', ParentHashNotFound]
+    | ['Transaction', HashOfVersionedTransaction]
+    | ['Context', Str]
+    | ['Peer', PeerId]
+    | ['Trigger', TriggerId]
+> {}
+
+export const FindErrorCodec: Codec<FindError> = createEnumCodec<any>('FindError', [[0, 'Asset', dynCodec(() => AssetIdCodec)], [1, 'AssetDefinition', dynCodec(() => DefinitionIdCodec)], [2, 'Account', dynCodec(() => AccountIdCodec)], [3, 'Domain', dynCodec(() => IdCodec)], [4, 'MetadataKey', dynCodec(() => NameCodec)], [5, 'Block', dynCodec(() => ParentHashNotFoundCodec)], [6, 'Transaction', dynCodec(() => HashOfVersionedTransactionCodec)], [7, 'Context', dynCodec(() => StrCodec)], [8, 'Peer', dynCodec(() => PeerIdCodec)], [9, 'Trigger', dynCodec(() => TriggerIdCodec)]]) as any
+
 // FindPermissionTokensByAccountId
 
 export interface FindPermissionTokensByAccountId extends PseudoType<{
@@ -1421,6 +1438,12 @@ export interface Parameter extends Enum<
 
 export const ParameterCodec: Codec<Parameter> = createEnumCodec<any>('Parameter', [[0, 'MaximumFaultyPeersAmount', dynCodec(() => U32Codec)], [1, 'BlockTime', dynCodec(() => U128Codec)], [2, 'CommitTime', dynCodec(() => U128Codec)], [3, 'TransactionReceiptTime', dynCodec(() => U128Codec)]]) as any
 
+// ParentHashNotFound
+
+export type ParentHashNotFound = HashOfVersionedCommittedBlock
+
+export const ParentHashNotFoundCodec = dynCodec(() => HashOfVersionedCommittedBlockCodec)
+
 // Peer
 
 export interface Peer extends PseudoType<{
@@ -1559,6 +1582,20 @@ export interface QueryBox extends Enum<
 
 export const QueryBoxCodec: Codec<QueryBox> = createEnumCodec<any>('QueryBox', [[0, 'FindAllAccounts', dynCodec(() => FindAllAccountsCodec)], [1, 'FindAccountById', dynCodec(() => FindAccountByIdCodec)], [2, 'FindAccountKeyValueByIdAndKey', dynCodec(() => FindAccountKeyValueByIdAndKeyCodec)], [3, 'FindAccountsByName', dynCodec(() => FindAccountsByNameCodec)], [4, 'FindAccountsByDomainId', dynCodec(() => FindAccountsByDomainIdCodec)], [5, 'FindAllAssets', dynCodec(() => FindAllAssetsCodec)], [6, 'FindAllAssetsDefinitions', dynCodec(() => FindAllAssetsDefinitionsCodec)], [7, 'FindAssetById', dynCodec(() => FindAssetByIdCodec)], [8, 'FindAssetsByName', dynCodec(() => FindAssetsByNameCodec)], [9, 'FindAssetsByAccountId', dynCodec(() => FindAssetsByAccountIdCodec)], [10, 'FindAssetsByAssetDefinitionId', dynCodec(() => FindAssetsByAssetDefinitionIdCodec)], [11, 'FindAssetsByDomainId', dynCodec(() => FindAssetsByDomainIdCodec)], [12, 'FindAssetsByDomainIdAndAssetDefinitionId', dynCodec(() => FindAssetsByDomainIdAndAssetDefinitionIdCodec)], [13, 'FindAssetQuantityById', dynCodec(() => FindAssetQuantityByIdCodec)], [14, 'FindAssetKeyValueByIdAndKey', dynCodec(() => FindAssetKeyValueByIdAndKeyCodec)], [15, 'FindAssetDefinitionKeyValueByIdAndKey', dynCodec(() => FindAssetDefinitionKeyValueByIdAndKeyCodec)], [16, 'FindAllDomains', dynCodec(() => FindAllDomainsCodec)], [17, 'FindDomainById', dynCodec(() => FindDomainByIdCodec)], [18, 'FindDomainKeyValueByIdAndKey', dynCodec(() => FindDomainKeyValueByIdAndKeyCodec)], [19, 'FindAllPeers', dynCodec(() => FindAllPeersCodec)], [20, 'FindTransactionsByAccountId', dynCodec(() => FindTransactionsByAccountIdCodec)], [21, 'FindTransactionByHash', dynCodec(() => FindTransactionByHashCodec)], [22, 'FindPermissionTokensByAccountId', dynCodec(() => FindPermissionTokensByAccountIdCodec)]]) as any
 
+// QueryError
+
+export interface QueryError extends Enum<
+    | ['Decode', VersionError]
+    | ['Version', QueryUnsupportedVersionError]
+    | ['Signature', Str]
+    | ['Permission', Str]
+    | ['Evaluate', Str]
+    | ['Find', FindError]
+    | ['Conversion', Str]
+> {}
+
+export const QueryErrorCodec: Codec<QueryError> = createEnumCodec<any>('QueryError', [[0, 'Decode', dynCodec(() => VersionErrorCodec)], [1, 'Version', dynCodec(() => QueryUnsupportedVersionErrorCodec)], [2, 'Signature', dynCodec(() => StrCodec)], [3, 'Permission', dynCodec(() => StrCodec)], [4, 'Evaluate', dynCodec(() => StrCodec)], [5, 'Find', dynCodec(() => FindErrorCodec)], [6, 'Conversion', dynCodec(() => StrCodec)]]) as any
+
 // QueryPayload
 
 export interface QueryPayload extends PseudoType<{
@@ -1574,6 +1611,14 @@ export const QueryPayloadCodec: Codec<QueryPayload> = createStructCodec<any>('Qu
 export type QueryResult = Value
 
 export const QueryResultCodec = dynCodec(() => ValueCodec)
+
+// QueryUnsupportedVersionError
+
+export interface QueryUnsupportedVersionError extends PseudoType<{
+    version: U8
+}> {}
+
+export const QueryUnsupportedVersionErrorCodec: Codec<QueryUnsupportedVersionError> = createStructCodec<any>('QueryUnsupportedVersionError', [['version', dynCodec(() => U8Codec) as any]]) as any
 
 // RaiseTo
 
@@ -1591,6 +1636,15 @@ export interface RawGenesisBlock extends PseudoType<{
 }> {}
 
 export const RawGenesisBlockCodec: Codec<RawGenesisBlock> = createStructCodec<any>('RawGenesisBlock', [['transactions', dynCodec(() => VecGenesisTransactionCodec) as any]]) as any
+
+// RawVersioned
+
+export interface RawVersioned extends Enum<
+    | ['Json', Str]
+    | ['ScaleBytes', VecU8]
+> {}
+
+export const RawVersionedCodec: Codec<RawVersioned> = createEnumCodec<any>('RawVersioned', [[0, 'Json', dynCodec(() => StrCodec)], [1, 'ScaleBytes', dynCodec(() => VecU8Codec)]]) as any
 
 // Reason
 
@@ -1917,6 +1971,15 @@ export interface UnsatisfiedSignatureConditionFail extends PseudoType<{
 
 export const UnsatisfiedSignatureConditionFailCodec: Codec<UnsatisfiedSignatureConditionFail> = createStructCodec<any>('UnsatisfiedSignatureConditionFail', [['reason', dynCodec(() => StrCodec) as any]]) as any
 
+// UnsupportedVersion
+
+export interface UnsupportedVersion extends PseudoType<{
+    version: U8,
+    raw: RawVersioned
+}> {}
+
+export const UnsupportedVersionCodec: Codec<UnsupportedVersion> = createStructCodec<any>('UnsupportedVersion', [['version', dynCodec(() => U8Codec) as any], ['raw', dynCodec(() => RawVersionedCodec) as any]]) as any
+
 // ValidBlock
 
 export interface ValidBlock extends PseudoType<{
@@ -2126,6 +2189,21 @@ export interface VersionedValidTransaction extends Enum<
 > {}
 
 export const VersionedValidTransactionCodec: Codec<VersionedValidTransaction> = createEnumCodec<any>('VersionedValidTransaction', [[1, 'V1', dynCodec(() => ValidTransactionCodec)]]) as any
+
+// VersionError
+
+export interface VersionError extends Enum<
+    | 'NotVersioned'
+    | 'UnsupportedJsonEncode'
+    | 'ExpectedJson'
+    | 'UnsupportedScaleEncode'
+    | 'Serde'
+    | 'ParityScale'
+    | 'ParseInt'
+    | ['UnsupportedVersion', UnsupportedVersion]
+> {}
+
+export const VersionErrorCodec: Codec<VersionError> = createEnumCodec<any>('VersionError', [[0, 'NotVersioned'], [1, 'UnsupportedJsonEncode'], [2, 'ExpectedJson'], [3, 'UnsupportedScaleEncode'], [4, 'Serde'], [5, 'ParityScale'], [6, 'ParseInt'], [7, 'UnsupportedVersion', dynCodec(() => UnsupportedVersionCodec)]]) as any
 
 // WasmExecutionFail
 

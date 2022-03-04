@@ -4,6 +4,8 @@ import {
     Enum,
     Executable,
     QueryBox,
+    QueryError,
+    QueryErrorCodec,
     QueryPayload,
     QueryPayloadCodec,
     QueryResult,
@@ -11,7 +13,6 @@ import {
     Signature,
     TransactionPayload,
     TransactionPayloadCodec,
-    Value,
     VersionedQueryResultCodec,
     VersionedSignedQueryRequestCodec,
     VersionedTransactionCodec,
@@ -67,7 +68,7 @@ export interface SubmitParams {
 
 export type HealthResult = Result<null, string>;
 
-export type RequestResult = Result<Value, QueryResult>;
+export type RequestResult = Result<QueryResult, QueryError>;
 
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
 
@@ -233,13 +234,16 @@ export class Client {
                 body: queryBytes!,
             }).then();
 
+            const bytes = new Uint8Array(await response.arrayBuffer());
+
             if (response.status === 200) {
                 // OK
-                const bytes = new Uint8Array(await response.arrayBuffer());
                 const value = VersionedQueryResultCodec.fromBuffer(bytes).as('V1');
                 return Enum.variant('Ok', value);
             } else {
-                // TODO
+                // ERROR
+                const error = QueryErrorCodec.fromBuffer(bytes);
+                return Enum.variant('Err', error);
             }
         } finally {
             scope.free();
