@@ -127,6 +127,8 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
  * Set config files
  */
 export async function setConfiguration(configs: IrohaConfiguration): Promise<void> {
+    debug('setting configuration: %o', configs);
+
     const asKeyValue = Object.entries(configs);
 
     await Promise.all(

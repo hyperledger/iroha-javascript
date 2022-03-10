@@ -16,8 +16,34 @@ import {
     RegisterBox,
     Enum,
     Result,
-    Logger as SCALELogger,
+    Logger as ScaleLogger,
     VersionedCommittedBlock,
+    AssetDefinition,
+    Metadata,
+    BTreeMapNameValue,
+    Executable,
+    VecInstruction,
+    EvaluatesToIdentifiableBox,
+    Account,
+    BTreeMapAssetIdAsset,
+    BTreeSetPermissionToken,
+    EvaluatesToBool,
+    VecPublicKey,
+    Id,
+    QueryBox,
+    EvaluatesToValue,
+    EvaluatesToIdBox,
+    AssetId,
+    FindAssetsByAccountId,
+    EvaluatesToAccountId,
+    Domain,
+    BTreeMapAccountIdAccount,
+    BTreeMapDefinitionIdAssetDefinitionEntry,
+    OptionIpfsPath,
+    OptionHash,
+    PipelineEventFilter,
+    FindAssetById,
+    EvaluatesToAssetId,
 } from '@iroha2/data-model';
 import { hexToBytes } from 'hada';
 import { Seq } from 'immutable';
@@ -28,7 +54,7 @@ import { client_config, peer_config, peer_genesis, PIPELINE_MS } from '../config
 import { SetupBlocksStreamReturn } from '../../../src/blocks-stream';
 
 // for debugging convenience
-new SCALELogger().mount();
+new ScaleLogger().mount();
 
 // preparing keys
 const multihash = crypto.createMultihashFromBytes(Uint8Array.from(hexToBytes(client_config.publicKey)));
@@ -43,7 +69,7 @@ setCrypto(crypto);
 const client = new Client({
     torii: client_config.torii,
     keyPair,
-    accountId: client_config.account,
+    accountId: client_config.account as AccountId,
 });
 
 async function addAsset(
@@ -53,36 +79,75 @@ async function addAsset(
         mintable?: boolean;
     },
 ) {
-    const expression = Enum.variant<Expression>(
-        'Raw',
-        Enum.variant<Value>(
-            'Identifiable',
-            Enum.variant<IdentifiableBox>('AssetDefinition', {
-                id: definitionId,
-                value_type: assetType,
-                metadata: { map: new Map() },
-                mintable: opts?.mintable ?? false,
-            }),
+    await client.submit(
+        Executable(
+            'Instructions',
+            VecInstruction([
+                Instruction(
+                    'Register',
+                    RegisterBox({
+                        object: EvaluatesToIdentifiableBox({
+                            expression: Expression(
+                                'Raw',
+                                Value(
+                                    'Identifiable',
+                                    IdentifiableBox(
+                                        'AssetDefinition',
+                                        AssetDefinition({
+                                            id: definitionId,
+                                            value_type: assetType,
+                                            metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
+                                            mintable: opts?.mintable ?? false,
+                                        }),
+                                    ),
+                                ),
+                            ),
+                        }),
+                    }),
+                ),
+            ]),
         ),
     );
-
-    await client.submit(Enum.variant('Instructions', [Enum.variant('Register', { object: { expression } })]));
 }
 
 async function addAccount(accountId: AccountId) {
-    const newAccount: IdentifiableBox = Enum.variant('NewAccount', {
-        id: accountId,
-        signatories: [],
-        metadata: { map: new Map() },
-    });
-    const expression = Enum.variant<Expression>('Raw', Enum.variant<Value>('Identifiable', newAccount));
-    const instruction = Enum.variant<Instruction>('Register', { object: { expression } });
-
-    await client.submit(Enum.variant('Instructions', [instruction]));
+    await client.submit(
+        Executable(
+            'Instructions',
+            VecInstruction([
+                Instruction(
+                    'Register',
+                    RegisterBox({
+                        object: EvaluatesToIdentifiableBox({
+                            expression: Expression(
+                                'Raw',
+                                Value(
+                                    'Identifiable',
+                                    IdentifiableBox(
+                                        'NewAccount',
+                                        Account({
+                                            id: accountId,
+                                            assets: BTreeMapAssetIdAsset(new Map()),
+                                            permission_tokens: BTreeSetPermissionToken([]),
+                                            signature_check_condition: EvaluatesToBool({
+                                                expression: Expression('Raw', Value('Bool', false)),
+                                            }),
+                                            signatories: VecPublicKey([]),
+                                            metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
+                                        }),
+                                    ),
+                                ),
+                            ),
+                        }),
+                    }),
+                ),
+            ]),
+        ),
+    );
 }
 
 async function submitMint(mint: MintBox) {
-    await client.submit(Enum.variant('Instructions', [Enum.variant('Mint', mint)]));
+    await client.submit(Executable('Instructions', VecInstruction([Instruction('Mint', mint)])));
 }
 
 async function pipelineStepDelay() {
@@ -130,26 +195,26 @@ test('Peer is healthy', async () => {
 });
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-    const normalAssetDefinitionId: DefinitionId = {
+    const normalAssetDefinitionId = DefinitionId({
         name: 'xor',
-        domain_id: {
+        domain_id: Id({
             name: 'wonderland',
-        },
-    };
+        }),
+    });
     await addAsset(normalAssetDefinitionId);
 
     const tooLongAssetName = '0'.repeat(2 ** 14);
-    const invalidAssetDefinitionId: DefinitionId = {
+    const invalidAssetDefinitionId = DefinitionId({
         name: tooLongAssetName,
-        domain_id: {
+        domain_id: Id({
             name: 'wonderland',
-        },
-    };
+        }),
+    });
     await addAsset(invalidAssetDefinitionId);
 
     await delay(PIPELINE_MS * 2);
 
-    const queryResult = await client.request(Enum.variant('FindAllAssetsDefinitions', null));
+    const queryResult = await client.request(QueryBox('FindAllAssetsDefinitions', null));
 
     const existingDefinitions: DefinitionId[] = queryResult
         .as('Ok')
@@ -161,23 +226,23 @@ test('AddAsset instruction with name length more than limit is not committed', a
 });
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
-    const normal: AccountId = {
+    const normal = AccountId({
         name: 'bob',
-        domain_id: {
+        domain_id: Id({
             name: 'wonderland',
-        },
-    };
-    const incorrect: AccountId = {
+        }),
+    });
+    const incorrect = AccountId({
         name: '0'.repeat(2 ** 14),
-        domain_id: {
+        domain_id: Id({
             name: 'wonderland',
-        },
-    };
+        }),
+    });
 
     await Promise.all([normal, incorrect].map((x) => addAccount(x)));
     await delay(PIPELINE_MS * 2);
 
-    const queryResult = await client.request(Enum.variant('FindAllAccounts', null));
+    const queryResult = await client.request(QueryBox('FindAllAccounts', null));
 
     const existingAccounts: AccountId[] = queryResult
         .as('Ok')
@@ -190,46 +255,51 @@ test('AddAccount instruction with name length more than limit is not committed',
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
     // Creating asset by definition
-    const ASSET_DEFINITION_ID: DefinitionId = {
+    const ASSET_DEFINITION_ID = DefinitionId({
         name: 'xor',
-        domain_id: {
+        domain_id: Id({
             name: 'wonderland',
-        },
-    };
-    await addAsset(ASSET_DEFINITION_ID, Enum.variant<AssetValueType>('Fixed'), { mintable: true });
+        }),
+    });
+    await addAsset(ASSET_DEFINITION_ID, AssetValueType('Fixed'), { mintable: true });
     await pipelineStepDelay();
 
     // Adding mint
     const DECIMAL = '512.5881';
-    await submitMint({
-        object: {
-            expression: Enum.variant<Expression>('Raw', Enum.variant<Value>('Fixed', DECIMAL)),
-        },
-        destination_id: {
-            expression: Enum.variant<Expression>(
-                'Raw',
-                Enum.variant<Value>(
-                    'Id',
-                    Enum.variant<IdBox>('AssetId', {
-                        account_id: client_config.account,
-                        definition_id: ASSET_DEFINITION_ID,
-                    }),
+    await submitMint(
+        MintBox({
+            object: EvaluatesToValue({
+                expression: Expression('Raw', Value('Fixed', DECIMAL)),
+            }),
+            destination_id: EvaluatesToIdBox({
+                expression: Expression(
+                    'Raw',
+                    Value(
+                        'Id',
+                        IdBox(
+                            'AssetId',
+                            AssetId({
+                                account_id: client_config.account as AccountId,
+                                definition_id: ASSET_DEFINITION_ID,
+                            }),
+                        ),
+                    ),
                 ),
-            ),
-        },
-    });
+            }),
+        }),
+    );
     await pipelineStepDelay();
 
     // Checking added asset via query
     const result = await client.request(
-        Enum.variant('FindAssetsByAccountId', {
-            account_id: {
-                expression: Enum.variant<Expression>(
-                    'Raw',
-                    Enum.variant<Value>('Id', Enum.variant<IdBox>('AccountId', client_config.account)),
-                ),
-            },
-        }),
+        QueryBox(
+            'FindAssetsByAccountId',
+            FindAssetsByAccountId({
+                account_id: EvaluatesToAccountId({
+                    expression: Expression('Raw', Value('Id', IdBox('AccountId', client_config.account as AccountId))),
+                }),
+            }),
+        ),
     );
 
     // Assert
@@ -244,33 +314,34 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
 
 test('Registering domain', async () => {
     async function registerDomain(domainName: string) {
-        const registerBox: RegisterBox = {
-            object: {
-                expression: Enum.variant<Expression>(
+        const registerBox = RegisterBox({
+            object: EvaluatesToIdentifiableBox({
+                expression: Expression(
                     'Raw',
-                    Enum.variant<Value>(
+                    Value(
                         'Identifiable',
-                        Enum.variant<IdentifiableBox>('Domain', {
-                            id: {
-                                name: domainName,
-                            },
-                            accounts: new Map(),
-                            metadata: { map: new Map() },
-                            asset_definitions: new Map(),
-                            logo: Enum.variant('None'),
-                        }),
+                        IdentifiableBox(
+                            'Domain',
+                            Domain({
+                                id: Id({
+                                    name: domainName,
+                                }),
+                                accounts: BTreeMapAccountIdAccount(new Map()),
+                                metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
+                                asset_definitions: BTreeMapDefinitionIdAssetDefinitionEntry(new Map()),
+                                logo: OptionIpfsPath('None'),
+                            }),
+                        ),
                     ),
                 ),
-            },
-        };
+            }),
+        });
 
-        const instruction = Enum.variant<Instruction>('Register', registerBox);
-
-        await client.submit(Enum.variant('Instructions', [instruction]));
+        await client.submit(Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])));
     }
 
     async function ensureDomainExistence(domainName: string) {
-        const result = await client.request(Enum.variant('FindAllDomains', null));
+        const result = await client.request(QueryBox('FindAllDomains', null));
 
         const domain = result
             .as('Ok')
@@ -288,30 +359,36 @@ test('Registering domain', async () => {
 
 test('When querying for unexisting domain, returns FindError', async () => {
     const result = await client.request(
-        Enum.variant('FindAssetById', {
-            id: {
-                expression: Enum.variant<Expression>(
-                    'Raw',
-                    Enum.variant<Value>(
-                        'Id',
-                        Enum.variant<IdBox>('AssetId', {
-                            account_id: {
-                                name: 'alice',
-                                domain_id: {
-                                    name: 'wonderland',
-                                },
-                            },
-                            definition_id: {
-                                name: 'XOR',
-                                domain_id: {
-                                    name: 'wonderland',
-                                },
-                            },
-                        }),
+        QueryBox(
+            'FindAssetById',
+            FindAssetById({
+                id: EvaluatesToAssetId({
+                    expression: Expression(
+                        'Raw',
+                        Value(
+                            'Id',
+                            IdBox(
+                                'AssetId',
+                                AssetId({
+                                    account_id: AccountId({
+                                        name: 'alice',
+                                        domain_id: Id({
+                                            name: 'wonderland',
+                                        }),
+                                    }),
+                                    definition_id: AccountId({
+                                        name: 'XOR',
+                                        domain_id: Id({
+                                            name: 'wonderland',
+                                        }),
+                                    }),
+                                }),
+                            ),
+                        ),
                     ),
-                ),
-            },
-        }),
+                }),
+            }),
+        ),
     );
 
     expect(result.is('Err')).toBe(true);
@@ -320,10 +397,13 @@ test('When querying for unexisting domain, returns FindError', async () => {
 
 describe('Events API', () => {
     test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
-        const filter: EventFilter = Enum.variant('Pipeline', {
-            entity: Enum.variant<OptionEntityType>('Some', Enum.variant<EntityType>('Transaction')),
-            hash: Enum.variant('None'),
-        });
+        const filter = EventFilter(
+            'Pipeline',
+            PipelineEventFilter({
+                entity: OptionEntityType('Some', EntityType('Transaction')),
+                hash: OptionHash('None'),
+            }),
+        );
 
         // Listening
 
@@ -344,12 +424,14 @@ describe('Events API', () => {
         });
 
         // Triggering transaction
-        await addAsset({
-            name: 'xor',
-            domain_id: {
-                name: 'wonderland',
-            },
-        });
+        await addAsset(
+            DefinitionId({
+                name: 'xor',
+                domain_id: Id({
+                    name: 'wonderland',
+                }),
+            }),
+        );
 
         // Waiting for resolving
         await new Promise<void>((resolve, reject) => {
@@ -407,12 +489,14 @@ describe('Blocks Stream API', () => {
         const ACTIONS = SAMPLE_ASSET_NAMES.length;
 
         async function triggerNewBlockWithSomething() {
-            await addAsset({
-                name: SAMPLE_ASSET_NAMES.pop()!,
-                domain_id: {
-                    name: 'wonderland',
-                },
-            });
+            await addAsset(
+                DefinitionId({
+                    name: SAMPLE_ASSET_NAMES.pop()!,
+                    domain_id: Id({
+                        name: 'wonderland',
+                    }),
+                }),
+            );
         }
 
         // Let's go...
@@ -438,4 +522,20 @@ describe('Metrics', () => {
         // just some line from Prometheus metrics
         expect(data).toMatch('block_height 1');
     });
+});
+
+test('status - peer uptime content check, not only type', async () => {
+    const status = await client.getStatus();
+
+    expect(status).toEqual(
+        expect.objectContaining({
+            peers: expect.any(Number),
+            blocks: expect.any(Number),
+            txs: expect.any(Number),
+            uptime: expect.objectContaining({
+                secs: expect.any(Number),
+                nanos: expect.any(Number),
+            }),
+        }),
+    );
 });

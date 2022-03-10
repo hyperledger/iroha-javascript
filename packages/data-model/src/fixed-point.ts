@@ -1,4 +1,4 @@
-import { encodeI64, decodeI64, encodeFactory, CodecImpl, Decode } from '@scale-codec/definition-runtime';
+import { encodeI64, decodeI64, encodeFactory, trackableCodec, Decode } from '@scale-codec/definition-runtime';
 import { f64StrToBigint, bigintToF64Str } from '@iroha2/i64-fixnum';
 
 const PRECISION = 9;
@@ -16,6 +16,8 @@ const decoder: Decode<string> = (walker) => {
     return bigintToF64Str(bi, PRECISION);
 };
 
-export type FixedPointI64P9 = string;
+type FixedPointI64P9 = string;
 
-export const FixedPointI64P9Codec = new CodecImpl<string>('FixedPointI64P9', encoder, decoder);
+const FixedPointI64P9 = trackableCodec<string>('FixedPointI64P9', encoder, decoder);
+
+export { FixedPointI64P9 };

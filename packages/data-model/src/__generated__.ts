@@ -1,25 +1,276 @@
-import { Bool, BoolCodec, Codec, Compact, CompactCodec, Enum, Option, Str, StrCodec, U128, U128Codec, U32, U32Codec, U64, U64Codec, U8, U8Codec, VecU8, VecU8Codec, createArrayU8Codec, createEnumCodec, createMapCodec, createOptionCodec, createStructCodec, createVecCodec, dynCodec } from '@scale-codec/definition-runtime'
+import { Bool, Compact, Enum, Str, U128, U32, U64, U8, VecU8, createArrayU8Codec, createEnumCodec, createMapCodec, createOptionCodec, createStructCodec, createVecCodec, dynCodec } from '@scale-codec/definition-runtime'
 
-// Helpers
+import type { ArrayCodecAndFactory, Codec, EnumCodecAndFactory, MapCodecAndFactory, Opaque, Option, StructCodecAndFactory } from '@scale-codec/definition-runtime'
 
-type PseudoType<T> = T
+// Dynamic codecs
 
-// Account
+const __dyn_FilterOptAssetDefinitionFilter = dynCodec(() => FilterOptAssetDefinitionFilter)
+const __dyn_FindAccountKeyValueByIdAndKey = dynCodec(() => FindAccountKeyValueByIdAndKey)
+const __dyn_SignatureOfCommittedBlock = dynCodec(() => SignatureOfCommittedBlock)
+const __dyn_IdFilterTriggerId = dynCodec(() => IdFilterTriggerId)
+const __dyn_FilterOptAccountEventFilter = dynCodec(() => FilterOptAccountEventFilter)
+const __dyn_TransferBox = dynCodec(() => TransferBox)
+const __dyn_EvaluatesToName = dynCodec(() => EvaluatesToName)
+const __dyn_RejectedTransaction = dynCodec(() => RejectedTransaction)
+const __dyn_BlockRejectionReason = dynCodec(() => BlockRejectionReason)
+const __dyn_SignatureOfValidBlock = dynCodec(() => SignatureOfValidBlock)
+const __dyn_EvaluatesToIdentifiableBox = dynCodec(() => EvaluatesToIdentifiableBox)
+const __dyn_Add = dynCodec(() => Add)
+const __dyn_AssetValue = dynCodec(() => AssetValue)
+const __dyn_FindAccountsByName = dynCodec(() => FindAccountsByName)
+const __dyn_BTreeMapAssetIdAsset = dynCodec(() => BTreeMapAssetIdAsset)
+const __dyn_IdFilterDefinitionId = dynCodec(() => IdFilterDefinitionId)
+const __dyn_BTreeMapAccountIdAccount = dynCodec(() => BTreeMapAccountIdAccount)
+const __dyn_ContextValue = dynCodec(() => ContextValue)
+const __dyn_ValidTransaction = dynCodec(() => ValidTransaction)
+const __dyn_Peer = dynCodec(() => Peer)
+const __dyn_AssetEventFilter = dynCodec(() => AssetEventFilter)
+const __dyn_VecPublicKey = dynCodec(() => VecPublicKey)
+const __dyn_SignaturesOfTransactionPayload = dynCodec(() => SignaturesOfTransactionPayload)
+const __dyn_ContainsAll = dynCodec(() => ContainsAll)
+const __dyn_Mod = dynCodec(() => Mod)
+const __dyn_TriggerEvent = dynCodec(() => TriggerEvent)
+const __dyn_QueryBox = dynCodec(() => QueryBox)
+const __dyn_AssetDefinition = dynCodec(() => AssetDefinition)
+const __dyn_HashOfVersionedCommittedBlock = dynCodec(() => HashOfVersionedCommittedBlock)
+const __dyn_FindAssetKeyValueByIdAndKey = dynCodec(() => FindAssetKeyValueByIdAndKey)
+const __dyn_HashOfVersionedValidBlock = dynCodec(() => HashOfVersionedValidBlock)
+const __dyn_UnsupportedVersion = dynCodec(() => UnsupportedVersion)
+const __dyn_SignaturesOfCommittedBlock = dynCodec(() => SignaturesOfCommittedBlock)
+const __dyn_EvaluatesToDefinitionId = dynCodec(() => EvaluatesToDefinitionId)
+const __dyn_NotPermittedFail = dynCodec(() => NotPermittedFail)
+const __dyn_EvaluatesToHash = dynCodec(() => EvaluatesToHash)
+const __dyn_Or = dynCodec(() => Or)
+const __dyn_SignedQueryRequest = dynCodec(() => SignedQueryRequest)
+const __dyn_FindTransactionsByAccountId = dynCodec(() => FindTransactionsByAccountId)
+const __dyn_OptionHash = dynCodec(() => OptionHash)
+const __dyn_Domain = dynCodec(() => Domain)
+const __dyn_Proof = dynCodec(() => Proof)
+const __dyn_OptionTopology = dynCodec(() => OptionTopology)
+const __dyn_Multiply = dynCodec(() => Multiply)
+const __dyn_Reason = dynCodec(() => Reason)
+const __dyn_EventPublisherMessage = dynCodec(() => EventPublisherMessage)
+const __dyn_RevokeBox = dynCodec(() => RevokeBox)
+const __dyn_BTreeMapPublicKeySignatureOfTransactionPayload = dynCodec(() => BTreeMapPublicKeySignatureOfTransactionPayload)
+const __dyn_VecVersionedValidTransaction = dynCodec(() => VecVersionedValidTransaction)
+const __dyn_SubtreeVersionedTransaction = dynCodec(() => SubtreeVersionedTransaction)
+const __dyn_AccountEventFilter = dynCodec(() => AccountEventFilter)
+const __dyn_QueryResult = dynCodec(() => QueryResult)
+const __dyn_FilterOptIdFilterTriggerId = dynCodec(() => FilterOptIdFilterTriggerId)
+const __dyn_EventSubscriberMessage = dynCodec(() => EventSubscriberMessage)
+const __dyn_LeafVersionedTransaction = dynCodec(() => LeafVersionedTransaction)
+const __dyn_AccountFilter = dynCodec(() => AccountFilter)
+const __dyn_FindAccountById = dynCodec(() => FindAccountById)
+const __dyn_BTreeMapPublicKeySignatureOfCommittedBlock = dynCodec(() => BTreeMapPublicKeySignatureOfCommittedBlock)
+const __dyn_QueryPayload = dynCodec(() => QueryPayload)
+const __dyn_Where = dynCodec(() => Where)
+const __dyn_ParentHashNotFound = dynCodec(() => ParentHashNotFound)
+const __dyn_FindAllDomains = dynCodec(() => FindAllDomains)
+const __dyn_VersionedTransaction = dynCodec(() => VersionedTransaction)
+const __dyn_RaiseTo = dynCodec(() => RaiseTo)
+const __dyn_RegisterBox = dynCodec(() => RegisterBox)
+const __dyn_AccountId = dynCodec(() => AccountId)
+const __dyn_InstructionExecutionFail = dynCodec(() => InstructionExecutionFail)
+const __dyn_VersionedCommittedBlock = dynCodec(() => VersionedCommittedBlock)
+const __dyn_AssetFilter = dynCodec(() => AssetFilter)
+const __dyn_BTreeSetPermissionToken = dynCodec(() => BTreeSetPermissionToken)
+const __dyn_NodeVersionedTransaction = dynCodec(() => NodeVersionedTransaction)
+const __dyn_FindAssetById = dynCodec(() => FindAssetById)
+const __dyn_MintBox = dynCodec(() => MintBox)
+const __dyn_FindDomainKeyValueByIdAndKey = dynCodec(() => FindDomainKeyValueByIdAndKey)
+const __dyn_VersionedRejectedTransaction = dynCodec(() => VersionedRejectedTransaction)
+const __dyn_BTreeMapStringEvaluatesToValue = dynCodec(() => BTreeMapStringEvaluatesToValue)
+const __dyn_FindAllPeers = dynCodec(() => FindAllPeers)
+const __dyn_FilterOptIdFilterId = dynCodec(() => FilterOptIdFilterId)
+const __dyn_Parameter = dynCodec(() => Parameter)
+const __dyn_CommitTimeout = dynCodec(() => CommitTimeout)
+const __dyn_Executable = dynCodec(() => Executable)
+const __dyn_PermissionToken = dynCodec(() => PermissionToken)
+const __dyn_FindTransactionByHash = dynCodec(() => FindTransactionByHash)
+const __dyn_AssetEvent = dynCodec(() => AssetEvent)
+const __dyn_SequenceBox = dynCodec(() => SequenceBox)
+const __dyn_FilterOptAssetDefinitionEventFilter = dynCodec(() => FilterOptAssetDefinitionEventFilter)
+const __dyn_VecGenesisTransaction = dynCodec(() => VecGenesisTransaction)
+const __dyn_BTreeMapNameValue = dynCodec(() => BTreeMapNameValue)
+const __dyn_VecAction = dynCodec(() => VecAction)
+const __dyn_FilterOptAccountFilter = dynCodec(() => FilterOptAccountFilter)
+const __dyn_ProofPayload = dynCodec(() => ProofPayload)
+const __dyn_AssetId = dynCodec(() => AssetId)
+const __dyn_TransactionLimitError = dynCodec(() => TransactionLimitError)
+const __dyn_FixedPointI64 = dynCodec(() => FixedPointI64)
+const __dyn_FindAssetsByAssetDefinitionId = dynCodec(() => FindAssetsByAssetDefinitionId)
+const __dyn_FilterOptIdFilterPeerId = dynCodec(() => FilterOptIdFilterPeerId)
+const __dyn_FindAllAssets = dynCodec(() => FindAllAssets)
+const __dyn_Name = dynCodec(() => Name)
+const __dyn_SignatureCheckCondition = dynCodec(() => SignatureCheckCondition)
+const __dyn_HashOfVersionedTransaction = dynCodec(() => HashOfVersionedTransaction)
+const __dyn_AccountEvent = dynCodec(() => AccountEvent)
+const __dyn_NewAccount = dynCodec(() => NewAccount)
+const __dyn_FailBox = dynCodec(() => FailBox)
+const __dyn_Account = dynCodec(() => Account)
+const __dyn_ContainsAny = dynCodec(() => ContainsAny)
+const __dyn_RejectionReason = dynCodec(() => RejectionReason)
+const __dyn_FilterOptAssetFilter = dynCodec(() => FilterOptAssetFilter)
+const __dyn_Instruction = dynCodec(() => Instruction)
+const __dyn_HashOfNodeVersionedTransaction = dynCodec(() => HashOfNodeVersionedTransaction)
+const __dyn_FindAllAccounts = dynCodec(() => FindAllAccounts)
+const __dyn_IdFilterId = dynCodec(() => IdFilterId)
+const __dyn_Hash = dynCodec(() => Hash)
+const __dyn_DefinitionId = dynCodec(() => DefinitionId)
+const __dyn_OptionIpfsPath = dynCodec(() => OptionIpfsPath)
+const __dyn_DomainEventFilter = dynCodec(() => DomainEventFilter)
+const __dyn_RawVersioned = dynCodec(() => RawVersioned)
+const __dyn_TransactionRejectionReason = dynCodec(() => TransactionRejectionReason)
+const __dyn_FindDomainById = dynCodec(() => FindDomainById)
+const __dyn_AssetDefinitionEntry = dynCodec(() => AssetDefinitionEntry)
+const __dyn_BTreeMapPublicKeySignatureOfProof = dynCodec(() => BTreeMapPublicKeySignatureOfProof)
+const __dyn_AssetDefinitionEventFilter = dynCodec(() => AssetDefinitionEventFilter)
+const __dyn_Topology = dynCodec(() => Topology)
+const __dyn_GrantBox = dynCodec(() => GrantBox)
+const __dyn_Metadata = dynCodec(() => Metadata)
+const __dyn_FindError = dynCodec(() => FindError)
+const __dyn_ArrayU8L32 = dynCodec(() => ArrayU8L32)
+const __dyn_UnregisterBox = dynCodec(() => UnregisterBox)
+const __dyn_VecHashOfVersionedValidBlock = dynCodec(() => VecHashOfVersionedValidBlock)
+const __dyn_FindPermissionTokensByAccountId = dynCodec(() => FindPermissionTokensByAccountId)
+const __dyn_VersionError = dynCodec(() => VersionError)
+const __dyn_IdFilterPeerId = dynCodec(() => IdFilterPeerId)
+const __dyn_TransactionPayload = dynCodec(() => TransactionPayload)
+const __dyn_DataEvent = dynCodec(() => DataEvent)
+const __dyn_VecProof = dynCodec(() => VecProof)
+const __dyn_IdBox = dynCodec(() => IdBox)
+const __dyn_PipelineEventFilter = dynCodec(() => PipelineEventFilter)
+const __dyn_Asset = dynCodec(() => Asset)
+const __dyn_EvaluatesToId = dynCodec(() => EvaluatesToId)
+const __dyn_TriggerFilter = dynCodec(() => TriggerFilter)
+const __dyn_PeerEventFilter = dynCodec(() => PeerEventFilter)
+const __dyn_Value = dynCodec(() => Value)
+const __dyn_ValidBlock = dynCodec(() => ValidBlock)
+const __dyn_CommittedBlock = dynCodec(() => CommittedBlock)
+const __dyn_VecPeerId = dynCodec(() => VecPeerId)
+const __dyn_Status = dynCodec(() => Status)
+const __dyn_OptionEntityType = dynCodec(() => OptionEntityType)
+const __dyn_EvaluatesToVecValue = dynCodec(() => EvaluatesToVecValue)
+const __dyn_BlockSubscriberMessage = dynCodec(() => BlockSubscriberMessage)
+const __dyn_WasmExecutionFail = dynCodec(() => WasmExecutionFail)
+const __dyn_SignaturesOfProof = dynCodec(() => SignaturesOfProof)
+const __dyn_FindAssetsByDomainId = dynCodec(() => FindAssetsByDomainId)
+const __dyn_EventFilter = dynCodec(() => EventFilter)
+const __dyn_FilterOptDomainEventFilter = dynCodec(() => FilterOptDomainEventFilter)
+const __dyn_EvaluatesToAccountId = dynCodec(() => EvaluatesToAccountId)
+const __dyn_TriggerId = dynCodec(() => TriggerId)
+const __dyn_TransactionValue = dynCodec(() => TransactionValue)
+const __dyn_Not = dynCodec(() => Not)
+const __dyn_FindAssetQuantityById = dynCodec(() => FindAssetQuantityById)
+const __dyn_HashOfMerkleTreeVersionedTransaction = dynCodec(() => HashOfMerkleTreeVersionedTransaction)
+const __dyn_Equal = dynCodec(() => Equal)
+const __dyn_Subtract = dynCodec(() => Subtract)
+const __dyn_Fixed = dynCodec(() => Fixed)
+const __dyn_FindAccountsByDomainId = dynCodec(() => FindAccountsByDomainId)
+const __dyn_IdFilterAccountId = dynCodec(() => IdFilterAccountId)
+const __dyn_FindAssetsByAccountId = dynCodec(() => FindAssetsByAccountId)
+const __dyn_FilterOptTriggerEventFilter = dynCodec(() => FilterOptTriggerEventFilter)
+const __dyn_BlockCreationTimeout = dynCodec(() => BlockCreationTimeout)
+const __dyn_FilterOptPeerFilter = dynCodec(() => FilterOptPeerFilter)
+const __dyn_FindAllAssetsDefinitions = dynCodec(() => FindAllAssetsDefinitions)
+const __dyn_SignatureOfQueryPayload = dynCodec(() => SignatureOfQueryPayload)
+const __dyn_ExpressionIf = dynCodec(() => ExpressionIf)
+const __dyn_SignatureOfProof = dynCodec(() => SignatureOfProof)
+const __dyn_FilterOptPeerEventFilter = dynCodec(() => FilterOptPeerEventFilter)
+const __dyn_RemoveKeyValueBox = dynCodec(() => RemoveKeyValueBox)
+const __dyn_FilterOptTriggerFilter = dynCodec(() => FilterOptTriggerFilter)
+const __dyn_IdentifiableBox = dynCodec(() => IdentifiableBox)
+const __dyn_DomainEvent = dynCodec(() => DomainEvent)
+const __dyn_GenesisTransaction = dynCodec(() => GenesisTransaction)
+const __dyn_FilterOptEntityFilter = dynCodec(() => FilterOptEntityFilter)
+const __dyn_FindAssetDefinitionKeyValueByIdAndKey = dynCodec(() => FindAssetDefinitionKeyValueByIdAndKey)
+const __dyn_Action = dynCodec(() => Action)
+const __dyn_PublicKey = dynCodec(() => PublicKey)
+const __dyn_EvaluatesToAssetId = dynCodec(() => EvaluatesToAssetId)
+const __dyn_AssetDefinitionEvent = dynCodec(() => AssetDefinitionEvent)
+const __dyn_SetKeyValueBox = dynCodec(() => SetKeyValueBox)
+const __dyn_FilterOptDomainFilter = dynCodec(() => FilterOptDomainFilter)
+const __dyn_WasmSmartContract = dynCodec(() => WasmSmartContract)
+const __dyn_And = dynCodec(() => And)
+const __dyn_IdFilterAssetId = dynCodec(() => IdFilterAssetId)
+const __dyn_Signature = dynCodec(() => Signature)
+const __dyn_BlockPublisherMessage = dynCodec(() => BlockPublisherMessage)
+const __dyn_PipelineEvent = dynCodec(() => PipelineEvent)
+const __dyn_Trigger = dynCodec(() => Trigger)
+const __dyn_Repeats = dynCodec(() => Repeats)
+const __dyn_PeerEvent = dynCodec(() => PeerEvent)
+const __dyn_Expression = dynCodec(() => Expression)
+const __dyn_Divide = dynCodec(() => Divide)
+const __dyn_OptionInstruction = dynCodec(() => OptionInstruction)
+const __dyn_FindAssetsByDomainIdAndAssetDefinitionId = dynCodec(() => FindAssetsByDomainIdAndAssetDefinitionId)
+const __dyn_Less = dynCodec(() => Less)
+const __dyn_IpfsPath = dynCodec(() => IpfsPath)
+const __dyn_VersionedValidTransaction = dynCodec(() => VersionedValidTransaction)
+const __dyn_BTreeMapDefinitionIdAssetDefinitionEntry = dynCodec(() => BTreeMapDefinitionIdAssetDefinitionEntry)
+const __dyn_VecInstruction = dynCodec(() => VecInstruction)
+const __dyn_BlockHeader = dynCodec(() => BlockHeader)
+const __dyn_TriggerEventFilter = dynCodec(() => TriggerEventFilter)
+const __dyn_UnsatisfiedSignatureConditionFail = dynCodec(() => UnsatisfiedSignatureConditionFail)
+const __dyn_FilterOptIdFilterAccountId = dynCodec(() => FilterOptIdFilterAccountId)
+const __dyn_Event = dynCodec(() => Event)
+const __dyn_Pair = dynCodec(() => Pair)
+const __dyn_PeerFilter = dynCodec(() => PeerFilter)
+const __dyn_Greater = dynCodec(() => Greater)
+const __dyn_EvaluatesToIdBox = dynCodec(() => EvaluatesToIdBox)
+const __dyn_Id = dynCodec(() => Id)
+const __dyn_EntityFilter = dynCodec(() => EntityFilter)
+const __dyn_AssetDefinitionFilter = dynCodec(() => AssetDefinitionFilter)
+const __dyn_AssetValueType = dynCodec(() => AssetValueType)
+const __dyn_NoTransactionReceiptReceived = dynCodec(() => NoTransactionReceiptReceived)
+const __dyn_BurnBox = dynCodec(() => BurnBox)
+const __dyn_DomainFilter = dynCodec(() => DomainFilter)
+const __dyn_IsiIf = dynCodec(() => IsiIf)
+const __dyn_FilterOptIdFilterDefinitionId = dynCodec(() => FilterOptIdFilterDefinitionId)
+const __dyn_EvaluatesToValue = dynCodec(() => EvaluatesToValue)
+const __dyn_VecVersionedRejectedTransaction = dynCodec(() => VecVersionedRejectedTransaction)
+const __dyn_QueryUnsupportedVersionError = dynCodec(() => QueryUnsupportedVersionError)
+const __dyn_BTreeSetSignatureOfTransactionPayload = dynCodec(() => BTreeSetSignatureOfTransactionPayload)
+const __dyn_EntityType = dynCodec(() => EntityType)
+const __dyn_PeerId = dynCodec(() => PeerId)
+const __dyn_VecValue = dynCodec(() => VecValue)
+const __dyn_FilterOptIdFilterAssetId = dynCodec(() => FilterOptIdFilterAssetId)
+const __dyn_FilterOptAssetEventFilter = dynCodec(() => FilterOptAssetEventFilter)
+const __dyn_ProofChain = dynCodec(() => ProofChain)
+const __dyn_FindAssetsByName = dynCodec(() => FindAssetsByName)
+const __dyn_Transaction = dynCodec(() => Transaction)
+const __dyn_BTreeSetSignatureOfValidBlock = dynCodec(() => BTreeSetSignatureOfValidBlock)
+const __dyn_HashOfProof = dynCodec(() => HashOfProof)
+const __dyn_OptionU32 = dynCodec(() => OptionU32)
+const __dyn_Contains = dynCodec(() => Contains)
+const __dyn_EvaluatesToU32 = dynCodec(() => EvaluatesToU32)
+const __dyn_EvaluatesToBool = dynCodec(() => EvaluatesToBool)
+const __dyn_SignatureOfTransactionPayload = dynCodec(() => SignatureOfTransactionPayload)
 
-export interface Account extends PseudoType<{
-    id: AccountId,
-    assets: BTreeMapAssetIdAsset,
-    signatories: VecPublicKey,
-    permission_tokens: BTreeSetPermissionToken,
-    signature_check_condition: SignatureCheckCondition,
+// Type: Account
+
+interface Account__actual {
+    id: AccountId
+    assets: BTreeMapAssetIdAsset
+    signatories: VecPublicKey
+    permission_tokens: BTreeSetPermissionToken
+    signature_check_condition: SignatureCheckCondition
     metadata: Metadata
-}> {}
+}
 
-export const AccountCodec: Codec<Account> = createStructCodec<any>('Account', [['id', dynCodec(() => AccountIdCodec) as any], ['assets', dynCodec(() => BTreeMapAssetIdAssetCodec) as any], ['signatories', dynCodec(() => VecPublicKeyCodec) as any], ['permission_tokens', dynCodec(() => BTreeSetPermissionTokenCodec) as any], ['signature_check_condition', dynCodec(() => SignatureCheckConditionCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any]]) as any
+interface Account extends Opaque<Account__actual, Account> {}
 
-// AccountEvent
+const Account: StructCodecAndFactory<Account__actual, Account> = createStructCodec<Account__actual, Account>('Account', [
+    ['id', __dyn_AccountId],
+    ['assets', __dyn_BTreeMapAssetIdAsset],
+    ['signatories', __dyn_VecPublicKey],
+    ['permission_tokens', __dyn_BTreeSetPermissionToken],
+    ['signature_check_condition', __dyn_SignatureCheckCondition],
+    ['metadata', __dyn_Metadata]
+])
 
-export interface AccountEvent extends Enum<
+// Type: AccountEvent
+
+type AccountEvent__actual = Enum<
     | ['Asset', AssetEvent]
     | ['Created', AccountId]
     | ['Deleted', AccountId]
@@ -29,13 +280,25 @@ export interface AccountEvent extends Enum<
     | ['PermissionRemoved', AccountId]
     | ['MetadataInserted', AccountId]
     | ['MetadataRemoved', AccountId]
-> {}
+>
 
-export const AccountEventCodec: Codec<AccountEvent> = createEnumCodec<any>('AccountEvent', [[0, 'Asset', dynCodec(() => AssetEventCodec)], [1, 'Created', dynCodec(() => AccountIdCodec)], [2, 'Deleted', dynCodec(() => AccountIdCodec)], [3, 'AuthenticationAdded', dynCodec(() => AccountIdCodec)], [4, 'AuthenticationRemoved', dynCodec(() => AccountIdCodec)], [5, 'PermissionAdded', dynCodec(() => AccountIdCodec)], [6, 'PermissionRemoved', dynCodec(() => AccountIdCodec)], [7, 'MetadataInserted', dynCodec(() => AccountIdCodec)], [8, 'MetadataRemoved', dynCodec(() => AccountIdCodec)]]) as any
+interface AccountEvent extends Opaque<AccountEvent__actual, AccountEvent> {}
 
-// AccountEventFilter
+const AccountEvent: EnumCodecAndFactory<AccountEvent> = createEnumCodec<AccountEvent__actual, AccountEvent>('AccountEvent', [
+    [0, 'Asset', __dyn_AssetEvent],
+    [1, 'Created', __dyn_AccountId],
+    [2, 'Deleted', __dyn_AccountId],
+    [3, 'AuthenticationAdded', __dyn_AccountId],
+    [4, 'AuthenticationRemoved', __dyn_AccountId],
+    [5, 'PermissionAdded', __dyn_AccountId],
+    [6, 'PermissionRemoved', __dyn_AccountId],
+    [7, 'MetadataInserted', __dyn_AccountId],
+    [8, 'MetadataRemoved', __dyn_AccountId]
+])
 
-export interface AccountEventFilter extends Enum<
+// Type: AccountEventFilter
+
+type AccountEventFilter__actual = Enum<
     | ['ByAsset', FilterOptAssetFilter]
     | 'ByCreated'
     | 'ByDeleted'
@@ -45,619 +308,959 @@ export interface AccountEventFilter extends Enum<
     | 'ByPermissionRemoved'
     | 'ByMetadataInserted'
     | 'ByMetadataRemoved'
-> {}
+>
 
-export const AccountEventFilterCodec: Codec<AccountEventFilter> = createEnumCodec<any>('AccountEventFilter', [[0, 'ByAsset', dynCodec(() => FilterOptAssetFilterCodec)], [1, 'ByCreated'], [2, 'ByDeleted'], [3, 'ByAuthenticationAdded'], [4, 'ByAuthenticationRemoved'], [5, 'ByPermissionAdded'], [6, 'ByPermissionRemoved'], [7, 'ByMetadataInserted'], [8, 'ByMetadataRemoved']]) as any
+interface AccountEventFilter extends Opaque<AccountEventFilter__actual, AccountEventFilter> {}
 
-// AccountFilter
+const AccountEventFilter: EnumCodecAndFactory<AccountEventFilter> = createEnumCodec<AccountEventFilter__actual, AccountEventFilter>('AccountEventFilter', [
+    [0, 'ByAsset', __dyn_FilterOptAssetFilter],
+    [1, 'ByCreated'],
+    [2, 'ByDeleted'],
+    [3, 'ByAuthenticationAdded'],
+    [4, 'ByAuthenticationRemoved'],
+    [5, 'ByPermissionAdded'],
+    [6, 'ByPermissionRemoved'],
+    [7, 'ByMetadataInserted'],
+    [8, 'ByMetadataRemoved']
+])
 
-export interface AccountFilter extends PseudoType<{
-    id_filter: FilterOptIdFilterAccountId,
+// Type: AccountFilter
+
+interface AccountFilter__actual {
+    id_filter: FilterOptIdFilterAccountId
     event_filter: FilterOptAccountEventFilter
-}> {}
+}
 
-export const AccountFilterCodec: Codec<AccountFilter> = createStructCodec<any>('AccountFilter', [['id_filter', dynCodec(() => FilterOptIdFilterAccountIdCodec) as any], ['event_filter', dynCodec(() => FilterOptAccountEventFilterCodec) as any]]) as any
+interface AccountFilter extends Opaque<AccountFilter__actual, AccountFilter> {}
 
-// AccountId
+const AccountFilter: StructCodecAndFactory<AccountFilter__actual, AccountFilter> = createStructCodec<AccountFilter__actual, AccountFilter>('AccountFilter', [
+    ['id_filter', __dyn_FilterOptIdFilterAccountId],
+    ['event_filter', __dyn_FilterOptAccountEventFilter]
+])
 
-export interface AccountId extends PseudoType<{
-    name: Name,
+// Type: AccountId
+
+interface AccountId__actual {
+    name: Name
     domain_id: Id
-}> {}
+}
 
-export const AccountIdCodec: Codec<AccountId> = createStructCodec<any>('AccountId', [['name', dynCodec(() => NameCodec) as any], ['domain_id', dynCodec(() => IdCodec) as any]]) as any
+interface AccountId extends Opaque<AccountId__actual, AccountId> {}
 
-// Action
+const AccountId: StructCodecAndFactory<AccountId__actual, AccountId> = createStructCodec<AccountId__actual, AccountId>('AccountId', [
+    ['name', __dyn_Name],
+    ['domain_id', __dyn_Id]
+])
 
-export interface Action extends PseudoType<{
-    executable: Executable,
-    repeats: Repeats,
-    technical_account: AccountId,
+// Type: Action
+
+interface Action__actual {
+    executable: Executable
+    repeats: Repeats
+    technical_account: AccountId
     filter: EventFilter
-}> {}
+}
 
-export const ActionCodec: Codec<Action> = createStructCodec<any>('Action', [['executable', dynCodec(() => ExecutableCodec) as any], ['repeats', dynCodec(() => RepeatsCodec) as any], ['technical_account', dynCodec(() => AccountIdCodec) as any], ['filter', dynCodec(() => EventFilterCodec) as any]]) as any
+interface Action extends Opaque<Action__actual, Action> {}
 
-// Add
+const Action: StructCodecAndFactory<Action__actual, Action> = createStructCodec<Action__actual, Action>('Action', [
+    ['executable', __dyn_Executable],
+    ['repeats', __dyn_Repeats],
+    ['technical_account', __dyn_AccountId],
+    ['filter', __dyn_EventFilter]
+])
 
-export interface Add extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: Add
+
+interface Add__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const AddCodec: Codec<Add> = createStructCodec<any>('Add', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface Add extends Opaque<Add__actual, Add> {}
 
-// And
+const Add: StructCodecAndFactory<Add__actual, Add> = createStructCodec<Add__actual, Add>('Add', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export interface And extends PseudoType<{
-    left: EvaluatesToBool,
+// Type: And
+
+interface And__actual {
+    left: EvaluatesToBool
     right: EvaluatesToBool
-}> {}
+}
 
-export const AndCodec: Codec<And> = createStructCodec<any>('And', [['left', dynCodec(() => EvaluatesToBoolCodec) as any], ['right', dynCodec(() => EvaluatesToBoolCodec) as any]]) as any
+interface And extends Opaque<And__actual, And> {}
 
-// ArrayU8L32
+const And: StructCodecAndFactory<And__actual, And> = createStructCodec<And__actual, And>('And', [
+    ['left', __dyn_EvaluatesToBool],
+    ['right', __dyn_EvaluatesToBool]
+])
 
-export type ArrayU8L32 = Uint8Array
+// Type: ArrayU8L32
 
-export const ArrayU8L32Codec: Codec<ArrayU8L32> = createArrayU8Codec('ArrayU8L32', 32) as any
+type ArrayU8L32 = Uint8Array
 
-// Asset
+const ArrayU8L32: Codec<ArrayU8L32> = createArrayU8Codec('ArrayU8L32', 32)
 
-export interface Asset extends PseudoType<{
-    id: AssetId,
+// Type: Asset
+
+interface Asset__actual {
+    id: AssetId
     value: AssetValue
-}> {}
+}
 
-export const AssetCodec: Codec<Asset> = createStructCodec<any>('Asset', [['id', dynCodec(() => AssetIdCodec) as any], ['value', dynCodec(() => AssetValueCodec) as any]]) as any
+interface Asset extends Opaque<Asset__actual, Asset> {}
 
-// AssetDefinition
+const Asset: StructCodecAndFactory<Asset__actual, Asset> = createStructCodec<Asset__actual, Asset>('Asset', [
+    ['id', __dyn_AssetId],
+    ['value', __dyn_AssetValue]
+])
 
-export interface AssetDefinition extends PseudoType<{
-    value_type: AssetValueType,
-    id: DefinitionId,
-    metadata: Metadata,
+// Type: AssetDefinition
+
+interface AssetDefinition__actual {
+    value_type: AssetValueType
+    id: DefinitionId
+    metadata: Metadata
     mintable: Bool
-}> {}
+}
 
-export const AssetDefinitionCodec: Codec<AssetDefinition> = createStructCodec<any>('AssetDefinition', [['value_type', dynCodec(() => AssetValueTypeCodec) as any], ['id', dynCodec(() => DefinitionIdCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any], ['mintable', dynCodec(() => BoolCodec) as any]]) as any
+interface AssetDefinition extends Opaque<AssetDefinition__actual, AssetDefinition> {}
 
-// AssetDefinitionEntry
+const AssetDefinition: StructCodecAndFactory<AssetDefinition__actual, AssetDefinition> = createStructCodec<AssetDefinition__actual, AssetDefinition>('AssetDefinition', [
+    ['value_type', __dyn_AssetValueType],
+    ['id', __dyn_DefinitionId],
+    ['metadata', __dyn_Metadata],
+    ['mintable', Bool]
+])
 
-export interface AssetDefinitionEntry extends PseudoType<{
-    definition: AssetDefinition,
+// Type: AssetDefinitionEntry
+
+interface AssetDefinitionEntry__actual {
+    definition: AssetDefinition
     registered_by: AccountId
-}> {}
+}
 
-export const AssetDefinitionEntryCodec: Codec<AssetDefinitionEntry> = createStructCodec<any>('AssetDefinitionEntry', [['definition', dynCodec(() => AssetDefinitionCodec) as any], ['registered_by', dynCodec(() => AccountIdCodec) as any]]) as any
+interface AssetDefinitionEntry extends Opaque<AssetDefinitionEntry__actual, AssetDefinitionEntry> {}
 
-// AssetDefinitionEvent
+const AssetDefinitionEntry: StructCodecAndFactory<AssetDefinitionEntry__actual, AssetDefinitionEntry> = createStructCodec<AssetDefinitionEntry__actual, AssetDefinitionEntry>('AssetDefinitionEntry', [
+    ['definition', __dyn_AssetDefinition],
+    ['registered_by', __dyn_AccountId]
+])
 
-export interface AssetDefinitionEvent extends Enum<
+// Type: AssetDefinitionEvent
+
+type AssetDefinitionEvent__actual = Enum<
     | ['Created', DefinitionId]
     | ['Deleted', DefinitionId]
     | ['MetadataInserted', DefinitionId]
     | ['MetadataRemoved', DefinitionId]
-> {}
+>
 
-export const AssetDefinitionEventCodec: Codec<AssetDefinitionEvent> = createEnumCodec<any>('AssetDefinitionEvent', [[0, 'Created', dynCodec(() => DefinitionIdCodec)], [1, 'Deleted', dynCodec(() => DefinitionIdCodec)], [2, 'MetadataInserted', dynCodec(() => DefinitionIdCodec)], [3, 'MetadataRemoved', dynCodec(() => DefinitionIdCodec)]]) as any
+interface AssetDefinitionEvent extends Opaque<AssetDefinitionEvent__actual, AssetDefinitionEvent> {}
 
-// AssetDefinitionEventFilter
+const AssetDefinitionEvent: EnumCodecAndFactory<AssetDefinitionEvent> = createEnumCodec<AssetDefinitionEvent__actual, AssetDefinitionEvent>('AssetDefinitionEvent', [
+    [0, 'Created', __dyn_DefinitionId],
+    [1, 'Deleted', __dyn_DefinitionId],
+    [2, 'MetadataInserted', __dyn_DefinitionId],
+    [3, 'MetadataRemoved', __dyn_DefinitionId]
+])
 
-export interface AssetDefinitionEventFilter extends Enum<
+// Type: AssetDefinitionEventFilter
+
+type AssetDefinitionEventFilter__actual = Enum<
     | 'ByCreated'
     | 'ByDeleted'
     | 'ByMetadataInserted'
     | 'ByMetadataRemoved'
-> {}
+>
 
-export const AssetDefinitionEventFilterCodec: Codec<AssetDefinitionEventFilter> = createEnumCodec<any>('AssetDefinitionEventFilter', [[0, 'ByCreated'], [1, 'ByDeleted'], [2, 'ByMetadataInserted'], [3, 'ByMetadataRemoved']]) as any
+interface AssetDefinitionEventFilter extends Opaque<AssetDefinitionEventFilter__actual, AssetDefinitionEventFilter> {}
 
-// AssetDefinitionFilter
+const AssetDefinitionEventFilter: EnumCodecAndFactory<AssetDefinitionEventFilter> = createEnumCodec<AssetDefinitionEventFilter__actual, AssetDefinitionEventFilter>('AssetDefinitionEventFilter', [
+    [0, 'ByCreated'],
+    [1, 'ByDeleted'],
+    [2, 'ByMetadataInserted'],
+    [3, 'ByMetadataRemoved']
+])
 
-export interface AssetDefinitionFilter extends PseudoType<{
-    id_filter: FilterOptIdFilterDefinitionId,
+// Type: AssetDefinitionFilter
+
+interface AssetDefinitionFilter__actual {
+    id_filter: FilterOptIdFilterDefinitionId
     event_filter: FilterOptAssetDefinitionEventFilter
-}> {}
+}
 
-export const AssetDefinitionFilterCodec: Codec<AssetDefinitionFilter> = createStructCodec<any>('AssetDefinitionFilter', [['id_filter', dynCodec(() => FilterOptIdFilterDefinitionIdCodec) as any], ['event_filter', dynCodec(() => FilterOptAssetDefinitionEventFilterCodec) as any]]) as any
+interface AssetDefinitionFilter extends Opaque<AssetDefinitionFilter__actual, AssetDefinitionFilter> {}
 
-// AssetEvent
+const AssetDefinitionFilter: StructCodecAndFactory<AssetDefinitionFilter__actual, AssetDefinitionFilter> = createStructCodec<AssetDefinitionFilter__actual, AssetDefinitionFilter>('AssetDefinitionFilter', [
+    ['id_filter', __dyn_FilterOptIdFilterDefinitionId],
+    ['event_filter', __dyn_FilterOptAssetDefinitionEventFilter]
+])
 
-export interface AssetEvent extends Enum<
+// Type: AssetEvent
+
+type AssetEvent__actual = Enum<
     | ['Created', AssetId]
     | ['Deleted', AssetId]
     | ['Added', AssetId]
     | ['Removed', AssetId]
     | ['MetadataInserted', AssetId]
     | ['MetadataRemoved', AssetId]
-> {}
+>
 
-export const AssetEventCodec: Codec<AssetEvent> = createEnumCodec<any>('AssetEvent', [[0, 'Created', dynCodec(() => AssetIdCodec)], [1, 'Deleted', dynCodec(() => AssetIdCodec)], [2, 'Added', dynCodec(() => AssetIdCodec)], [3, 'Removed', dynCodec(() => AssetIdCodec)], [4, 'MetadataInserted', dynCodec(() => AssetIdCodec)], [5, 'MetadataRemoved', dynCodec(() => AssetIdCodec)]]) as any
+interface AssetEvent extends Opaque<AssetEvent__actual, AssetEvent> {}
 
-// AssetEventFilter
+const AssetEvent: EnumCodecAndFactory<AssetEvent> = createEnumCodec<AssetEvent__actual, AssetEvent>('AssetEvent', [
+    [0, 'Created', __dyn_AssetId],
+    [1, 'Deleted', __dyn_AssetId],
+    [2, 'Added', __dyn_AssetId],
+    [3, 'Removed', __dyn_AssetId],
+    [4, 'MetadataInserted', __dyn_AssetId],
+    [5, 'MetadataRemoved', __dyn_AssetId]
+])
 
-export interface AssetEventFilter extends Enum<
+// Type: AssetEventFilter
+
+type AssetEventFilter__actual = Enum<
     | 'ByCreated'
     | 'ByDeleted'
     | 'ByAdded'
     | 'ByRemoved'
     | 'ByMetadataInserted'
     | 'ByMetadataRemoved'
-> {}
+>
 
-export const AssetEventFilterCodec: Codec<AssetEventFilter> = createEnumCodec<any>('AssetEventFilter', [[0, 'ByCreated'], [1, 'ByDeleted'], [2, 'ByAdded'], [3, 'ByRemoved'], [4, 'ByMetadataInserted'], [5, 'ByMetadataRemoved']]) as any
+interface AssetEventFilter extends Opaque<AssetEventFilter__actual, AssetEventFilter> {}
 
-// AssetFilter
+const AssetEventFilter: EnumCodecAndFactory<AssetEventFilter> = createEnumCodec<AssetEventFilter__actual, AssetEventFilter>('AssetEventFilter', [
+    [0, 'ByCreated'],
+    [1, 'ByDeleted'],
+    [2, 'ByAdded'],
+    [3, 'ByRemoved'],
+    [4, 'ByMetadataInserted'],
+    [5, 'ByMetadataRemoved']
+])
 
-export interface AssetFilter extends PseudoType<{
-    id_filter: FilterOptIdFilterAssetId,
+// Type: AssetFilter
+
+interface AssetFilter__actual {
+    id_filter: FilterOptIdFilterAssetId
     event_filter: FilterOptAssetEventFilter
-}> {}
+}
 
-export const AssetFilterCodec: Codec<AssetFilter> = createStructCodec<any>('AssetFilter', [['id_filter', dynCodec(() => FilterOptIdFilterAssetIdCodec) as any], ['event_filter', dynCodec(() => FilterOptAssetEventFilterCodec) as any]]) as any
+interface AssetFilter extends Opaque<AssetFilter__actual, AssetFilter> {}
 
-// AssetId
+const AssetFilter: StructCodecAndFactory<AssetFilter__actual, AssetFilter> = createStructCodec<AssetFilter__actual, AssetFilter>('AssetFilter', [
+    ['id_filter', __dyn_FilterOptIdFilterAssetId],
+    ['event_filter', __dyn_FilterOptAssetEventFilter]
+])
 
-export interface AssetId extends PseudoType<{
-    definition_id: DefinitionId,
+// Type: AssetId
+
+interface AssetId__actual {
+    definition_id: DefinitionId
     account_id: AccountId
-}> {}
+}
 
-export const AssetIdCodec: Codec<AssetId> = createStructCodec<any>('AssetId', [['definition_id', dynCodec(() => DefinitionIdCodec) as any], ['account_id', dynCodec(() => AccountIdCodec) as any]]) as any
+interface AssetId extends Opaque<AssetId__actual, AssetId> {}
 
-// AssetValue
+const AssetId: StructCodecAndFactory<AssetId__actual, AssetId> = createStructCodec<AssetId__actual, AssetId>('AssetId', [
+    ['definition_id', __dyn_DefinitionId],
+    ['account_id', __dyn_AccountId]
+])
 
-export interface AssetValue extends Enum<
+// Type: AssetValue
+
+type AssetValue__actual = Enum<
     | ['Quantity', U32]
     | ['BigQuantity', U128]
     | ['Fixed', Fixed]
     | ['Store', Metadata]
-> {}
+>
 
-export const AssetValueCodec: Codec<AssetValue> = createEnumCodec<any>('AssetValue', [[0, 'Quantity', dynCodec(() => U32Codec)], [1, 'BigQuantity', dynCodec(() => U128Codec)], [2, 'Fixed', dynCodec(() => FixedCodec)], [3, 'Store', dynCodec(() => MetadataCodec)]]) as any
+interface AssetValue extends Opaque<AssetValue__actual, AssetValue> {}
 
-// AssetValueType
+const AssetValue: EnumCodecAndFactory<AssetValue> = createEnumCodec<AssetValue__actual, AssetValue>('AssetValue', [
+    [0, 'Quantity', U32],
+    [1, 'BigQuantity', U128],
+    [2, 'Fixed', __dyn_Fixed],
+    [3, 'Store', __dyn_Metadata]
+])
 
-export interface AssetValueType extends Enum<
+// Type: AssetValueType
+
+type AssetValueType__actual = Enum<
     | 'Quantity'
     | 'BigQuantity'
     | 'Fixed'
     | 'Store'
-> {}
+>
 
-export const AssetValueTypeCodec: Codec<AssetValueType> = createEnumCodec<any>('AssetValueType', [[0, 'Quantity'], [1, 'BigQuantity'], [2, 'Fixed'], [3, 'Store']]) as any
+interface AssetValueType extends Opaque<AssetValueType__actual, AssetValueType> {}
 
-// BlockCreationTimeout
+const AssetValueType: EnumCodecAndFactory<AssetValueType> = createEnumCodec<AssetValueType__actual, AssetValueType>('AssetValueType', [
+    [0, 'Quantity'],
+    [1, 'BigQuantity'],
+    [2, 'Fixed'],
+    [3, 'Store']
+])
 
-import { Void as BlockCreationTimeout, VoidCodec as BlockCreationTimeoutCodec } from '@scale-codec/definition-runtime'
+// Type: BTreeMapAccountIdAccount
 
-export { BlockCreationTimeout, BlockCreationTimeoutCodec }
+type BTreeMapAccountIdAccount__actual = Map<AccountId, Account>
 
-// BlockHeader
+interface BTreeMapAccountIdAccount extends Opaque<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount> {}
 
-export interface BlockHeader extends PseudoType<{
-    timestamp: U128,
-    height: U64,
-    previous_block_hash: HashOfVersionedCommittedBlock,
-    transactions_hash: HashOfMerkleTreeVersionedTransaction,
-    rejected_transactions_hash: HashOfMerkleTreeVersionedTransaction,
-    view_change_proofs: ProofChain,
-    invalidated_blocks_hashes: VecHashOfVersionedValidBlock,
+const BTreeMapAccountIdAccount: MapCodecAndFactory<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount> = createMapCodec<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount>('BTreeMapAccountIdAccount', __dyn_AccountId, __dyn_Account)
+
+// Type: BTreeMapAssetIdAsset
+
+type BTreeMapAssetIdAsset__actual = Map<AssetId, Asset>
+
+interface BTreeMapAssetIdAsset extends Opaque<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset> {}
+
+const BTreeMapAssetIdAsset: MapCodecAndFactory<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset> = createMapCodec<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset>('BTreeMapAssetIdAsset', __dyn_AssetId, __dyn_Asset)
+
+// Type: BTreeMapDefinitionIdAssetDefinitionEntry
+
+type BTreeMapDefinitionIdAssetDefinitionEntry__actual = Map<DefinitionId, AssetDefinitionEntry>
+
+interface BTreeMapDefinitionIdAssetDefinitionEntry extends Opaque<BTreeMapDefinitionIdAssetDefinitionEntry__actual, BTreeMapDefinitionIdAssetDefinitionEntry> {}
+
+const BTreeMapDefinitionIdAssetDefinitionEntry: MapCodecAndFactory<BTreeMapDefinitionIdAssetDefinitionEntry__actual, BTreeMapDefinitionIdAssetDefinitionEntry> = createMapCodec<BTreeMapDefinitionIdAssetDefinitionEntry__actual, BTreeMapDefinitionIdAssetDefinitionEntry>('BTreeMapDefinitionIdAssetDefinitionEntry', __dyn_DefinitionId, __dyn_AssetDefinitionEntry)
+
+// Type: BTreeMapNameValue
+
+type BTreeMapNameValue__actual = Map<Name, Value>
+
+interface BTreeMapNameValue extends Opaque<BTreeMapNameValue__actual, BTreeMapNameValue> {}
+
+const BTreeMapNameValue: MapCodecAndFactory<BTreeMapNameValue__actual, BTreeMapNameValue> = createMapCodec<BTreeMapNameValue__actual, BTreeMapNameValue>('BTreeMapNameValue', __dyn_Name, __dyn_Value)
+
+// Type: BTreeMapPublicKeySignatureOfCommittedBlock
+
+type BTreeMapPublicKeySignatureOfCommittedBlock__actual = Map<PublicKey, SignatureOfCommittedBlock>
+
+interface BTreeMapPublicKeySignatureOfCommittedBlock extends Opaque<BTreeMapPublicKeySignatureOfCommittedBlock__actual, BTreeMapPublicKeySignatureOfCommittedBlock> {}
+
+const BTreeMapPublicKeySignatureOfCommittedBlock: MapCodecAndFactory<BTreeMapPublicKeySignatureOfCommittedBlock__actual, BTreeMapPublicKeySignatureOfCommittedBlock> = createMapCodec<BTreeMapPublicKeySignatureOfCommittedBlock__actual, BTreeMapPublicKeySignatureOfCommittedBlock>('BTreeMapPublicKeySignatureOfCommittedBlock', __dyn_PublicKey, __dyn_SignatureOfCommittedBlock)
+
+// Type: BTreeMapPublicKeySignatureOfProof
+
+type BTreeMapPublicKeySignatureOfProof__actual = Map<PublicKey, SignatureOfProof>
+
+interface BTreeMapPublicKeySignatureOfProof extends Opaque<BTreeMapPublicKeySignatureOfProof__actual, BTreeMapPublicKeySignatureOfProof> {}
+
+const BTreeMapPublicKeySignatureOfProof: MapCodecAndFactory<BTreeMapPublicKeySignatureOfProof__actual, BTreeMapPublicKeySignatureOfProof> = createMapCodec<BTreeMapPublicKeySignatureOfProof__actual, BTreeMapPublicKeySignatureOfProof>('BTreeMapPublicKeySignatureOfProof', __dyn_PublicKey, __dyn_SignatureOfProof)
+
+// Type: BTreeMapPublicKeySignatureOfTransactionPayload
+
+type BTreeMapPublicKeySignatureOfTransactionPayload__actual = Map<PublicKey, SignatureOfTransactionPayload>
+
+interface BTreeMapPublicKeySignatureOfTransactionPayload extends Opaque<BTreeMapPublicKeySignatureOfTransactionPayload__actual, BTreeMapPublicKeySignatureOfTransactionPayload> {}
+
+const BTreeMapPublicKeySignatureOfTransactionPayload: MapCodecAndFactory<BTreeMapPublicKeySignatureOfTransactionPayload__actual, BTreeMapPublicKeySignatureOfTransactionPayload> = createMapCodec<BTreeMapPublicKeySignatureOfTransactionPayload__actual, BTreeMapPublicKeySignatureOfTransactionPayload>('BTreeMapPublicKeySignatureOfTransactionPayload', __dyn_PublicKey, __dyn_SignatureOfTransactionPayload)
+
+// Type: BTreeMapStringEvaluatesToValue
+
+type BTreeMapStringEvaluatesToValue__actual = Map<Str, EvaluatesToValue>
+
+interface BTreeMapStringEvaluatesToValue extends Opaque<BTreeMapStringEvaluatesToValue__actual, BTreeMapStringEvaluatesToValue> {}
+
+const BTreeMapStringEvaluatesToValue: MapCodecAndFactory<BTreeMapStringEvaluatesToValue__actual, BTreeMapStringEvaluatesToValue> = createMapCodec<BTreeMapStringEvaluatesToValue__actual, BTreeMapStringEvaluatesToValue>('BTreeMapStringEvaluatesToValue', Str, __dyn_EvaluatesToValue)
+
+// Type: BTreeSetPermissionToken
+
+type BTreeSetPermissionToken__actual = PermissionToken[]
+
+interface BTreeSetPermissionToken extends Opaque<BTreeSetPermissionToken__actual, BTreeSetPermissionToken> {}
+
+const BTreeSetPermissionToken: ArrayCodecAndFactory<BTreeSetPermissionToken__actual, BTreeSetPermissionToken> = createVecCodec<BTreeSetPermissionToken__actual, BTreeSetPermissionToken>('BTreeSetPermissionToken', __dyn_PermissionToken)
+
+// Type: BTreeSetSignatureOfTransactionPayload
+
+type BTreeSetSignatureOfTransactionPayload__actual = SignatureOfTransactionPayload[]
+
+interface BTreeSetSignatureOfTransactionPayload extends Opaque<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload> {}
+
+const BTreeSetSignatureOfTransactionPayload: ArrayCodecAndFactory<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload> = createVecCodec<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload>('BTreeSetSignatureOfTransactionPayload', __dyn_SignatureOfTransactionPayload)
+
+// Type: BTreeSetSignatureOfValidBlock
+
+type BTreeSetSignatureOfValidBlock__actual = SignatureOfValidBlock[]
+
+interface BTreeSetSignatureOfValidBlock extends Opaque<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock> {}
+
+const BTreeSetSignatureOfValidBlock: ArrayCodecAndFactory<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock> = createVecCodec<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock>('BTreeSetSignatureOfValidBlock', __dyn_SignatureOfValidBlock)
+
+// Type: BlockCreationTimeout
+
+import { Void as BlockCreationTimeout } from '@scale-codec/definition-runtime'
+
+// Type: BlockHeader
+
+interface BlockHeader__actual {
+    timestamp: U128
+    height: U64
+    previous_block_hash: HashOfVersionedCommittedBlock
+    transactions_hash: HashOfMerkleTreeVersionedTransaction
+    rejected_transactions_hash: HashOfMerkleTreeVersionedTransaction
+    view_change_proofs: ProofChain
+    invalidated_blocks_hashes: VecHashOfVersionedValidBlock
     genesis_topology: OptionTopology
-}> {}
+}
 
-export const BlockHeaderCodec: Codec<BlockHeader> = createStructCodec<any>('BlockHeader', [['timestamp', dynCodec(() => U128Codec) as any], ['height', dynCodec(() => U64Codec) as any], ['previous_block_hash', dynCodec(() => HashOfVersionedCommittedBlockCodec) as any], ['transactions_hash', dynCodec(() => HashOfMerkleTreeVersionedTransactionCodec) as any], ['rejected_transactions_hash', dynCodec(() => HashOfMerkleTreeVersionedTransactionCodec) as any], ['view_change_proofs', dynCodec(() => ProofChainCodec) as any], ['invalidated_blocks_hashes', dynCodec(() => VecHashOfVersionedValidBlockCodec) as any], ['genesis_topology', dynCodec(() => OptionTopologyCodec) as any]]) as any
+interface BlockHeader extends Opaque<BlockHeader__actual, BlockHeader> {}
 
-// BlockPublisherMessage
+const BlockHeader: StructCodecAndFactory<BlockHeader__actual, BlockHeader> = createStructCodec<BlockHeader__actual, BlockHeader>('BlockHeader', [
+    ['timestamp', U128],
+    ['height', U64],
+    ['previous_block_hash', __dyn_HashOfVersionedCommittedBlock],
+    ['transactions_hash', __dyn_HashOfMerkleTreeVersionedTransaction],
+    ['rejected_transactions_hash', __dyn_HashOfMerkleTreeVersionedTransaction],
+    ['view_change_proofs', __dyn_ProofChain],
+    ['invalidated_blocks_hashes', __dyn_VecHashOfVersionedValidBlock],
+    ['genesis_topology', __dyn_OptionTopology]
+])
 
-export interface BlockPublisherMessage extends Enum<
+// Type: BlockPublisherMessage
+
+type BlockPublisherMessage__actual = Enum<
     | 'SubscriptionAccepted'
     | ['Block', VersionedCommittedBlock]
-> {}
+>
 
-export const BlockPublisherMessageCodec: Codec<BlockPublisherMessage> = createEnumCodec<any>('BlockPublisherMessage', [[0, 'SubscriptionAccepted'], [1, 'Block', dynCodec(() => VersionedCommittedBlockCodec)]]) as any
+interface BlockPublisherMessage extends Opaque<BlockPublisherMessage__actual, BlockPublisherMessage> {}
 
-// BlockRejectionReason
+const BlockPublisherMessage: EnumCodecAndFactory<BlockPublisherMessage> = createEnumCodec<BlockPublisherMessage__actual, BlockPublisherMessage>('BlockPublisherMessage', [
+    [0, 'SubscriptionAccepted'],
+    [1, 'Block', __dyn_VersionedCommittedBlock]
+])
 
-export interface BlockRejectionReason extends Enum<
+// Type: BlockRejectionReason
+
+type BlockRejectionReason__actual = Enum<
     | 'ConsensusBlockRejection'
-> {}
+>
 
-export const BlockRejectionReasonCodec: Codec<BlockRejectionReason> = createEnumCodec<any>('BlockRejectionReason', [[0, 'ConsensusBlockRejection']]) as any
+interface BlockRejectionReason extends Opaque<BlockRejectionReason__actual, BlockRejectionReason> {}
 
-// BlockSubscriberMessage
+const BlockRejectionReason: EnumCodecAndFactory<BlockRejectionReason> = createEnumCodec<BlockRejectionReason__actual, BlockRejectionReason>('BlockRejectionReason', [
+    [0, 'ConsensusBlockRejection']
+])
 
-export interface BlockSubscriberMessage extends Enum<
+// Type: BlockSubscriberMessage
+
+type BlockSubscriberMessage__actual = Enum<
     | ['SubscriptionRequest', U64]
     | 'BlockReceived'
-> {}
+>
 
-export const BlockSubscriberMessageCodec: Codec<BlockSubscriberMessage> = createEnumCodec<any>('BlockSubscriberMessage', [[0, 'SubscriptionRequest', dynCodec(() => U64Codec)], [1, 'BlockReceived']]) as any
+interface BlockSubscriberMessage extends Opaque<BlockSubscriberMessage__actual, BlockSubscriberMessage> {}
 
-// BTreeMapAccountIdAccount
+const BlockSubscriberMessage: EnumCodecAndFactory<BlockSubscriberMessage> = createEnumCodec<BlockSubscriberMessage__actual, BlockSubscriberMessage>('BlockSubscriberMessage', [
+    [0, 'SubscriptionRequest', U64],
+    [1, 'BlockReceived']
+])
 
-export interface BTreeMapAccountIdAccount extends Map<AccountId, Account> {}
+// Type: BurnBox
 
-export const BTreeMapAccountIdAccountCodec: Codec<BTreeMapAccountIdAccount> = createMapCodec<any, any>('BTreeMapAccountIdAccount', dynCodec(() => AccountIdCodec), dynCodec(() => AccountCodec)) as any
-
-// BTreeMapAssetIdAsset
-
-export interface BTreeMapAssetIdAsset extends Map<AssetId, Asset> {}
-
-export const BTreeMapAssetIdAssetCodec: Codec<BTreeMapAssetIdAsset> = createMapCodec<any, any>('BTreeMapAssetIdAsset', dynCodec(() => AssetIdCodec), dynCodec(() => AssetCodec)) as any
-
-// BTreeMapDefinitionIdAssetDefinitionEntry
-
-export interface BTreeMapDefinitionIdAssetDefinitionEntry extends Map<DefinitionId, AssetDefinitionEntry> {}
-
-export const BTreeMapDefinitionIdAssetDefinitionEntryCodec: Codec<BTreeMapDefinitionIdAssetDefinitionEntry> = createMapCodec<any, any>('BTreeMapDefinitionIdAssetDefinitionEntry', dynCodec(() => DefinitionIdCodec), dynCodec(() => AssetDefinitionEntryCodec)) as any
-
-// BTreeMapNameValue
-
-export interface BTreeMapNameValue extends Map<Name, Value> {}
-
-export const BTreeMapNameValueCodec: Codec<BTreeMapNameValue> = createMapCodec<any, any>('BTreeMapNameValue', dynCodec(() => NameCodec), dynCodec(() => ValueCodec)) as any
-
-// BTreeMapPublicKeySignatureOfCommittedBlock
-
-export interface BTreeMapPublicKeySignatureOfCommittedBlock extends Map<PublicKey, SignatureOfCommittedBlock> {}
-
-export const BTreeMapPublicKeySignatureOfCommittedBlockCodec: Codec<BTreeMapPublicKeySignatureOfCommittedBlock> = createMapCodec<any, any>('BTreeMapPublicKeySignatureOfCommittedBlock', dynCodec(() => PublicKeyCodec), dynCodec(() => SignatureOfCommittedBlockCodec)) as any
-
-// BTreeMapPublicKeySignatureOfProof
-
-export interface BTreeMapPublicKeySignatureOfProof extends Map<PublicKey, SignatureOfProof> {}
-
-export const BTreeMapPublicKeySignatureOfProofCodec: Codec<BTreeMapPublicKeySignatureOfProof> = createMapCodec<any, any>('BTreeMapPublicKeySignatureOfProof', dynCodec(() => PublicKeyCodec), dynCodec(() => SignatureOfProofCodec)) as any
-
-// BTreeMapPublicKeySignatureOfTransactionPayload
-
-export interface BTreeMapPublicKeySignatureOfTransactionPayload extends Map<PublicKey, SignatureOfTransactionPayload> {}
-
-export const BTreeMapPublicKeySignatureOfTransactionPayloadCodec: Codec<BTreeMapPublicKeySignatureOfTransactionPayload> = createMapCodec<any, any>('BTreeMapPublicKeySignatureOfTransactionPayload', dynCodec(() => PublicKeyCodec), dynCodec(() => SignatureOfTransactionPayloadCodec)) as any
-
-// BTreeMapStringEvaluatesToValue
-
-export interface BTreeMapStringEvaluatesToValue extends Map<Str, EvaluatesToValue> {}
-
-export const BTreeMapStringEvaluatesToValueCodec: Codec<BTreeMapStringEvaluatesToValue> = createMapCodec<any, any>('BTreeMapStringEvaluatesToValue', dynCodec(() => StrCodec), dynCodec(() => EvaluatesToValueCodec)) as any
-
-// BTreeSetPermissionToken
-
-export interface BTreeSetPermissionToken extends Array<PermissionToken> {}
-
-export const BTreeSetPermissionTokenCodec: Codec<BTreeSetPermissionToken> = createVecCodec<any>('BTreeSetPermissionToken', dynCodec(() => PermissionTokenCodec)) as any
-
-// BTreeSetSignatureOfTransactionPayload
-
-export interface BTreeSetSignatureOfTransactionPayload extends Array<SignatureOfTransactionPayload> {}
-
-export const BTreeSetSignatureOfTransactionPayloadCodec: Codec<BTreeSetSignatureOfTransactionPayload> = createVecCodec<any>('BTreeSetSignatureOfTransactionPayload', dynCodec(() => SignatureOfTransactionPayloadCodec)) as any
-
-// BTreeSetSignatureOfValidBlock
-
-export interface BTreeSetSignatureOfValidBlock extends Array<SignatureOfValidBlock> {}
-
-export const BTreeSetSignatureOfValidBlockCodec: Codec<BTreeSetSignatureOfValidBlock> = createVecCodec<any>('BTreeSetSignatureOfValidBlock', dynCodec(() => SignatureOfValidBlockCodec)) as any
-
-// BurnBox
-
-export interface BurnBox extends PseudoType<{
-    object: EvaluatesToValue,
+interface BurnBox__actual {
+    object: EvaluatesToValue
     destination_id: EvaluatesToIdBox
-}> {}
+}
 
-export const BurnBoxCodec: Codec<BurnBox> = createStructCodec<any>('BurnBox', [['object', dynCodec(() => EvaluatesToValueCodec) as any], ['destination_id', dynCodec(() => EvaluatesToIdBoxCodec) as any]]) as any
+interface BurnBox extends Opaque<BurnBox__actual, BurnBox> {}
 
-// CommittedBlock
+const BurnBox: StructCodecAndFactory<BurnBox__actual, BurnBox> = createStructCodec<BurnBox__actual, BurnBox>('BurnBox', [
+    ['object', __dyn_EvaluatesToValue],
+    ['destination_id', __dyn_EvaluatesToIdBox]
+])
 
-export interface CommittedBlock extends PseudoType<{
-    header: BlockHeader,
-    rejected_transactions: VecVersionedRejectedTransaction,
-    transactions: VecVersionedValidTransaction,
-    trigger_recommendations: VecAction,
-    signatures: SignaturesOfCommittedBlock
-}> {}
+// Type: CommitTimeout
 
-export const CommittedBlockCodec: Codec<CommittedBlock> = createStructCodec<any>('CommittedBlock', [['header', dynCodec(() => BlockHeaderCodec) as any], ['rejected_transactions', dynCodec(() => VecVersionedRejectedTransactionCodec) as any], ['transactions', dynCodec(() => VecVersionedValidTransactionCodec) as any], ['trigger_recommendations', dynCodec(() => VecActionCodec) as any], ['signatures', dynCodec(() => SignaturesOfCommittedBlockCodec) as any]]) as any
-
-// CommitTimeout
-
-export interface CommitTimeout extends PseudoType<{
+interface CommitTimeout__actual {
     hash: HashOfVersionedValidBlock
-}> {}
+}
 
-export const CommitTimeoutCodec: Codec<CommitTimeout> = createStructCodec<any>('CommitTimeout', [['hash', dynCodec(() => HashOfVersionedValidBlockCodec) as any]]) as any
+interface CommitTimeout extends Opaque<CommitTimeout__actual, CommitTimeout> {}
 
-// Contains
+const CommitTimeout: StructCodecAndFactory<CommitTimeout__actual, CommitTimeout> = createStructCodec<CommitTimeout__actual, CommitTimeout>('CommitTimeout', [
+    ['hash', __dyn_HashOfVersionedValidBlock]
+])
 
-export interface Contains extends PseudoType<{
-    collection: EvaluatesToVecValue,
+// Type: CommittedBlock
+
+interface CommittedBlock__actual {
+    header: BlockHeader
+    rejected_transactions: VecVersionedRejectedTransaction
+    transactions: VecVersionedValidTransaction
+    trigger_recommendations: VecAction
+    signatures: SignaturesOfCommittedBlock
+}
+
+interface CommittedBlock extends Opaque<CommittedBlock__actual, CommittedBlock> {}
+
+const CommittedBlock: StructCodecAndFactory<CommittedBlock__actual, CommittedBlock> = createStructCodec<CommittedBlock__actual, CommittedBlock>('CommittedBlock', [
+    ['header', __dyn_BlockHeader],
+    ['rejected_transactions', __dyn_VecVersionedRejectedTransaction],
+    ['transactions', __dyn_VecVersionedValidTransaction],
+    ['trigger_recommendations', __dyn_VecAction],
+    ['signatures', __dyn_SignaturesOfCommittedBlock]
+])
+
+// Type: Contains
+
+interface Contains__actual {
+    collection: EvaluatesToVecValue
     element: EvaluatesToValue
-}> {}
+}
 
-export const ContainsCodec: Codec<Contains> = createStructCodec<any>('Contains', [['collection', dynCodec(() => EvaluatesToVecValueCodec) as any], ['element', dynCodec(() => EvaluatesToValueCodec) as any]]) as any
+interface Contains extends Opaque<Contains__actual, Contains> {}
 
-// ContainsAll
+const Contains: StructCodecAndFactory<Contains__actual, Contains> = createStructCodec<Contains__actual, Contains>('Contains', [
+    ['collection', __dyn_EvaluatesToVecValue],
+    ['element', __dyn_EvaluatesToValue]
+])
 
-export interface ContainsAll extends PseudoType<{
-    collection: EvaluatesToVecValue,
+// Type: ContainsAll
+
+interface ContainsAll__actual {
+    collection: EvaluatesToVecValue
     elements: EvaluatesToVecValue
-}> {}
+}
 
-export const ContainsAllCodec: Codec<ContainsAll> = createStructCodec<any>('ContainsAll', [['collection', dynCodec(() => EvaluatesToVecValueCodec) as any], ['elements', dynCodec(() => EvaluatesToVecValueCodec) as any]]) as any
+interface ContainsAll extends Opaque<ContainsAll__actual, ContainsAll> {}
 
-// ContainsAny
+const ContainsAll: StructCodecAndFactory<ContainsAll__actual, ContainsAll> = createStructCodec<ContainsAll__actual, ContainsAll>('ContainsAll', [
+    ['collection', __dyn_EvaluatesToVecValue],
+    ['elements', __dyn_EvaluatesToVecValue]
+])
 
-export interface ContainsAny extends PseudoType<{
-    collection: EvaluatesToVecValue,
+// Type: ContainsAny
+
+interface ContainsAny__actual {
+    collection: EvaluatesToVecValue
     elements: EvaluatesToVecValue
-}> {}
+}
 
-export const ContainsAnyCodec: Codec<ContainsAny> = createStructCodec<any>('ContainsAny', [['collection', dynCodec(() => EvaluatesToVecValueCodec) as any], ['elements', dynCodec(() => EvaluatesToVecValueCodec) as any]]) as any
+interface ContainsAny extends Opaque<ContainsAny__actual, ContainsAny> {}
 
-// ContextValue
+const ContainsAny: StructCodecAndFactory<ContainsAny__actual, ContainsAny> = createStructCodec<ContainsAny__actual, ContainsAny>('ContainsAny', [
+    ['collection', __dyn_EvaluatesToVecValue],
+    ['elements', __dyn_EvaluatesToVecValue]
+])
 
-export interface ContextValue extends PseudoType<{
+// Type: ContextValue
+
+interface ContextValue__actual {
     value_name: Str
-}> {}
+}
 
-export const ContextValueCodec: Codec<ContextValue> = createStructCodec<any>('ContextValue', [['value_name', dynCodec(() => StrCodec) as any]]) as any
+interface ContextValue extends Opaque<ContextValue__actual, ContextValue> {}
 
-// DataEvent
+const ContextValue: StructCodecAndFactory<ContextValue__actual, ContextValue> = createStructCodec<ContextValue__actual, ContextValue>('ContextValue', [
+    ['value_name', Str]
+])
 
-export interface DataEvent extends Enum<
+// Type: DataEvent
+
+type DataEvent__actual = Enum<
     | ['Domain', DomainEvent]
     | ['Peer', PeerEvent]
     | ['Account', AccountEvent]
     | ['AssetDefinition', AssetDefinitionEvent]
     | ['Asset', AssetEvent]
     | ['Trigger', TriggerEvent]
-> {}
+>
 
-export const DataEventCodec: Codec<DataEvent> = createEnumCodec<any>('DataEvent', [[0, 'Domain', dynCodec(() => DomainEventCodec)], [1, 'Peer', dynCodec(() => PeerEventCodec)], [2, 'Account', dynCodec(() => AccountEventCodec)], [3, 'AssetDefinition', dynCodec(() => AssetDefinitionEventCodec)], [4, 'Asset', dynCodec(() => AssetEventCodec)], [5, 'Trigger', dynCodec(() => TriggerEventCodec)]]) as any
+interface DataEvent extends Opaque<DataEvent__actual, DataEvent> {}
 
-// DefinitionId
+const DataEvent: EnumCodecAndFactory<DataEvent> = createEnumCodec<DataEvent__actual, DataEvent>('DataEvent', [
+    [0, 'Domain', __dyn_DomainEvent],
+    [1, 'Peer', __dyn_PeerEvent],
+    [2, 'Account', __dyn_AccountEvent],
+    [3, 'AssetDefinition', __dyn_AssetDefinitionEvent],
+    [4, 'Asset', __dyn_AssetEvent],
+    [5, 'Trigger', __dyn_TriggerEvent]
+])
 
-export interface DefinitionId extends PseudoType<{
-    name: Name,
+// Type: DefinitionId
+
+interface DefinitionId__actual {
+    name: Name
     domain_id: Id
-}> {}
+}
 
-export const DefinitionIdCodec: Codec<DefinitionId> = createStructCodec<any>('DefinitionId', [['name', dynCodec(() => NameCodec) as any], ['domain_id', dynCodec(() => IdCodec) as any]]) as any
+interface DefinitionId extends Opaque<DefinitionId__actual, DefinitionId> {}
 
-// Divide
+const DefinitionId: StructCodecAndFactory<DefinitionId__actual, DefinitionId> = createStructCodec<DefinitionId__actual, DefinitionId>('DefinitionId', [
+    ['name', __dyn_Name],
+    ['domain_id', __dyn_Id]
+])
 
-export interface Divide extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: Divide
+
+interface Divide__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const DivideCodec: Codec<Divide> = createStructCodec<any>('Divide', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface Divide extends Opaque<Divide__actual, Divide> {}
 
-// Domain
+const Divide: StructCodecAndFactory<Divide__actual, Divide> = createStructCodec<Divide__actual, Divide>('Divide', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export interface Domain extends PseudoType<{
-    id: Id,
-    accounts: BTreeMapAccountIdAccount,
-    asset_definitions: BTreeMapDefinitionIdAssetDefinitionEntry,
-    metadata: Metadata,
+// Type: Domain
+
+interface Domain__actual {
+    id: Id
+    accounts: BTreeMapAccountIdAccount
+    asset_definitions: BTreeMapDefinitionIdAssetDefinitionEntry
+    metadata: Metadata
     logo: OptionIpfsPath
-}> {}
+}
 
-export const DomainCodec: Codec<Domain> = createStructCodec<any>('Domain', [['id', dynCodec(() => IdCodec) as any], ['accounts', dynCodec(() => BTreeMapAccountIdAccountCodec) as any], ['asset_definitions', dynCodec(() => BTreeMapDefinitionIdAssetDefinitionEntryCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any], ['logo', dynCodec(() => OptionIpfsPathCodec) as any]]) as any
+interface Domain extends Opaque<Domain__actual, Domain> {}
 
-// DomainEvent
+const Domain: StructCodecAndFactory<Domain__actual, Domain> = createStructCodec<Domain__actual, Domain>('Domain', [
+    ['id', __dyn_Id],
+    ['accounts', __dyn_BTreeMapAccountIdAccount],
+    ['asset_definitions', __dyn_BTreeMapDefinitionIdAssetDefinitionEntry],
+    ['metadata', __dyn_Metadata],
+    ['logo', __dyn_OptionIpfsPath]
+])
 
-export interface DomainEvent extends Enum<
+// Type: DomainEvent
+
+type DomainEvent__actual = Enum<
     | ['Account', AccountEvent]
     | ['AssetDefinition', AssetDefinitionEvent]
     | ['Created', Id]
     | ['Deleted', Id]
     | ['MetadataInserted', Id]
     | ['MetadataRemoved', Id]
-> {}
+>
 
-export const DomainEventCodec: Codec<DomainEvent> = createEnumCodec<any>('DomainEvent', [[0, 'Account', dynCodec(() => AccountEventCodec)], [1, 'AssetDefinition', dynCodec(() => AssetDefinitionEventCodec)], [2, 'Created', dynCodec(() => IdCodec)], [3, 'Deleted', dynCodec(() => IdCodec)], [4, 'MetadataInserted', dynCodec(() => IdCodec)], [5, 'MetadataRemoved', dynCodec(() => IdCodec)]]) as any
+interface DomainEvent extends Opaque<DomainEvent__actual, DomainEvent> {}
 
-// DomainEventFilter
+const DomainEvent: EnumCodecAndFactory<DomainEvent> = createEnumCodec<DomainEvent__actual, DomainEvent>('DomainEvent', [
+    [0, 'Account', __dyn_AccountEvent],
+    [1, 'AssetDefinition', __dyn_AssetDefinitionEvent],
+    [2, 'Created', __dyn_Id],
+    [3, 'Deleted', __dyn_Id],
+    [4, 'MetadataInserted', __dyn_Id],
+    [5, 'MetadataRemoved', __dyn_Id]
+])
 
-export interface DomainEventFilter extends Enum<
+// Type: DomainEventFilter
+
+type DomainEventFilter__actual = Enum<
     | ['ByAccount', FilterOptAccountFilter]
     | ['ByAssetDefinition', FilterOptAssetDefinitionFilter]
     | 'ByCreated'
     | 'ByDeleted'
     | 'ByMetadataInserted'
     | 'ByMetadataRemoved'
-> {}
+>
 
-export const DomainEventFilterCodec: Codec<DomainEventFilter> = createEnumCodec<any>('DomainEventFilter', [[0, 'ByAccount', dynCodec(() => FilterOptAccountFilterCodec)], [1, 'ByAssetDefinition', dynCodec(() => FilterOptAssetDefinitionFilterCodec)], [2, 'ByCreated'], [3, 'ByDeleted'], [4, 'ByMetadataInserted'], [5, 'ByMetadataRemoved']]) as any
+interface DomainEventFilter extends Opaque<DomainEventFilter__actual, DomainEventFilter> {}
 
-// DomainFilter
+const DomainEventFilter: EnumCodecAndFactory<DomainEventFilter> = createEnumCodec<DomainEventFilter__actual, DomainEventFilter>('DomainEventFilter', [
+    [0, 'ByAccount', __dyn_FilterOptAccountFilter],
+    [1, 'ByAssetDefinition', __dyn_FilterOptAssetDefinitionFilter],
+    [2, 'ByCreated'],
+    [3, 'ByDeleted'],
+    [4, 'ByMetadataInserted'],
+    [5, 'ByMetadataRemoved']
+])
 
-export interface DomainFilter extends PseudoType<{
-    id_filter: FilterOptIdFilterId,
+// Type: DomainFilter
+
+interface DomainFilter__actual {
+    id_filter: FilterOptIdFilterId
     event_filter: FilterOptDomainEventFilter
-}> {}
+}
 
-export const DomainFilterCodec: Codec<DomainFilter> = createStructCodec<any>('DomainFilter', [['id_filter', dynCodec(() => FilterOptIdFilterIdCodec) as any], ['event_filter', dynCodec(() => FilterOptDomainEventFilterCodec) as any]]) as any
+interface DomainFilter extends Opaque<DomainFilter__actual, DomainFilter> {}
 
-// EntityFilter
+const DomainFilter: StructCodecAndFactory<DomainFilter__actual, DomainFilter> = createStructCodec<DomainFilter__actual, DomainFilter>('DomainFilter', [
+    ['id_filter', __dyn_FilterOptIdFilterId],
+    ['event_filter', __dyn_FilterOptDomainEventFilter]
+])
 
-export interface EntityFilter extends Enum<
+// Type: EntityFilter
+
+type EntityFilter__actual = Enum<
     | ['ByDomain', FilterOptDomainFilter]
     | ['ByPeer', FilterOptPeerFilter]
     | ['ByAccount', FilterOptAccountFilter]
     | ['ByAssetDefinition', FilterOptAssetDefinitionFilter]
     | ['ByAsset', FilterOptAssetFilter]
     | ['ByTrigger', FilterOptTriggerFilter]
-> {}
+>
 
-export const EntityFilterCodec: Codec<EntityFilter> = createEnumCodec<any>('EntityFilter', [[0, 'ByDomain', dynCodec(() => FilterOptDomainFilterCodec)], [1, 'ByPeer', dynCodec(() => FilterOptPeerFilterCodec)], [2, 'ByAccount', dynCodec(() => FilterOptAccountFilterCodec)], [3, 'ByAssetDefinition', dynCodec(() => FilterOptAssetDefinitionFilterCodec)], [4, 'ByAsset', dynCodec(() => FilterOptAssetFilterCodec)], [5, 'ByTrigger', dynCodec(() => FilterOptTriggerFilterCodec)]]) as any
+interface EntityFilter extends Opaque<EntityFilter__actual, EntityFilter> {}
 
-// EntityType
+const EntityFilter: EnumCodecAndFactory<EntityFilter> = createEnumCodec<EntityFilter__actual, EntityFilter>('EntityFilter', [
+    [0, 'ByDomain', __dyn_FilterOptDomainFilter],
+    [1, 'ByPeer', __dyn_FilterOptPeerFilter],
+    [2, 'ByAccount', __dyn_FilterOptAccountFilter],
+    [3, 'ByAssetDefinition', __dyn_FilterOptAssetDefinitionFilter],
+    [4, 'ByAsset', __dyn_FilterOptAssetFilter],
+    [5, 'ByTrigger', __dyn_FilterOptTriggerFilter]
+])
 
-export interface EntityType extends Enum<
+// Type: EntityType
+
+type EntityType__actual = Enum<
     | 'Block'
     | 'Transaction'
-> {}
+>
 
-export const EntityTypeCodec: Codec<EntityType> = createEnumCodec<any>('EntityType', [[0, 'Block'], [1, 'Transaction']]) as any
+interface EntityType extends Opaque<EntityType__actual, EntityType> {}
 
-// Equal
+const EntityType: EnumCodecAndFactory<EntityType> = createEnumCodec<EntityType__actual, EntityType>('EntityType', [
+    [0, 'Block'],
+    [1, 'Transaction']
+])
 
-export interface Equal extends PseudoType<{
-    left: EvaluatesToValue,
+// Type: Equal
+
+interface Equal__actual {
+    left: EvaluatesToValue
     right: EvaluatesToValue
-}> {}
+}
 
-export const EqualCodec: Codec<Equal> = createStructCodec<any>('Equal', [['left', dynCodec(() => EvaluatesToValueCodec) as any], ['right', dynCodec(() => EvaluatesToValueCodec) as any]]) as any
+interface Equal extends Opaque<Equal__actual, Equal> {}
 
-// EvaluatesToAccountId
+const Equal: StructCodecAndFactory<Equal__actual, Equal> = createStructCodec<Equal__actual, Equal>('Equal', [
+    ['left', __dyn_EvaluatesToValue],
+    ['right', __dyn_EvaluatesToValue]
+])
 
-export interface EvaluatesToAccountId extends PseudoType<{
+// Type: EvaluatesToAccountId
+
+interface EvaluatesToAccountId__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToAccountIdCodec: Codec<EvaluatesToAccountId> = createStructCodec<any>('EvaluatesToAccountId', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToAccountId extends Opaque<EvaluatesToAccountId__actual, EvaluatesToAccountId> {}
 
-// EvaluatesToAssetId
+const EvaluatesToAccountId: StructCodecAndFactory<EvaluatesToAccountId__actual, EvaluatesToAccountId> = createStructCodec<EvaluatesToAccountId__actual, EvaluatesToAccountId>('EvaluatesToAccountId', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToAssetId extends PseudoType<{
+// Type: EvaluatesToAssetId
+
+interface EvaluatesToAssetId__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToAssetIdCodec: Codec<EvaluatesToAssetId> = createStructCodec<any>('EvaluatesToAssetId', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToAssetId extends Opaque<EvaluatesToAssetId__actual, EvaluatesToAssetId> {}
 
-// EvaluatesToBool
+const EvaluatesToAssetId: StructCodecAndFactory<EvaluatesToAssetId__actual, EvaluatesToAssetId> = createStructCodec<EvaluatesToAssetId__actual, EvaluatesToAssetId>('EvaluatesToAssetId', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToBool extends PseudoType<{
+// Type: EvaluatesToBool
+
+interface EvaluatesToBool__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToBoolCodec: Codec<EvaluatesToBool> = createStructCodec<any>('EvaluatesToBool', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToBool extends Opaque<EvaluatesToBool__actual, EvaluatesToBool> {}
 
-// EvaluatesToDefinitionId
+const EvaluatesToBool: StructCodecAndFactory<EvaluatesToBool__actual, EvaluatesToBool> = createStructCodec<EvaluatesToBool__actual, EvaluatesToBool>('EvaluatesToBool', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToDefinitionId extends PseudoType<{
+// Type: EvaluatesToDefinitionId
+
+interface EvaluatesToDefinitionId__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToDefinitionIdCodec: Codec<EvaluatesToDefinitionId> = createStructCodec<any>('EvaluatesToDefinitionId', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToDefinitionId extends Opaque<EvaluatesToDefinitionId__actual, EvaluatesToDefinitionId> {}
 
-// EvaluatesToHash
+const EvaluatesToDefinitionId: StructCodecAndFactory<EvaluatesToDefinitionId__actual, EvaluatesToDefinitionId> = createStructCodec<EvaluatesToDefinitionId__actual, EvaluatesToDefinitionId>('EvaluatesToDefinitionId', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToHash extends PseudoType<{
+// Type: EvaluatesToHash
+
+interface EvaluatesToHash__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToHashCodec: Codec<EvaluatesToHash> = createStructCodec<any>('EvaluatesToHash', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToHash extends Opaque<EvaluatesToHash__actual, EvaluatesToHash> {}
 
-// EvaluatesToId
+const EvaluatesToHash: StructCodecAndFactory<EvaluatesToHash__actual, EvaluatesToHash> = createStructCodec<EvaluatesToHash__actual, EvaluatesToHash>('EvaluatesToHash', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToId extends PseudoType<{
+// Type: EvaluatesToId
+
+interface EvaluatesToId__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToIdCodec: Codec<EvaluatesToId> = createStructCodec<any>('EvaluatesToId', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToId extends Opaque<EvaluatesToId__actual, EvaluatesToId> {}
 
-// EvaluatesToIdBox
+const EvaluatesToId: StructCodecAndFactory<EvaluatesToId__actual, EvaluatesToId> = createStructCodec<EvaluatesToId__actual, EvaluatesToId>('EvaluatesToId', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToIdBox extends PseudoType<{
+// Type: EvaluatesToIdBox
+
+interface EvaluatesToIdBox__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToIdBoxCodec: Codec<EvaluatesToIdBox> = createStructCodec<any>('EvaluatesToIdBox', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToIdBox extends Opaque<EvaluatesToIdBox__actual, EvaluatesToIdBox> {}
 
-// EvaluatesToIdentifiableBox
+const EvaluatesToIdBox: StructCodecAndFactory<EvaluatesToIdBox__actual, EvaluatesToIdBox> = createStructCodec<EvaluatesToIdBox__actual, EvaluatesToIdBox>('EvaluatesToIdBox', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToIdentifiableBox extends PseudoType<{
+// Type: EvaluatesToIdentifiableBox
+
+interface EvaluatesToIdentifiableBox__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToIdentifiableBoxCodec: Codec<EvaluatesToIdentifiableBox> = createStructCodec<any>('EvaluatesToIdentifiableBox', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToIdentifiableBox extends Opaque<EvaluatesToIdentifiableBox__actual, EvaluatesToIdentifiableBox> {}
 
-// EvaluatesToName
+const EvaluatesToIdentifiableBox: StructCodecAndFactory<EvaluatesToIdentifiableBox__actual, EvaluatesToIdentifiableBox> = createStructCodec<EvaluatesToIdentifiableBox__actual, EvaluatesToIdentifiableBox>('EvaluatesToIdentifiableBox', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToName extends PseudoType<{
+// Type: EvaluatesToName
+
+interface EvaluatesToName__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToNameCodec: Codec<EvaluatesToName> = createStructCodec<any>('EvaluatesToName', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToName extends Opaque<EvaluatesToName__actual, EvaluatesToName> {}
 
-// EvaluatesToU32
+const EvaluatesToName: StructCodecAndFactory<EvaluatesToName__actual, EvaluatesToName> = createStructCodec<EvaluatesToName__actual, EvaluatesToName>('EvaluatesToName', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToU32 extends PseudoType<{
+// Type: EvaluatesToU32
+
+interface EvaluatesToU32__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToU32Codec: Codec<EvaluatesToU32> = createStructCodec<any>('EvaluatesToU32', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToU32 extends Opaque<EvaluatesToU32__actual, EvaluatesToU32> {}
 
-// EvaluatesToValue
+const EvaluatesToU32: StructCodecAndFactory<EvaluatesToU32__actual, EvaluatesToU32> = createStructCodec<EvaluatesToU32__actual, EvaluatesToU32>('EvaluatesToU32', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToValue extends PseudoType<{
+// Type: EvaluatesToValue
+
+interface EvaluatesToValue__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToValueCodec: Codec<EvaluatesToValue> = createStructCodec<any>('EvaluatesToValue', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToValue extends Opaque<EvaluatesToValue__actual, EvaluatesToValue> {}
 
-// EvaluatesToVecValue
+const EvaluatesToValue: StructCodecAndFactory<EvaluatesToValue__actual, EvaluatesToValue> = createStructCodec<EvaluatesToValue__actual, EvaluatesToValue>('EvaluatesToValue', [
+    ['expression', __dyn_Expression]
+])
 
-export interface EvaluatesToVecValue extends PseudoType<{
+// Type: EvaluatesToVecValue
+
+interface EvaluatesToVecValue__actual {
     expression: Expression
-}> {}
+}
 
-export const EvaluatesToVecValueCodec: Codec<EvaluatesToVecValue> = createStructCodec<any>('EvaluatesToVecValue', [['expression', dynCodec(() => ExpressionCodec) as any]]) as any
+interface EvaluatesToVecValue extends Opaque<EvaluatesToVecValue__actual, EvaluatesToVecValue> {}
 
-// Event
+const EvaluatesToVecValue: StructCodecAndFactory<EvaluatesToVecValue__actual, EvaluatesToVecValue> = createStructCodec<EvaluatesToVecValue__actual, EvaluatesToVecValue>('EvaluatesToVecValue', [
+    ['expression', __dyn_Expression]
+])
 
-export interface Event extends Enum<
+// Type: Event
+
+type Event__actual = Enum<
     | ['Pipeline', PipelineEvent]
     | ['Data', DataEvent]
-> {}
+>
 
-export const EventCodec: Codec<Event> = createEnumCodec<any>('Event', [[0, 'Pipeline', dynCodec(() => PipelineEventCodec)], [1, 'Data', dynCodec(() => DataEventCodec)]]) as any
+interface Event extends Opaque<Event__actual, Event> {}
 
-// EventFilter
+const Event: EnumCodecAndFactory<Event> = createEnumCodec<Event__actual, Event>('Event', [
+    [0, 'Pipeline', __dyn_PipelineEvent],
+    [1, 'Data', __dyn_DataEvent]
+])
 
-export interface EventFilter extends Enum<
+// Type: EventFilter
+
+type EventFilter__actual = Enum<
     | ['Pipeline', PipelineEventFilter]
     | ['Data', FilterOptEntityFilter]
-> {}
+>
 
-export const EventFilterCodec: Codec<EventFilter> = createEnumCodec<any>('EventFilter', [[0, 'Pipeline', dynCodec(() => PipelineEventFilterCodec)], [1, 'Data', dynCodec(() => FilterOptEntityFilterCodec)]]) as any
+interface EventFilter extends Opaque<EventFilter__actual, EventFilter> {}
 
-// EventPublisherMessage
+const EventFilter: EnumCodecAndFactory<EventFilter> = createEnumCodec<EventFilter__actual, EventFilter>('EventFilter', [
+    [0, 'Pipeline', __dyn_PipelineEventFilter],
+    [1, 'Data', __dyn_FilterOptEntityFilter]
+])
 
-export interface EventPublisherMessage extends Enum<
+// Type: EventPublisherMessage
+
+type EventPublisherMessage__actual = Enum<
     | 'SubscriptionAccepted'
     | ['Event', Event]
-> {}
+>
 
-export const EventPublisherMessageCodec: Codec<EventPublisherMessage> = createEnumCodec<any>('EventPublisherMessage', [[0, 'SubscriptionAccepted'], [1, 'Event', dynCodec(() => EventCodec)]]) as any
+interface EventPublisherMessage extends Opaque<EventPublisherMessage__actual, EventPublisherMessage> {}
 
-// EventSubscriberMessage
+const EventPublisherMessage: EnumCodecAndFactory<EventPublisherMessage> = createEnumCodec<EventPublisherMessage__actual, EventPublisherMessage>('EventPublisherMessage', [
+    [0, 'SubscriptionAccepted'],
+    [1, 'Event', __dyn_Event]
+])
 
-export interface EventSubscriberMessage extends Enum<
+// Type: EventSubscriberMessage
+
+type EventSubscriberMessage__actual = Enum<
     | ['SubscriptionRequest', EventFilter]
     | 'EventReceived'
-> {}
+>
 
-export const EventSubscriberMessageCodec: Codec<EventSubscriberMessage> = createEnumCodec<any>('EventSubscriberMessage', [[0, 'SubscriptionRequest', dynCodec(() => EventFilterCodec)], [1, 'EventReceived']]) as any
+interface EventSubscriberMessage extends Opaque<EventSubscriberMessage__actual, EventSubscriberMessage> {}
 
-// Executable
+const EventSubscriberMessage: EnumCodecAndFactory<EventSubscriberMessage> = createEnumCodec<EventSubscriberMessage__actual, EventSubscriberMessage>('EventSubscriberMessage', [
+    [0, 'SubscriptionRequest', __dyn_EventFilter],
+    [1, 'EventReceived']
+])
 
-export interface Executable extends Enum<
+// Type: Executable
+
+type Executable__actual = Enum<
     | ['Instructions', VecInstruction]
     | ['Wasm', WasmSmartContract]
-> {}
+>
 
-export const ExecutableCodec: Codec<Executable> = createEnumCodec<any>('Executable', [[0, 'Instructions', dynCodec(() => VecInstructionCodec)], [1, 'Wasm', dynCodec(() => WasmSmartContractCodec)]]) as any
+interface Executable extends Opaque<Executable__actual, Executable> {}
 
-// Expression
+const Executable: EnumCodecAndFactory<Executable> = createEnumCodec<Executable__actual, Executable>('Executable', [
+    [0, 'Instructions', __dyn_VecInstruction],
+    [1, 'Wasm', __dyn_WasmSmartContract]
+])
 
-export interface Expression extends Enum<
+// Type: Expression
+
+type Expression__actual = Enum<
     | ['Add', Add]
     | ['Subtract', Subtract]
     | ['Multiply', Multiply]
@@ -678,357 +1281,540 @@ export interface Expression extends Enum<
     | ['ContainsAny', ContainsAny]
     | ['Where', Where]
     | ['ContextValue', ContextValue]
-> {}
+>
 
-export const ExpressionCodec: Codec<Expression> = createEnumCodec<any>('Expression', [[0, 'Add', dynCodec(() => AddCodec)], [1, 'Subtract', dynCodec(() => SubtractCodec)], [2, 'Multiply', dynCodec(() => MultiplyCodec)], [3, 'Divide', dynCodec(() => DivideCodec)], [4, 'Mod', dynCodec(() => ModCodec)], [5, 'RaiseTo', dynCodec(() => RaiseToCodec)], [6, 'Greater', dynCodec(() => GreaterCodec)], [7, 'Less', dynCodec(() => LessCodec)], [8, 'Equal', dynCodec(() => EqualCodec)], [9, 'Not', dynCodec(() => NotCodec)], [10, 'And', dynCodec(() => AndCodec)], [11, 'Or', dynCodec(() => OrCodec)], [12, 'If', dynCodec(() => ExpressionIfCodec)], [13, 'Raw', dynCodec(() => ValueCodec)], [14, 'Query', dynCodec(() => QueryBoxCodec)], [15, 'Contains', dynCodec(() => ContainsCodec)], [16, 'ContainsAll', dynCodec(() => ContainsAllCodec)], [17, 'ContainsAny', dynCodec(() => ContainsAnyCodec)], [18, 'Where', dynCodec(() => WhereCodec)], [19, 'ContextValue', dynCodec(() => ContextValueCodec)]]) as any
+interface Expression extends Opaque<Expression__actual, Expression> {}
 
-// ExpressionIf
+const Expression: EnumCodecAndFactory<Expression> = createEnumCodec<Expression__actual, Expression>('Expression', [
+    [0, 'Add', __dyn_Add],
+    [1, 'Subtract', __dyn_Subtract],
+    [2, 'Multiply', __dyn_Multiply],
+    [3, 'Divide', __dyn_Divide],
+    [4, 'Mod', __dyn_Mod],
+    [5, 'RaiseTo', __dyn_RaiseTo],
+    [6, 'Greater', __dyn_Greater],
+    [7, 'Less', __dyn_Less],
+    [8, 'Equal', __dyn_Equal],
+    [9, 'Not', __dyn_Not],
+    [10, 'And', __dyn_And],
+    [11, 'Or', __dyn_Or],
+    [12, 'If', __dyn_ExpressionIf],
+    [13, 'Raw', __dyn_Value],
+    [14, 'Query', __dyn_QueryBox],
+    [15, 'Contains', __dyn_Contains],
+    [16, 'ContainsAll', __dyn_ContainsAll],
+    [17, 'ContainsAny', __dyn_ContainsAny],
+    [18, 'Where', __dyn_Where],
+    [19, 'ContextValue', __dyn_ContextValue]
+])
 
-export interface ExpressionIf extends PseudoType<{
-    condition: EvaluatesToBool,
-    then_expression: EvaluatesToValue,
+// Type: ExpressionIf
+
+interface ExpressionIf__actual {
+    condition: EvaluatesToBool
+    then_expression: EvaluatesToValue
     else_expression: EvaluatesToValue
-}> {}
+}
 
-export const ExpressionIfCodec: Codec<ExpressionIf> = createStructCodec<any>('ExpressionIf', [['condition', dynCodec(() => EvaluatesToBoolCodec) as any], ['then_expression', dynCodec(() => EvaluatesToValueCodec) as any], ['else_expression', dynCodec(() => EvaluatesToValueCodec) as any]]) as any
+interface ExpressionIf extends Opaque<ExpressionIf__actual, ExpressionIf> {}
 
-// FailBox
+const ExpressionIf: StructCodecAndFactory<ExpressionIf__actual, ExpressionIf> = createStructCodec<ExpressionIf__actual, ExpressionIf>('ExpressionIf', [
+    ['condition', __dyn_EvaluatesToBool],
+    ['then_expression', __dyn_EvaluatesToValue],
+    ['else_expression', __dyn_EvaluatesToValue]
+])
 
-export interface FailBox extends PseudoType<{
+// Type: FailBox
+
+interface FailBox__actual {
     message: Str
-}> {}
+}
 
-export const FailBoxCodec: Codec<FailBox> = createStructCodec<any>('FailBox', [['message', dynCodec(() => StrCodec) as any]]) as any
+interface FailBox extends Opaque<FailBox__actual, FailBox> {}
 
-// FilterOptAccountEventFilter
+const FailBox: StructCodecAndFactory<FailBox__actual, FailBox> = createStructCodec<FailBox__actual, FailBox>('FailBox', [
+    ['message', Str]
+])
 
-export interface FilterOptAccountEventFilter extends Enum<
+// Type: FilterOptAccountEventFilter
+
+type FilterOptAccountEventFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', AccountEventFilter]
-> {}
+>
 
-export const FilterOptAccountEventFilterCodec: Codec<FilterOptAccountEventFilter> = createEnumCodec<any>('FilterOptAccountEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AccountEventFilterCodec)]]) as any
+interface FilterOptAccountEventFilter extends Opaque<FilterOptAccountEventFilter__actual, FilterOptAccountEventFilter> {}
 
-// FilterOptAccountFilter
+const FilterOptAccountEventFilter: EnumCodecAndFactory<FilterOptAccountEventFilter> = createEnumCodec<FilterOptAccountEventFilter__actual, FilterOptAccountEventFilter>('FilterOptAccountEventFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_AccountEventFilter]
+])
 
-export interface FilterOptAccountFilter extends Enum<
+// Type: FilterOptAccountFilter
+
+type FilterOptAccountFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', AccountFilter]
-> {}
+>
 
-export const FilterOptAccountFilterCodec: Codec<FilterOptAccountFilter> = createEnumCodec<any>('FilterOptAccountFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AccountFilterCodec)]]) as any
+interface FilterOptAccountFilter extends Opaque<FilterOptAccountFilter__actual, FilterOptAccountFilter> {}
 
-// FilterOptAssetDefinitionEventFilter
+const FilterOptAccountFilter: EnumCodecAndFactory<FilterOptAccountFilter> = createEnumCodec<FilterOptAccountFilter__actual, FilterOptAccountFilter>('FilterOptAccountFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_AccountFilter]
+])
 
-export interface FilterOptAssetDefinitionEventFilter extends Enum<
+// Type: FilterOptAssetDefinitionEventFilter
+
+type FilterOptAssetDefinitionEventFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', AssetDefinitionEventFilter]
-> {}
+>
 
-export const FilterOptAssetDefinitionEventFilterCodec: Codec<FilterOptAssetDefinitionEventFilter> = createEnumCodec<any>('FilterOptAssetDefinitionEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetDefinitionEventFilterCodec)]]) as any
+interface FilterOptAssetDefinitionEventFilter extends Opaque<FilterOptAssetDefinitionEventFilter__actual, FilterOptAssetDefinitionEventFilter> {}
 
-// FilterOptAssetDefinitionFilter
+const FilterOptAssetDefinitionEventFilter: EnumCodecAndFactory<FilterOptAssetDefinitionEventFilter> = createEnumCodec<FilterOptAssetDefinitionEventFilter__actual, FilterOptAssetDefinitionEventFilter>('FilterOptAssetDefinitionEventFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_AssetDefinitionEventFilter]
+])
 
-export interface FilterOptAssetDefinitionFilter extends Enum<
+// Type: FilterOptAssetDefinitionFilter
+
+type FilterOptAssetDefinitionFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', AssetDefinitionFilter]
-> {}
+>
 
-export const FilterOptAssetDefinitionFilterCodec: Codec<FilterOptAssetDefinitionFilter> = createEnumCodec<any>('FilterOptAssetDefinitionFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetDefinitionFilterCodec)]]) as any
+interface FilterOptAssetDefinitionFilter extends Opaque<FilterOptAssetDefinitionFilter__actual, FilterOptAssetDefinitionFilter> {}
 
-// FilterOptAssetEventFilter
+const FilterOptAssetDefinitionFilter: EnumCodecAndFactory<FilterOptAssetDefinitionFilter> = createEnumCodec<FilterOptAssetDefinitionFilter__actual, FilterOptAssetDefinitionFilter>('FilterOptAssetDefinitionFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_AssetDefinitionFilter]
+])
 
-export interface FilterOptAssetEventFilter extends Enum<
+// Type: FilterOptAssetEventFilter
+
+type FilterOptAssetEventFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', AssetEventFilter]
-> {}
+>
 
-export const FilterOptAssetEventFilterCodec: Codec<FilterOptAssetEventFilter> = createEnumCodec<any>('FilterOptAssetEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetEventFilterCodec)]]) as any
+interface FilterOptAssetEventFilter extends Opaque<FilterOptAssetEventFilter__actual, FilterOptAssetEventFilter> {}
 
-// FilterOptAssetFilter
+const FilterOptAssetEventFilter: EnumCodecAndFactory<FilterOptAssetEventFilter> = createEnumCodec<FilterOptAssetEventFilter__actual, FilterOptAssetEventFilter>('FilterOptAssetEventFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_AssetEventFilter]
+])
 
-export interface FilterOptAssetFilter extends Enum<
+// Type: FilterOptAssetFilter
+
+type FilterOptAssetFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', AssetFilter]
-> {}
+>
 
-export const FilterOptAssetFilterCodec: Codec<FilterOptAssetFilter> = createEnumCodec<any>('FilterOptAssetFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => AssetFilterCodec)]]) as any
+interface FilterOptAssetFilter extends Opaque<FilterOptAssetFilter__actual, FilterOptAssetFilter> {}
 
-// FilterOptDomainEventFilter
+const FilterOptAssetFilter: EnumCodecAndFactory<FilterOptAssetFilter> = createEnumCodec<FilterOptAssetFilter__actual, FilterOptAssetFilter>('FilterOptAssetFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_AssetFilter]
+])
 
-export interface FilterOptDomainEventFilter extends Enum<
+// Type: FilterOptDomainEventFilter
+
+type FilterOptDomainEventFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', DomainEventFilter]
-> {}
+>
 
-export const FilterOptDomainEventFilterCodec: Codec<FilterOptDomainEventFilter> = createEnumCodec<any>('FilterOptDomainEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => DomainEventFilterCodec)]]) as any
+interface FilterOptDomainEventFilter extends Opaque<FilterOptDomainEventFilter__actual, FilterOptDomainEventFilter> {}
 
-// FilterOptDomainFilter
+const FilterOptDomainEventFilter: EnumCodecAndFactory<FilterOptDomainEventFilter> = createEnumCodec<FilterOptDomainEventFilter__actual, FilterOptDomainEventFilter>('FilterOptDomainEventFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_DomainEventFilter]
+])
 
-export interface FilterOptDomainFilter extends Enum<
+// Type: FilterOptDomainFilter
+
+type FilterOptDomainFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', DomainFilter]
-> {}
+>
 
-export const FilterOptDomainFilterCodec: Codec<FilterOptDomainFilter> = createEnumCodec<any>('FilterOptDomainFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => DomainFilterCodec)]]) as any
+interface FilterOptDomainFilter extends Opaque<FilterOptDomainFilter__actual, FilterOptDomainFilter> {}
 
-// FilterOptEntityFilter
+const FilterOptDomainFilter: EnumCodecAndFactory<FilterOptDomainFilter> = createEnumCodec<FilterOptDomainFilter__actual, FilterOptDomainFilter>('FilterOptDomainFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_DomainFilter]
+])
 
-export interface FilterOptEntityFilter extends Enum<
+// Type: FilterOptEntityFilter
+
+type FilterOptEntityFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', EntityFilter]
-> {}
+>
 
-export const FilterOptEntityFilterCodec: Codec<FilterOptEntityFilter> = createEnumCodec<any>('FilterOptEntityFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => EntityFilterCodec)]]) as any
+interface FilterOptEntityFilter extends Opaque<FilterOptEntityFilter__actual, FilterOptEntityFilter> {}
 
-// FilterOptIdFilterAccountId
+const FilterOptEntityFilter: EnumCodecAndFactory<FilterOptEntityFilter> = createEnumCodec<FilterOptEntityFilter__actual, FilterOptEntityFilter>('FilterOptEntityFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_EntityFilter]
+])
 
-export interface FilterOptIdFilterAccountId extends Enum<
+// Type: FilterOptIdFilterAccountId
+
+type FilterOptIdFilterAccountId__actual = Enum<
     | 'AcceptAll'
     | ['BySome', IdFilterAccountId]
-> {}
+>
 
-export const FilterOptIdFilterAccountIdCodec: Codec<FilterOptIdFilterAccountId> = createEnumCodec<any>('FilterOptIdFilterAccountId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterAccountIdCodec)]]) as any
+interface FilterOptIdFilterAccountId extends Opaque<FilterOptIdFilterAccountId__actual, FilterOptIdFilterAccountId> {}
 
-// FilterOptIdFilterAssetId
+const FilterOptIdFilterAccountId: EnumCodecAndFactory<FilterOptIdFilterAccountId> = createEnumCodec<FilterOptIdFilterAccountId__actual, FilterOptIdFilterAccountId>('FilterOptIdFilterAccountId', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_IdFilterAccountId]
+])
 
-export interface FilterOptIdFilterAssetId extends Enum<
+// Type: FilterOptIdFilterAssetId
+
+type FilterOptIdFilterAssetId__actual = Enum<
     | 'AcceptAll'
     | ['BySome', IdFilterAssetId]
-> {}
+>
 
-export const FilterOptIdFilterAssetIdCodec: Codec<FilterOptIdFilterAssetId> = createEnumCodec<any>('FilterOptIdFilterAssetId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterAssetIdCodec)]]) as any
+interface FilterOptIdFilterAssetId extends Opaque<FilterOptIdFilterAssetId__actual, FilterOptIdFilterAssetId> {}
 
-// FilterOptIdFilterDefinitionId
+const FilterOptIdFilterAssetId: EnumCodecAndFactory<FilterOptIdFilterAssetId> = createEnumCodec<FilterOptIdFilterAssetId__actual, FilterOptIdFilterAssetId>('FilterOptIdFilterAssetId', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_IdFilterAssetId]
+])
 
-export interface FilterOptIdFilterDefinitionId extends Enum<
+// Type: FilterOptIdFilterDefinitionId
+
+type FilterOptIdFilterDefinitionId__actual = Enum<
     | 'AcceptAll'
     | ['BySome', IdFilterDefinitionId]
-> {}
+>
 
-export const FilterOptIdFilterDefinitionIdCodec: Codec<FilterOptIdFilterDefinitionId> = createEnumCodec<any>('FilterOptIdFilterDefinitionId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterDefinitionIdCodec)]]) as any
+interface FilterOptIdFilterDefinitionId extends Opaque<FilterOptIdFilterDefinitionId__actual, FilterOptIdFilterDefinitionId> {}
 
-// FilterOptIdFilterId
+const FilterOptIdFilterDefinitionId: EnumCodecAndFactory<FilterOptIdFilterDefinitionId> = createEnumCodec<FilterOptIdFilterDefinitionId__actual, FilterOptIdFilterDefinitionId>('FilterOptIdFilterDefinitionId', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_IdFilterDefinitionId]
+])
 
-export interface FilterOptIdFilterId extends Enum<
+// Type: FilterOptIdFilterId
+
+type FilterOptIdFilterId__actual = Enum<
     | 'AcceptAll'
     | ['BySome', IdFilterId]
-> {}
+>
 
-export const FilterOptIdFilterIdCodec: Codec<FilterOptIdFilterId> = createEnumCodec<any>('FilterOptIdFilterId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterIdCodec)]]) as any
+interface FilterOptIdFilterId extends Opaque<FilterOptIdFilterId__actual, FilterOptIdFilterId> {}
 
-// FilterOptIdFilterPeerId
+const FilterOptIdFilterId: EnumCodecAndFactory<FilterOptIdFilterId> = createEnumCodec<FilterOptIdFilterId__actual, FilterOptIdFilterId>('FilterOptIdFilterId', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_IdFilterId]
+])
 
-export interface FilterOptIdFilterPeerId extends Enum<
+// Type: FilterOptIdFilterPeerId
+
+type FilterOptIdFilterPeerId__actual = Enum<
     | 'AcceptAll'
     | ['BySome', IdFilterPeerId]
-> {}
+>
 
-export const FilterOptIdFilterPeerIdCodec: Codec<FilterOptIdFilterPeerId> = createEnumCodec<any>('FilterOptIdFilterPeerId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterPeerIdCodec)]]) as any
+interface FilterOptIdFilterPeerId extends Opaque<FilterOptIdFilterPeerId__actual, FilterOptIdFilterPeerId> {}
 
-// FilterOptIdFilterTriggerId
+const FilterOptIdFilterPeerId: EnumCodecAndFactory<FilterOptIdFilterPeerId> = createEnumCodec<FilterOptIdFilterPeerId__actual, FilterOptIdFilterPeerId>('FilterOptIdFilterPeerId', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_IdFilterPeerId]
+])
 
-export interface FilterOptIdFilterTriggerId extends Enum<
+// Type: FilterOptIdFilterTriggerId
+
+type FilterOptIdFilterTriggerId__actual = Enum<
     | 'AcceptAll'
     | ['BySome', IdFilterTriggerId]
-> {}
+>
 
-export const FilterOptIdFilterTriggerIdCodec: Codec<FilterOptIdFilterTriggerId> = createEnumCodec<any>('FilterOptIdFilterTriggerId', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => IdFilterTriggerIdCodec)]]) as any
+interface FilterOptIdFilterTriggerId extends Opaque<FilterOptIdFilterTriggerId__actual, FilterOptIdFilterTriggerId> {}
 
-// FilterOptPeerEventFilter
+const FilterOptIdFilterTriggerId: EnumCodecAndFactory<FilterOptIdFilterTriggerId> = createEnumCodec<FilterOptIdFilterTriggerId__actual, FilterOptIdFilterTriggerId>('FilterOptIdFilterTriggerId', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_IdFilterTriggerId]
+])
 
-export interface FilterOptPeerEventFilter extends Enum<
+// Type: FilterOptPeerEventFilter
+
+type FilterOptPeerEventFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', PeerEventFilter]
-> {}
+>
 
-export const FilterOptPeerEventFilterCodec: Codec<FilterOptPeerEventFilter> = createEnumCodec<any>('FilterOptPeerEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => PeerEventFilterCodec)]]) as any
+interface FilterOptPeerEventFilter extends Opaque<FilterOptPeerEventFilter__actual, FilterOptPeerEventFilter> {}
 
-// FilterOptPeerFilter
+const FilterOptPeerEventFilter: EnumCodecAndFactory<FilterOptPeerEventFilter> = createEnumCodec<FilterOptPeerEventFilter__actual, FilterOptPeerEventFilter>('FilterOptPeerEventFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_PeerEventFilter]
+])
 
-export interface FilterOptPeerFilter extends Enum<
+// Type: FilterOptPeerFilter
+
+type FilterOptPeerFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', PeerFilter]
-> {}
+>
 
-export const FilterOptPeerFilterCodec: Codec<FilterOptPeerFilter> = createEnumCodec<any>('FilterOptPeerFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => PeerFilterCodec)]]) as any
+interface FilterOptPeerFilter extends Opaque<FilterOptPeerFilter__actual, FilterOptPeerFilter> {}
 
-// FilterOptTriggerEventFilter
+const FilterOptPeerFilter: EnumCodecAndFactory<FilterOptPeerFilter> = createEnumCodec<FilterOptPeerFilter__actual, FilterOptPeerFilter>('FilterOptPeerFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_PeerFilter]
+])
 
-export interface FilterOptTriggerEventFilter extends Enum<
+// Type: FilterOptTriggerEventFilter
+
+type FilterOptTriggerEventFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', TriggerEventFilter]
-> {}
+>
 
-export const FilterOptTriggerEventFilterCodec: Codec<FilterOptTriggerEventFilter> = createEnumCodec<any>('FilterOptTriggerEventFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => TriggerEventFilterCodec)]]) as any
+interface FilterOptTriggerEventFilter extends Opaque<FilterOptTriggerEventFilter__actual, FilterOptTriggerEventFilter> {}
 
-// FilterOptTriggerFilter
+const FilterOptTriggerEventFilter: EnumCodecAndFactory<FilterOptTriggerEventFilter> = createEnumCodec<FilterOptTriggerEventFilter__actual, FilterOptTriggerEventFilter>('FilterOptTriggerEventFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_TriggerEventFilter]
+])
 
-export interface FilterOptTriggerFilter extends Enum<
+// Type: FilterOptTriggerFilter
+
+type FilterOptTriggerFilter__actual = Enum<
     | 'AcceptAll'
     | ['BySome', TriggerFilter]
-> {}
+>
 
-export const FilterOptTriggerFilterCodec: Codec<FilterOptTriggerFilter> = createEnumCodec<any>('FilterOptTriggerFilter', [[0, 'AcceptAll'], [1, 'BySome', dynCodec(() => TriggerFilterCodec)]]) as any
+interface FilterOptTriggerFilter extends Opaque<FilterOptTriggerFilter__actual, FilterOptTriggerFilter> {}
 
-// FindAccountById
+const FilterOptTriggerFilter: EnumCodecAndFactory<FilterOptTriggerFilter> = createEnumCodec<FilterOptTriggerFilter__actual, FilterOptTriggerFilter>('FilterOptTriggerFilter', [
+    [0, 'AcceptAll'],
+    [1, 'BySome', __dyn_TriggerFilter]
+])
 
-export interface FindAccountById extends PseudoType<{
+// Type: FindAccountById
+
+interface FindAccountById__actual {
     id: EvaluatesToAccountId
-}> {}
+}
 
-export const FindAccountByIdCodec: Codec<FindAccountById> = createStructCodec<any>('FindAccountById', [['id', dynCodec(() => EvaluatesToAccountIdCodec) as any]]) as any
+interface FindAccountById extends Opaque<FindAccountById__actual, FindAccountById> {}
 
-// FindAccountKeyValueByIdAndKey
+const FindAccountById: StructCodecAndFactory<FindAccountById__actual, FindAccountById> = createStructCodec<FindAccountById__actual, FindAccountById>('FindAccountById', [
+    ['id', __dyn_EvaluatesToAccountId]
+])
 
-export interface FindAccountKeyValueByIdAndKey extends PseudoType<{
-    id: EvaluatesToAccountId,
+// Type: FindAccountKeyValueByIdAndKey
+
+interface FindAccountKeyValueByIdAndKey__actual {
+    id: EvaluatesToAccountId
     key: EvaluatesToName
-}> {}
+}
 
-export const FindAccountKeyValueByIdAndKeyCodec: Codec<FindAccountKeyValueByIdAndKey> = createStructCodec<any>('FindAccountKeyValueByIdAndKey', [['id', dynCodec(() => EvaluatesToAccountIdCodec) as any], ['key', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
+interface FindAccountKeyValueByIdAndKey extends Opaque<FindAccountKeyValueByIdAndKey__actual, FindAccountKeyValueByIdAndKey> {}
 
-// FindAccountsByDomainId
+const FindAccountKeyValueByIdAndKey: StructCodecAndFactory<FindAccountKeyValueByIdAndKey__actual, FindAccountKeyValueByIdAndKey> = createStructCodec<FindAccountKeyValueByIdAndKey__actual, FindAccountKeyValueByIdAndKey>('FindAccountKeyValueByIdAndKey', [
+    ['id', __dyn_EvaluatesToAccountId],
+    ['key', __dyn_EvaluatesToName]
+])
 
-export interface FindAccountsByDomainId extends PseudoType<{
+// Type: FindAccountsByDomainId
+
+interface FindAccountsByDomainId__actual {
     domain_id: EvaluatesToId
-}> {}
+}
 
-export const FindAccountsByDomainIdCodec: Codec<FindAccountsByDomainId> = createStructCodec<any>('FindAccountsByDomainId', [['domain_id', dynCodec(() => EvaluatesToIdCodec) as any]]) as any
+interface FindAccountsByDomainId extends Opaque<FindAccountsByDomainId__actual, FindAccountsByDomainId> {}
 
-// FindAccountsByName
+const FindAccountsByDomainId: StructCodecAndFactory<FindAccountsByDomainId__actual, FindAccountsByDomainId> = createStructCodec<FindAccountsByDomainId__actual, FindAccountsByDomainId>('FindAccountsByDomainId', [
+    ['domain_id', __dyn_EvaluatesToId]
+])
 
-export interface FindAccountsByName extends PseudoType<{
+// Type: FindAccountsByName
+
+interface FindAccountsByName__actual {
     name: EvaluatesToName
-}> {}
+}
 
-export const FindAccountsByNameCodec: Codec<FindAccountsByName> = createStructCodec<any>('FindAccountsByName', [['name', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
+interface FindAccountsByName extends Opaque<FindAccountsByName__actual, FindAccountsByName> {}
 
-// FindAllAccounts
+const FindAccountsByName: StructCodecAndFactory<FindAccountsByName__actual, FindAccountsByName> = createStructCodec<FindAccountsByName__actual, FindAccountsByName>('FindAccountsByName', [
+    ['name', __dyn_EvaluatesToName]
+])
 
-import { Void as FindAllAccounts, VoidCodec as FindAllAccountsCodec } from '@scale-codec/definition-runtime'
+// Type: FindAllAccounts
 
-export { FindAllAccounts, FindAllAccountsCodec }
+import { Void as FindAllAccounts } from '@scale-codec/definition-runtime'
 
-// FindAllAssets
+// Type: FindAllAssets
 
-import { Void as FindAllAssets, VoidCodec as FindAllAssetsCodec } from '@scale-codec/definition-runtime'
+import { Void as FindAllAssets } from '@scale-codec/definition-runtime'
 
-export { FindAllAssets, FindAllAssetsCodec }
+// Type: FindAllAssetsDefinitions
 
-// FindAllAssetsDefinitions
+import { Void as FindAllAssetsDefinitions } from '@scale-codec/definition-runtime'
 
-import { Void as FindAllAssetsDefinitions, VoidCodec as FindAllAssetsDefinitionsCodec } from '@scale-codec/definition-runtime'
+// Type: FindAllDomains
 
-export { FindAllAssetsDefinitions, FindAllAssetsDefinitionsCodec }
+import { Void as FindAllDomains } from '@scale-codec/definition-runtime'
 
-// FindAllDomains
+// Type: FindAllPeers
 
-import { Void as FindAllDomains, VoidCodec as FindAllDomainsCodec } from '@scale-codec/definition-runtime'
+import { Void as FindAllPeers } from '@scale-codec/definition-runtime'
 
-export { FindAllDomains, FindAllDomainsCodec }
+// Type: FindAssetById
 
-// FindAllPeers
-
-import { Void as FindAllPeers, VoidCodec as FindAllPeersCodec } from '@scale-codec/definition-runtime'
-
-export { FindAllPeers, FindAllPeersCodec }
-
-// FindAssetById
-
-export interface FindAssetById extends PseudoType<{
+interface FindAssetById__actual {
     id: EvaluatesToAssetId
-}> {}
+}
 
-export const FindAssetByIdCodec: Codec<FindAssetById> = createStructCodec<any>('FindAssetById', [['id', dynCodec(() => EvaluatesToAssetIdCodec) as any]]) as any
+interface FindAssetById extends Opaque<FindAssetById__actual, FindAssetById> {}
 
-// FindAssetDefinitionKeyValueByIdAndKey
+const FindAssetById: StructCodecAndFactory<FindAssetById__actual, FindAssetById> = createStructCodec<FindAssetById__actual, FindAssetById>('FindAssetById', [
+    ['id', __dyn_EvaluatesToAssetId]
+])
 
-export interface FindAssetDefinitionKeyValueByIdAndKey extends PseudoType<{
-    id: EvaluatesToDefinitionId,
+// Type: FindAssetDefinitionKeyValueByIdAndKey
+
+interface FindAssetDefinitionKeyValueByIdAndKey__actual {
+    id: EvaluatesToDefinitionId
     key: EvaluatesToName
-}> {}
+}
 
-export const FindAssetDefinitionKeyValueByIdAndKeyCodec: Codec<FindAssetDefinitionKeyValueByIdAndKey> = createStructCodec<any>('FindAssetDefinitionKeyValueByIdAndKey', [['id', dynCodec(() => EvaluatesToDefinitionIdCodec) as any], ['key', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
+interface FindAssetDefinitionKeyValueByIdAndKey extends Opaque<FindAssetDefinitionKeyValueByIdAndKey__actual, FindAssetDefinitionKeyValueByIdAndKey> {}
 
-// FindAssetKeyValueByIdAndKey
+const FindAssetDefinitionKeyValueByIdAndKey: StructCodecAndFactory<FindAssetDefinitionKeyValueByIdAndKey__actual, FindAssetDefinitionKeyValueByIdAndKey> = createStructCodec<FindAssetDefinitionKeyValueByIdAndKey__actual, FindAssetDefinitionKeyValueByIdAndKey>('FindAssetDefinitionKeyValueByIdAndKey', [
+    ['id', __dyn_EvaluatesToDefinitionId],
+    ['key', __dyn_EvaluatesToName]
+])
 
-export interface FindAssetKeyValueByIdAndKey extends PseudoType<{
-    id: EvaluatesToAssetId,
-    key: EvaluatesToName
-}> {}
+// Type: FindAssetKeyValueByIdAndKey
 
-export const FindAssetKeyValueByIdAndKeyCodec: Codec<FindAssetKeyValueByIdAndKey> = createStructCodec<any>('FindAssetKeyValueByIdAndKey', [['id', dynCodec(() => EvaluatesToAssetIdCodec) as any], ['key', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
-
-// FindAssetQuantityById
-
-export interface FindAssetQuantityById extends PseudoType<{
+interface FindAssetKeyValueByIdAndKey__actual {
     id: EvaluatesToAssetId
-}> {}
+    key: EvaluatesToName
+}
 
-export const FindAssetQuantityByIdCodec: Codec<FindAssetQuantityById> = createStructCodec<any>('FindAssetQuantityById', [['id', dynCodec(() => EvaluatesToAssetIdCodec) as any]]) as any
+interface FindAssetKeyValueByIdAndKey extends Opaque<FindAssetKeyValueByIdAndKey__actual, FindAssetKeyValueByIdAndKey> {}
 
-// FindAssetsByAccountId
+const FindAssetKeyValueByIdAndKey: StructCodecAndFactory<FindAssetKeyValueByIdAndKey__actual, FindAssetKeyValueByIdAndKey> = createStructCodec<FindAssetKeyValueByIdAndKey__actual, FindAssetKeyValueByIdAndKey>('FindAssetKeyValueByIdAndKey', [
+    ['id', __dyn_EvaluatesToAssetId],
+    ['key', __dyn_EvaluatesToName]
+])
 
-export interface FindAssetsByAccountId extends PseudoType<{
+// Type: FindAssetQuantityById
+
+interface FindAssetQuantityById__actual {
+    id: EvaluatesToAssetId
+}
+
+interface FindAssetQuantityById extends Opaque<FindAssetQuantityById__actual, FindAssetQuantityById> {}
+
+const FindAssetQuantityById: StructCodecAndFactory<FindAssetQuantityById__actual, FindAssetQuantityById> = createStructCodec<FindAssetQuantityById__actual, FindAssetQuantityById>('FindAssetQuantityById', [
+    ['id', __dyn_EvaluatesToAssetId]
+])
+
+// Type: FindAssetsByAccountId
+
+interface FindAssetsByAccountId__actual {
     account_id: EvaluatesToAccountId
-}> {}
+}
 
-export const FindAssetsByAccountIdCodec: Codec<FindAssetsByAccountId> = createStructCodec<any>('FindAssetsByAccountId', [['account_id', dynCodec(() => EvaluatesToAccountIdCodec) as any]]) as any
+interface FindAssetsByAccountId extends Opaque<FindAssetsByAccountId__actual, FindAssetsByAccountId> {}
 
-// FindAssetsByAssetDefinitionId
+const FindAssetsByAccountId: StructCodecAndFactory<FindAssetsByAccountId__actual, FindAssetsByAccountId> = createStructCodec<FindAssetsByAccountId__actual, FindAssetsByAccountId>('FindAssetsByAccountId', [
+    ['account_id', __dyn_EvaluatesToAccountId]
+])
 
-export interface FindAssetsByAssetDefinitionId extends PseudoType<{
+// Type: FindAssetsByAssetDefinitionId
+
+interface FindAssetsByAssetDefinitionId__actual {
     asset_definition_id: EvaluatesToDefinitionId
-}> {}
+}
 
-export const FindAssetsByAssetDefinitionIdCodec: Codec<FindAssetsByAssetDefinitionId> = createStructCodec<any>('FindAssetsByAssetDefinitionId', [['asset_definition_id', dynCodec(() => EvaluatesToDefinitionIdCodec) as any]]) as any
+interface FindAssetsByAssetDefinitionId extends Opaque<FindAssetsByAssetDefinitionId__actual, FindAssetsByAssetDefinitionId> {}
 
-// FindAssetsByDomainId
+const FindAssetsByAssetDefinitionId: StructCodecAndFactory<FindAssetsByAssetDefinitionId__actual, FindAssetsByAssetDefinitionId> = createStructCodec<FindAssetsByAssetDefinitionId__actual, FindAssetsByAssetDefinitionId>('FindAssetsByAssetDefinitionId', [
+    ['asset_definition_id', __dyn_EvaluatesToDefinitionId]
+])
 
-export interface FindAssetsByDomainId extends PseudoType<{
+// Type: FindAssetsByDomainId
+
+interface FindAssetsByDomainId__actual {
     domain_id: EvaluatesToId
-}> {}
+}
 
-export const FindAssetsByDomainIdCodec: Codec<FindAssetsByDomainId> = createStructCodec<any>('FindAssetsByDomainId', [['domain_id', dynCodec(() => EvaluatesToIdCodec) as any]]) as any
+interface FindAssetsByDomainId extends Opaque<FindAssetsByDomainId__actual, FindAssetsByDomainId> {}
 
-// FindAssetsByDomainIdAndAssetDefinitionId
+const FindAssetsByDomainId: StructCodecAndFactory<FindAssetsByDomainId__actual, FindAssetsByDomainId> = createStructCodec<FindAssetsByDomainId__actual, FindAssetsByDomainId>('FindAssetsByDomainId', [
+    ['domain_id', __dyn_EvaluatesToId]
+])
 
-export interface FindAssetsByDomainIdAndAssetDefinitionId extends PseudoType<{
-    domain_id: EvaluatesToId,
+// Type: FindAssetsByDomainIdAndAssetDefinitionId
+
+interface FindAssetsByDomainIdAndAssetDefinitionId__actual {
+    domain_id: EvaluatesToId
     asset_definition_id: EvaluatesToDefinitionId
-}> {}
+}
 
-export const FindAssetsByDomainIdAndAssetDefinitionIdCodec: Codec<FindAssetsByDomainIdAndAssetDefinitionId> = createStructCodec<any>('FindAssetsByDomainIdAndAssetDefinitionId', [['domain_id', dynCodec(() => EvaluatesToIdCodec) as any], ['asset_definition_id', dynCodec(() => EvaluatesToDefinitionIdCodec) as any]]) as any
+interface FindAssetsByDomainIdAndAssetDefinitionId extends Opaque<FindAssetsByDomainIdAndAssetDefinitionId__actual, FindAssetsByDomainIdAndAssetDefinitionId> {}
 
-// FindAssetsByName
+const FindAssetsByDomainIdAndAssetDefinitionId: StructCodecAndFactory<FindAssetsByDomainIdAndAssetDefinitionId__actual, FindAssetsByDomainIdAndAssetDefinitionId> = createStructCodec<FindAssetsByDomainIdAndAssetDefinitionId__actual, FindAssetsByDomainIdAndAssetDefinitionId>('FindAssetsByDomainIdAndAssetDefinitionId', [
+    ['domain_id', __dyn_EvaluatesToId],
+    ['asset_definition_id', __dyn_EvaluatesToDefinitionId]
+])
 
-export interface FindAssetsByName extends PseudoType<{
+// Type: FindAssetsByName
+
+interface FindAssetsByName__actual {
     name: EvaluatesToName
-}> {}
+}
 
-export const FindAssetsByNameCodec: Codec<FindAssetsByName> = createStructCodec<any>('FindAssetsByName', [['name', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
+interface FindAssetsByName extends Opaque<FindAssetsByName__actual, FindAssetsByName> {}
 
-// FindDomainById
+const FindAssetsByName: StructCodecAndFactory<FindAssetsByName__actual, FindAssetsByName> = createStructCodec<FindAssetsByName__actual, FindAssetsByName>('FindAssetsByName', [
+    ['name', __dyn_EvaluatesToName]
+])
 
-export interface FindDomainById extends PseudoType<{
+// Type: FindDomainById
+
+interface FindDomainById__actual {
     id: EvaluatesToId
-}> {}
+}
 
-export const FindDomainByIdCodec: Codec<FindDomainById> = createStructCodec<any>('FindDomainById', [['id', dynCodec(() => EvaluatesToIdCodec) as any]]) as any
+interface FindDomainById extends Opaque<FindDomainById__actual, FindDomainById> {}
 
-// FindDomainKeyValueByIdAndKey
+const FindDomainById: StructCodecAndFactory<FindDomainById__actual, FindDomainById> = createStructCodec<FindDomainById__actual, FindDomainById>('FindDomainById', [
+    ['id', __dyn_EvaluatesToId]
+])
 
-export interface FindDomainKeyValueByIdAndKey extends PseudoType<{
-    id: EvaluatesToId,
+// Type: FindDomainKeyValueByIdAndKey
+
+interface FindDomainKeyValueByIdAndKey__actual {
+    id: EvaluatesToId
     key: EvaluatesToName
-}> {}
+}
 
-export const FindDomainKeyValueByIdAndKeyCodec: Codec<FindDomainKeyValueByIdAndKey> = createStructCodec<any>('FindDomainKeyValueByIdAndKey', [['id', dynCodec(() => EvaluatesToIdCodec) as any], ['key', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
+interface FindDomainKeyValueByIdAndKey extends Opaque<FindDomainKeyValueByIdAndKey__actual, FindDomainKeyValueByIdAndKey> {}
 
-// FindError
+const FindDomainKeyValueByIdAndKey: StructCodecAndFactory<FindDomainKeyValueByIdAndKey__actual, FindDomainKeyValueByIdAndKey> = createStructCodec<FindDomainKeyValueByIdAndKey__actual, FindDomainKeyValueByIdAndKey>('FindDomainKeyValueByIdAndKey', [
+    ['id', __dyn_EvaluatesToId],
+    ['key', __dyn_EvaluatesToName]
+])
 
-export interface FindError extends Enum<
+// Type: FindError
+
+type FindError__actual = Enum<
     | ['Asset', AssetId]
     | ['AssetDefinition', DefinitionId]
     | ['Account', AccountId]
@@ -1039,125 +1825,166 @@ export interface FindError extends Enum<
     | ['Context', Str]
     | ['Peer', PeerId]
     | ['Trigger', TriggerId]
-> {}
+>
 
-export const FindErrorCodec: Codec<FindError> = createEnumCodec<any>('FindError', [[0, 'Asset', dynCodec(() => AssetIdCodec)], [1, 'AssetDefinition', dynCodec(() => DefinitionIdCodec)], [2, 'Account', dynCodec(() => AccountIdCodec)], [3, 'Domain', dynCodec(() => IdCodec)], [4, 'MetadataKey', dynCodec(() => NameCodec)], [5, 'Block', dynCodec(() => ParentHashNotFoundCodec)], [6, 'Transaction', dynCodec(() => HashOfVersionedTransactionCodec)], [7, 'Context', dynCodec(() => StrCodec)], [8, 'Peer', dynCodec(() => PeerIdCodec)], [9, 'Trigger', dynCodec(() => TriggerIdCodec)]]) as any
+interface FindError extends Opaque<FindError__actual, FindError> {}
 
-// FindPermissionTokensByAccountId
+const FindError: EnumCodecAndFactory<FindError> = createEnumCodec<FindError__actual, FindError>('FindError', [
+    [0, 'Asset', __dyn_AssetId],
+    [1, 'AssetDefinition', __dyn_DefinitionId],
+    [2, 'Account', __dyn_AccountId],
+    [3, 'Domain', __dyn_Id],
+    [4, 'MetadataKey', __dyn_Name],
+    [5, 'Block', __dyn_ParentHashNotFound],
+    [6, 'Transaction', __dyn_HashOfVersionedTransaction],
+    [7, 'Context', Str],
+    [8, 'Peer', __dyn_PeerId],
+    [9, 'Trigger', __dyn_TriggerId]
+])
 
-export interface FindPermissionTokensByAccountId extends PseudoType<{
+// Type: FindPermissionTokensByAccountId
+
+interface FindPermissionTokensByAccountId__actual {
     id: EvaluatesToAccountId
-}> {}
+}
 
-export const FindPermissionTokensByAccountIdCodec: Codec<FindPermissionTokensByAccountId> = createStructCodec<any>('FindPermissionTokensByAccountId', [['id', dynCodec(() => EvaluatesToAccountIdCodec) as any]]) as any
+interface FindPermissionTokensByAccountId extends Opaque<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId> {}
 
-// FindTransactionByHash
+const FindPermissionTokensByAccountId: StructCodecAndFactory<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId> = createStructCodec<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId>('FindPermissionTokensByAccountId', [
+    ['id', __dyn_EvaluatesToAccountId]
+])
 
-export interface FindTransactionByHash extends PseudoType<{
+// Type: FindTransactionByHash
+
+interface FindTransactionByHash__actual {
     hash: EvaluatesToHash
-}> {}
+}
 
-export const FindTransactionByHashCodec: Codec<FindTransactionByHash> = createStructCodec<any>('FindTransactionByHash', [['hash', dynCodec(() => EvaluatesToHashCodec) as any]]) as any
+interface FindTransactionByHash extends Opaque<FindTransactionByHash__actual, FindTransactionByHash> {}
 
-// FindTransactionsByAccountId
+const FindTransactionByHash: StructCodecAndFactory<FindTransactionByHash__actual, FindTransactionByHash> = createStructCodec<FindTransactionByHash__actual, FindTransactionByHash>('FindTransactionByHash', [
+    ['hash', __dyn_EvaluatesToHash]
+])
 
-export interface FindTransactionsByAccountId extends PseudoType<{
+// Type: FindTransactionsByAccountId
+
+interface FindTransactionsByAccountId__actual {
     account_id: EvaluatesToAccountId
-}> {}
+}
 
-export const FindTransactionsByAccountIdCodec: Codec<FindTransactionsByAccountId> = createStructCodec<any>('FindTransactionsByAccountId', [['account_id', dynCodec(() => EvaluatesToAccountIdCodec) as any]]) as any
+interface FindTransactionsByAccountId extends Opaque<FindTransactionsByAccountId__actual, FindTransactionsByAccountId> {}
 
-// Fixed
+const FindTransactionsByAccountId: StructCodecAndFactory<FindTransactionsByAccountId__actual, FindTransactionsByAccountId> = createStructCodec<FindTransactionsByAccountId__actual, FindTransactionsByAccountId>('FindTransactionsByAccountId', [
+    ['account_id', __dyn_EvaluatesToAccountId]
+])
 
-export type Fixed = FixedPointI64
+// Type: Fixed
 
-export const FixedCodec = dynCodec(() => FixedPointI64Codec)
+type Fixed = FixedPointI64
 
-// FixedPointI64
+const Fixed: Codec<Fixed> = __dyn_FixedPointI64
 
-import { FixedPointI64P9 as FixedPointI64, FixedPointI64P9Codec as FixedPointI64Codec } from './fixed-point'
+// Type: FixedPointI64
 
-export { FixedPointI64, FixedPointI64Codec }
+import { FixedPointI64P9 as FixedPointI64 } from './fixed-point'
 
-// GenesisTransaction
+// Type: GenesisTransaction
 
-export interface GenesisTransaction extends PseudoType<{
+interface GenesisTransaction__actual {
     isi: VecInstruction
-}> {}
+}
 
-export const GenesisTransactionCodec: Codec<GenesisTransaction> = createStructCodec<any>('GenesisTransaction', [['isi', dynCodec(() => VecInstructionCodec) as any]]) as any
+interface GenesisTransaction extends Opaque<GenesisTransaction__actual, GenesisTransaction> {}
 
-// GrantBox
+const GenesisTransaction: StructCodecAndFactory<GenesisTransaction__actual, GenesisTransaction> = createStructCodec<GenesisTransaction__actual, GenesisTransaction>('GenesisTransaction', [
+    ['isi', __dyn_VecInstruction]
+])
 
-export interface GrantBox extends PseudoType<{
-    object: EvaluatesToValue,
+// Type: GrantBox
+
+interface GrantBox__actual {
+    object: EvaluatesToValue
     destination_id: EvaluatesToIdBox
-}> {}
+}
 
-export const GrantBoxCodec: Codec<GrantBox> = createStructCodec<any>('GrantBox', [['object', dynCodec(() => EvaluatesToValueCodec) as any], ['destination_id', dynCodec(() => EvaluatesToIdBoxCodec) as any]]) as any
+interface GrantBox extends Opaque<GrantBox__actual, GrantBox> {}
 
-// Greater
+const GrantBox: StructCodecAndFactory<GrantBox__actual, GrantBox> = createStructCodec<GrantBox__actual, GrantBox>('GrantBox', [
+    ['object', __dyn_EvaluatesToValue],
+    ['destination_id', __dyn_EvaluatesToIdBox]
+])
 
-export interface Greater extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: Greater
+
+interface Greater__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const GreaterCodec: Codec<Greater> = createStructCodec<any>('Greater', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface Greater extends Opaque<Greater__actual, Greater> {}
 
-// Hash
+const Greater: StructCodecAndFactory<Greater__actual, Greater> = createStructCodec<Greater__actual, Greater>('Greater', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export type Hash = ArrayU8L32
+// Type: Hash
 
-export const HashCodec = dynCodec(() => ArrayU8L32Codec)
+type Hash = ArrayU8L32
 
-// HashOfMerkleTreeVersionedTransaction
+const Hash: Codec<Hash> = __dyn_ArrayU8L32
 
-export type HashOfMerkleTreeVersionedTransaction = Hash
+// Type: HashOfMerkleTreeVersionedTransaction
 
-export const HashOfMerkleTreeVersionedTransactionCodec = dynCodec(() => HashCodec)
+type HashOfMerkleTreeVersionedTransaction = Hash
 
-// HashOfNodeVersionedTransaction
+const HashOfMerkleTreeVersionedTransaction: Codec<HashOfMerkleTreeVersionedTransaction> = __dyn_Hash
 
-export type HashOfNodeVersionedTransaction = Hash
+// Type: HashOfNodeVersionedTransaction
 
-export const HashOfNodeVersionedTransactionCodec = dynCodec(() => HashCodec)
+type HashOfNodeVersionedTransaction = Hash
 
-// HashOfProof
+const HashOfNodeVersionedTransaction: Codec<HashOfNodeVersionedTransaction> = __dyn_Hash
 
-export type HashOfProof = Hash
+// Type: HashOfProof
 
-export const HashOfProofCodec = dynCodec(() => HashCodec)
+type HashOfProof = Hash
 
-// HashOfVersionedCommittedBlock
+const HashOfProof: Codec<HashOfProof> = __dyn_Hash
 
-export type HashOfVersionedCommittedBlock = Hash
+// Type: HashOfVersionedCommittedBlock
 
-export const HashOfVersionedCommittedBlockCodec = dynCodec(() => HashCodec)
+type HashOfVersionedCommittedBlock = Hash
 
-// HashOfVersionedTransaction
+const HashOfVersionedCommittedBlock: Codec<HashOfVersionedCommittedBlock> = __dyn_Hash
 
-export type HashOfVersionedTransaction = Hash
+// Type: HashOfVersionedTransaction
 
-export const HashOfVersionedTransactionCodec = dynCodec(() => HashCodec)
+type HashOfVersionedTransaction = Hash
 
-// HashOfVersionedValidBlock
+const HashOfVersionedTransaction: Codec<HashOfVersionedTransaction> = __dyn_Hash
 
-export type HashOfVersionedValidBlock = Hash
+// Type: HashOfVersionedValidBlock
 
-export const HashOfVersionedValidBlockCodec = dynCodec(() => HashCodec)
+type HashOfVersionedValidBlock = Hash
 
-// Id
+const HashOfVersionedValidBlock: Codec<HashOfVersionedValidBlock> = __dyn_Hash
 
-export interface Id extends PseudoType<{
+// Type: Id
+
+interface Id__actual {
     name: Name
-}> {}
+}
 
-export const IdCodec: Codec<Id> = createStructCodec<any>('Id', [['name', dynCodec(() => NameCodec) as any]]) as any
+interface Id extends Opaque<Id__actual, Id> {}
 
-// IdBox
+const Id: StructCodecAndFactory<Id__actual, Id> = createStructCodec<Id__actual, Id>('Id', [
+    ['name', __dyn_Name]
+])
 
-export interface IdBox extends Enum<
+// Type: IdBox
+
+type IdBox__actual = Enum<
     | ['AccountId', AccountId]
     | ['AssetId', AssetId]
     | ['AssetDefinitionId', DefinitionId]
@@ -1165,13 +1992,59 @@ export interface IdBox extends Enum<
     | ['PeerId', PeerId]
     | ['TriggerId', TriggerId]
     | 'WorldId'
-> {}
+>
 
-export const IdBoxCodec: Codec<IdBox> = createEnumCodec<any>('IdBox', [[0, 'AccountId', dynCodec(() => AccountIdCodec)], [1, 'AssetId', dynCodec(() => AssetIdCodec)], [2, 'AssetDefinitionId', dynCodec(() => DefinitionIdCodec)], [3, 'DomainId', dynCodec(() => IdCodec)], [4, 'PeerId', dynCodec(() => PeerIdCodec)], [5, 'TriggerId', dynCodec(() => TriggerIdCodec)], [6, 'WorldId']]) as any
+interface IdBox extends Opaque<IdBox__actual, IdBox> {}
 
-// IdentifiableBox
+const IdBox: EnumCodecAndFactory<IdBox> = createEnumCodec<IdBox__actual, IdBox>('IdBox', [
+    [0, 'AccountId', __dyn_AccountId],
+    [1, 'AssetId', __dyn_AssetId],
+    [2, 'AssetDefinitionId', __dyn_DefinitionId],
+    [3, 'DomainId', __dyn_Id],
+    [4, 'PeerId', __dyn_PeerId],
+    [5, 'TriggerId', __dyn_TriggerId],
+    [6, 'WorldId']
+])
 
-export interface IdentifiableBox extends Enum<
+// Type: IdFilterAccountId
+
+type IdFilterAccountId = AccountId
+
+const IdFilterAccountId: Codec<IdFilterAccountId> = __dyn_AccountId
+
+// Type: IdFilterAssetId
+
+type IdFilterAssetId = AssetId
+
+const IdFilterAssetId: Codec<IdFilterAssetId> = __dyn_AssetId
+
+// Type: IdFilterDefinitionId
+
+type IdFilterDefinitionId = DefinitionId
+
+const IdFilterDefinitionId: Codec<IdFilterDefinitionId> = __dyn_DefinitionId
+
+// Type: IdFilterId
+
+type IdFilterId = Id
+
+const IdFilterId: Codec<IdFilterId> = __dyn_Id
+
+// Type: IdFilterPeerId
+
+type IdFilterPeerId = PeerId
+
+const IdFilterPeerId: Codec<IdFilterPeerId> = __dyn_PeerId
+
+// Type: IdFilterTriggerId
+
+type IdFilterTriggerId = TriggerId
+
+const IdFilterTriggerId: Codec<IdFilterTriggerId> = __dyn_TriggerId
+
+// Type: IdentifiableBox
+
+type IdentifiableBox__actual = Enum<
     | ['Account', Account]
     | ['NewAccount', NewAccount]
     | ['Asset', Asset]
@@ -1180,49 +2053,24 @@ export interface IdentifiableBox extends Enum<
     | ['Peer', Peer]
     | ['Trigger', Trigger]
     | 'World'
-> {}
+>
 
-export const IdentifiableBoxCodec: Codec<IdentifiableBox> = createEnumCodec<any>('IdentifiableBox', [[0, 'Account', dynCodec(() => AccountCodec)], [1, 'NewAccount', dynCodec(() => NewAccountCodec)], [2, 'Asset', dynCodec(() => AssetCodec)], [3, 'AssetDefinition', dynCodec(() => AssetDefinitionCodec)], [4, 'Domain', dynCodec(() => DomainCodec)], [5, 'Peer', dynCodec(() => PeerCodec)], [6, 'Trigger', dynCodec(() => TriggerCodec)], [7, 'World']]) as any
+interface IdentifiableBox extends Opaque<IdentifiableBox__actual, IdentifiableBox> {}
 
-// IdFilterAccountId
+const IdentifiableBox: EnumCodecAndFactory<IdentifiableBox> = createEnumCodec<IdentifiableBox__actual, IdentifiableBox>('IdentifiableBox', [
+    [0, 'Account', __dyn_Account],
+    [1, 'NewAccount', __dyn_NewAccount],
+    [2, 'Asset', __dyn_Asset],
+    [3, 'AssetDefinition', __dyn_AssetDefinition],
+    [4, 'Domain', __dyn_Domain],
+    [5, 'Peer', __dyn_Peer],
+    [6, 'Trigger', __dyn_Trigger],
+    [7, 'World']
+])
 
-export type IdFilterAccountId = AccountId
+// Type: Instruction
 
-export const IdFilterAccountIdCodec = dynCodec(() => AccountIdCodec)
-
-// IdFilterAssetId
-
-export type IdFilterAssetId = AssetId
-
-export const IdFilterAssetIdCodec = dynCodec(() => AssetIdCodec)
-
-// IdFilterDefinitionId
-
-export type IdFilterDefinitionId = DefinitionId
-
-export const IdFilterDefinitionIdCodec = dynCodec(() => DefinitionIdCodec)
-
-// IdFilterId
-
-export type IdFilterId = Id
-
-export const IdFilterIdCodec = dynCodec(() => IdCodec)
-
-// IdFilterPeerId
-
-export type IdFilterPeerId = PeerId
-
-export const IdFilterPeerIdCodec = dynCodec(() => PeerIdCodec)
-
-// IdFilterTriggerId
-
-export type IdFilterTriggerId = TriggerId
-
-export const IdFilterTriggerIdCodec = dynCodec(() => TriggerIdCodec)
-
-// Instruction
-
-export interface Instruction extends Enum<
+type Instruction__actual = Enum<
     | ['Register', RegisterBox]
     | ['Unregister', UnregisterBox]
     | ['Mint', MintBox]
@@ -1236,325 +2084,491 @@ export interface Instruction extends Enum<
     | ['RemoveKeyValue', RemoveKeyValueBox]
     | ['Grant', GrantBox]
     | ['Revoke', RevokeBox]
-> {}
+>
 
-export const InstructionCodec: Codec<Instruction> = createEnumCodec<any>('Instruction', [[0, 'Register', dynCodec(() => RegisterBoxCodec)], [1, 'Unregister', dynCodec(() => UnregisterBoxCodec)], [2, 'Mint', dynCodec(() => MintBoxCodec)], [3, 'Burn', dynCodec(() => BurnBoxCodec)], [4, 'Transfer', dynCodec(() => TransferBoxCodec)], [5, 'If', dynCodec(() => IsiIfCodec)], [6, 'Pair', dynCodec(() => PairCodec)], [7, 'Sequence', dynCodec(() => SequenceBoxCodec)], [8, 'Fail', dynCodec(() => FailBoxCodec)], [9, 'SetKeyValue', dynCodec(() => SetKeyValueBoxCodec)], [10, 'RemoveKeyValue', dynCodec(() => RemoveKeyValueBoxCodec)], [11, 'Grant', dynCodec(() => GrantBoxCodec)], [12, 'Revoke', dynCodec(() => RevokeBoxCodec)]]) as any
+interface Instruction extends Opaque<Instruction__actual, Instruction> {}
 
-// InstructionExecutionFail
+const Instruction: EnumCodecAndFactory<Instruction> = createEnumCodec<Instruction__actual, Instruction>('Instruction', [
+    [0, 'Register', __dyn_RegisterBox],
+    [1, 'Unregister', __dyn_UnregisterBox],
+    [2, 'Mint', __dyn_MintBox],
+    [3, 'Burn', __dyn_BurnBox],
+    [4, 'Transfer', __dyn_TransferBox],
+    [5, 'If', __dyn_IsiIf],
+    [6, 'Pair', __dyn_Pair],
+    [7, 'Sequence', __dyn_SequenceBox],
+    [8, 'Fail', __dyn_FailBox],
+    [9, 'SetKeyValue', __dyn_SetKeyValueBox],
+    [10, 'RemoveKeyValue', __dyn_RemoveKeyValueBox],
+    [11, 'Grant', __dyn_GrantBox],
+    [12, 'Revoke', __dyn_RevokeBox]
+])
 
-export interface InstructionExecutionFail extends PseudoType<{
-    instruction: Instruction,
+// Type: InstructionExecutionFail
+
+interface InstructionExecutionFail__actual {
+    instruction: Instruction
     reason: Str
-}> {}
+}
 
-export const InstructionExecutionFailCodec: Codec<InstructionExecutionFail> = createStructCodec<any>('InstructionExecutionFail', [['instruction', dynCodec(() => InstructionCodec) as any], ['reason', dynCodec(() => StrCodec) as any]]) as any
+interface InstructionExecutionFail extends Opaque<InstructionExecutionFail__actual, InstructionExecutionFail> {}
 
-// IpfsPath
+const InstructionExecutionFail: StructCodecAndFactory<InstructionExecutionFail__actual, InstructionExecutionFail> = createStructCodec<InstructionExecutionFail__actual, InstructionExecutionFail>('InstructionExecutionFail', [
+    ['instruction', __dyn_Instruction],
+    ['reason', Str]
+])
 
-export type IpfsPath = Str
+// Type: IpfsPath
 
-export const IpfsPathCodec = dynCodec(() => StrCodec)
+type IpfsPath = Str
 
-// IsiIf
+const IpfsPath: Codec<IpfsPath> = Str
 
-export interface IsiIf extends PseudoType<{
-    condition: EvaluatesToBool,
-    then: Instruction,
+// Type: IsiIf
+
+interface IsiIf__actual {
+    condition: EvaluatesToBool
+    then: Instruction
     otherwise: OptionInstruction
-}> {}
+}
 
-export const IsiIfCodec: Codec<IsiIf> = createStructCodec<any>('IsiIf', [['condition', dynCodec(() => EvaluatesToBoolCodec) as any], ['then', dynCodec(() => InstructionCodec) as any], ['otherwise', dynCodec(() => OptionInstructionCodec) as any]]) as any
+interface IsiIf extends Opaque<IsiIf__actual, IsiIf> {}
 
-// LeafVersionedTransaction
+const IsiIf: StructCodecAndFactory<IsiIf__actual, IsiIf> = createStructCodec<IsiIf__actual, IsiIf>('IsiIf', [
+    ['condition', __dyn_EvaluatesToBool],
+    ['then', __dyn_Instruction],
+    ['otherwise', __dyn_OptionInstruction]
+])
 
-export interface LeafVersionedTransaction extends PseudoType<{
+// Type: LeafVersionedTransaction
+
+interface LeafVersionedTransaction__actual {
     hash: HashOfVersionedTransaction
-}> {}
+}
 
-export const LeafVersionedTransactionCodec: Codec<LeafVersionedTransaction> = createStructCodec<any>('LeafVersionedTransaction', [['hash', dynCodec(() => HashOfVersionedTransactionCodec) as any]]) as any
+interface LeafVersionedTransaction extends Opaque<LeafVersionedTransaction__actual, LeafVersionedTransaction> {}
 
-// Less
+const LeafVersionedTransaction: StructCodecAndFactory<LeafVersionedTransaction__actual, LeafVersionedTransaction> = createStructCodec<LeafVersionedTransaction__actual, LeafVersionedTransaction>('LeafVersionedTransaction', [
+    ['hash', __dyn_HashOfVersionedTransaction]
+])
 
-export interface Less extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: Less
+
+interface Less__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const LessCodec: Codec<Less> = createStructCodec<any>('Less', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface Less extends Opaque<Less__actual, Less> {}
 
-// MerkleTreeVersionedTransaction
+const Less: StructCodecAndFactory<Less__actual, Less> = createStructCodec<Less__actual, Less>('Less', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export interface MerkleTreeVersionedTransaction extends PseudoType<{
+// Type: MerkleTreeVersionedTransaction
+
+interface MerkleTreeVersionedTransaction__actual {
     root_node: NodeVersionedTransaction
-}> {}
+}
 
-export const MerkleTreeVersionedTransactionCodec: Codec<MerkleTreeVersionedTransaction> = createStructCodec<any>('MerkleTreeVersionedTransaction', [['root_node', dynCodec(() => NodeVersionedTransactionCodec) as any]]) as any
+interface MerkleTreeVersionedTransaction extends Opaque<MerkleTreeVersionedTransaction__actual, MerkleTreeVersionedTransaction> {}
 
-// Metadata
+const MerkleTreeVersionedTransaction: StructCodecAndFactory<MerkleTreeVersionedTransaction__actual, MerkleTreeVersionedTransaction> = createStructCodec<MerkleTreeVersionedTransaction__actual, MerkleTreeVersionedTransaction>('MerkleTreeVersionedTransaction', [
+    ['root_node', __dyn_NodeVersionedTransaction]
+])
 
-export interface Metadata extends PseudoType<{
+// Type: Metadata
+
+interface Metadata__actual {
     map: BTreeMapNameValue
-}> {}
+}
 
-export const MetadataCodec: Codec<Metadata> = createStructCodec<any>('Metadata', [['map', dynCodec(() => BTreeMapNameValueCodec) as any]]) as any
+interface Metadata extends Opaque<Metadata__actual, Metadata> {}
 
-// MintBox
+const Metadata: StructCodecAndFactory<Metadata__actual, Metadata> = createStructCodec<Metadata__actual, Metadata>('Metadata', [
+    ['map', __dyn_BTreeMapNameValue]
+])
 
-export interface MintBox extends PseudoType<{
-    object: EvaluatesToValue,
+// Type: MintBox
+
+interface MintBox__actual {
+    object: EvaluatesToValue
     destination_id: EvaluatesToIdBox
-}> {}
+}
 
-export const MintBoxCodec: Codec<MintBox> = createStructCodec<any>('MintBox', [['object', dynCodec(() => EvaluatesToValueCodec) as any], ['destination_id', dynCodec(() => EvaluatesToIdBoxCodec) as any]]) as any
+interface MintBox extends Opaque<MintBox__actual, MintBox> {}
 
-// Mod
+const MintBox: StructCodecAndFactory<MintBox__actual, MintBox> = createStructCodec<MintBox__actual, MintBox>('MintBox', [
+    ['object', __dyn_EvaluatesToValue],
+    ['destination_id', __dyn_EvaluatesToIdBox]
+])
 
-export interface Mod extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: Mod
+
+interface Mod__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const ModCodec: Codec<Mod> = createStructCodec<any>('Mod', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface Mod extends Opaque<Mod__actual, Mod> {}
 
-// Multiply
+const Mod: StructCodecAndFactory<Mod__actual, Mod> = createStructCodec<Mod__actual, Mod>('Mod', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export interface Multiply extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: Multiply
+
+interface Multiply__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const MultiplyCodec: Codec<Multiply> = createStructCodec<any>('Multiply', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface Multiply extends Opaque<Multiply__actual, Multiply> {}
 
-// Name
+const Multiply: StructCodecAndFactory<Multiply__actual, Multiply> = createStructCodec<Multiply__actual, Multiply>('Multiply', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export type Name = Str
+// Type: Name
 
-export const NameCodec = dynCodec(() => StrCodec)
+type Name = Str
 
-// NewAccount
+const Name: Codec<Name> = Str
 
-export interface NewAccount extends PseudoType<{
-    id: AccountId,
-    signatories: VecPublicKey,
+// Type: NewAccount
+
+interface NewAccount__actual {
+    id: AccountId
+    signatories: VecPublicKey
     metadata: Metadata
-}> {}
+}
 
-export const NewAccountCodec: Codec<NewAccount> = createStructCodec<any>('NewAccount', [['id', dynCodec(() => AccountIdCodec) as any], ['signatories', dynCodec(() => VecPublicKeyCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any]]) as any
+interface NewAccount extends Opaque<NewAccount__actual, NewAccount> {}
 
-// NodeVersionedTransaction
+const NewAccount: StructCodecAndFactory<NewAccount__actual, NewAccount> = createStructCodec<NewAccount__actual, NewAccount>('NewAccount', [
+    ['id', __dyn_AccountId],
+    ['signatories', __dyn_VecPublicKey],
+    ['metadata', __dyn_Metadata]
+])
 
-export interface NodeVersionedTransaction extends Enum<
+// Type: NoTransactionReceiptReceived
+
+import { Void as NoTransactionReceiptReceived } from '@scale-codec/definition-runtime'
+
+// Type: NodeVersionedTransaction
+
+type NodeVersionedTransaction__actual = Enum<
     | ['Subtree', SubtreeVersionedTransaction]
     | ['Leaf', LeafVersionedTransaction]
     | 'Empty'
-> {}
+>
 
-export const NodeVersionedTransactionCodec: Codec<NodeVersionedTransaction> = createEnumCodec<any>('NodeVersionedTransaction', [[0, 'Subtree', dynCodec(() => SubtreeVersionedTransactionCodec)], [1, 'Leaf', dynCodec(() => LeafVersionedTransactionCodec)], [2, 'Empty']]) as any
+interface NodeVersionedTransaction extends Opaque<NodeVersionedTransaction__actual, NodeVersionedTransaction> {}
 
-// Not
+const NodeVersionedTransaction: EnumCodecAndFactory<NodeVersionedTransaction> = createEnumCodec<NodeVersionedTransaction__actual, NodeVersionedTransaction>('NodeVersionedTransaction', [
+    [0, 'Subtree', __dyn_SubtreeVersionedTransaction],
+    [1, 'Leaf', __dyn_LeafVersionedTransaction],
+    [2, 'Empty']
+])
 
-export interface Not extends PseudoType<{
+// Type: Not
+
+interface Not__actual {
     expression: EvaluatesToBool
-}> {}
+}
 
-export const NotCodec: Codec<Not> = createStructCodec<any>('Not', [['expression', dynCodec(() => EvaluatesToBoolCodec) as any]]) as any
+interface Not extends Opaque<Not__actual, Not> {}
 
-// NotPermittedFail
+const Not: StructCodecAndFactory<Not__actual, Not> = createStructCodec<Not__actual, Not>('Not', [
+    ['expression', __dyn_EvaluatesToBool]
+])
 
-export interface NotPermittedFail extends PseudoType<{
+// Type: NotPermittedFail
+
+interface NotPermittedFail__actual {
     reason: Str
-}> {}
+}
 
-export const NotPermittedFailCodec: Codec<NotPermittedFail> = createStructCodec<any>('NotPermittedFail', [['reason', dynCodec(() => StrCodec) as any]]) as any
+interface NotPermittedFail extends Opaque<NotPermittedFail__actual, NotPermittedFail> {}
 
-// NoTransactionReceiptReceived
+const NotPermittedFail: StructCodecAndFactory<NotPermittedFail__actual, NotPermittedFail> = createStructCodec<NotPermittedFail__actual, NotPermittedFail>('NotPermittedFail', [
+    ['reason', Str]
+])
 
-import { Void as NoTransactionReceiptReceived, VoidCodec as NoTransactionReceiptReceivedCodec } from '@scale-codec/definition-runtime'
+// Type: OptionEntityType
 
-export { NoTransactionReceiptReceived, NoTransactionReceiptReceivedCodec }
+interface OptionEntityType__actual extends Option<EntityType> {}
 
-// OptionEntityType
+interface OptionEntityType extends Opaque<OptionEntityType__actual, OptionEntityType> {}
 
-export interface OptionEntityType extends Option<EntityType> {}
+const OptionEntityType: EnumCodecAndFactory<OptionEntityType> = createOptionCodec<OptionEntityType__actual, OptionEntityType>('OptionEntityType', __dyn_EntityType)
 
-export const OptionEntityTypeCodec: Codec<OptionEntityType> = createOptionCodec<any>('OptionEntityType', dynCodec(() => EntityTypeCodec)) as any
+// Type: OptionHash
 
-// OptionHash
+interface OptionHash__actual extends Option<Hash> {}
 
-export interface OptionHash extends Option<Hash> {}
+interface OptionHash extends Opaque<OptionHash__actual, OptionHash> {}
 
-export const OptionHashCodec: Codec<OptionHash> = createOptionCodec<any>('OptionHash', dynCodec(() => HashCodec)) as any
+const OptionHash: EnumCodecAndFactory<OptionHash> = createOptionCodec<OptionHash__actual, OptionHash>('OptionHash', __dyn_Hash)
 
-// OptionInstruction
+// Type: OptionInstruction
 
-export interface OptionInstruction extends Option<Instruction> {}
+interface OptionInstruction__actual extends Option<Instruction> {}
 
-export const OptionInstructionCodec: Codec<OptionInstruction> = createOptionCodec<any>('OptionInstruction', dynCodec(() => InstructionCodec)) as any
+interface OptionInstruction extends Opaque<OptionInstruction__actual, OptionInstruction> {}
 
-// OptionIpfsPath
+const OptionInstruction: EnumCodecAndFactory<OptionInstruction> = createOptionCodec<OptionInstruction__actual, OptionInstruction>('OptionInstruction', __dyn_Instruction)
 
-export interface OptionIpfsPath extends Option<IpfsPath> {}
+// Type: OptionIpfsPath
 
-export const OptionIpfsPathCodec: Codec<OptionIpfsPath> = createOptionCodec<any>('OptionIpfsPath', dynCodec(() => IpfsPathCodec)) as any
+interface OptionIpfsPath__actual extends Option<IpfsPath> {}
 
-// OptionTopology
+interface OptionIpfsPath extends Opaque<OptionIpfsPath__actual, OptionIpfsPath> {}
 
-export interface OptionTopology extends Option<Topology> {}
+const OptionIpfsPath: EnumCodecAndFactory<OptionIpfsPath> = createOptionCodec<OptionIpfsPath__actual, OptionIpfsPath>('OptionIpfsPath', __dyn_IpfsPath)
 
-export const OptionTopologyCodec: Codec<OptionTopology> = createOptionCodec<any>('OptionTopology', dynCodec(() => TopologyCodec)) as any
+// Type: OptionTopology
 
-// OptionU32
+interface OptionTopology__actual extends Option<Topology> {}
 
-export interface OptionU32 extends Option<U32> {}
+interface OptionTopology extends Opaque<OptionTopology__actual, OptionTopology> {}
 
-export const OptionU32Codec: Codec<OptionU32> = createOptionCodec<any>('OptionU32', dynCodec(() => U32Codec)) as any
+const OptionTopology: EnumCodecAndFactory<OptionTopology> = createOptionCodec<OptionTopology__actual, OptionTopology>('OptionTopology', __dyn_Topology)
 
-// Or
+// Type: OptionU32
 
-export interface Or extends PseudoType<{
-    left: EvaluatesToBool,
+interface OptionU32__actual extends Option<U32> {}
+
+interface OptionU32 extends Opaque<OptionU32__actual, OptionU32> {}
+
+const OptionU32: EnumCodecAndFactory<OptionU32> = createOptionCodec<OptionU32__actual, OptionU32>('OptionU32', U32)
+
+// Type: Or
+
+interface Or__actual {
+    left: EvaluatesToBool
     right: EvaluatesToBool
-}> {}
+}
 
-export const OrCodec: Codec<Or> = createStructCodec<any>('Or', [['left', dynCodec(() => EvaluatesToBoolCodec) as any], ['right', dynCodec(() => EvaluatesToBoolCodec) as any]]) as any
+interface Or extends Opaque<Or__actual, Or> {}
 
-// Pair
+const Or: StructCodecAndFactory<Or__actual, Or> = createStructCodec<Or__actual, Or>('Or', [
+    ['left', __dyn_EvaluatesToBool],
+    ['right', __dyn_EvaluatesToBool]
+])
 
-export interface Pair extends PseudoType<{
-    left_instruction: Instruction,
+// Type: Pair
+
+interface Pair__actual {
+    left_instruction: Instruction
     right_instruction: Instruction
-}> {}
+}
 
-export const PairCodec: Codec<Pair> = createStructCodec<any>('Pair', [['left_instruction', dynCodec(() => InstructionCodec) as any], ['right_instruction', dynCodec(() => InstructionCodec) as any]]) as any
+interface Pair extends Opaque<Pair__actual, Pair> {}
 
-// Parameter
+const Pair: StructCodecAndFactory<Pair__actual, Pair> = createStructCodec<Pair__actual, Pair>('Pair', [
+    ['left_instruction', __dyn_Instruction],
+    ['right_instruction', __dyn_Instruction]
+])
 
-export interface Parameter extends Enum<
+// Type: Parameter
+
+type Parameter__actual = Enum<
     | ['MaximumFaultyPeersAmount', U32]
     | ['BlockTime', U128]
     | ['CommitTime', U128]
     | ['TransactionReceiptTime', U128]
-> {}
+>
 
-export const ParameterCodec: Codec<Parameter> = createEnumCodec<any>('Parameter', [[0, 'MaximumFaultyPeersAmount', dynCodec(() => U32Codec)], [1, 'BlockTime', dynCodec(() => U128Codec)], [2, 'CommitTime', dynCodec(() => U128Codec)], [3, 'TransactionReceiptTime', dynCodec(() => U128Codec)]]) as any
+interface Parameter extends Opaque<Parameter__actual, Parameter> {}
 
-// ParentHashNotFound
+const Parameter: EnumCodecAndFactory<Parameter> = createEnumCodec<Parameter__actual, Parameter>('Parameter', [
+    [0, 'MaximumFaultyPeersAmount', U32],
+    [1, 'BlockTime', U128],
+    [2, 'CommitTime', U128],
+    [3, 'TransactionReceiptTime', U128]
+])
 
-export type ParentHashNotFound = HashOfVersionedCommittedBlock
+// Type: ParentHashNotFound
 
-export const ParentHashNotFoundCodec = dynCodec(() => HashOfVersionedCommittedBlockCodec)
+type ParentHashNotFound = HashOfVersionedCommittedBlock
 
-// Peer
+const ParentHashNotFound: Codec<ParentHashNotFound> = __dyn_HashOfVersionedCommittedBlock
 
-export interface Peer extends PseudoType<{
+// Type: Peer
+
+interface Peer__actual {
     id: PeerId
-}> {}
+}
 
-export const PeerCodec: Codec<Peer> = createStructCodec<any>('Peer', [['id', dynCodec(() => PeerIdCodec) as any]]) as any
+interface Peer extends Opaque<Peer__actual, Peer> {}
 
-// PeerEvent
+const Peer: StructCodecAndFactory<Peer__actual, Peer> = createStructCodec<Peer__actual, Peer>('Peer', [
+    ['id', __dyn_PeerId]
+])
 
-export interface PeerEvent extends Enum<
+// Type: PeerEvent
+
+type PeerEvent__actual = Enum<
     | ['Added', PeerId]
     | ['Removed', PeerId]
-> {}
+>
 
-export const PeerEventCodec: Codec<PeerEvent> = createEnumCodec<any>('PeerEvent', [[0, 'Added', dynCodec(() => PeerIdCodec)], [1, 'Removed', dynCodec(() => PeerIdCodec)]]) as any
+interface PeerEvent extends Opaque<PeerEvent__actual, PeerEvent> {}
 
-// PeerEventFilter
+const PeerEvent: EnumCodecAndFactory<PeerEvent> = createEnumCodec<PeerEvent__actual, PeerEvent>('PeerEvent', [
+    [0, 'Added', __dyn_PeerId],
+    [1, 'Removed', __dyn_PeerId]
+])
 
-export interface PeerEventFilter extends Enum<
+// Type: PeerEventFilter
+
+type PeerEventFilter__actual = Enum<
     | 'ByAdded'
     | 'ByRemoved'
-> {}
+>
 
-export const PeerEventFilterCodec: Codec<PeerEventFilter> = createEnumCodec<any>('PeerEventFilter', [[0, 'ByAdded'], [1, 'ByRemoved']]) as any
+interface PeerEventFilter extends Opaque<PeerEventFilter__actual, PeerEventFilter> {}
 
-// PeerFilter
+const PeerEventFilter: EnumCodecAndFactory<PeerEventFilter> = createEnumCodec<PeerEventFilter__actual, PeerEventFilter>('PeerEventFilter', [
+    [0, 'ByAdded'],
+    [1, 'ByRemoved']
+])
 
-export interface PeerFilter extends PseudoType<{
-    id_filter: FilterOptIdFilterPeerId,
+// Type: PeerFilter
+
+interface PeerFilter__actual {
+    id_filter: FilterOptIdFilterPeerId
     event_filter: FilterOptPeerEventFilter
-}> {}
+}
 
-export const PeerFilterCodec: Codec<PeerFilter> = createStructCodec<any>('PeerFilter', [['id_filter', dynCodec(() => FilterOptIdFilterPeerIdCodec) as any], ['event_filter', dynCodec(() => FilterOptPeerEventFilterCodec) as any]]) as any
+interface PeerFilter extends Opaque<PeerFilter__actual, PeerFilter> {}
 
-// PeerId
+const PeerFilter: StructCodecAndFactory<PeerFilter__actual, PeerFilter> = createStructCodec<PeerFilter__actual, PeerFilter>('PeerFilter', [
+    ['id_filter', __dyn_FilterOptIdFilterPeerId],
+    ['event_filter', __dyn_FilterOptPeerEventFilter]
+])
 
-export interface PeerId extends PseudoType<{
-    address: Str,
+// Type: PeerId
+
+interface PeerId__actual {
+    address: Str
     public_key: PublicKey
-}> {}
+}
 
-export const PeerIdCodec: Codec<PeerId> = createStructCodec<any>('PeerId', [['address', dynCodec(() => StrCodec) as any], ['public_key', dynCodec(() => PublicKeyCodec) as any]]) as any
+interface PeerId extends Opaque<PeerId__actual, PeerId> {}
 
-// PermissionToken
+const PeerId: StructCodecAndFactory<PeerId__actual, PeerId> = createStructCodec<PeerId__actual, PeerId>('PeerId', [
+    ['address', Str],
+    ['public_key', __dyn_PublicKey]
+])
 
-export interface PermissionToken extends PseudoType<{
-    name: Name,
+// Type: PermissionToken
+
+interface PermissionToken__actual {
+    name: Name
     params: BTreeMapNameValue
-}> {}
+}
 
-export const PermissionTokenCodec: Codec<PermissionToken> = createStructCodec<any>('PermissionToken', [['name', dynCodec(() => NameCodec) as any], ['params', dynCodec(() => BTreeMapNameValueCodec) as any]]) as any
+interface PermissionToken extends Opaque<PermissionToken__actual, PermissionToken> {}
 
-// PipelineEvent
+const PermissionToken: StructCodecAndFactory<PermissionToken__actual, PermissionToken> = createStructCodec<PermissionToken__actual, PermissionToken>('PermissionToken', [
+    ['name', __dyn_Name],
+    ['params', __dyn_BTreeMapNameValue]
+])
 
-export interface PipelineEvent extends PseudoType<{
-    entity_type: EntityType,
-    status: Status,
+// Type: PipelineEvent
+
+interface PipelineEvent__actual {
+    entity_type: EntityType
+    status: Status
     hash: Hash
-}> {}
+}
 
-export const PipelineEventCodec: Codec<PipelineEvent> = createStructCodec<any>('PipelineEvent', [['entity_type', dynCodec(() => EntityTypeCodec) as any], ['status', dynCodec(() => StatusCodec) as any], ['hash', dynCodec(() => HashCodec) as any]]) as any
+interface PipelineEvent extends Opaque<PipelineEvent__actual, PipelineEvent> {}
 
-// PipelineEventFilter
+const PipelineEvent: StructCodecAndFactory<PipelineEvent__actual, PipelineEvent> = createStructCodec<PipelineEvent__actual, PipelineEvent>('PipelineEvent', [
+    ['entity_type', __dyn_EntityType],
+    ['status', __dyn_Status],
+    ['hash', __dyn_Hash]
+])
 
-export interface PipelineEventFilter extends PseudoType<{
-    entity: OptionEntityType,
+// Type: PipelineEventFilter
+
+interface PipelineEventFilter__actual {
+    entity: OptionEntityType
     hash: OptionHash
-}> {}
+}
 
-export const PipelineEventFilterCodec: Codec<PipelineEventFilter> = createStructCodec<any>('PipelineEventFilter', [['entity', dynCodec(() => OptionEntityTypeCodec) as any], ['hash', dynCodec(() => OptionHashCodec) as any]]) as any
+interface PipelineEventFilter extends Opaque<PipelineEventFilter__actual, PipelineEventFilter> {}
 
-// Proof
+const PipelineEventFilter: StructCodecAndFactory<PipelineEventFilter__actual, PipelineEventFilter> = createStructCodec<PipelineEventFilter__actual, PipelineEventFilter>('PipelineEventFilter', [
+    ['entity', __dyn_OptionEntityType],
+    ['hash', __dyn_OptionHash]
+])
 
-export interface Proof extends PseudoType<{
-    payload: ProofPayload,
+// Type: Proof
+
+interface Proof__actual {
+    payload: ProofPayload
     signatures: SignaturesOfProof
-}> {}
+}
 
-export const ProofCodec: Codec<Proof> = createStructCodec<any>('Proof', [['payload', dynCodec(() => ProofPayloadCodec) as any], ['signatures', dynCodec(() => SignaturesOfProofCodec) as any]]) as any
+interface Proof extends Opaque<Proof__actual, Proof> {}
 
-// ProofChain
+const Proof: StructCodecAndFactory<Proof__actual, Proof> = createStructCodec<Proof__actual, Proof>('Proof', [
+    ['payload', __dyn_ProofPayload],
+    ['signatures', __dyn_SignaturesOfProof]
+])
 
-export interface ProofChain extends PseudoType<{
+// Type: ProofChain
+
+interface ProofChain__actual {
     proofs: VecProof
-}> {}
+}
 
-export const ProofChainCodec: Codec<ProofChain> = createStructCodec<any>('ProofChain', [['proofs', dynCodec(() => VecProofCodec) as any]]) as any
+interface ProofChain extends Opaque<ProofChain__actual, ProofChain> {}
 
-// ProofPayload
+const ProofChain: StructCodecAndFactory<ProofChain__actual, ProofChain> = createStructCodec<ProofChain__actual, ProofChain>('ProofChain', [
+    ['proofs', __dyn_VecProof]
+])
 
-export interface ProofPayload extends PseudoType<{
-    previous_proof: HashOfProof,
-    latest_block: HashOfVersionedCommittedBlock,
+// Type: ProofPayload
+
+interface ProofPayload__actual {
+    previous_proof: HashOfProof
+    latest_block: HashOfVersionedCommittedBlock
     reason: Reason
-}> {}
+}
 
-export const ProofPayloadCodec: Codec<ProofPayload> = createStructCodec<any>('ProofPayload', [['previous_proof', dynCodec(() => HashOfProofCodec) as any], ['latest_block', dynCodec(() => HashOfVersionedCommittedBlockCodec) as any], ['reason', dynCodec(() => ReasonCodec) as any]]) as any
+interface ProofPayload extends Opaque<ProofPayload__actual, ProofPayload> {}
 
-// PublicKey
+const ProofPayload: StructCodecAndFactory<ProofPayload__actual, ProofPayload> = createStructCodec<ProofPayload__actual, ProofPayload>('ProofPayload', [
+    ['previous_proof', __dyn_HashOfProof],
+    ['latest_block', __dyn_HashOfVersionedCommittedBlock],
+    ['reason', __dyn_Reason]
+])
 
-export interface PublicKey extends PseudoType<{
-    digest_function: Str,
+// Type: PublicKey
+
+interface PublicKey__actual {
+    digest_function: Str
     payload: VecU8
-}> {}
+}
 
-export const PublicKeyCodec: Codec<PublicKey> = createStructCodec<any>('PublicKey', [['digest_function', dynCodec(() => StrCodec) as any], ['payload', dynCodec(() => VecU8Codec) as any]]) as any
+interface PublicKey extends Opaque<PublicKey__actual, PublicKey> {}
 
-// QueryBox
+const PublicKey: StructCodecAndFactory<PublicKey__actual, PublicKey> = createStructCodec<PublicKey__actual, PublicKey>('PublicKey', [
+    ['digest_function', Str],
+    ['payload', VecU8]
+])
 
-export interface QueryBox extends Enum<
+// Type: QueryBox
+
+type QueryBox__actual = Enum<
     | ['FindAllAccounts', FindAllAccounts]
     | ['FindAccountById', FindAccountById]
     | ['FindAccountKeyValueByIdAndKey', FindAccountKeyValueByIdAndKey]
@@ -1578,13 +2592,39 @@ export interface QueryBox extends Enum<
     | ['FindTransactionsByAccountId', FindTransactionsByAccountId]
     | ['FindTransactionByHash', FindTransactionByHash]
     | ['FindPermissionTokensByAccountId', FindPermissionTokensByAccountId]
-> {}
+>
 
-export const QueryBoxCodec: Codec<QueryBox> = createEnumCodec<any>('QueryBox', [[0, 'FindAllAccounts', dynCodec(() => FindAllAccountsCodec)], [1, 'FindAccountById', dynCodec(() => FindAccountByIdCodec)], [2, 'FindAccountKeyValueByIdAndKey', dynCodec(() => FindAccountKeyValueByIdAndKeyCodec)], [3, 'FindAccountsByName', dynCodec(() => FindAccountsByNameCodec)], [4, 'FindAccountsByDomainId', dynCodec(() => FindAccountsByDomainIdCodec)], [5, 'FindAllAssets', dynCodec(() => FindAllAssetsCodec)], [6, 'FindAllAssetsDefinitions', dynCodec(() => FindAllAssetsDefinitionsCodec)], [7, 'FindAssetById', dynCodec(() => FindAssetByIdCodec)], [8, 'FindAssetsByName', dynCodec(() => FindAssetsByNameCodec)], [9, 'FindAssetsByAccountId', dynCodec(() => FindAssetsByAccountIdCodec)], [10, 'FindAssetsByAssetDefinitionId', dynCodec(() => FindAssetsByAssetDefinitionIdCodec)], [11, 'FindAssetsByDomainId', dynCodec(() => FindAssetsByDomainIdCodec)], [12, 'FindAssetsByDomainIdAndAssetDefinitionId', dynCodec(() => FindAssetsByDomainIdAndAssetDefinitionIdCodec)], [13, 'FindAssetQuantityById', dynCodec(() => FindAssetQuantityByIdCodec)], [14, 'FindAssetKeyValueByIdAndKey', dynCodec(() => FindAssetKeyValueByIdAndKeyCodec)], [15, 'FindAssetDefinitionKeyValueByIdAndKey', dynCodec(() => FindAssetDefinitionKeyValueByIdAndKeyCodec)], [16, 'FindAllDomains', dynCodec(() => FindAllDomainsCodec)], [17, 'FindDomainById', dynCodec(() => FindDomainByIdCodec)], [18, 'FindDomainKeyValueByIdAndKey', dynCodec(() => FindDomainKeyValueByIdAndKeyCodec)], [19, 'FindAllPeers', dynCodec(() => FindAllPeersCodec)], [20, 'FindTransactionsByAccountId', dynCodec(() => FindTransactionsByAccountIdCodec)], [21, 'FindTransactionByHash', dynCodec(() => FindTransactionByHashCodec)], [22, 'FindPermissionTokensByAccountId', dynCodec(() => FindPermissionTokensByAccountIdCodec)]]) as any
+interface QueryBox extends Opaque<QueryBox__actual, QueryBox> {}
 
-// QueryError
+const QueryBox: EnumCodecAndFactory<QueryBox> = createEnumCodec<QueryBox__actual, QueryBox>('QueryBox', [
+    [0, 'FindAllAccounts', __dyn_FindAllAccounts],
+    [1, 'FindAccountById', __dyn_FindAccountById],
+    [2, 'FindAccountKeyValueByIdAndKey', __dyn_FindAccountKeyValueByIdAndKey],
+    [3, 'FindAccountsByName', __dyn_FindAccountsByName],
+    [4, 'FindAccountsByDomainId', __dyn_FindAccountsByDomainId],
+    [5, 'FindAllAssets', __dyn_FindAllAssets],
+    [6, 'FindAllAssetsDefinitions', __dyn_FindAllAssetsDefinitions],
+    [7, 'FindAssetById', __dyn_FindAssetById],
+    [8, 'FindAssetsByName', __dyn_FindAssetsByName],
+    [9, 'FindAssetsByAccountId', __dyn_FindAssetsByAccountId],
+    [10, 'FindAssetsByAssetDefinitionId', __dyn_FindAssetsByAssetDefinitionId],
+    [11, 'FindAssetsByDomainId', __dyn_FindAssetsByDomainId],
+    [12, 'FindAssetsByDomainIdAndAssetDefinitionId', __dyn_FindAssetsByDomainIdAndAssetDefinitionId],
+    [13, 'FindAssetQuantityById', __dyn_FindAssetQuantityById],
+    [14, 'FindAssetKeyValueByIdAndKey', __dyn_FindAssetKeyValueByIdAndKey],
+    [15, 'FindAssetDefinitionKeyValueByIdAndKey', __dyn_FindAssetDefinitionKeyValueByIdAndKey],
+    [16, 'FindAllDomains', __dyn_FindAllDomains],
+    [17, 'FindDomainById', __dyn_FindDomainById],
+    [18, 'FindDomainKeyValueByIdAndKey', __dyn_FindDomainKeyValueByIdAndKey],
+    [19, 'FindAllPeers', __dyn_FindAllPeers],
+    [20, 'FindTransactionsByAccountId', __dyn_FindTransactionsByAccountId],
+    [21, 'FindTransactionByHash', __dyn_FindTransactionByHash],
+    [22, 'FindPermissionTokensByAccountId', __dyn_FindPermissionTokensByAccountId]
+])
 
-export interface QueryError extends Enum<
+// Type: QueryError
+
+type QueryError__actual = Enum<
     | ['Decode', VersionError]
     | ['Version', QueryUnsupportedVersionError]
     | ['Signature', Str]
@@ -1592,418 +2632,633 @@ export interface QueryError extends Enum<
     | ['Evaluate', Str]
     | ['Find', FindError]
     | ['Conversion', Str]
-> {}
+>
 
-export const QueryErrorCodec: Codec<QueryError> = createEnumCodec<any>('QueryError', [[0, 'Decode', dynCodec(() => VersionErrorCodec)], [1, 'Version', dynCodec(() => QueryUnsupportedVersionErrorCodec)], [2, 'Signature', dynCodec(() => StrCodec)], [3, 'Permission', dynCodec(() => StrCodec)], [4, 'Evaluate', dynCodec(() => StrCodec)], [5, 'Find', dynCodec(() => FindErrorCodec)], [6, 'Conversion', dynCodec(() => StrCodec)]]) as any
+interface QueryError extends Opaque<QueryError__actual, QueryError> {}
 
-// QueryPayload
+const QueryError: EnumCodecAndFactory<QueryError> = createEnumCodec<QueryError__actual, QueryError>('QueryError', [
+    [0, 'Decode', __dyn_VersionError],
+    [1, 'Version', __dyn_QueryUnsupportedVersionError],
+    [2, 'Signature', Str],
+    [3, 'Permission', Str],
+    [4, 'Evaluate', Str],
+    [5, 'Find', __dyn_FindError],
+    [6, 'Conversion', Str]
+])
 
-export interface QueryPayload extends PseudoType<{
-    timestamp_ms: Compact,
-    query: QueryBox,
+// Type: QueryPayload
+
+interface QueryPayload__actual {
+    timestamp_ms: Compact
+    query: QueryBox
     account_id: AccountId
-}> {}
+}
 
-export const QueryPayloadCodec: Codec<QueryPayload> = createStructCodec<any>('QueryPayload', [['timestamp_ms', dynCodec(() => CompactCodec) as any], ['query', dynCodec(() => QueryBoxCodec) as any], ['account_id', dynCodec(() => AccountIdCodec) as any]]) as any
+interface QueryPayload extends Opaque<QueryPayload__actual, QueryPayload> {}
 
-// QueryResult
+const QueryPayload: StructCodecAndFactory<QueryPayload__actual, QueryPayload> = createStructCodec<QueryPayload__actual, QueryPayload>('QueryPayload', [
+    ['timestamp_ms', Compact],
+    ['query', __dyn_QueryBox],
+    ['account_id', __dyn_AccountId]
+])
 
-export type QueryResult = Value
+// Type: QueryResult
 
-export const QueryResultCodec = dynCodec(() => ValueCodec)
+type QueryResult = Value
 
-// QueryUnsupportedVersionError
+const QueryResult: Codec<QueryResult> = __dyn_Value
 
-export interface QueryUnsupportedVersionError extends PseudoType<{
+// Type: QueryUnsupportedVersionError
+
+interface QueryUnsupportedVersionError__actual {
     version: U8
-}> {}
+}
 
-export const QueryUnsupportedVersionErrorCodec: Codec<QueryUnsupportedVersionError> = createStructCodec<any>('QueryUnsupportedVersionError', [['version', dynCodec(() => U8Codec) as any]]) as any
+interface QueryUnsupportedVersionError extends Opaque<QueryUnsupportedVersionError__actual, QueryUnsupportedVersionError> {}
 
-// RaiseTo
+const QueryUnsupportedVersionError: StructCodecAndFactory<QueryUnsupportedVersionError__actual, QueryUnsupportedVersionError> = createStructCodec<QueryUnsupportedVersionError__actual, QueryUnsupportedVersionError>('QueryUnsupportedVersionError', [
+    ['version', U8]
+])
 
-export interface RaiseTo extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: RaiseTo
+
+interface RaiseTo__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const RaiseToCodec: Codec<RaiseTo> = createStructCodec<any>('RaiseTo', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface RaiseTo extends Opaque<RaiseTo__actual, RaiseTo> {}
 
-// RawGenesisBlock
+const RaiseTo: StructCodecAndFactory<RaiseTo__actual, RaiseTo> = createStructCodec<RaiseTo__actual, RaiseTo>('RaiseTo', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export interface RawGenesisBlock extends PseudoType<{
+// Type: RawGenesisBlock
+
+interface RawGenesisBlock__actual {
     transactions: VecGenesisTransaction
-}> {}
+}
 
-export const RawGenesisBlockCodec: Codec<RawGenesisBlock> = createStructCodec<any>('RawGenesisBlock', [['transactions', dynCodec(() => VecGenesisTransactionCodec) as any]]) as any
+interface RawGenesisBlock extends Opaque<RawGenesisBlock__actual, RawGenesisBlock> {}
 
-// RawVersioned
+const RawGenesisBlock: StructCodecAndFactory<RawGenesisBlock__actual, RawGenesisBlock> = createStructCodec<RawGenesisBlock__actual, RawGenesisBlock>('RawGenesisBlock', [
+    ['transactions', __dyn_VecGenesisTransaction]
+])
 
-export interface RawVersioned extends Enum<
+// Type: RawVersioned
+
+type RawVersioned__actual = Enum<
     | ['Json', Str]
     | ['ScaleBytes', VecU8]
-> {}
+>
 
-export const RawVersionedCodec: Codec<RawVersioned> = createEnumCodec<any>('RawVersioned', [[0, 'Json', dynCodec(() => StrCodec)], [1, 'ScaleBytes', dynCodec(() => VecU8Codec)]]) as any
+interface RawVersioned extends Opaque<RawVersioned__actual, RawVersioned> {}
 
-// Reason
+const RawVersioned: EnumCodecAndFactory<RawVersioned> = createEnumCodec<RawVersioned__actual, RawVersioned>('RawVersioned', [
+    [0, 'Json', Str],
+    [1, 'ScaleBytes', VecU8]
+])
 
-export interface Reason extends Enum<
+// Type: Reason
+
+type Reason__actual = Enum<
     | ['CommitTimeout', CommitTimeout]
     | ['NoTransactionReceiptReceived', NoTransactionReceiptReceived]
     | ['BlockCreationTimeout', BlockCreationTimeout]
-> {}
+>
 
-export const ReasonCodec: Codec<Reason> = createEnumCodec<any>('Reason', [[0, 'CommitTimeout', dynCodec(() => CommitTimeoutCodec)], [1, 'NoTransactionReceiptReceived', dynCodec(() => NoTransactionReceiptReceivedCodec)], [2, 'BlockCreationTimeout', dynCodec(() => BlockCreationTimeoutCodec)]]) as any
+interface Reason extends Opaque<Reason__actual, Reason> {}
 
-// RegisterBox
+const Reason: EnumCodecAndFactory<Reason> = createEnumCodec<Reason__actual, Reason>('Reason', [
+    [0, 'CommitTimeout', __dyn_CommitTimeout],
+    [1, 'NoTransactionReceiptReceived', __dyn_NoTransactionReceiptReceived],
+    [2, 'BlockCreationTimeout', __dyn_BlockCreationTimeout]
+])
 
-export interface RegisterBox extends PseudoType<{
+// Type: RegisterBox
+
+interface RegisterBox__actual {
     object: EvaluatesToIdentifiableBox
-}> {}
+}
 
-export const RegisterBoxCodec: Codec<RegisterBox> = createStructCodec<any>('RegisterBox', [['object', dynCodec(() => EvaluatesToIdentifiableBoxCodec) as any]]) as any
+interface RegisterBox extends Opaque<RegisterBox__actual, RegisterBox> {}
 
-// RejectedTransaction
+const RegisterBox: StructCodecAndFactory<RegisterBox__actual, RegisterBox> = createStructCodec<RegisterBox__actual, RegisterBox>('RegisterBox', [
+    ['object', __dyn_EvaluatesToIdentifiableBox]
+])
 
-export interface RejectedTransaction extends PseudoType<{
-    payload: TransactionPayload,
-    signatures: SignaturesOfTransactionPayload,
+// Type: RejectedTransaction
+
+interface RejectedTransaction__actual {
+    payload: TransactionPayload
+    signatures: SignaturesOfTransactionPayload
     rejection_reason: TransactionRejectionReason
-}> {}
+}
 
-export const RejectedTransactionCodec: Codec<RejectedTransaction> = createStructCodec<any>('RejectedTransaction', [['payload', dynCodec(() => TransactionPayloadCodec) as any], ['signatures', dynCodec(() => SignaturesOfTransactionPayloadCodec) as any], ['rejection_reason', dynCodec(() => TransactionRejectionReasonCodec) as any]]) as any
+interface RejectedTransaction extends Opaque<RejectedTransaction__actual, RejectedTransaction> {}
 
-// RejectionReason
+const RejectedTransaction: StructCodecAndFactory<RejectedTransaction__actual, RejectedTransaction> = createStructCodec<RejectedTransaction__actual, RejectedTransaction>('RejectedTransaction', [
+    ['payload', __dyn_TransactionPayload],
+    ['signatures', __dyn_SignaturesOfTransactionPayload],
+    ['rejection_reason', __dyn_TransactionRejectionReason]
+])
 
-export interface RejectionReason extends Enum<
+// Type: RejectionReason
+
+type RejectionReason__actual = Enum<
     | ['Block', BlockRejectionReason]
     | ['Transaction', TransactionRejectionReason]
-> {}
+>
 
-export const RejectionReasonCodec: Codec<RejectionReason> = createEnumCodec<any>('RejectionReason', [[0, 'Block', dynCodec(() => BlockRejectionReasonCodec)], [1, 'Transaction', dynCodec(() => TransactionRejectionReasonCodec)]]) as any
+interface RejectionReason extends Opaque<RejectionReason__actual, RejectionReason> {}
 
-// RemoveKeyValueBox
+const RejectionReason: EnumCodecAndFactory<RejectionReason> = createEnumCodec<RejectionReason__actual, RejectionReason>('RejectionReason', [
+    [0, 'Block', __dyn_BlockRejectionReason],
+    [1, 'Transaction', __dyn_TransactionRejectionReason]
+])
 
-export interface RemoveKeyValueBox extends PseudoType<{
-    object_id: EvaluatesToIdBox,
+// Type: RemoveKeyValueBox
+
+interface RemoveKeyValueBox__actual {
+    object_id: EvaluatesToIdBox
     key: EvaluatesToName
-}> {}
+}
 
-export const RemoveKeyValueBoxCodec: Codec<RemoveKeyValueBox> = createStructCodec<any>('RemoveKeyValueBox', [['object_id', dynCodec(() => EvaluatesToIdBoxCodec) as any], ['key', dynCodec(() => EvaluatesToNameCodec) as any]]) as any
+interface RemoveKeyValueBox extends Opaque<RemoveKeyValueBox__actual, RemoveKeyValueBox> {}
 
-// Repeats
+const RemoveKeyValueBox: StructCodecAndFactory<RemoveKeyValueBox__actual, RemoveKeyValueBox> = createStructCodec<RemoveKeyValueBox__actual, RemoveKeyValueBox>('RemoveKeyValueBox', [
+    ['object_id', __dyn_EvaluatesToIdBox],
+    ['key', __dyn_EvaluatesToName]
+])
 
-export interface Repeats extends Enum<
+// Type: Repeats
+
+type Repeats__actual = Enum<
     | 'Indefinitely'
     | ['Exactly', U32]
-> {}
+>
 
-export const RepeatsCodec: Codec<Repeats> = createEnumCodec<any>('Repeats', [[0, 'Indefinitely'], [1, 'Exactly', dynCodec(() => U32Codec)]]) as any
+interface Repeats extends Opaque<Repeats__actual, Repeats> {}
 
-// RevokeBox
+const Repeats: EnumCodecAndFactory<Repeats> = createEnumCodec<Repeats__actual, Repeats>('Repeats', [
+    [0, 'Indefinitely'],
+    [1, 'Exactly', U32]
+])
 
-export interface RevokeBox extends PseudoType<{
-    object: EvaluatesToValue,
+// Type: RevokeBox
+
+interface RevokeBox__actual {
+    object: EvaluatesToValue
     destination_id: EvaluatesToIdBox
-}> {}
+}
 
-export const RevokeBoxCodec: Codec<RevokeBox> = createStructCodec<any>('RevokeBox', [['object', dynCodec(() => EvaluatesToValueCodec) as any], ['destination_id', dynCodec(() => EvaluatesToIdBoxCodec) as any]]) as any
+interface RevokeBox extends Opaque<RevokeBox__actual, RevokeBox> {}
 
-// SequenceBox
+const RevokeBox: StructCodecAndFactory<RevokeBox__actual, RevokeBox> = createStructCodec<RevokeBox__actual, RevokeBox>('RevokeBox', [
+    ['object', __dyn_EvaluatesToValue],
+    ['destination_id', __dyn_EvaluatesToIdBox]
+])
 
-export interface SequenceBox extends PseudoType<{
+// Type: SequenceBox
+
+interface SequenceBox__actual {
     instructions: VecInstruction
-}> {}
+}
 
-export const SequenceBoxCodec: Codec<SequenceBox> = createStructCodec<any>('SequenceBox', [['instructions', dynCodec(() => VecInstructionCodec) as any]]) as any
+interface SequenceBox extends Opaque<SequenceBox__actual, SequenceBox> {}
 
-// SetKeyValueBox
+const SequenceBox: StructCodecAndFactory<SequenceBox__actual, SequenceBox> = createStructCodec<SequenceBox__actual, SequenceBox>('SequenceBox', [
+    ['instructions', __dyn_VecInstruction]
+])
 
-export interface SetKeyValueBox extends PseudoType<{
-    object_id: EvaluatesToIdBox,
-    key: EvaluatesToName,
+// Type: SetKeyValueBox
+
+interface SetKeyValueBox__actual {
+    object_id: EvaluatesToIdBox
+    key: EvaluatesToName
     value: EvaluatesToValue
-}> {}
+}
 
-export const SetKeyValueBoxCodec: Codec<SetKeyValueBox> = createStructCodec<any>('SetKeyValueBox', [['object_id', dynCodec(() => EvaluatesToIdBoxCodec) as any], ['key', dynCodec(() => EvaluatesToNameCodec) as any], ['value', dynCodec(() => EvaluatesToValueCodec) as any]]) as any
+interface SetKeyValueBox extends Opaque<SetKeyValueBox__actual, SetKeyValueBox> {}
 
-// Signature
+const SetKeyValueBox: StructCodecAndFactory<SetKeyValueBox__actual, SetKeyValueBox> = createStructCodec<SetKeyValueBox__actual, SetKeyValueBox>('SetKeyValueBox', [
+    ['object_id', __dyn_EvaluatesToIdBox],
+    ['key', __dyn_EvaluatesToName],
+    ['value', __dyn_EvaluatesToValue]
+])
 
-export interface Signature extends PseudoType<{
-    public_key: PublicKey,
+// Type: Signature
+
+interface Signature__actual {
+    public_key: PublicKey
     signature: VecU8
-}> {}
+}
 
-export const SignatureCodec: Codec<Signature> = createStructCodec<any>('Signature', [['public_key', dynCodec(() => PublicKeyCodec) as any], ['signature', dynCodec(() => VecU8Codec) as any]]) as any
+interface Signature extends Opaque<Signature__actual, Signature> {}
 
-// SignatureCheckCondition
+const Signature: StructCodecAndFactory<Signature__actual, Signature> = createStructCodec<Signature__actual, Signature>('Signature', [
+    ['public_key', __dyn_PublicKey],
+    ['signature', VecU8]
+])
 
-export type SignatureCheckCondition = EvaluatesToBool
+// Type: SignatureCheckCondition
 
-export const SignatureCheckConditionCodec = dynCodec(() => EvaluatesToBoolCodec)
+type SignatureCheckCondition = EvaluatesToBool
 
-// SignatureOfCommittedBlock
+const SignatureCheckCondition: Codec<SignatureCheckCondition> = __dyn_EvaluatesToBool
 
-export type SignatureOfCommittedBlock = Signature
+// Type: SignatureOfCommittedBlock
 
-export const SignatureOfCommittedBlockCodec = dynCodec(() => SignatureCodec)
+type SignatureOfCommittedBlock = Signature
 
-// SignatureOfProof
+const SignatureOfCommittedBlock: Codec<SignatureOfCommittedBlock> = __dyn_Signature
 
-export type SignatureOfProof = Signature
+// Type: SignatureOfProof
 
-export const SignatureOfProofCodec = dynCodec(() => SignatureCodec)
+type SignatureOfProof = Signature
 
-// SignatureOfQueryPayload
+const SignatureOfProof: Codec<SignatureOfProof> = __dyn_Signature
 
-export type SignatureOfQueryPayload = Signature
+// Type: SignatureOfQueryPayload
 
-export const SignatureOfQueryPayloadCodec = dynCodec(() => SignatureCodec)
+type SignatureOfQueryPayload = Signature
 
-// SignatureOfTransactionPayload
+const SignatureOfQueryPayload: Codec<SignatureOfQueryPayload> = __dyn_Signature
 
-export type SignatureOfTransactionPayload = Signature
+// Type: SignatureOfTransactionPayload
 
-export const SignatureOfTransactionPayloadCodec = dynCodec(() => SignatureCodec)
+type SignatureOfTransactionPayload = Signature
 
-// SignatureOfValidBlock
+const SignatureOfTransactionPayload: Codec<SignatureOfTransactionPayload> = __dyn_Signature
 
-export type SignatureOfValidBlock = Signature
+// Type: SignatureOfValidBlock
 
-export const SignatureOfValidBlockCodec = dynCodec(() => SignatureCodec)
+type SignatureOfValidBlock = Signature
 
-// SignaturesOfCommittedBlock
+const SignatureOfValidBlock: Codec<SignatureOfValidBlock> = __dyn_Signature
 
-export interface SignaturesOfCommittedBlock extends PseudoType<{
+// Type: SignaturesOfCommittedBlock
+
+interface SignaturesOfCommittedBlock__actual {
     signatures: BTreeMapPublicKeySignatureOfCommittedBlock
-}> {}
+}
 
-export const SignaturesOfCommittedBlockCodec: Codec<SignaturesOfCommittedBlock> = createStructCodec<any>('SignaturesOfCommittedBlock', [['signatures', dynCodec(() => BTreeMapPublicKeySignatureOfCommittedBlockCodec) as any]]) as any
+interface SignaturesOfCommittedBlock extends Opaque<SignaturesOfCommittedBlock__actual, SignaturesOfCommittedBlock> {}
 
-// SignaturesOfProof
+const SignaturesOfCommittedBlock: StructCodecAndFactory<SignaturesOfCommittedBlock__actual, SignaturesOfCommittedBlock> = createStructCodec<SignaturesOfCommittedBlock__actual, SignaturesOfCommittedBlock>('SignaturesOfCommittedBlock', [
+    ['signatures', __dyn_BTreeMapPublicKeySignatureOfCommittedBlock]
+])
 
-export interface SignaturesOfProof extends PseudoType<{
+// Type: SignaturesOfProof
+
+interface SignaturesOfProof__actual {
     signatures: BTreeMapPublicKeySignatureOfProof
-}> {}
+}
 
-export const SignaturesOfProofCodec: Codec<SignaturesOfProof> = createStructCodec<any>('SignaturesOfProof', [['signatures', dynCodec(() => BTreeMapPublicKeySignatureOfProofCodec) as any]]) as any
+interface SignaturesOfProof extends Opaque<SignaturesOfProof__actual, SignaturesOfProof> {}
 
-// SignaturesOfTransactionPayload
+const SignaturesOfProof: StructCodecAndFactory<SignaturesOfProof__actual, SignaturesOfProof> = createStructCodec<SignaturesOfProof__actual, SignaturesOfProof>('SignaturesOfProof', [
+    ['signatures', __dyn_BTreeMapPublicKeySignatureOfProof]
+])
 
-export interface SignaturesOfTransactionPayload extends PseudoType<{
+// Type: SignaturesOfTransactionPayload
+
+interface SignaturesOfTransactionPayload__actual {
     signatures: BTreeMapPublicKeySignatureOfTransactionPayload
-}> {}
+}
 
-export const SignaturesOfTransactionPayloadCodec: Codec<SignaturesOfTransactionPayload> = createStructCodec<any>('SignaturesOfTransactionPayload', [['signatures', dynCodec(() => BTreeMapPublicKeySignatureOfTransactionPayloadCodec) as any]]) as any
+interface SignaturesOfTransactionPayload extends Opaque<SignaturesOfTransactionPayload__actual, SignaturesOfTransactionPayload> {}
 
-// SignedQueryRequest
+const SignaturesOfTransactionPayload: StructCodecAndFactory<SignaturesOfTransactionPayload__actual, SignaturesOfTransactionPayload> = createStructCodec<SignaturesOfTransactionPayload__actual, SignaturesOfTransactionPayload>('SignaturesOfTransactionPayload', [
+    ['signatures', __dyn_BTreeMapPublicKeySignatureOfTransactionPayload]
+])
 
-export interface SignedQueryRequest extends PseudoType<{
-    payload: QueryPayload,
+// Type: SignedQueryRequest
+
+interface SignedQueryRequest__actual {
+    payload: QueryPayload
     signature: SignatureOfQueryPayload
-}> {}
+}
 
-export const SignedQueryRequestCodec: Codec<SignedQueryRequest> = createStructCodec<any>('SignedQueryRequest', [['payload', dynCodec(() => QueryPayloadCodec) as any], ['signature', dynCodec(() => SignatureOfQueryPayloadCodec) as any]]) as any
+interface SignedQueryRequest extends Opaque<SignedQueryRequest__actual, SignedQueryRequest> {}
 
-// Status
+const SignedQueryRequest: StructCodecAndFactory<SignedQueryRequest__actual, SignedQueryRequest> = createStructCodec<SignedQueryRequest__actual, SignedQueryRequest>('SignedQueryRequest', [
+    ['payload', __dyn_QueryPayload],
+    ['signature', __dyn_SignatureOfQueryPayload]
+])
 
-export interface Status extends Enum<
+// Type: Status
+
+type Status__actual = Enum<
     | 'Validating'
     | ['Rejected', RejectionReason]
     | 'Committed'
-> {}
+>
 
-export const StatusCodec: Codec<Status> = createEnumCodec<any>('Status', [[0, 'Validating'], [1, 'Rejected', dynCodec(() => RejectionReasonCodec)], [2, 'Committed']]) as any
+interface Status extends Opaque<Status__actual, Status> {}
 
-// Subtract
+const Status: EnumCodecAndFactory<Status> = createEnumCodec<Status__actual, Status>('Status', [
+    [0, 'Validating'],
+    [1, 'Rejected', __dyn_RejectionReason],
+    [2, 'Committed']
+])
 
-export interface Subtract extends PseudoType<{
-    left: EvaluatesToU32,
+// Type: Subtract
+
+interface Subtract__actual {
+    left: EvaluatesToU32
     right: EvaluatesToU32
-}> {}
+}
 
-export const SubtractCodec: Codec<Subtract> = createStructCodec<any>('Subtract', [['left', dynCodec(() => EvaluatesToU32Codec) as any], ['right', dynCodec(() => EvaluatesToU32Codec) as any]]) as any
+interface Subtract extends Opaque<Subtract__actual, Subtract> {}
 
-// SubtreeVersionedTransaction
+const Subtract: StructCodecAndFactory<Subtract__actual, Subtract> = createStructCodec<Subtract__actual, Subtract>('Subtract', [
+    ['left', __dyn_EvaluatesToU32],
+    ['right', __dyn_EvaluatesToU32]
+])
 
-export interface SubtreeVersionedTransaction extends PseudoType<{
-    left: NodeVersionedTransaction,
-    right: NodeVersionedTransaction,
+// Type: SubtreeVersionedTransaction
+
+interface SubtreeVersionedTransaction__actual {
+    left: NodeVersionedTransaction
+    right: NodeVersionedTransaction
     hash: HashOfNodeVersionedTransaction
-}> {}
+}
 
-export const SubtreeVersionedTransactionCodec: Codec<SubtreeVersionedTransaction> = createStructCodec<any>('SubtreeVersionedTransaction', [['left', dynCodec(() => NodeVersionedTransactionCodec) as any], ['right', dynCodec(() => NodeVersionedTransactionCodec) as any], ['hash', dynCodec(() => HashOfNodeVersionedTransactionCodec) as any]]) as any
+interface SubtreeVersionedTransaction extends Opaque<SubtreeVersionedTransaction__actual, SubtreeVersionedTransaction> {}
 
-// Topology
+const SubtreeVersionedTransaction: StructCodecAndFactory<SubtreeVersionedTransaction__actual, SubtreeVersionedTransaction> = createStructCodec<SubtreeVersionedTransaction__actual, SubtreeVersionedTransaction>('SubtreeVersionedTransaction', [
+    ['left', __dyn_NodeVersionedTransaction],
+    ['right', __dyn_NodeVersionedTransaction],
+    ['hash', __dyn_HashOfNodeVersionedTransaction]
+])
 
-export interface Topology extends PseudoType<{
-    sorted_peers: VecPeerId,
-    reshuffle_after_n_view_changes: U64,
-    at_block: HashOfVersionedCommittedBlock,
+// Type: Topology
+
+interface Topology__actual {
+    sorted_peers: VecPeerId
+    reshuffle_after_n_view_changes: U64
+    at_block: HashOfVersionedCommittedBlock
     view_change_proofs: ProofChain
-}> {}
+}
 
-export const TopologyCodec: Codec<Topology> = createStructCodec<any>('Topology', [['sorted_peers', dynCodec(() => VecPeerIdCodec) as any], ['reshuffle_after_n_view_changes', dynCodec(() => U64Codec) as any], ['at_block', dynCodec(() => HashOfVersionedCommittedBlockCodec) as any], ['view_change_proofs', dynCodec(() => ProofChainCodec) as any]]) as any
+interface Topology extends Opaque<Topology__actual, Topology> {}
 
-// Transaction
+const Topology: StructCodecAndFactory<Topology__actual, Topology> = createStructCodec<Topology__actual, Topology>('Topology', [
+    ['sorted_peers', __dyn_VecPeerId],
+    ['reshuffle_after_n_view_changes', U64],
+    ['at_block', __dyn_HashOfVersionedCommittedBlock],
+    ['view_change_proofs', __dyn_ProofChain]
+])
 
-export interface Transaction extends PseudoType<{
-    payload: TransactionPayload,
+// Type: Transaction
+
+interface Transaction__actual {
+    payload: TransactionPayload
     signatures: BTreeSetSignatureOfTransactionPayload
-}> {}
+}
 
-export const TransactionCodec: Codec<Transaction> = createStructCodec<any>('Transaction', [['payload', dynCodec(() => TransactionPayloadCodec) as any], ['signatures', dynCodec(() => BTreeSetSignatureOfTransactionPayloadCodec) as any]]) as any
+interface Transaction extends Opaque<Transaction__actual, Transaction> {}
 
-// TransactionLimitError
+const Transaction: StructCodecAndFactory<Transaction__actual, Transaction> = createStructCodec<Transaction__actual, Transaction>('Transaction', [
+    ['payload', __dyn_TransactionPayload],
+    ['signatures', __dyn_BTreeSetSignatureOfTransactionPayload]
+])
 
-export type TransactionLimitError = Str
+// Type: TransactionLimitError
 
-export const TransactionLimitErrorCodec = dynCodec(() => StrCodec)
+type TransactionLimitError = Str
 
-// TransactionPayload
+const TransactionLimitError: Codec<TransactionLimitError> = Str
 
-export interface TransactionPayload extends PseudoType<{
-    account_id: AccountId,
-    instructions: Executable,
-    creation_time: U64,
-    time_to_live_ms: U64,
-    nonce: OptionU32,
+// Type: TransactionPayload
+
+interface TransactionPayload__actual {
+    account_id: AccountId
+    instructions: Executable
+    creation_time: U64
+    time_to_live_ms: U64
+    nonce: OptionU32
     metadata: BTreeMapNameValue
-}> {}
+}
 
-export const TransactionPayloadCodec: Codec<TransactionPayload> = createStructCodec<any>('TransactionPayload', [['account_id', dynCodec(() => AccountIdCodec) as any], ['instructions', dynCodec(() => ExecutableCodec) as any], ['creation_time', dynCodec(() => U64Codec) as any], ['time_to_live_ms', dynCodec(() => U64Codec) as any], ['nonce', dynCodec(() => OptionU32Codec) as any], ['metadata', dynCodec(() => BTreeMapNameValueCodec) as any]]) as any
+interface TransactionPayload extends Opaque<TransactionPayload__actual, TransactionPayload> {}
 
-// TransactionRejectionReason
+const TransactionPayload: StructCodecAndFactory<TransactionPayload__actual, TransactionPayload> = createStructCodec<TransactionPayload__actual, TransactionPayload>('TransactionPayload', [
+    ['account_id', __dyn_AccountId],
+    ['instructions', __dyn_Executable],
+    ['creation_time', U64],
+    ['time_to_live_ms', U64],
+    ['nonce', __dyn_OptionU32],
+    ['metadata', __dyn_BTreeMapNameValue]
+])
 
-export interface TransactionRejectionReason extends Enum<
+// Type: TransactionRejectionReason
+
+type TransactionRejectionReason__actual = Enum<
     | ['NotPermitted', NotPermittedFail]
     | ['UnsatisfiedSignatureCondition', UnsatisfiedSignatureConditionFail]
     | ['LimitCheck', TransactionLimitError]
     | ['InstructionExecution', InstructionExecutionFail]
     | ['WasmExecution', WasmExecutionFail]
     | 'UnexpectedGenesisAccountSignature'
-> {}
+>
 
-export const TransactionRejectionReasonCodec: Codec<TransactionRejectionReason> = createEnumCodec<any>('TransactionRejectionReason', [[0, 'NotPermitted', dynCodec(() => NotPermittedFailCodec)], [1, 'UnsatisfiedSignatureCondition', dynCodec(() => UnsatisfiedSignatureConditionFailCodec)], [2, 'LimitCheck', dynCodec(() => TransactionLimitErrorCodec)], [3, 'InstructionExecution', dynCodec(() => InstructionExecutionFailCodec)], [4, 'WasmExecution', dynCodec(() => WasmExecutionFailCodec)], [5, 'UnexpectedGenesisAccountSignature']]) as any
+interface TransactionRejectionReason extends Opaque<TransactionRejectionReason__actual, TransactionRejectionReason> {}
 
-// TransactionValue
+const TransactionRejectionReason: EnumCodecAndFactory<TransactionRejectionReason> = createEnumCodec<TransactionRejectionReason__actual, TransactionRejectionReason>('TransactionRejectionReason', [
+    [0, 'NotPermitted', __dyn_NotPermittedFail],
+    [1, 'UnsatisfiedSignatureCondition', __dyn_UnsatisfiedSignatureConditionFail],
+    [2, 'LimitCheck', __dyn_TransactionLimitError],
+    [3, 'InstructionExecution', __dyn_InstructionExecutionFail],
+    [4, 'WasmExecution', __dyn_WasmExecutionFail],
+    [5, 'UnexpectedGenesisAccountSignature']
+])
 
-export interface TransactionValue extends Enum<
+// Type: TransactionValue
+
+type TransactionValue__actual = Enum<
     | ['Transaction', VersionedTransaction]
     | ['RejectedTransaction', VersionedRejectedTransaction]
-> {}
+>
 
-export const TransactionValueCodec: Codec<TransactionValue> = createEnumCodec<any>('TransactionValue', [[0, 'Transaction', dynCodec(() => VersionedTransactionCodec)], [1, 'RejectedTransaction', dynCodec(() => VersionedRejectedTransactionCodec)]]) as any
+interface TransactionValue extends Opaque<TransactionValue__actual, TransactionValue> {}
 
-// TransferBox
+const TransactionValue: EnumCodecAndFactory<TransactionValue> = createEnumCodec<TransactionValue__actual, TransactionValue>('TransactionValue', [
+    [0, 'Transaction', __dyn_VersionedTransaction],
+    [1, 'RejectedTransaction', __dyn_VersionedRejectedTransaction]
+])
 
-export interface TransferBox extends PseudoType<{
-    source_id: EvaluatesToIdBox,
-    object: EvaluatesToValue,
+// Type: TransferBox
+
+interface TransferBox__actual {
+    source_id: EvaluatesToIdBox
+    object: EvaluatesToValue
     destination_id: EvaluatesToIdBox
-}> {}
+}
 
-export const TransferBoxCodec: Codec<TransferBox> = createStructCodec<any>('TransferBox', [['source_id', dynCodec(() => EvaluatesToIdBoxCodec) as any], ['object', dynCodec(() => EvaluatesToValueCodec) as any], ['destination_id', dynCodec(() => EvaluatesToIdBoxCodec) as any]]) as any
+interface TransferBox extends Opaque<TransferBox__actual, TransferBox> {}
 
-// Trigger
+const TransferBox: StructCodecAndFactory<TransferBox__actual, TransferBox> = createStructCodec<TransferBox__actual, TransferBox>('TransferBox', [
+    ['source_id', __dyn_EvaluatesToIdBox],
+    ['object', __dyn_EvaluatesToValue],
+    ['destination_id', __dyn_EvaluatesToIdBox]
+])
 
-export interface Trigger extends PseudoType<{
-    id: TriggerId,
-    action: Action,
+// Type: Trigger
+
+interface Trigger__actual {
+    id: TriggerId
+    action: Action
     metadata: Metadata
-}> {}
+}
 
-export const TriggerCodec: Codec<Trigger> = createStructCodec<any>('Trigger', [['id', dynCodec(() => TriggerIdCodec) as any], ['action', dynCodec(() => ActionCodec) as any], ['metadata', dynCodec(() => MetadataCodec) as any]]) as any
+interface Trigger extends Opaque<Trigger__actual, Trigger> {}
 
-// TriggerEvent
+const Trigger: StructCodecAndFactory<Trigger__actual, Trigger> = createStructCodec<Trigger__actual, Trigger>('Trigger', [
+    ['id', __dyn_TriggerId],
+    ['action', __dyn_Action],
+    ['metadata', __dyn_Metadata]
+])
 
-export interface TriggerEvent extends Enum<
+// Type: TriggerEvent
+
+type TriggerEvent__actual = Enum<
     | ['Created', TriggerId]
     | ['Deleted', TriggerId]
     | ['Extended', TriggerId]
     | ['Shortened', TriggerId]
-> {}
+>
 
-export const TriggerEventCodec: Codec<TriggerEvent> = createEnumCodec<any>('TriggerEvent', [[0, 'Created', dynCodec(() => TriggerIdCodec)], [1, 'Deleted', dynCodec(() => TriggerIdCodec)], [2, 'Extended', dynCodec(() => TriggerIdCodec)], [3, 'Shortened', dynCodec(() => TriggerIdCodec)]]) as any
+interface TriggerEvent extends Opaque<TriggerEvent__actual, TriggerEvent> {}
 
-// TriggerEventFilter
+const TriggerEvent: EnumCodecAndFactory<TriggerEvent> = createEnumCodec<TriggerEvent__actual, TriggerEvent>('TriggerEvent', [
+    [0, 'Created', __dyn_TriggerId],
+    [1, 'Deleted', __dyn_TriggerId],
+    [2, 'Extended', __dyn_TriggerId],
+    [3, 'Shortened', __dyn_TriggerId]
+])
 
-export interface TriggerEventFilter extends Enum<
+// Type: TriggerEventFilter
+
+type TriggerEventFilter__actual = Enum<
     | 'ByCreated'
     | 'ByDeleted'
     | 'ByExtended'
     | 'ByShortened'
-> {}
+>
 
-export const TriggerEventFilterCodec: Codec<TriggerEventFilter> = createEnumCodec<any>('TriggerEventFilter', [[0, 'ByCreated'], [1, 'ByDeleted'], [2, 'ByExtended'], [3, 'ByShortened']]) as any
+interface TriggerEventFilter extends Opaque<TriggerEventFilter__actual, TriggerEventFilter> {}
 
-// TriggerFilter
+const TriggerEventFilter: EnumCodecAndFactory<TriggerEventFilter> = createEnumCodec<TriggerEventFilter__actual, TriggerEventFilter>('TriggerEventFilter', [
+    [0, 'ByCreated'],
+    [1, 'ByDeleted'],
+    [2, 'ByExtended'],
+    [3, 'ByShortened']
+])
 
-export interface TriggerFilter extends PseudoType<{
-    id_filter: FilterOptIdFilterTriggerId,
+// Type: TriggerFilter
+
+interface TriggerFilter__actual {
+    id_filter: FilterOptIdFilterTriggerId
     event_filter: FilterOptTriggerEventFilter
-}> {}
+}
 
-export const TriggerFilterCodec: Codec<TriggerFilter> = createStructCodec<any>('TriggerFilter', [['id_filter', dynCodec(() => FilterOptIdFilterTriggerIdCodec) as any], ['event_filter', dynCodec(() => FilterOptTriggerEventFilterCodec) as any]]) as any
+interface TriggerFilter extends Opaque<TriggerFilter__actual, TriggerFilter> {}
 
-// TriggerId
+const TriggerFilter: StructCodecAndFactory<TriggerFilter__actual, TriggerFilter> = createStructCodec<TriggerFilter__actual, TriggerFilter>('TriggerFilter', [
+    ['id_filter', __dyn_FilterOptIdFilterTriggerId],
+    ['event_filter', __dyn_FilterOptTriggerEventFilter]
+])
 
-export interface TriggerId extends PseudoType<{
+// Type: TriggerId
+
+interface TriggerId__actual {
     name: Name
-}> {}
+}
 
-export const TriggerIdCodec: Codec<TriggerId> = createStructCodec<any>('TriggerId', [['name', dynCodec(() => NameCodec) as any]]) as any
+interface TriggerId extends Opaque<TriggerId__actual, TriggerId> {}
 
-// UnregisterBox
+const TriggerId: StructCodecAndFactory<TriggerId__actual, TriggerId> = createStructCodec<TriggerId__actual, TriggerId>('TriggerId', [
+    ['name', __dyn_Name]
+])
 
-export interface UnregisterBox extends PseudoType<{
+// Type: UnregisterBox
+
+interface UnregisterBox__actual {
     object_id: EvaluatesToIdBox
-}> {}
+}
 
-export const UnregisterBoxCodec: Codec<UnregisterBox> = createStructCodec<any>('UnregisterBox', [['object_id', dynCodec(() => EvaluatesToIdBoxCodec) as any]]) as any
+interface UnregisterBox extends Opaque<UnregisterBox__actual, UnregisterBox> {}
 
-// UnsatisfiedSignatureConditionFail
+const UnregisterBox: StructCodecAndFactory<UnregisterBox__actual, UnregisterBox> = createStructCodec<UnregisterBox__actual, UnregisterBox>('UnregisterBox', [
+    ['object_id', __dyn_EvaluatesToIdBox]
+])
 
-export interface UnsatisfiedSignatureConditionFail extends PseudoType<{
+// Type: UnsatisfiedSignatureConditionFail
+
+interface UnsatisfiedSignatureConditionFail__actual {
     reason: Str
-}> {}
+}
 
-export const UnsatisfiedSignatureConditionFailCodec: Codec<UnsatisfiedSignatureConditionFail> = createStructCodec<any>('UnsatisfiedSignatureConditionFail', [['reason', dynCodec(() => StrCodec) as any]]) as any
+interface UnsatisfiedSignatureConditionFail extends Opaque<UnsatisfiedSignatureConditionFail__actual, UnsatisfiedSignatureConditionFail> {}
 
-// UnsupportedVersion
+const UnsatisfiedSignatureConditionFail: StructCodecAndFactory<UnsatisfiedSignatureConditionFail__actual, UnsatisfiedSignatureConditionFail> = createStructCodec<UnsatisfiedSignatureConditionFail__actual, UnsatisfiedSignatureConditionFail>('UnsatisfiedSignatureConditionFail', [
+    ['reason', Str]
+])
 
-export interface UnsupportedVersion extends PseudoType<{
-    version: U8,
+// Type: UnsupportedVersion
+
+interface UnsupportedVersion__actual {
+    version: U8
     raw: RawVersioned
-}> {}
+}
 
-export const UnsupportedVersionCodec: Codec<UnsupportedVersion> = createStructCodec<any>('UnsupportedVersion', [['version', dynCodec(() => U8Codec) as any], ['raw', dynCodec(() => RawVersionedCodec) as any]]) as any
+interface UnsupportedVersion extends Opaque<UnsupportedVersion__actual, UnsupportedVersion> {}
 
-// ValidBlock
+const UnsupportedVersion: StructCodecAndFactory<UnsupportedVersion__actual, UnsupportedVersion> = createStructCodec<UnsupportedVersion__actual, UnsupportedVersion>('UnsupportedVersion', [
+    ['version', U8],
+    ['raw', __dyn_RawVersioned]
+])
 
-export interface ValidBlock extends PseudoType<{
-    header: BlockHeader,
-    rejected_transactions: VecVersionedRejectedTransaction,
-    transactions: VecVersionedValidTransaction,
-    signatures: BTreeSetSignatureOfValidBlock,
+// Type: ValidBlock
+
+interface ValidBlock__actual {
+    header: BlockHeader
+    rejected_transactions: VecVersionedRejectedTransaction
+    transactions: VecVersionedValidTransaction
+    signatures: BTreeSetSignatureOfValidBlock
     trigger_recommendations: VecAction
-}> {}
+}
 
-export const ValidBlockCodec: Codec<ValidBlock> = createStructCodec<any>('ValidBlock', [['header', dynCodec(() => BlockHeaderCodec) as any], ['rejected_transactions', dynCodec(() => VecVersionedRejectedTransactionCodec) as any], ['transactions', dynCodec(() => VecVersionedValidTransactionCodec) as any], ['signatures', dynCodec(() => BTreeSetSignatureOfValidBlockCodec) as any], ['trigger_recommendations', dynCodec(() => VecActionCodec) as any]]) as any
+interface ValidBlock extends Opaque<ValidBlock__actual, ValidBlock> {}
 
-// ValidTransaction
+const ValidBlock: StructCodecAndFactory<ValidBlock__actual, ValidBlock> = createStructCodec<ValidBlock__actual, ValidBlock>('ValidBlock', [
+    ['header', __dyn_BlockHeader],
+    ['rejected_transactions', __dyn_VecVersionedRejectedTransaction],
+    ['transactions', __dyn_VecVersionedValidTransaction],
+    ['signatures', __dyn_BTreeSetSignatureOfValidBlock],
+    ['trigger_recommendations', __dyn_VecAction]
+])
 
-export interface ValidTransaction extends PseudoType<{
-    payload: TransactionPayload,
+// Type: ValidTransaction
+
+interface ValidTransaction__actual {
+    payload: TransactionPayload
     signatures: SignaturesOfTransactionPayload
-}> {}
+}
 
-export const ValidTransactionCodec: Codec<ValidTransaction> = createStructCodec<any>('ValidTransaction', [['payload', dynCodec(() => TransactionPayloadCodec) as any], ['signatures', dynCodec(() => SignaturesOfTransactionPayloadCodec) as any]]) as any
+interface ValidTransaction extends Opaque<ValidTransaction__actual, ValidTransaction> {}
 
-// Value
+const ValidTransaction: StructCodecAndFactory<ValidTransaction__actual, ValidTransaction> = createStructCodec<ValidTransaction__actual, ValidTransaction>('ValidTransaction', [
+    ['payload', __dyn_TransactionPayload],
+    ['signatures', __dyn_SignaturesOfTransactionPayload]
+])
 
-export interface Value extends Enum<
+// Type: Value
+
+type Value__actual = Enum<
     | ['U32', U32]
     | ['U128', U128]
     | ['Bool', Bool]
@@ -2020,179 +3275,136 @@ export interface Value extends Enum<
     | ['TransactionValue', TransactionValue]
     | ['PermissionToken', PermissionToken]
     | ['Hash', Hash]
-> {}
+>
 
-export const ValueCodec: Codec<Value> = createEnumCodec<any>('Value', [[0, 'U32', dynCodec(() => U32Codec)], [1, 'U128', dynCodec(() => U128Codec)], [2, 'Bool', dynCodec(() => BoolCodec)], [3, 'String', dynCodec(() => StrCodec)], [4, 'Name', dynCodec(() => NameCodec)], [5, 'Fixed', dynCodec(() => FixedCodec)], [6, 'Vec', dynCodec(() => VecValueCodec)], [7, 'LimitedMetadata', dynCodec(() => MetadataCodec)], [8, 'Id', dynCodec(() => IdBoxCodec)], [9, 'Identifiable', dynCodec(() => IdentifiableBoxCodec)], [10, 'PublicKey', dynCodec(() => PublicKeyCodec)], [11, 'Parameter', dynCodec(() => ParameterCodec)], [12, 'SignatureCheckCondition', dynCodec(() => SignatureCheckConditionCodec)], [13, 'TransactionValue', dynCodec(() => TransactionValueCodec)], [14, 'PermissionToken', dynCodec(() => PermissionTokenCodec)], [15, 'Hash', dynCodec(() => HashCodec)]]) as any
+interface Value extends Opaque<Value__actual, Value> {}
 
-// VecAction
+const Value: EnumCodecAndFactory<Value> = createEnumCodec<Value__actual, Value>('Value', [
+    [0, 'U32', U32],
+    [1, 'U128', U128],
+    [2, 'Bool', Bool],
+    [3, 'String', Str],
+    [4, 'Name', __dyn_Name],
+    [5, 'Fixed', __dyn_Fixed],
+    [6, 'Vec', __dyn_VecValue],
+    [7, 'LimitedMetadata', __dyn_Metadata],
+    [8, 'Id', __dyn_IdBox],
+    [9, 'Identifiable', __dyn_IdentifiableBox],
+    [10, 'PublicKey', __dyn_PublicKey],
+    [11, 'Parameter', __dyn_Parameter],
+    [12, 'SignatureCheckCondition', __dyn_SignatureCheckCondition],
+    [13, 'TransactionValue', __dyn_TransactionValue],
+    [14, 'PermissionToken', __dyn_PermissionToken],
+    [15, 'Hash', __dyn_Hash]
+])
 
-export interface VecAction extends Array<Action> {}
+// Type: VecAction
 
-export const VecActionCodec: Codec<VecAction> = createVecCodec<any>('VecAction', dynCodec(() => ActionCodec)) as any
+type VecAction__actual = Action[]
 
-// VecGenesisTransaction
+interface VecAction extends Opaque<VecAction__actual, VecAction> {}
 
-export interface VecGenesisTransaction extends Array<GenesisTransaction> {}
+const VecAction: ArrayCodecAndFactory<VecAction__actual, VecAction> = createVecCodec<VecAction__actual, VecAction>('VecAction', __dyn_Action)
 
-export const VecGenesisTransactionCodec: Codec<VecGenesisTransaction> = createVecCodec<any>('VecGenesisTransaction', dynCodec(() => GenesisTransactionCodec)) as any
+// Type: VecGenesisTransaction
 
-// VecHashOfVersionedValidBlock
+type VecGenesisTransaction__actual = GenesisTransaction[]
 
-export interface VecHashOfVersionedValidBlock extends Array<HashOfVersionedValidBlock> {}
+interface VecGenesisTransaction extends Opaque<VecGenesisTransaction__actual, VecGenesisTransaction> {}
 
-export const VecHashOfVersionedValidBlockCodec: Codec<VecHashOfVersionedValidBlock> = createVecCodec<any>('VecHashOfVersionedValidBlock', dynCodec(() => HashOfVersionedValidBlockCodec)) as any
+const VecGenesisTransaction: ArrayCodecAndFactory<VecGenesisTransaction__actual, VecGenesisTransaction> = createVecCodec<VecGenesisTransaction__actual, VecGenesisTransaction>('VecGenesisTransaction', __dyn_GenesisTransaction)
 
-// VecInstruction
+// Type: VecHashOfVersionedValidBlock
 
-export interface VecInstruction extends Array<Instruction> {}
+type VecHashOfVersionedValidBlock__actual = HashOfVersionedValidBlock[]
 
-export const VecInstructionCodec: Codec<VecInstruction> = createVecCodec<any>('VecInstruction', dynCodec(() => InstructionCodec)) as any
+interface VecHashOfVersionedValidBlock extends Opaque<VecHashOfVersionedValidBlock__actual, VecHashOfVersionedValidBlock> {}
 
-// VecPeerId
+const VecHashOfVersionedValidBlock: ArrayCodecAndFactory<VecHashOfVersionedValidBlock__actual, VecHashOfVersionedValidBlock> = createVecCodec<VecHashOfVersionedValidBlock__actual, VecHashOfVersionedValidBlock>('VecHashOfVersionedValidBlock', __dyn_HashOfVersionedValidBlock)
 
-export interface VecPeerId extends Array<PeerId> {}
+// Type: VecInstruction
 
-export const VecPeerIdCodec: Codec<VecPeerId> = createVecCodec<any>('VecPeerId', dynCodec(() => PeerIdCodec)) as any
+type VecInstruction__actual = Instruction[]
 
-// VecPermissionToken
+interface VecInstruction extends Opaque<VecInstruction__actual, VecInstruction> {}
 
-export interface VecPermissionToken extends Array<PermissionToken> {}
+const VecInstruction: ArrayCodecAndFactory<VecInstruction__actual, VecInstruction> = createVecCodec<VecInstruction__actual, VecInstruction>('VecInstruction', __dyn_Instruction)
 
-export const VecPermissionTokenCodec: Codec<VecPermissionToken> = createVecCodec<any>('VecPermissionToken', dynCodec(() => PermissionTokenCodec)) as any
+// Type: VecPeerId
 
-// VecProof
+type VecPeerId__actual = PeerId[]
 
-export interface VecProof extends Array<Proof> {}
+interface VecPeerId extends Opaque<VecPeerId__actual, VecPeerId> {}
 
-export const VecProofCodec: Codec<VecProof> = createVecCodec<any>('VecProof', dynCodec(() => ProofCodec)) as any
+const VecPeerId: ArrayCodecAndFactory<VecPeerId__actual, VecPeerId> = createVecCodec<VecPeerId__actual, VecPeerId>('VecPeerId', __dyn_PeerId)
 
-// VecPublicKey
+// Type: VecPermissionToken
 
-export interface VecPublicKey extends Array<PublicKey> {}
+type VecPermissionToken__actual = PermissionToken[]
 
-export const VecPublicKeyCodec: Codec<VecPublicKey> = createVecCodec<any>('VecPublicKey', dynCodec(() => PublicKeyCodec)) as any
+interface VecPermissionToken extends Opaque<VecPermissionToken__actual, VecPermissionToken> {}
 
-// VecSignatureOfTransactionPayload
+const VecPermissionToken: ArrayCodecAndFactory<VecPermissionToken__actual, VecPermissionToken> = createVecCodec<VecPermissionToken__actual, VecPermissionToken>('VecPermissionToken', __dyn_PermissionToken)
 
-export interface VecSignatureOfTransactionPayload extends Array<SignatureOfTransactionPayload> {}
+// Type: VecProof
 
-export const VecSignatureOfTransactionPayloadCodec: Codec<VecSignatureOfTransactionPayload> = createVecCodec<any>('VecSignatureOfTransactionPayload', dynCodec(() => SignatureOfTransactionPayloadCodec)) as any
+type VecProof__actual = Proof[]
 
-// VecSignatureOfValidBlock
+interface VecProof extends Opaque<VecProof__actual, VecProof> {}
 
-export interface VecSignatureOfValidBlock extends Array<SignatureOfValidBlock> {}
+const VecProof: ArrayCodecAndFactory<VecProof__actual, VecProof> = createVecCodec<VecProof__actual, VecProof>('VecProof', __dyn_Proof)
 
-export const VecSignatureOfValidBlockCodec: Codec<VecSignatureOfValidBlock> = createVecCodec<any>('VecSignatureOfValidBlock', dynCodec(() => SignatureOfValidBlockCodec)) as any
+// Type: VecPublicKey
 
-// VecValue
+type VecPublicKey__actual = PublicKey[]
 
-export interface VecValue extends Array<Value> {}
+interface VecPublicKey extends Opaque<VecPublicKey__actual, VecPublicKey> {}
 
-export const VecValueCodec: Codec<VecValue> = createVecCodec<any>('VecValue', dynCodec(() => ValueCodec)) as any
+const VecPublicKey: ArrayCodecAndFactory<VecPublicKey__actual, VecPublicKey> = createVecCodec<VecPublicKey__actual, VecPublicKey>('VecPublicKey', __dyn_PublicKey)
 
-// VecVersionedRejectedTransaction
+// Type: VecSignatureOfTransactionPayload
 
-export interface VecVersionedRejectedTransaction extends Array<VersionedRejectedTransaction> {}
+type VecSignatureOfTransactionPayload__actual = SignatureOfTransactionPayload[]
 
-export const VecVersionedRejectedTransactionCodec: Codec<VecVersionedRejectedTransaction> = createVecCodec<any>('VecVersionedRejectedTransaction', dynCodec(() => VersionedRejectedTransactionCodec)) as any
+interface VecSignatureOfTransactionPayload extends Opaque<VecSignatureOfTransactionPayload__actual, VecSignatureOfTransactionPayload> {}
 
-// VecVersionedValidTransaction
+const VecSignatureOfTransactionPayload: ArrayCodecAndFactory<VecSignatureOfTransactionPayload__actual, VecSignatureOfTransactionPayload> = createVecCodec<VecSignatureOfTransactionPayload__actual, VecSignatureOfTransactionPayload>('VecSignatureOfTransactionPayload', __dyn_SignatureOfTransactionPayload)
 
-export interface VecVersionedValidTransaction extends Array<VersionedValidTransaction> {}
+// Type: VecSignatureOfValidBlock
 
-export const VecVersionedValidTransactionCodec: Codec<VecVersionedValidTransaction> = createVecCodec<any>('VecVersionedValidTransaction', dynCodec(() => VersionedValidTransactionCodec)) as any
+type VecSignatureOfValidBlock__actual = SignatureOfValidBlock[]
 
-// VersionedBlockPublisherMessage
+interface VecSignatureOfValidBlock extends Opaque<VecSignatureOfValidBlock__actual, VecSignatureOfValidBlock> {}
 
-export interface VersionedBlockPublisherMessage extends Enum<
-    | ['V1', BlockPublisherMessage]
-> {}
+const VecSignatureOfValidBlock: ArrayCodecAndFactory<VecSignatureOfValidBlock__actual, VecSignatureOfValidBlock> = createVecCodec<VecSignatureOfValidBlock__actual, VecSignatureOfValidBlock>('VecSignatureOfValidBlock', __dyn_SignatureOfValidBlock)
 
-export const VersionedBlockPublisherMessageCodec: Codec<VersionedBlockPublisherMessage> = createEnumCodec<any>('VersionedBlockPublisherMessage', [[1, 'V1', dynCodec(() => BlockPublisherMessageCodec)]]) as any
+// Type: VecValue
 
-// VersionedBlockSubscriberMessage
+type VecValue__actual = Value[]
 
-export interface VersionedBlockSubscriberMessage extends Enum<
-    | ['V1', BlockSubscriberMessage]
-> {}
+interface VecValue extends Opaque<VecValue__actual, VecValue> {}
 
-export const VersionedBlockSubscriberMessageCodec: Codec<VersionedBlockSubscriberMessage> = createEnumCodec<any>('VersionedBlockSubscriberMessage', [[1, 'V1', dynCodec(() => BlockSubscriberMessageCodec)]]) as any
+const VecValue: ArrayCodecAndFactory<VecValue__actual, VecValue> = createVecCodec<VecValue__actual, VecValue>('VecValue', __dyn_Value)
 
-// VersionedCommittedBlock
+// Type: VecVersionedRejectedTransaction
 
-export interface VersionedCommittedBlock extends Enum<
-    | ['V1', CommittedBlock]
-> {}
+type VecVersionedRejectedTransaction__actual = VersionedRejectedTransaction[]
 
-export const VersionedCommittedBlockCodec: Codec<VersionedCommittedBlock> = createEnumCodec<any>('VersionedCommittedBlock', [[1, 'V1', dynCodec(() => CommittedBlockCodec)]]) as any
+interface VecVersionedRejectedTransaction extends Opaque<VecVersionedRejectedTransaction__actual, VecVersionedRejectedTransaction> {}
 
-// VersionedEventPublisherMessage
+const VecVersionedRejectedTransaction: ArrayCodecAndFactory<VecVersionedRejectedTransaction__actual, VecVersionedRejectedTransaction> = createVecCodec<VecVersionedRejectedTransaction__actual, VecVersionedRejectedTransaction>('VecVersionedRejectedTransaction', __dyn_VersionedRejectedTransaction)
 
-export interface VersionedEventPublisherMessage extends Enum<
-    | ['V1', EventPublisherMessage]
-> {}
+// Type: VecVersionedValidTransaction
 
-export const VersionedEventPublisherMessageCodec: Codec<VersionedEventPublisherMessage> = createEnumCodec<any>('VersionedEventPublisherMessage', [[1, 'V1', dynCodec(() => EventPublisherMessageCodec)]]) as any
+type VecVersionedValidTransaction__actual = VersionedValidTransaction[]
 
-// VersionedEventSubscriberMessage
+interface VecVersionedValidTransaction extends Opaque<VecVersionedValidTransaction__actual, VecVersionedValidTransaction> {}
 
-export interface VersionedEventSubscriberMessage extends Enum<
-    | ['V1', EventSubscriberMessage]
-> {}
+const VecVersionedValidTransaction: ArrayCodecAndFactory<VecVersionedValidTransaction__actual, VecVersionedValidTransaction> = createVecCodec<VecVersionedValidTransaction__actual, VecVersionedValidTransaction>('VecVersionedValidTransaction', __dyn_VersionedValidTransaction)
 
-export const VersionedEventSubscriberMessageCodec: Codec<VersionedEventSubscriberMessage> = createEnumCodec<any>('VersionedEventSubscriberMessage', [[1, 'V1', dynCodec(() => EventSubscriberMessageCodec)]]) as any
+// Type: VersionError
 
-// VersionedQueryResult
-
-export interface VersionedQueryResult extends Enum<
-    | ['V1', QueryResult]
-> {}
-
-export const VersionedQueryResultCodec: Codec<VersionedQueryResult> = createEnumCodec<any>('VersionedQueryResult', [[1, 'V1', dynCodec(() => QueryResultCodec)]]) as any
-
-// VersionedRejectedTransaction
-
-export interface VersionedRejectedTransaction extends Enum<
-    | ['V1', RejectedTransaction]
-> {}
-
-export const VersionedRejectedTransactionCodec: Codec<VersionedRejectedTransaction> = createEnumCodec<any>('VersionedRejectedTransaction', [[1, 'V1', dynCodec(() => RejectedTransactionCodec)]]) as any
-
-// VersionedSignedQueryRequest
-
-export interface VersionedSignedQueryRequest extends Enum<
-    | ['V1', SignedQueryRequest]
-> {}
-
-export const VersionedSignedQueryRequestCodec: Codec<VersionedSignedQueryRequest> = createEnumCodec<any>('VersionedSignedQueryRequest', [[1, 'V1', dynCodec(() => SignedQueryRequestCodec)]]) as any
-
-// VersionedTransaction
-
-export interface VersionedTransaction extends Enum<
-    | ['V1', Transaction]
-> {}
-
-export const VersionedTransactionCodec: Codec<VersionedTransaction> = createEnumCodec<any>('VersionedTransaction', [[1, 'V1', dynCodec(() => TransactionCodec)]]) as any
-
-// VersionedValidBlock
-
-export interface VersionedValidBlock extends Enum<
-    | ['V1', ValidBlock]
-> {}
-
-export const VersionedValidBlockCodec: Codec<VersionedValidBlock> = createEnumCodec<any>('VersionedValidBlock', [[1, 'V1', dynCodec(() => ValidBlockCodec)]]) as any
-
-// VersionedValidTransaction
-
-export interface VersionedValidTransaction extends Enum<
-    | ['V1', ValidTransaction]
-> {}
-
-export const VersionedValidTransactionCodec: Codec<VersionedValidTransaction> = createEnumCodec<any>('VersionedValidTransaction', [[1, 'V1', dynCodec(() => ValidTransactionCodec)]]) as any
-
-// VersionError
-
-export interface VersionError extends Enum<
+type VersionError__actual = Enum<
     | 'NotVersioned'
     | 'UnsupportedJsonEncode'
     | 'ExpectedJson'
@@ -2201,31 +3413,191 @@ export interface VersionError extends Enum<
     | 'ParityScale'
     | 'ParseInt'
     | ['UnsupportedVersion', UnsupportedVersion]
-> {}
+>
 
-export const VersionErrorCodec: Codec<VersionError> = createEnumCodec<any>('VersionError', [[0, 'NotVersioned'], [1, 'UnsupportedJsonEncode'], [2, 'ExpectedJson'], [3, 'UnsupportedScaleEncode'], [4, 'Serde'], [5, 'ParityScale'], [6, 'ParseInt'], [7, 'UnsupportedVersion', dynCodec(() => UnsupportedVersionCodec)]]) as any
+interface VersionError extends Opaque<VersionError__actual, VersionError> {}
 
-// WasmExecutionFail
+const VersionError: EnumCodecAndFactory<VersionError> = createEnumCodec<VersionError__actual, VersionError>('VersionError', [
+    [0, 'NotVersioned'],
+    [1, 'UnsupportedJsonEncode'],
+    [2, 'ExpectedJson'],
+    [3, 'UnsupportedScaleEncode'],
+    [4, 'Serde'],
+    [5, 'ParityScale'],
+    [6, 'ParseInt'],
+    [7, 'UnsupportedVersion', __dyn_UnsupportedVersion]
+])
 
-export interface WasmExecutionFail extends PseudoType<{
+// Type: VersionedBlockPublisherMessage
+
+type VersionedBlockPublisherMessage__actual = Enum<
+    | ['V1', BlockPublisherMessage]
+>
+
+interface VersionedBlockPublisherMessage extends Opaque<VersionedBlockPublisherMessage__actual, VersionedBlockPublisherMessage> {}
+
+const VersionedBlockPublisherMessage: EnumCodecAndFactory<VersionedBlockPublisherMessage> = createEnumCodec<VersionedBlockPublisherMessage__actual, VersionedBlockPublisherMessage>('VersionedBlockPublisherMessage', [
+    [1, 'V1', __dyn_BlockPublisherMessage]
+])
+
+// Type: VersionedBlockSubscriberMessage
+
+type VersionedBlockSubscriberMessage__actual = Enum<
+    | ['V1', BlockSubscriberMessage]
+>
+
+interface VersionedBlockSubscriberMessage extends Opaque<VersionedBlockSubscriberMessage__actual, VersionedBlockSubscriberMessage> {}
+
+const VersionedBlockSubscriberMessage: EnumCodecAndFactory<VersionedBlockSubscriberMessage> = createEnumCodec<VersionedBlockSubscriberMessage__actual, VersionedBlockSubscriberMessage>('VersionedBlockSubscriberMessage', [
+    [1, 'V1', __dyn_BlockSubscriberMessage]
+])
+
+// Type: VersionedCommittedBlock
+
+type VersionedCommittedBlock__actual = Enum<
+    | ['V1', CommittedBlock]
+>
+
+interface VersionedCommittedBlock extends Opaque<VersionedCommittedBlock__actual, VersionedCommittedBlock> {}
+
+const VersionedCommittedBlock: EnumCodecAndFactory<VersionedCommittedBlock> = createEnumCodec<VersionedCommittedBlock__actual, VersionedCommittedBlock>('VersionedCommittedBlock', [
+    [1, 'V1', __dyn_CommittedBlock]
+])
+
+// Type: VersionedEventPublisherMessage
+
+type VersionedEventPublisherMessage__actual = Enum<
+    | ['V1', EventPublisherMessage]
+>
+
+interface VersionedEventPublisherMessage extends Opaque<VersionedEventPublisherMessage__actual, VersionedEventPublisherMessage> {}
+
+const VersionedEventPublisherMessage: EnumCodecAndFactory<VersionedEventPublisherMessage> = createEnumCodec<VersionedEventPublisherMessage__actual, VersionedEventPublisherMessage>('VersionedEventPublisherMessage', [
+    [1, 'V1', __dyn_EventPublisherMessage]
+])
+
+// Type: VersionedEventSubscriberMessage
+
+type VersionedEventSubscriberMessage__actual = Enum<
+    | ['V1', EventSubscriberMessage]
+>
+
+interface VersionedEventSubscriberMessage extends Opaque<VersionedEventSubscriberMessage__actual, VersionedEventSubscriberMessage> {}
+
+const VersionedEventSubscriberMessage: EnumCodecAndFactory<VersionedEventSubscriberMessage> = createEnumCodec<VersionedEventSubscriberMessage__actual, VersionedEventSubscriberMessage>('VersionedEventSubscriberMessage', [
+    [1, 'V1', __dyn_EventSubscriberMessage]
+])
+
+// Type: VersionedQueryResult
+
+type VersionedQueryResult__actual = Enum<
+    | ['V1', QueryResult]
+>
+
+interface VersionedQueryResult extends Opaque<VersionedQueryResult__actual, VersionedQueryResult> {}
+
+const VersionedQueryResult: EnumCodecAndFactory<VersionedQueryResult> = createEnumCodec<VersionedQueryResult__actual, VersionedQueryResult>('VersionedQueryResult', [
+    [1, 'V1', __dyn_QueryResult]
+])
+
+// Type: VersionedRejectedTransaction
+
+type VersionedRejectedTransaction__actual = Enum<
+    | ['V1', RejectedTransaction]
+>
+
+interface VersionedRejectedTransaction extends Opaque<VersionedRejectedTransaction__actual, VersionedRejectedTransaction> {}
+
+const VersionedRejectedTransaction: EnumCodecAndFactory<VersionedRejectedTransaction> = createEnumCodec<VersionedRejectedTransaction__actual, VersionedRejectedTransaction>('VersionedRejectedTransaction', [
+    [1, 'V1', __dyn_RejectedTransaction]
+])
+
+// Type: VersionedSignedQueryRequest
+
+type VersionedSignedQueryRequest__actual = Enum<
+    | ['V1', SignedQueryRequest]
+>
+
+interface VersionedSignedQueryRequest extends Opaque<VersionedSignedQueryRequest__actual, VersionedSignedQueryRequest> {}
+
+const VersionedSignedQueryRequest: EnumCodecAndFactory<VersionedSignedQueryRequest> = createEnumCodec<VersionedSignedQueryRequest__actual, VersionedSignedQueryRequest>('VersionedSignedQueryRequest', [
+    [1, 'V1', __dyn_SignedQueryRequest]
+])
+
+// Type: VersionedTransaction
+
+type VersionedTransaction__actual = Enum<
+    | ['V1', Transaction]
+>
+
+interface VersionedTransaction extends Opaque<VersionedTransaction__actual, VersionedTransaction> {}
+
+const VersionedTransaction: EnumCodecAndFactory<VersionedTransaction> = createEnumCodec<VersionedTransaction__actual, VersionedTransaction>('VersionedTransaction', [
+    [1, 'V1', __dyn_Transaction]
+])
+
+// Type: VersionedValidBlock
+
+type VersionedValidBlock__actual = Enum<
+    | ['V1', ValidBlock]
+>
+
+interface VersionedValidBlock extends Opaque<VersionedValidBlock__actual, VersionedValidBlock> {}
+
+const VersionedValidBlock: EnumCodecAndFactory<VersionedValidBlock> = createEnumCodec<VersionedValidBlock__actual, VersionedValidBlock>('VersionedValidBlock', [
+    [1, 'V1', __dyn_ValidBlock]
+])
+
+// Type: VersionedValidTransaction
+
+type VersionedValidTransaction__actual = Enum<
+    | ['V1', ValidTransaction]
+>
+
+interface VersionedValidTransaction extends Opaque<VersionedValidTransaction__actual, VersionedValidTransaction> {}
+
+const VersionedValidTransaction: EnumCodecAndFactory<VersionedValidTransaction> = createEnumCodec<VersionedValidTransaction__actual, VersionedValidTransaction>('VersionedValidTransaction', [
+    [1, 'V1', __dyn_ValidTransaction]
+])
+
+// Type: WasmExecutionFail
+
+interface WasmExecutionFail__actual {
     reason: Str
-}> {}
+}
 
-export const WasmExecutionFailCodec: Codec<WasmExecutionFail> = createStructCodec<any>('WasmExecutionFail', [['reason', dynCodec(() => StrCodec) as any]]) as any
+interface WasmExecutionFail extends Opaque<WasmExecutionFail__actual, WasmExecutionFail> {}
 
-// WasmSmartContract
+const WasmExecutionFail: StructCodecAndFactory<WasmExecutionFail__actual, WasmExecutionFail> = createStructCodec<WasmExecutionFail__actual, WasmExecutionFail>('WasmExecutionFail', [
+    ['reason', Str]
+])
 
-export interface WasmSmartContract extends PseudoType<{
+// Type: WasmSmartContract
+
+interface WasmSmartContract__actual {
     raw_data: VecU8
-}> {}
+}
 
-export const WasmSmartContractCodec: Codec<WasmSmartContract> = createStructCodec<any>('WasmSmartContract', [['raw_data', dynCodec(() => VecU8Codec) as any]]) as any
+interface WasmSmartContract extends Opaque<WasmSmartContract__actual, WasmSmartContract> {}
 
-// Where
+const WasmSmartContract: StructCodecAndFactory<WasmSmartContract__actual, WasmSmartContract> = createStructCodec<WasmSmartContract__actual, WasmSmartContract>('WasmSmartContract', [
+    ['raw_data', VecU8]
+])
 
-export interface Where extends PseudoType<{
-    expression: EvaluatesToValue,
+// Type: Where
+
+interface Where__actual {
+    expression: EvaluatesToValue
     values: BTreeMapStringEvaluatesToValue
-}> {}
+}
 
-export const WhereCodec: Codec<Where> = createStructCodec<any>('Where', [['expression', dynCodec(() => EvaluatesToValueCodec) as any], ['values', dynCodec(() => BTreeMapStringEvaluatesToValueCodec) as any]]) as any
+interface Where extends Opaque<Where__actual, Where> {}
+
+const Where: StructCodecAndFactory<Where__actual, Where> = createStructCodec<Where__actual, Where>('Where', [
+    ['expression', __dyn_EvaluatesToValue],
+    ['values', __dyn_BTreeMapStringEvaluatesToValue]
+])
+
+// Exports
+
+export { Account, AccountEvent, AccountEventFilter, AccountFilter, AccountId, Action, Add, And, ArrayU8L32, Asset, AssetDefinition, AssetDefinitionEntry, AssetDefinitionEvent, AssetDefinitionEventFilter, AssetDefinitionFilter, AssetEvent, AssetEventFilter, AssetFilter, AssetId, AssetValue, AssetValueType, BTreeMapAccountIdAccount, BTreeMapAssetIdAsset, BTreeMapDefinitionIdAssetDefinitionEntry, BTreeMapNameValue, BTreeMapPublicKeySignatureOfCommittedBlock, BTreeMapPublicKeySignatureOfProof, BTreeMapPublicKeySignatureOfTransactionPayload, BTreeMapStringEvaluatesToValue, BTreeSetPermissionToken, BTreeSetSignatureOfTransactionPayload, BTreeSetSignatureOfValidBlock, BlockCreationTimeout, BlockHeader, BlockPublisherMessage, BlockRejectionReason, BlockSubscriberMessage, BurnBox, CommitTimeout, CommittedBlock, Contains, ContainsAll, ContainsAny, ContextValue, DataEvent, DefinitionId, Divide, Domain, DomainEvent, DomainEventFilter, DomainFilter, EntityFilter, EntityType, Equal, EvaluatesToAccountId, EvaluatesToAssetId, EvaluatesToBool, EvaluatesToDefinitionId, EvaluatesToHash, EvaluatesToId, EvaluatesToIdBox, EvaluatesToIdentifiableBox, EvaluatesToName, EvaluatesToU32, EvaluatesToValue, EvaluatesToVecValue, Event, EventFilter, EventPublisherMessage, EventSubscriberMessage, Executable, Expression, ExpressionIf, FailBox, FilterOptAccountEventFilter, FilterOptAccountFilter, FilterOptAssetDefinitionEventFilter, FilterOptAssetDefinitionFilter, FilterOptAssetEventFilter, FilterOptAssetFilter, FilterOptDomainEventFilter, FilterOptDomainFilter, FilterOptEntityFilter, FilterOptIdFilterAccountId, FilterOptIdFilterAssetId, FilterOptIdFilterDefinitionId, FilterOptIdFilterId, FilterOptIdFilterPeerId, FilterOptIdFilterTriggerId, FilterOptPeerEventFilter, FilterOptPeerFilter, FilterOptTriggerEventFilter, FilterOptTriggerFilter, FindAccountById, FindAccountKeyValueByIdAndKey, FindAccountsByDomainId, FindAccountsByName, FindAllAccounts, FindAllAssets, FindAllAssetsDefinitions, FindAllDomains, FindAllPeers, FindAssetById, FindAssetDefinitionKeyValueByIdAndKey, FindAssetKeyValueByIdAndKey, FindAssetQuantityById, FindAssetsByAccountId, FindAssetsByAssetDefinitionId, FindAssetsByDomainId, FindAssetsByDomainIdAndAssetDefinitionId, FindAssetsByName, FindDomainById, FindDomainKeyValueByIdAndKey, FindError, FindPermissionTokensByAccountId, FindTransactionByHash, FindTransactionsByAccountId, Fixed, FixedPointI64, GenesisTransaction, GrantBox, Greater, Hash, HashOfMerkleTreeVersionedTransaction, HashOfNodeVersionedTransaction, HashOfProof, HashOfVersionedCommittedBlock, HashOfVersionedTransaction, HashOfVersionedValidBlock, Id, IdBox, IdFilterAccountId, IdFilterAssetId, IdFilterDefinitionId, IdFilterId, IdFilterPeerId, IdFilterTriggerId, IdentifiableBox, Instruction, InstructionExecutionFail, IpfsPath, IsiIf, LeafVersionedTransaction, Less, MerkleTreeVersionedTransaction, Metadata, MintBox, Mod, Multiply, Name, NewAccount, NoTransactionReceiptReceived, NodeVersionedTransaction, Not, NotPermittedFail, OptionEntityType, OptionHash, OptionInstruction, OptionIpfsPath, OptionTopology, OptionU32, Or, Pair, Parameter, ParentHashNotFound, Peer, PeerEvent, PeerEventFilter, PeerFilter, PeerId, PermissionToken, PipelineEvent, PipelineEventFilter, Proof, ProofChain, ProofPayload, PublicKey, QueryBox, QueryError, QueryPayload, QueryResult, QueryUnsupportedVersionError, RaiseTo, RawGenesisBlock, RawVersioned, Reason, RegisterBox, RejectedTransaction, RejectionReason, RemoveKeyValueBox, Repeats, RevokeBox, SequenceBox, SetKeyValueBox, Signature, SignatureCheckCondition, SignatureOfCommittedBlock, SignatureOfProof, SignatureOfQueryPayload, SignatureOfTransactionPayload, SignatureOfValidBlock, SignaturesOfCommittedBlock, SignaturesOfProof, SignaturesOfTransactionPayload, SignedQueryRequest, Status, Subtract, SubtreeVersionedTransaction, Topology, Transaction, TransactionLimitError, TransactionPayload, TransactionRejectionReason, TransactionValue, TransferBox, Trigger, TriggerEvent, TriggerEventFilter, TriggerFilter, TriggerId, UnregisterBox, UnsatisfiedSignatureConditionFail, UnsupportedVersion, ValidBlock, ValidTransaction, Value, VecAction, VecGenesisTransaction, VecHashOfVersionedValidBlock, VecInstruction, VecPeerId, VecPermissionToken, VecProof, VecPublicKey, VecSignatureOfTransactionPayload, VecSignatureOfValidBlock, VecValue, VecVersionedRejectedTransaction, VecVersionedValidTransaction, VersionError, VersionedBlockPublisherMessage, VersionedBlockSubscriberMessage, VersionedCommittedBlock, VersionedEventPublisherMessage, VersionedEventSubscriberMessage, VersionedQueryResult, VersionedRejectedTransaction, VersionedSignedQueryRequest, VersionedTransaction, VersionedValidBlock, VersionedValidTransaction, WasmExecutionFail, WasmSmartContract, Where }

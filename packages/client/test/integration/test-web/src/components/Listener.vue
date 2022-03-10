@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SetupEventsReturn } from '@iroha2/client';
-import { EntityType, EventFilter, OptionEntityType, OptionHash } from '@iroha2/data-model';
+import { EntityType, Enum } from '@iroha2/data-model';
 import { shallowReactive, shallowRef, computed } from 'vue';
 import { bytesToHex } from 'hada';
 import { client } from '../client';
@@ -16,19 +16,15 @@ const currentListener = shallowRef<null | SetupEventsReturn>(null);
 const isListening = computed(() => !!currentListener.value);
 
 async function startListening() {
-    console.log('Listening...');
-
     currentListener.value = await client.listenForEvents({
-        filter: EventFilter.wrap(
-            EventFilter.variantsUnwrapped.Pipeline({
-                entity: OptionEntityType.variantsUnwrapped.Some(EntityType.variantsUnwrapped.Transaction),
-                hash: OptionHash.variantsUnwrapped.None,
-            }),
-        ),
+        filter: Enum.variant('Pipeline', {
+            entity: Enum.variant('Some', Enum.variant<EntityType>('Transaction')),
+            hash: Enum.variant('None'),
+        }),
     });
 
     currentListener.value.ee.on('event', (event) => {
-        const { hash, status } = event.unwrap().as('Pipeline');
+        const { hash, status } = event.as('Pipeline');
         events.push({
             hash: bytesToHex([...hash]),
             status: status.match({
@@ -40,23 +36,29 @@ async function startListening() {
     });
 }
 
-function stopListening() {
-    currentListener.value?.close();
+async function stopListening() {
+    await currentListener.value?.stop();
     currentListener.value = null;
 }
 </script>
 
 <template>
     <div>
+        <h3>Listening</h3>
+
         <p>
-            <button v-if="isListening" @click="stopListening">Stop listening</button>
-            <button v-else @click="startListening">Listen</button>
+            <button @click="isListening ? stopListening() : startListening()">
+                {{ isListening ? 'Stop' : 'Listen' }}
+            </button>
         </p>
 
         <p>Events:</p>
 
         <ul>
-            <li v-for="{ hash, status } in events">
+            <li
+                v-for="{ hash, status } in events"
+                :key="hash"
+            >
                 Transaction <code>{{ hash }}</code> status:
                 {{ status }}
             </li>

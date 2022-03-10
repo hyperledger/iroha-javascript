@@ -2,9 +2,8 @@ import {
     Event,
     EventFilter,
     EventSubscriberMessage,
-    Enum,
-    VersionedEventPublisherMessageCodec,
-    VersionedEventSubscriberMessageCodec,
+    VersionedEventPublisherMessage,
+    VersionedEventSubscriberMessage,
 } from '@iroha2/data-model';
 import Emittery from 'emittery';
 import Debug from 'debug';
@@ -23,7 +22,7 @@ export interface SetupEventsParams {
 }
 
 export interface SetupEventsReturn {
-    stop: () => void;
+    stop: () => Promise<void>;
     isClosed: () => boolean;
     ee: Emittery<EventsEmitteryMap>;
 }
@@ -45,22 +44,22 @@ export async function setupEvents(params: SetupEventsParams): Promise<SetupEvent
     });
 
     function send(msg: EventSubscriberMessage) {
-        sendRaw(VersionedEventSubscriberMessageCodec.toBuffer(Enum.variant('V1', msg)));
+        sendRaw(VersionedEventSubscriberMessage.toBuffer(VersionedEventSubscriberMessage('V1', msg)));
     }
 
     ee.on('open', () => {
-        send(Enum.variant('SubscriptionRequest', params.filter));
+        send(EventSubscriberMessage('SubscriptionRequest', params.filter));
     });
 
     ee.on('message', (raw) => {
-        const event = VersionedEventPublisherMessageCodec.fromBuffer(raw).as('V1');
+        const event = VersionedEventPublisherMessage.fromBuffer(raw).as('V1');
 
         if (event.is('SubscriptionAccepted')) {
             debug('subscription accepted');
             ee.emit('accepted');
         } else {
             ee.emit('event', event.as('Event'));
-            send(Enum.variant('EventReceived'));
+            send(EventSubscriberMessage('EventReceived'));
         }
     });
 

@@ -2,9 +2,8 @@ import Emittery from 'emittery';
 import Debug from 'debug';
 import {
     BlockSubscriberMessage,
-    Enum,
-    VersionedBlockPublisherMessageCodec,
-    VersionedBlockSubscriberMessageCodec,
+    VersionedBlockPublisherMessage,
+    VersionedBlockSubscriberMessage,
     VersionedCommittedBlock,
 } from '@iroha2/data-model';
 import { ENDPOINT_BLOCKS_STREAM } from './const';
@@ -22,7 +21,7 @@ export interface BlocksStreamEmitteryMap extends SocketEmitMapBase {
 }
 
 export interface SetupBlocksStreamReturn {
-    stop: () => void;
+    stop: () => Promise<void>;
     isClosed: () => boolean;
     ee: Emittery<BlocksStreamEmitteryMap>;
 }
@@ -41,15 +40,15 @@ export async function setupBlocksStream(params: SetupBlocksStreamParams): Promis
     });
 
     function send(msg: BlockSubscriberMessage) {
-        sendRaw(VersionedBlockSubscriberMessageCodec.toBuffer(Enum.variant('V1', msg)));
+        sendRaw(VersionedBlockSubscriberMessage.toBuffer(VersionedBlockSubscriberMessage('V1', msg)));
     }
 
     ee.on('open', () => {
-        send(Enum.variant('SubscriptionRequest', params.height));
+        send(BlockSubscriberMessage('SubscriptionRequest', params.height));
     });
 
     ee.on('message', (raw) => {
-        const msg = VersionedBlockPublisherMessageCodec.fromBuffer(raw).as('V1');
+        const msg = VersionedBlockPublisherMessage.fromBuffer(raw).as('V1');
 
         msg.match({
             SubscriptionAccepted() {
@@ -59,7 +58,7 @@ export async function setupBlocksStream(params: SetupBlocksStreamParams): Promis
             Block(block) {
                 debug('new block: %o', block);
                 ee.emit('block', block);
-                send(Enum.variant('BlockReceived'));
+                send(BlockSubscriberMessage('BlockReceived'));
             },
         });
     });

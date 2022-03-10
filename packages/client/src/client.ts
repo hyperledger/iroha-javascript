@@ -1,21 +1,23 @@
 import {
     AccountId,
     BTreeMapNameValue,
+    BTreeSetSignatureOfTransactionPayload,
     Enum,
     Executable,
+    OptionU32,
+    PublicKey,
     QueryBox,
     QueryError,
-    QueryErrorCodec,
     QueryPayload,
-    QueryPayloadCodec,
     QueryResult,
     Result,
     Signature,
+    SignedQueryRequest,
+    Transaction,
     TransactionPayload,
-    TransactionPayloadCodec,
-    VersionedQueryResultCodec,
-    VersionedSignedQueryRequestCodec,
-    VersionedTransactionCodec,
+    VersionedQueryResult,
+    VersionedSignedQueryRequest,
+    VersionedTransaction,
 } from '@iroha2/data-model';
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core';
 import { fetch } from '@iroha2/client-isomorphic-fetch';
@@ -78,7 +80,10 @@ export interface PeerStatus {
     peers: number;
     blocks: number;
     txs: number;
-    uptime: number;
+    uptime: {
+        secs: number;
+        nanos: number;
+    };
 }
 
 export interface SetPeerConfigParams {
@@ -112,13 +117,13 @@ function makeSignature(keyPair: KeyPair, payload: Uint8Array): Signature {
     // Should it be collected?
     const pubKey = keyPair.publicKey();
 
-    return {
-        public_key: {
+    return Signature({
+        public_key: PublicKey({
             digest_function: pubKey.digestFunction(),
             payload: pubKey.payload(),
-        },
+        }),
         signature: signature.signatureBytes(),
-    };
+    });
 }
 
 /**
@@ -170,28 +175,31 @@ export class Client {
         const keyPair = this.forceGetKeyPair();
         const url = this.forceGetApiURL();
 
-        const payload: TransactionPayload = {
+        const payload = TransactionPayload({
             instructions: executable,
             time_to_live_ms: this.transactionDefaultTTL,
             nonce: params?.nonce
-                ? Enum.variant('Some', params.nonce)
+                ? OptionU32('Some', params.nonce)
                 : this.transactionAddNonce
-                ? Enum.variant('Some', randomU32())
-                : Enum.variant('None'),
-            metadata: params?.metadata ?? new Map(),
+                ? OptionU32('Some', randomU32())
+                : OptionU32('None'),
+            metadata: params?.metadata ?? BTreeMapNameValue(new Map()),
             creation_time: BigInt(Date.now()),
             account_id: accountId,
-        };
+        });
 
         try {
             let finalBytes: Uint8Array;
 
             scope.run(() => {
-                const payloadHash = collectGarbage(createHash(TransactionPayloadCodec.toBuffer(payload)));
+                const payloadHash = collectGarbage(createHash(TransactionPayload.toBuffer(payload)));
                 const signature = makeSignature(keyPair, payloadHash.bytes());
 
-                finalBytes = VersionedTransactionCodec.toBuffer(
-                    Enum.variant('V1', { payload, signatures: [signature] }),
+                finalBytes = VersionedTransaction.toBuffer(
+                    VersionedTransaction(
+                        'V1',
+                        Transaction({ payload, signatures: BTreeSetSignatureOfTransactionPayload([signature]) }),
+                    ),
                 );
             });
 
@@ -213,20 +221,22 @@ export class Client {
         const accountId = this.forceGetAccountId();
         const keyPair = this.forceGetKeyPair();
 
-        const payload: QueryPayload = {
+        const payload = QueryPayload({
             query,
             account_id: accountId,
             timestamp_ms: BigInt(Date.now()),
-        };
+        });
 
         try {
             let queryBytes: Uint8Array;
 
             scope.run(() => {
-                const payloadHash = collectGarbage(createHash(QueryPayloadCodec.toBuffer(payload)));
+                const payloadHash = collectGarbage(createHash(QueryPayload.toBuffer(payload)));
                 const signature = makeSignature(keyPair, payloadHash.bytes());
 
-                queryBytes = VersionedSignedQueryRequestCodec.toBuffer(Enum.variant('V1', { payload, signature }));
+                queryBytes = VersionedSignedQueryRequest.toBuffer(
+                    VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature })),
+                );
             });
 
             const response = await fetch(url + ENDPOINT_QUERY, {
@@ -238,11 +248,11 @@ export class Client {
 
             if (response.status === 200) {
                 // OK
-                const value = VersionedQueryResultCodec.fromBuffer(bytes).as('V1');
+                const value = VersionedQueryResult.fromBuffer(bytes).as('V1');
                 return Enum.variant('Ok', value);
             } else {
                 // ERROR
-                const error = QueryErrorCodec.fromBuffer(bytes);
+                const error = QueryError.fromBuffer(bytes);
                 return Enum.variant('Err', error);
             }
         } finally {
