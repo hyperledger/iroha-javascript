@@ -4,60 +4,85 @@
 
 ```ts
 
+import { AccountId } from '@iroha2/data-model';
+import { BTreeMapNameValue } from '@iroha2/data-model';
 import { CloseEvent as CloseEvent_2 } from '@iroha2/client-isomorphic-ws';
 import Emittery from 'emittery';
 import { Event as Event_2 } from '@iroha2/client-isomorphic-ws';
 import { Event as Event_3 } from '@iroha2/data-model';
 import { EventFilter } from '@iroha2/data-model';
-import { FragmentFromBuilder } from '@iroha2/data-model';
+import { Executable } from '@iroha2/data-model';
 import { IrohaCryptoInterface } from '@iroha2/crypto-core';
 import { KeyPair } from '@iroha2/crypto-core';
-import { QueryPayload } from '@iroha2/data-model';
+import { QueryBox } from '@iroha2/data-model';
+import { QueryError } from '@iroha2/data-model';
+import { QueryResult } from '@iroha2/data-model';
 import { Result } from '@iroha2/data-model';
-import { TransactionPayload } from '@iroha2/data-model';
-import { Value } from '@iroha2/data-model';
+import { VersionedCommittedBlock } from '@iroha2/data-model';
 
+// Warning: (ae-forgotten-export) The symbol "SocketEmitMapBase" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export type CheckHealthResult = Result<null, Error>;
+export interface BlocksStreamEmitteryMap extends SocketEmitMapBase {
+    // (undocumented)
+    block: VersionedCommittedBlock;
+}
 
 // @public (undocumented)
 export class Client {
-    checkHealth(): Promise<CheckHealthResult>;
-    checkStatus(): Promise<PeerStatus>;
+    constructor(config: UserConfig);
     // (undocumented)
-    static create(config: UserConfig): Client;
+    accountId: null | AccountId;
+    // (undocumented)
+    getHealth(): Promise<HealthResult>;
+    // (undocumented)
+    getMetrics(): Promise<string>;
+    // (undocumented)
+    getStatus(): Promise<PeerStatus>;
+    // (undocumented)
+    keyPair: null | KeyPair;
+    // (undocumented)
+    listenForBlocksStream(params: ListenBlocksStreamParams): Promise<SetupBlocksStreamReturn>;
+    // (undocumented)
     listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn>;
-    makeQuery(params: MakeQueryParams): Promise<MakeQueryResult>;
-    setApiURL(url: string): Client;
-    setStatusURL(url: string): Client;
-    submitTransaction(params: SubmitTransactionParams): Promise<void>;
+    // (undocumented)
+    request(query: QueryBox): Promise<RequestResult>;
+    // (undocumented)
+    setPeerConfig(params: SetPeerConfigParams): Promise<void>;
+    // (undocumented)
+    submit(executable: Executable, params?: SubmitParams): Promise<void>;
+    // (undocumented)
+    toriiApiURL: string | null;
+    // (undocumented)
+    toriiTelemetryURL: string | null;
+    // (undocumented)
+    transactionAddNonce: boolean;
+    // (undocumented)
+    transactionDefaultTTL: bigint;
 }
 
 // @public (undocumented)
-export interface EventsEmitteryMap {
-    // (undocumented)
-    accepted: undefined;
-    // (undocumented)
-    close: CloseEvent_2;
-    // (undocumented)
-    error: Event_2;
-    // (undocumented)
-    event: FragmentFromBuilder<typeof Event_3>;
+export class ClientIncompleteConfigError extends Error {
+    constructor(missing: string);
 }
+
+// @public (undocumented)
+export interface EventsEmitteryMap extends SocketEmitMapBase {
+    // (undocumented)
+    event: Event_3;
+}
+
+// @public (undocumented)
+export function getCrypto(): null | IrohaCryptoInterface;
+
+// @public (undocumented)
+export type HealthResult = Result<null, string>;
+
+// @public (undocumented)
+export type ListenBlocksStreamParams = Pick<SetupBlocksStreamParams, 'height'>;
 
 // @public (undocumented)
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
-
-// @public (undocumented)
-export interface MakeQueryParams {
-    // (undocumented)
-    payload: FragmentFromBuilder<typeof QueryPayload>;
-    // (undocumented)
-    signing: KeyPair;
-}
-
-// @public (undocumented)
-export type MakeQueryResult = Result<FragmentFromBuilder<typeof Value>, Error>;
 
 // @public (undocumented)
 export interface PeerStatus {
@@ -68,16 +93,59 @@ export interface PeerStatus {
     // (undocumented)
     txs: number;
     // (undocumented)
-    uptime: number;
+    uptime: {
+        secs: number;
+        nanos: number;
+    };
+}
+
+// @public (undocumented)
+export type RequestResult = Result<QueryResult, QueryError>;
+
+// @public (undocumented)
+export class ResponseError extends Error {
+    constructor(response: Response);
+    // (undocumented)
+    static throwIfStatusIsNot(response: Response, status: number): void;
 }
 
 // @public (undocumented)
 export function setCrypto(crypto: IrohaCryptoInterface | null): void;
 
 // @public (undocumented)
+export interface SetPeerConfigParams {
+    // (undocumented)
+    LogLevel?: 'WARN' | 'ERROR' | 'INFO' | 'DEBUG' | 'TRACE';
+}
+
+// @public (undocumented)
+export function setupBlocksStream(params: SetupBlocksStreamParams): Promise<SetupBlocksStreamReturn>;
+
+// @public (undocumented)
+export interface SetupBlocksStreamParams {
+    // (undocumented)
+    height: bigint;
+    // (undocumented)
+    toriiApiURL: string;
+}
+
+// @public (undocumented)
+export interface SetupBlocksStreamReturn {
+    // (undocumented)
+    ee: Emittery<BlocksStreamEmitteryMap>;
+    // (undocumented)
+    isClosed: () => boolean;
+    // (undocumented)
+    stop: () => Promise<void>;
+}
+
+// @public
+export function setupEvents(params: SetupEventsParams): Promise<SetupEventsReturn>;
+
+// @public (undocumented)
 export interface SetupEventsParams {
     // (undocumented)
-    filter: FragmentFromBuilder<typeof EventFilter>;
+    filter: EventFilter;
     // (undocumented)
     toriiApiURL: string;
 }
@@ -85,28 +153,36 @@ export interface SetupEventsParams {
 // @public (undocumented)
 export interface SetupEventsReturn {
     // (undocumented)
-    close: () => void;
-    // (undocumented)
     ee: Emittery<EventsEmitteryMap>;
+    // (undocumented)
+    isClosed: () => boolean;
+    // (undocumented)
+    stop: () => Promise<void>;
 }
 
 // @public (undocumented)
-export interface SubmitTransactionParams {
+export interface SubmitParams {
     // (undocumented)
-    payload: FragmentFromBuilder<typeof TransactionPayload>;
+    metadata?: BTreeMapNameValue;
     // (undocumented)
-    signing: KeyPair | KeyPair[];
+    nonce?: number;
 }
-
-// @public (undocumented)
-export function useCrypto(): null | IrohaCryptoInterface;
 
 // @public (undocumented)
 export interface UserConfig {
     // (undocumented)
+    accountId?: AccountId;
+    // (undocumented)
+    keyPair?: KeyPair;
+    // (undocumented)
     torii: {
         apiURL?: string | null;
         telemetryURL?: string | null;
+    };
+    // (undocumented)
+    transaction?: {
+        timeToLiveMs?: bigint;
+        addNonce?: boolean;
     };
 }
 

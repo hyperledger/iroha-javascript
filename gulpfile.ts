@@ -1,7 +1,9 @@
 import del from 'del';
 import { $ } from 'zx';
 import { parallel, series } from 'gulp';
-import { runApiExtractor } from './scripts/api-extractor';
+import { runApiExtractor } from './etc/scripts/api-extractor';
+import { bundle } from './etc/scripts/bundle';
+import { PUBLIC_PACKAGES, scopePackage } from './etc/meta';
 
 export async function clean() {
     await del(['**/dist', '**/dist-tsc']);
@@ -15,31 +17,14 @@ async function buildClientIsomorphicTransports() {
     await $`pnpm build:isomorphic-ws-and-fetch`;
 }
 
-async function rollup() {
-    await $`pnpx rollup -c`;
-}
-
 export async function publishAll() {
-    const pkgs = [
-        `data-model`,
-        'crypto-core',
-        'crypto-target-web',
-        'crypto-target-node',
-        'crypto-target-bundler',
-        'client',
-        'client-isomorphic-fetch',
-        'client-isomorphic-ws',
-        'i64-fixnum',
-    ];
-
-    for (const unscopedName of pkgs) {
-        const scopedName = `@iroha2/${unscopedName}`;
-        await $`pnpm publish --filter ${scopedName} --no-git-checks`;
+    for (const name of PUBLIC_PACKAGES) {
+        await $`pnpm publish --filter ${scopePackage(name)} --no-git-checks`;
     }
 }
 
-export { runApiExtractor };
+export { runApiExtractor, bundle };
 
 export const runApiExtractorLocal = () => runApiExtractor(true);
 
-export const build = series(clean, parallel(buildTS, buildClientIsomorphicTransports), () => runApiExtractor(), rollup);
+export const build = series(clean, parallel(buildTS, buildClientIsomorphicTransports), () => runApiExtractor(), bundle);

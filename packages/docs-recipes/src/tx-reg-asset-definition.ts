@@ -1,78 +1,66 @@
 import { Client } from '@iroha2/client';
-import { KeyPair } from '@iroha2/crypto-core';
 import {
-    AccountId,
     AssetDefinition,
     Expression,
-    FragmentOrBuilderUnwrapped,
     Instruction,
-    TransactionPayload,
     Value,
     IdentifiableBox,
-    OptionU32,
     AssetValueType,
     Executable,
+    VecInstruction,
+    RegisterBox,
+    EvaluatesToIdentifiableBox,
+    DefinitionId,
+    Id,
+    Metadata,
+    BTreeMapNameValue,
 } from '@iroha2/data-model';
 
 async function registerAssetDefinition({
     client,
-    keyPair,
-    accountId,
     assetDefinition,
 }: {
     client: Client;
-    keyPair: KeyPair;
-    accountId: FragmentOrBuilderUnwrapped<typeof AccountId>;
-    assetDefinition: FragmentOrBuilderUnwrapped<typeof AssetDefinition>;
+    assetDefinition: AssetDefinition;
 }): Promise<void> {
-    const instruction = Instruction.variantsUnwrapped.Register({
-        object: {
-            expression: Expression.variantsUnwrapped.Raw(
-                Value.variantsUnwrapped.Identifiable(
-                    IdentifiableBox.variantsUnwrapped.AssetDefinition(assetDefinition),
+    await client.submit(
+        Executable(
+            'Instructions',
+            VecInstruction([
+                Instruction(
+                    'Register',
+                    RegisterBox({
+                        object: EvaluatesToIdentifiableBox({
+                            expression: Expression(
+                                'Raw',
+                                Value(
+                                    'Identifiable',
+                                    IdentifiableBox('AssetDefinition', assetDefinition),
+                                ),
+                            ),
+                        }),
+                    }),
                 ),
-            ),
-        },
-    });
-
-    // wrap it all into a payload
-    const payload = TransactionPayload.wrap({
-        account_id: accountId,
-        instructions: Executable.variantsUnwrapped.Instructions([instruction]),
-        time_to_live_ms: 100_000n,
-        creation_time: BigInt(Date.now()),
-        metadata: new Map(),
-        nonce: OptionU32.variantsUnwrapped.None,
-    });
-
-    await client.submitTransaction({
-        signing: keyPair,
-        payload,
-    });
+            ]),
+        ),
+    );
 }
 
 registerAssetDefinition({
-    accountId: {
-        name: 'Alice',
-        domain_id: {
-            name: 'Wonderland',
-        },
-    },
-    assetDefinition: {
-        id: {
+    assetDefinition: AssetDefinition({
+        id: DefinitionId({
             name: 'xor',
-            domain_id: {
+            domain_id: Id({
                 name: 'Wonderland',
-            },
-        },
-        value_type: AssetValueType.variantsUnwrapped.Quantity,
+            }),
+        }),
+        value_type: AssetValueType('Quantity'),
         mintable: false,
-        metadata: {
-            map: new Map(),
-        },
-    },
+        metadata: Metadata({
+            map: BTreeMapNameValue(new Map()),
+        }),
+    }),
 
     // for educational purposes
     client: null as any,
-    keyPair: null as any,
 });

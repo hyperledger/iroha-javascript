@@ -4,1144 +4,2139 @@
 
 ```ts
 
+import type { ArrayCodecAndFactory } from '@scale-codec/definition-runtime';
 import { Bool } from '@scale-codec/definition-runtime';
-import { BytesVec } from '@scale-codec/definition-runtime';
+import { Codec } from '@scale-codec/definition-runtime';
 import { Compact } from '@scale-codec/definition-runtime';
 import { Enum } from '@scale-codec/definition-runtime';
-import { FragmentBuilder } from '@scale-codec/definition-runtime';
-import { FragmentFromBuilder } from '@scale-codec/definition-runtime';
-import { Option as Option_2 } from '@scale-codec/definition-runtime';
-import { ScaleArrayBuilder } from '@scale-codec/definition-runtime';
-import { ScaleEnumBuilder } from '@scale-codec/definition-runtime';
-import { ScaleMapBuilder } from '@scale-codec/definition-runtime';
-import { ScaleStructBuilder } from '@scale-codec/definition-runtime';
+import type { EnumCodecAndFactory } from '@scale-codec/definition-runtime';
+import type { MapCodecAndFactory } from '@scale-codec/definition-runtime';
+import type { Opaque } from '@scale-codec/definition-runtime';
+import type { Option as Option_2 } from '@scale-codec/definition-runtime';
 import { Str } from '@scale-codec/definition-runtime';
+import type { StructCodecAndFactory } from '@scale-codec/definition-runtime';
 import { U128 } from '@scale-codec/definition-runtime';
 import { U32 } from '@scale-codec/definition-runtime';
 import { U64 } from '@scale-codec/definition-runtime';
-import { Valuable } from '@scale-codec/definition-runtime';
+import { U8 } from '@scale-codec/definition-runtime';
+import { VecU8 } from '@scale-codec/definition-runtime';
 import { Void } from '@scale-codec/definition-runtime';
 
+// Warning: (ae-forgotten-export) The symbol "Account__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Account: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof AccountId>;
-    assets: FragmentFromBuilder<typeof BTreeMapAssetIdAsset>;
-    signatories: FragmentFromBuilder<typeof VecPublicKey>;
-    permission_tokens: FragmentFromBuilder<typeof BTreeSetPermissionToken>;
-    signature_check_condition: FragmentFromBuilder<typeof SignatureCheckCondition>;
-    metadata: FragmentFromBuilder<typeof Metadata>;
-}>;
+export interface Account extends Opaque<Account__actual, Account> {
+}
 
 // @public (undocumented)
-export const AccountId: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Name>;
-    domain_id: FragmentFromBuilder<typeof Id>;
-}>;
+export const Account: StructCodecAndFactory<Account__actual, Account>;
+
+// Warning: (ae-forgotten-export) The symbol "AccountEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AccountEvent extends Opaque<AccountEvent__actual, AccountEvent> {
+}
 
 // @public (undocumented)
-export const Add: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export const AccountEvent: EnumCodecAndFactory<AccountEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "AccountEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AccountEventFilter extends Opaque<AccountEventFilter__actual, AccountEventFilter> {
+}
 
 // @public (undocumented)
-export const And: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToBool>;
-    right: FragmentFromBuilder<typeof EvaluatesToBool>;
-}>;
+export const AccountEventFilter: EnumCodecAndFactory<AccountEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "AccountFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AccountFilter extends Opaque<AccountFilter__actual, AccountFilter> {
+}
 
 // @public (undocumented)
-export const ArrayU8L32: FragmentBuilder<Uint8Array, Uint8Array>;
+export const AccountFilter: StructCodecAndFactory<AccountFilter__actual, AccountFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "AccountId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AccountId extends Opaque<AccountId__actual, AccountId> {
+}
 
 // @public (undocumented)
-export const Asset: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof AssetId>;
-    value: FragmentFromBuilder<typeof AssetValue>;
-}>;
+export const AccountId: StructCodecAndFactory<AccountId__actual, AccountId>;
+
+// Warning: (ae-forgotten-export) The symbol "Action__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Action extends Opaque<Action__actual, Action> {
+}
 
 // @public (undocumented)
-export const AssetDefinition: ScaleStructBuilder<{
-    value_type: FragmentFromBuilder<typeof AssetValueType>;
-    id: FragmentFromBuilder<typeof DefinitionId>;
-    metadata: FragmentFromBuilder<typeof Metadata>;
-    mintable: FragmentFromBuilder<typeof Bool>;
-}>;
+export const Action: StructCodecAndFactory<Action__actual, Action>;
+
+// Warning: (ae-forgotten-export) The symbol "Add__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Add extends Opaque<Add__actual, Add> {
+}
 
 // @public (undocumented)
-export const AssetDefinitionEntry: ScaleStructBuilder<{
-    definition: FragmentFromBuilder<typeof AssetDefinition>;
-    registered_by: FragmentFromBuilder<typeof AccountId>;
-}>;
+export const Add: StructCodecAndFactory<Add__actual, Add>;
+
+// Warning: (ae-forgotten-export) The symbol "And__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface And extends Opaque<And__actual, And> {
+}
 
 // @public (undocumented)
-export const AssetId: ScaleStructBuilder<{
-    definition_id: FragmentFromBuilder<typeof DefinitionId>;
-    account_id: FragmentFromBuilder<typeof AccountId>;
-}>;
+export const And: StructCodecAndFactory<And__actual, And>;
 
 // @public (undocumented)
-export const AssetUpdated: ScaleEnumBuilder<Enum<{
-    Received: null;
-    Sent: null;
-}>>;
+export type ArrayU8L32 = Uint8Array;
 
 // @public (undocumented)
-export const AssetValue: ScaleEnumBuilder<Enum<{
-    Quantity: Valuable<FragmentFromBuilder<typeof U32>>;
-    BigQuantity: Valuable<FragmentFromBuilder<typeof U128>>;
-    Fixed: Valuable<FragmentFromBuilder<typeof Fixed>>;
-    Store: Valuable<FragmentFromBuilder<typeof Metadata>>;
-}>>;
+export const ArrayU8L32: Codec<ArrayU8L32>;
+
+// Warning: (ae-forgotten-export) The symbol "Asset__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Asset extends Opaque<Asset__actual, Asset> {
+}
 
 // @public (undocumented)
-export const AssetValueType: ScaleEnumBuilder<Enum<{
-    Quantity: null;
-    BigQuantity: null;
-    Fixed: null;
-    Store: null;
-}>>;
+export const Asset: StructCodecAndFactory<Asset__actual, Asset>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetDefinition__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetDefinition extends Opaque<AssetDefinition__actual, AssetDefinition> {
+}
 
 // @public (undocumented)
-export const BlockHeader: ScaleStructBuilder<{
-    timestamp: FragmentFromBuilder<typeof U128>;
-    height: FragmentFromBuilder<typeof U64>;
-    previous_block_hash: FragmentFromBuilder<typeof HashOfVersionedCommittedBlock>;
-    transactions_hash: FragmentFromBuilder<typeof HashOfMerkleTreeVersionedTransaction>;
-    rejected_transactions_hash: FragmentFromBuilder<typeof HashOfMerkleTreeVersionedTransaction>;
-    view_change_proofs: FragmentFromBuilder<typeof ProofChain>;
-    invalidated_blocks_hashes: FragmentFromBuilder<typeof VecHashOfVersionedValidBlock>;
-    genesis_topology: FragmentFromBuilder<typeof OptionTopology>;
-}>;
+export const AssetDefinition: StructCodecAndFactory<AssetDefinition__actual, AssetDefinition>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetDefinitionEntry__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetDefinitionEntry extends Opaque<AssetDefinitionEntry__actual, AssetDefinitionEntry> {
+}
 
 // @public (undocumented)
-export const BlockPublisherMessage: ScaleEnumBuilder<Enum<{
-    SubscriptionAccepted: null;
-    Block: Valuable<FragmentFromBuilder<typeof VersionedCommittedBlock>>;
-}>>;
+export const AssetDefinitionEntry: StructCodecAndFactory<AssetDefinitionEntry__actual, AssetDefinitionEntry>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetDefinitionEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetDefinitionEvent extends Opaque<AssetDefinitionEvent__actual, AssetDefinitionEvent> {
+}
 
 // @public (undocumented)
-export const BlockRejectionReason: ScaleEnumBuilder<Enum<{
-    ConsensusBlockRejection: null;
-}>>;
+export const AssetDefinitionEvent: EnumCodecAndFactory<AssetDefinitionEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetDefinitionEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetDefinitionEventFilter extends Opaque<AssetDefinitionEventFilter__actual, AssetDefinitionEventFilter> {
+}
 
 // @public (undocumented)
-export const BlockSubscriberMessage: ScaleEnumBuilder<Enum<{
-    SubscriptionRequest: Valuable<FragmentFromBuilder<typeof U64>>;
-    BlockReceived: null;
-}>>;
+export const AssetDefinitionEventFilter: EnumCodecAndFactory<AssetDefinitionEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetDefinitionFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetDefinitionFilter extends Opaque<AssetDefinitionFilter__actual, AssetDefinitionFilter> {
+}
 
 // @public (undocumented)
-export const BTreeMapAccountIdAccount: ScaleMapBuilder<Map<FragmentFromBuilder<typeof AccountId>, FragmentFromBuilder<typeof Account>>>;
+export const AssetDefinitionFilter: StructCodecAndFactory<AssetDefinitionFilter__actual, AssetDefinitionFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetEvent extends Opaque<AssetEvent__actual, AssetEvent> {
+}
 
 // @public (undocumented)
-export const BTreeMapAssetIdAsset: ScaleMapBuilder<Map<FragmentFromBuilder<typeof AssetId>, FragmentFromBuilder<typeof Asset>>>;
+export const AssetEvent: EnumCodecAndFactory<AssetEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetEventFilter extends Opaque<AssetEventFilter__actual, AssetEventFilter> {
+}
 
 // @public (undocumented)
-export const BTreeMapDefinitionIdAssetDefinitionEntry: ScaleMapBuilder<Map<FragmentFromBuilder<typeof DefinitionId>, FragmentFromBuilder<typeof AssetDefinitionEntry>>>;
+export const AssetEventFilter: EnumCodecAndFactory<AssetEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetFilter extends Opaque<AssetFilter__actual, AssetFilter> {
+}
 
 // @public (undocumented)
-export const BTreeMapNameValue: ScaleMapBuilder<Map<FragmentFromBuilder<typeof Name>, FragmentFromBuilder<typeof Value>>>;
+export const AssetFilter: StructCodecAndFactory<AssetFilter__actual, AssetFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetId extends Opaque<AssetId__actual, AssetId> {
+}
 
 // @public (undocumented)
-export const BTreeMapPublicKeySignatureOfCommittedBlock: ScaleMapBuilder<Map<FragmentFromBuilder<typeof PublicKey>, FragmentFromBuilder<typeof SignatureOfCommittedBlock>>>;
+export const AssetId: StructCodecAndFactory<AssetId__actual, AssetId>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetValue extends Opaque<AssetValue__actual, AssetValue> {
+}
 
 // @public (undocumented)
-export const BTreeMapPublicKeySignatureOfProof: ScaleMapBuilder<Map<FragmentFromBuilder<typeof PublicKey>, FragmentFromBuilder<typeof SignatureOfProof>>>;
+export const AssetValue: EnumCodecAndFactory<AssetValue>;
+
+// Warning: (ae-forgotten-export) The symbol "AssetValueType__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetValueType extends Opaque<AssetValueType__actual, AssetValueType> {
+}
 
 // @public (undocumented)
-export const BTreeMapPublicKeySignatureOfTransactionPayload: ScaleMapBuilder<Map<FragmentFromBuilder<typeof PublicKey>, FragmentFromBuilder<typeof SignatureOfTransactionPayload>>>;
+export const AssetValueType: EnumCodecAndFactory<AssetValueType>;
+
+// Warning: (ae-forgotten-export) The symbol "BlockHeader__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BlockHeader extends Opaque<BlockHeader__actual, BlockHeader> {
+}
 
 // @public (undocumented)
-export const BTreeMapStringEvaluatesToValue: ScaleMapBuilder<Map<FragmentFromBuilder<typeof Str>, FragmentFromBuilder<typeof EvaluatesToValue>>>;
+export const BlockHeader: StructCodecAndFactory<BlockHeader__actual, BlockHeader>;
+
+// Warning: (ae-forgotten-export) The symbol "BlockPublisherMessage__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BlockPublisherMessage extends Opaque<BlockPublisherMessage__actual, BlockPublisherMessage> {
+}
 
 // @public (undocumented)
-export const BTreeSetPermissionToken: ScaleArrayBuilder<FragmentFromBuilder<typeof PermissionToken>[]>;
+export const BlockPublisherMessage: EnumCodecAndFactory<BlockPublisherMessage>;
+
+// Warning: (ae-forgotten-export) The symbol "BlockRejectionReason__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BlockRejectionReason extends Opaque<BlockRejectionReason__actual, BlockRejectionReason> {
+}
 
 // @public (undocumented)
-export const BTreeSetSignatureOfTransactionPayload: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfTransactionPayload>[]>;
+export const BlockRejectionReason: EnumCodecAndFactory<BlockRejectionReason>;
+
+// Warning: (ae-forgotten-export) The symbol "BlockSubscriberMessage__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BlockSubscriberMessage extends Opaque<BlockSubscriberMessage__actual, BlockSubscriberMessage> {
+}
 
 // @public (undocumented)
-export const BTreeSetSignatureOfValidBlock: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfValidBlock>[]>;
+export const BlockSubscriberMessage: EnumCodecAndFactory<BlockSubscriberMessage>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapAccountIdAccount__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapAccountIdAccount extends Opaque<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount> {
+}
 
 // @public (undocumented)
-export const BurnBox: ScaleStructBuilder<{
-    object: FragmentFromBuilder<typeof EvaluatesToValue>;
-    destination_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-}>;
+export const BTreeMapAccountIdAccount: MapCodecAndFactory<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapAssetIdAsset__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapAssetIdAsset extends Opaque<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset> {
+}
 
 // @public (undocumented)
-export const CommittedBlock: ScaleStructBuilder<{
-    header: FragmentFromBuilder<typeof BlockHeader>;
-    rejected_transactions: FragmentFromBuilder<typeof VecVersionedRejectedTransaction>;
-    transactions: FragmentFromBuilder<typeof VecVersionedValidTransaction>;
-    signatures: FragmentFromBuilder<typeof SignaturesOfCommittedBlock>;
-}>;
+export const BTreeMapAssetIdAsset: MapCodecAndFactory<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapDefinitionIdAssetDefinitionEntry__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapDefinitionIdAssetDefinitionEntry extends Opaque<BTreeMapDefinitionIdAssetDefinitionEntry__actual, BTreeMapDefinitionIdAssetDefinitionEntry> {
+}
 
 // @public (undocumented)
-export const CommitTimeout: ScaleStructBuilder<{
-    hash: FragmentFromBuilder<typeof HashOfVersionedValidBlock>;
-}>;
+export const BTreeMapDefinitionIdAssetDefinitionEntry: MapCodecAndFactory<BTreeMapDefinitionIdAssetDefinitionEntry__actual, BTreeMapDefinitionIdAssetDefinitionEntry>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapNameValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapNameValue extends Opaque<BTreeMapNameValue__actual, BTreeMapNameValue> {
+}
 
 // @public (undocumented)
-export const Contains: ScaleStructBuilder<{
-    collection: FragmentFromBuilder<typeof EvaluatesToVecValue>;
-    element: FragmentFromBuilder<typeof EvaluatesToValue>;
-}>;
+export const BTreeMapNameValue: MapCodecAndFactory<BTreeMapNameValue__actual, BTreeMapNameValue>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapPublicKeySignatureOfCommittedBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapPublicKeySignatureOfCommittedBlock extends Opaque<BTreeMapPublicKeySignatureOfCommittedBlock__actual, BTreeMapPublicKeySignatureOfCommittedBlock> {
+}
 
 // @public (undocumented)
-export const ContainsAll: ScaleStructBuilder<{
-    collection: FragmentFromBuilder<typeof EvaluatesToVecValue>;
-    elements: FragmentFromBuilder<typeof EvaluatesToVecValue>;
-}>;
+export const BTreeMapPublicKeySignatureOfCommittedBlock: MapCodecAndFactory<BTreeMapPublicKeySignatureOfCommittedBlock__actual, BTreeMapPublicKeySignatureOfCommittedBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapPublicKeySignatureOfProof__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapPublicKeySignatureOfProof extends Opaque<BTreeMapPublicKeySignatureOfProof__actual, BTreeMapPublicKeySignatureOfProof> {
+}
 
 // @public (undocumented)
-export const ContainsAny: ScaleStructBuilder<{
-    collection: FragmentFromBuilder<typeof EvaluatesToVecValue>;
-    elements: FragmentFromBuilder<typeof EvaluatesToVecValue>;
-}>;
+export const BTreeMapPublicKeySignatureOfProof: MapCodecAndFactory<BTreeMapPublicKeySignatureOfProof__actual, BTreeMapPublicKeySignatureOfProof>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapPublicKeySignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapPublicKeySignatureOfTransactionPayload extends Opaque<BTreeMapPublicKeySignatureOfTransactionPayload__actual, BTreeMapPublicKeySignatureOfTransactionPayload> {
+}
 
 // @public (undocumented)
-export const ContextValue: ScaleStructBuilder<{
-    value_name: FragmentFromBuilder<typeof Str>;
-}>;
+export const BTreeMapPublicKeySignatureOfTransactionPayload: MapCodecAndFactory<BTreeMapPublicKeySignatureOfTransactionPayload__actual, BTreeMapPublicKeySignatureOfTransactionPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeMapStringEvaluatesToValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapStringEvaluatesToValue extends Opaque<BTreeMapStringEvaluatesToValue__actual, BTreeMapStringEvaluatesToValue> {
+}
 
 // @public (undocumented)
-export const DataEvent: ScaleStructBuilder<{
-    entity: FragmentFromBuilder<typeof Entity>;
-    status: FragmentFromBuilder<typeof Status>;
-}>;
+export const BTreeMapStringEvaluatesToValue: MapCodecAndFactory<BTreeMapStringEvaluatesToValue__actual, BTreeMapStringEvaluatesToValue>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeSetPermissionToken__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeSetPermissionToken extends Opaque<BTreeSetPermissionToken__actual, BTreeSetPermissionToken> {
+}
 
 // @public (undocumented)
-export const DataEventFilter: ScaleStructBuilder<{
-    entity: FragmentFromBuilder<typeof OptionEntityFilter>;
-    status: FragmentFromBuilder<typeof OptionStatusFilter>;
-}>;
+export const BTreeSetPermissionToken: ArrayCodecAndFactory<BTreeSetPermissionToken__actual, BTreeSetPermissionToken>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeSetSignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeSetSignatureOfTransactionPayload extends Opaque<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload> {
+}
 
 // @public (undocumented)
-export const DefinitionId: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Name>;
-    domain_id: FragmentFromBuilder<typeof Id>;
-}>;
+export const BTreeSetSignatureOfTransactionPayload: ArrayCodecAndFactory<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeSetSignatureOfValidBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeSetSignatureOfValidBlock extends Opaque<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock> {
+}
 
 // @public (undocumented)
-export const Divide: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export const BTreeSetSignatureOfValidBlock: ArrayCodecAndFactory<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "BurnBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BurnBox extends Opaque<BurnBox__actual, BurnBox> {
+}
 
 // @public (undocumented)
-export const Domain: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof Id>;
-    accounts: FragmentFromBuilder<typeof BTreeMapAccountIdAccount>;
-    asset_definitions: FragmentFromBuilder<typeof BTreeMapDefinitionIdAssetDefinitionEntry>;
-    metadata: FragmentFromBuilder<typeof Metadata>;
-    logo: FragmentFromBuilder<typeof OptionIpfsPath>;
-}>;
+export const BurnBox: StructCodecAndFactory<BurnBox__actual, BurnBox>;
+
+// Warning: (ae-forgotten-export) The symbol "CommittedBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface CommittedBlock extends Opaque<CommittedBlock__actual, CommittedBlock> {
+}
 
 // @public (undocumented)
-export const Entity: ScaleEnumBuilder<Enum<{
-    Account: Valuable<FragmentFromBuilder<typeof AccountId>>;
-    AssetDefinition: Valuable<FragmentFromBuilder<typeof DefinitionId>>;
-    Asset: Valuable<FragmentFromBuilder<typeof AssetId>>;
-    Domain: Valuable<FragmentFromBuilder<typeof Id>>;
-    Peer: Valuable<FragmentFromBuilder<typeof PeerId>>;
-}>>;
+export const CommittedBlock: StructCodecAndFactory<CommittedBlock__actual, CommittedBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "CommitTimeout__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface CommitTimeout extends Opaque<CommitTimeout__actual, CommitTimeout> {
+}
 
 // @public (undocumented)
-export const EntityFilter: ScaleEnumBuilder<Enum<{
-    Account: Valuable<FragmentFromBuilder<typeof OptionAccountId>>;
-    AssetDefinition: Valuable<FragmentFromBuilder<typeof OptionDefinitionId>>;
-    Asset: Valuable<FragmentFromBuilder<typeof OptionAssetId>>;
-    Domain: Valuable<FragmentFromBuilder<typeof OptionId>>;
-    Peer: Valuable<FragmentFromBuilder<typeof OptionPeerId>>;
-}>>;
+export const CommitTimeout: StructCodecAndFactory<CommitTimeout__actual, CommitTimeout>;
+
+// Warning: (ae-forgotten-export) The symbol "Contains__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Contains extends Opaque<Contains__actual, Contains> {
+}
 
 // @public (undocumented)
-export const EntityType: ScaleEnumBuilder<Enum<{
-    Block: null;
-    Transaction: null;
-}>>;
+export const Contains: StructCodecAndFactory<Contains__actual, Contains>;
+
+// Warning: (ae-forgotten-export) The symbol "ContainsAll__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ContainsAll extends Opaque<ContainsAll__actual, ContainsAll> {
+}
 
 // @public (undocumented)
-export const Equal: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToValue>;
-    right: FragmentFromBuilder<typeof EvaluatesToValue>;
-}>;
+export const ContainsAll: StructCodecAndFactory<ContainsAll__actual, ContainsAll>;
+
+// Warning: (ae-forgotten-export) The symbol "ContainsAny__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ContainsAny extends Opaque<ContainsAny__actual, ContainsAny> {
+}
 
 // @public (undocumented)
-export const EvaluatesToAccountId: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const ContainsAny: StructCodecAndFactory<ContainsAny__actual, ContainsAny>;
+
+// Warning: (ae-forgotten-export) The symbol "ContextValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ContextValue extends Opaque<ContextValue__actual, ContextValue> {
+}
 
 // @public (undocumented)
-export const EvaluatesToAssetId: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const ContextValue: StructCodecAndFactory<ContextValue__actual, ContextValue>;
+
+// Warning: (ae-forgotten-export) The symbol "DataEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface DataEvent extends Opaque<DataEvent__actual, DataEvent> {
+}
 
 // @public (undocumented)
-export const EvaluatesToBool: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const DataEvent: EnumCodecAndFactory<DataEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "DefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface DefinitionId extends Opaque<DefinitionId__actual, DefinitionId> {
+}
 
 // @public (undocumented)
-export const EvaluatesToDefinitionId: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const DefinitionId: StructCodecAndFactory<DefinitionId__actual, DefinitionId>;
+
+// Warning: (ae-forgotten-export) The symbol "Divide__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Divide extends Opaque<Divide__actual, Divide> {
+}
 
 // @public (undocumented)
-export const EvaluatesToHash: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const Divide: StructCodecAndFactory<Divide__actual, Divide>;
+
+// Warning: (ae-forgotten-export) The symbol "Domain__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Domain extends Opaque<Domain__actual, Domain> {
+}
 
 // @public (undocumented)
-export const EvaluatesToId: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const Domain: StructCodecAndFactory<Domain__actual, Domain>;
+
+// Warning: (ae-forgotten-export) The symbol "DomainEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface DomainEvent extends Opaque<DomainEvent__actual, DomainEvent> {
+}
 
 // @public (undocumented)
-export const EvaluatesToIdBox: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const DomainEvent: EnumCodecAndFactory<DomainEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "DomainEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface DomainEventFilter extends Opaque<DomainEventFilter__actual, DomainEventFilter> {
+}
 
 // @public (undocumented)
-export const EvaluatesToIdentifiableBox: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const DomainEventFilter: EnumCodecAndFactory<DomainEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "DomainFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface DomainFilter extends Opaque<DomainFilter__actual, DomainFilter> {
+}
 
 // @public (undocumented)
-export const EvaluatesToName: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const DomainFilter: StructCodecAndFactory<DomainFilter__actual, DomainFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "EntityFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EntityFilter extends Opaque<EntityFilter__actual, EntityFilter> {
+}
 
 // @public (undocumented)
-export const EvaluatesToU32: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const EntityFilter: EnumCodecAndFactory<EntityFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "EntityType__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EntityType extends Opaque<EntityType__actual, EntityType> {
+}
 
 // @public (undocumented)
-export const EvaluatesToValue: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const EntityType: EnumCodecAndFactory<EntityType>;
+
+// Warning: (ae-forgotten-export) The symbol "Equal__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Equal extends Opaque<Equal__actual, Equal> {
+}
 
 // @public (undocumented)
-export const EvaluatesToVecValue: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof Expression>;
-}>;
+export const Equal: StructCodecAndFactory<Equal__actual, Equal>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToAccountId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToAccountId extends Opaque<EvaluatesToAccountId__actual, EvaluatesToAccountId> {
+}
 
 // @public (undocumented)
-const Event_2: ScaleEnumBuilder<Enum<{
-    Pipeline: Valuable<FragmentFromBuilder<typeof PipelineEvent>>;
-    Data: Valuable<FragmentFromBuilder<typeof DataEvent>>;
-}>>;
+export const EvaluatesToAccountId: StructCodecAndFactory<EvaluatesToAccountId__actual, EvaluatesToAccountId>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToAssetId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToAssetId extends Opaque<EvaluatesToAssetId__actual, EvaluatesToAssetId> {
+}
+
+// @public (undocumented)
+export const EvaluatesToAssetId: StructCodecAndFactory<EvaluatesToAssetId__actual, EvaluatesToAssetId>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToBool__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToBool extends Opaque<EvaluatesToBool__actual, EvaluatesToBool> {
+}
+
+// @public (undocumented)
+export const EvaluatesToBool: StructCodecAndFactory<EvaluatesToBool__actual, EvaluatesToBool>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToDefinitionId extends Opaque<EvaluatesToDefinitionId__actual, EvaluatesToDefinitionId> {
+}
+
+// @public (undocumented)
+export const EvaluatesToDefinitionId: StructCodecAndFactory<EvaluatesToDefinitionId__actual, EvaluatesToDefinitionId>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToHash__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToHash extends Opaque<EvaluatesToHash__actual, EvaluatesToHash> {
+}
+
+// @public (undocumented)
+export const EvaluatesToHash: StructCodecAndFactory<EvaluatesToHash__actual, EvaluatesToHash>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToId extends Opaque<EvaluatesToId__actual, EvaluatesToId> {
+}
+
+// @public (undocumented)
+export const EvaluatesToId: StructCodecAndFactory<EvaluatesToId__actual, EvaluatesToId>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToIdBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToIdBox extends Opaque<EvaluatesToIdBox__actual, EvaluatesToIdBox> {
+}
+
+// @public (undocumented)
+export const EvaluatesToIdBox: StructCodecAndFactory<EvaluatesToIdBox__actual, EvaluatesToIdBox>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToIdentifiableBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToIdentifiableBox extends Opaque<EvaluatesToIdentifiableBox__actual, EvaluatesToIdentifiableBox> {
+}
+
+// @public (undocumented)
+export const EvaluatesToIdentifiableBox: StructCodecAndFactory<EvaluatesToIdentifiableBox__actual, EvaluatesToIdentifiableBox>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToName__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToName extends Opaque<EvaluatesToName__actual, EvaluatesToName> {
+}
+
+// @public (undocumented)
+export const EvaluatesToName: StructCodecAndFactory<EvaluatesToName__actual, EvaluatesToName>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToU32__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToU32 extends Opaque<EvaluatesToU32__actual, EvaluatesToU32> {
+}
+
+// @public (undocumented)
+export const EvaluatesToU32: StructCodecAndFactory<EvaluatesToU32__actual, EvaluatesToU32>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToValue extends Opaque<EvaluatesToValue__actual, EvaluatesToValue> {
+}
+
+// @public (undocumented)
+export const EvaluatesToValue: StructCodecAndFactory<EvaluatesToValue__actual, EvaluatesToValue>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToVecValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToVecValue extends Opaque<EvaluatesToVecValue__actual, EvaluatesToVecValue> {
+}
+
+// @public (undocumented)
+export const EvaluatesToVecValue: StructCodecAndFactory<EvaluatesToVecValue__actual, EvaluatesToVecValue>;
+
+// Warning: (ae-forgotten-export) The symbol "Event__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+interface Event_2 extends Opaque<Event__actual, Event_2> {
+}
+
+// @public (undocumented)
+const Event_2: EnumCodecAndFactory<Event_2>;
 export { Event_2 as Event }
 
+// Warning: (ae-forgotten-export) The symbol "EventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const EventFilter: ScaleEnumBuilder<Enum<{
-    Pipeline: Valuable<FragmentFromBuilder<typeof PipelineEventFilter>>;
-    Data: Valuable<FragmentFromBuilder<typeof DataEventFilter>>;
-}>>;
+export interface EventFilter extends Opaque<EventFilter__actual, EventFilter> {
+}
 
 // @public (undocumented)
-export const EventPublisherMessage: ScaleEnumBuilder<Enum<{
-    SubscriptionAccepted: null;
-    Event: Valuable<FragmentFromBuilder<typeof Event_2>>;
-}>>;
+export const EventFilter: EnumCodecAndFactory<EventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "EventPublisherMessage__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const EventSubscriberMessage: ScaleEnumBuilder<Enum<{
-    SubscriptionRequest: Valuable<FragmentFromBuilder<typeof EventFilter>>;
-    EventReceived: null;
-}>>;
+export interface EventPublisherMessage extends Opaque<EventPublisherMessage__actual, EventPublisherMessage> {
+}
 
 // @public (undocumented)
-export const Executable: ScaleEnumBuilder<Enum<{
-    Instructions: Valuable<FragmentFromBuilder<typeof VecInstruction>>;
-    Wasm: Valuable<FragmentFromBuilder<typeof WasmSmartContract>>;
-}>>;
+export const EventPublisherMessage: EnumCodecAndFactory<EventPublisherMessage>;
 
+// Warning: (ae-forgotten-export) The symbol "EventSubscriberMessage__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Expression: ScaleEnumBuilder<Enum<{
-    Add: Valuable<FragmentFromBuilder<typeof Add>>;
-    Subtract: Valuable<FragmentFromBuilder<typeof Subtract>>;
-    Multiply: Valuable<FragmentFromBuilder<typeof Multiply>>;
-    Divide: Valuable<FragmentFromBuilder<typeof Divide>>;
-    Mod: Valuable<FragmentFromBuilder<typeof Mod>>;
-    RaiseTo: Valuable<FragmentFromBuilder<typeof RaiseTo>>;
-    Greater: Valuable<FragmentFromBuilder<typeof Greater>>;
-    Less: Valuable<FragmentFromBuilder<typeof Less>>;
-    Equal: Valuable<FragmentFromBuilder<typeof Equal>>;
-    Not: Valuable<FragmentFromBuilder<typeof Not>>;
-    And: Valuable<FragmentFromBuilder<typeof And>>;
-    Or: Valuable<FragmentFromBuilder<typeof Or>>;
-    If: Valuable<FragmentFromBuilder<typeof ExpressionIf>>;
-    Raw: Valuable<FragmentFromBuilder<typeof Value>>;
-    Query: Valuable<FragmentFromBuilder<typeof QueryBox>>;
-    Contains: Valuable<FragmentFromBuilder<typeof Contains>>;
-    ContainsAll: Valuable<FragmentFromBuilder<typeof ContainsAll>>;
-    ContainsAny: Valuable<FragmentFromBuilder<typeof ContainsAny>>;
-    Where: Valuable<FragmentFromBuilder<typeof Where>>;
-    ContextValue: Valuable<FragmentFromBuilder<typeof ContextValue>>;
-}>>;
+export interface EventSubscriberMessage extends Opaque<EventSubscriberMessage__actual, EventSubscriberMessage> {
+}
 
 // @public (undocumented)
-export const ExpressionIf: ScaleStructBuilder<{
-    condition: FragmentFromBuilder<typeof EvaluatesToBool>;
-    then_expression: FragmentFromBuilder<typeof EvaluatesToValue>;
-    else_expression: FragmentFromBuilder<typeof EvaluatesToValue>;
-}>;
+export const EventSubscriberMessage: EnumCodecAndFactory<EventSubscriberMessage>;
 
+// Warning: (ae-forgotten-export) The symbol "Executable__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FailBox: ScaleStructBuilder<{
-    message: FragmentFromBuilder<typeof Str>;
-}>;
+export interface Executable extends Opaque<Executable__actual, Executable> {
+}
 
 // @public (undocumented)
-export const FindAccountById: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToAccountId>;
-}>;
+export const Executable: EnumCodecAndFactory<Executable>;
 
+// Warning: (ae-forgotten-export) The symbol "Expression__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindAccountKeyValueByIdAndKey: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToAccountId>;
-    key: FragmentFromBuilder<typeof EvaluatesToName>;
-}>;
+export interface Expression extends Opaque<Expression__actual, Expression> {
+}
 
 // @public (undocumented)
-export const FindAccountsByDomainId: ScaleStructBuilder<{
-    domain_id: FragmentFromBuilder<typeof EvaluatesToId>;
-}>;
+export const Expression: EnumCodecAndFactory<Expression>;
 
+// Warning: (ae-forgotten-export) The symbol "ExpressionIf__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindAccountsByName: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof EvaluatesToName>;
-}>;
+export interface ExpressionIf extends Opaque<ExpressionIf__actual, ExpressionIf> {
+}
 
 // @public (undocumented)
-export const FindAssetById: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToAssetId>;
-}>;
+export const ExpressionIf: StructCodecAndFactory<ExpressionIf__actual, ExpressionIf>;
 
+// Warning: (ae-forgotten-export) The symbol "FailBox__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindAssetDefinitionKeyValueByIdAndKey: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToDefinitionId>;
-    key: FragmentFromBuilder<typeof EvaluatesToName>;
-}>;
+export interface FailBox extends Opaque<FailBox__actual, FailBox> {
+}
 
 // @public (undocumented)
-export const FindAssetKeyValueByIdAndKey: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToAssetId>;
-    key: FragmentFromBuilder<typeof EvaluatesToName>;
-}>;
+export const FailBox: StructCodecAndFactory<FailBox__actual, FailBox>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptAccountEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindAssetQuantityById: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToAssetId>;
-}>;
+export interface FilterOptAccountEventFilter extends Opaque<FilterOptAccountEventFilter__actual, FilterOptAccountEventFilter> {
+}
 
 // @public (undocumented)
-export const FindAssetsByAccountId: ScaleStructBuilder<{
-    account_id: FragmentFromBuilder<typeof EvaluatesToAccountId>;
-}>;
+export const FilterOptAccountEventFilter: EnumCodecAndFactory<FilterOptAccountEventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptAccountFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindAssetsByAssetDefinitionId: ScaleStructBuilder<{
-    asset_definition_id: FragmentFromBuilder<typeof EvaluatesToDefinitionId>;
-}>;
+export interface FilterOptAccountFilter extends Opaque<FilterOptAccountFilter__actual, FilterOptAccountFilter> {
+}
 
 // @public (undocumented)
-export const FindAssetsByDomainId: ScaleStructBuilder<{
-    domain_id: FragmentFromBuilder<typeof EvaluatesToId>;
-}>;
+export const FilterOptAccountFilter: EnumCodecAndFactory<FilterOptAccountFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptAssetDefinitionEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindAssetsByDomainIdAndAssetDefinitionId: ScaleStructBuilder<{
-    domain_id: FragmentFromBuilder<typeof EvaluatesToId>;
-    asset_definition_id: FragmentFromBuilder<typeof EvaluatesToDefinitionId>;
-}>;
+export interface FilterOptAssetDefinitionEventFilter extends Opaque<FilterOptAssetDefinitionEventFilter__actual, FilterOptAssetDefinitionEventFilter> {
+}
 
 // @public (undocumented)
-export const FindAssetsByName: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof EvaluatesToName>;
-}>;
+export const FilterOptAssetDefinitionEventFilter: EnumCodecAndFactory<FilterOptAssetDefinitionEventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptAssetDefinitionFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindDomainById: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToId>;
-}>;
+export interface FilterOptAssetDefinitionFilter extends Opaque<FilterOptAssetDefinitionFilter__actual, FilterOptAssetDefinitionFilter> {
+}
 
 // @public (undocumented)
-export const FindDomainKeyValueByIdAndKey: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToId>;
-    key: FragmentFromBuilder<typeof EvaluatesToName>;
-}>;
+export const FilterOptAssetDefinitionFilter: EnumCodecAndFactory<FilterOptAssetDefinitionFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptAssetEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindPermissionTokensByAccountId: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof EvaluatesToAccountId>;
-}>;
+export interface FilterOptAssetEventFilter extends Opaque<FilterOptAssetEventFilter__actual, FilterOptAssetEventFilter> {
+}
 
 // @public (undocumented)
-export const FindTransactionByHash: ScaleStructBuilder<{
-    hash: FragmentFromBuilder<typeof EvaluatesToHash>;
-}>;
+export const FilterOptAssetEventFilter: EnumCodecAndFactory<FilterOptAssetEventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptAssetFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FindTransactionsByAccountId: ScaleStructBuilder<{
-    account_id: FragmentFromBuilder<typeof EvaluatesToAccountId>;
-}>;
+export interface FilterOptAssetFilter extends Opaque<FilterOptAssetFilter__actual, FilterOptAssetFilter> {
+}
 
 // @public (undocumented)
-export const Fixed: typeof FixedPointI64;
+export const FilterOptAssetFilter: EnumCodecAndFactory<FilterOptAssetFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptDomainEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const FixedPointI64: FragmentBuilder<string>;
+export interface FilterOptDomainEventFilter extends Opaque<FilterOptDomainEventFilter__actual, FilterOptDomainEventFilter> {
+}
 
 // @public (undocumented)
-export const GenesisTransaction: ScaleStructBuilder<{
-    isi: FragmentFromBuilder<typeof VecInstruction>;
-}>;
+export const FilterOptDomainEventFilter: EnumCodecAndFactory<FilterOptDomainEventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptDomainFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const GrantBox: ScaleStructBuilder<{
-    object: FragmentFromBuilder<typeof EvaluatesToValue>;
-    destination_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-}>;
+export interface FilterOptDomainFilter extends Opaque<FilterOptDomainFilter__actual, FilterOptDomainFilter> {
+}
 
 // @public (undocumented)
-export const Greater: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export const FilterOptDomainFilter: EnumCodecAndFactory<FilterOptDomainFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptEntityFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Hash: typeof ArrayU8L32;
+export interface FilterOptEntityFilter extends Opaque<FilterOptEntityFilter__actual, FilterOptEntityFilter> {
+}
 
 // @public (undocumented)
-export const HashOfMerkleTreeVersionedTransaction: typeof Hash;
+export const FilterOptEntityFilter: EnumCodecAndFactory<FilterOptEntityFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterAccountId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const HashOfNodeVersionedTransaction: typeof Hash;
+export interface FilterOptIdFilterAccountId extends Opaque<FilterOptIdFilterAccountId__actual, FilterOptIdFilterAccountId> {
+}
 
 // @public (undocumented)
-export const HashOfProof: typeof Hash;
+export const FilterOptIdFilterAccountId: EnumCodecAndFactory<FilterOptIdFilterAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterAssetId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const HashOfVersionedCommittedBlock: typeof Hash;
+export interface FilterOptIdFilterAssetId extends Opaque<FilterOptIdFilterAssetId__actual, FilterOptIdFilterAssetId> {
+}
 
 // @public (undocumented)
-export const HashOfVersionedTransaction: typeof Hash;
+export const FilterOptIdFilterAssetId: EnumCodecAndFactory<FilterOptIdFilterAssetId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const HashOfVersionedValidBlock: typeof Hash;
+export interface FilterOptIdFilterDefinitionId extends Opaque<FilterOptIdFilterDefinitionId__actual, FilterOptIdFilterDefinitionId> {
+}
 
 // @public (undocumented)
-export const Id: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Name>;
-}>;
+export const FilterOptIdFilterDefinitionId: EnumCodecAndFactory<FilterOptIdFilterDefinitionId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const IdBox: ScaleEnumBuilder<Enum<{
-    AccountId: Valuable<FragmentFromBuilder<typeof AccountId>>;
-    AssetId: Valuable<FragmentFromBuilder<typeof AssetId>>;
-    AssetDefinitionId: Valuable<FragmentFromBuilder<typeof DefinitionId>>;
-    DomainId: Valuable<FragmentFromBuilder<typeof Id>>;
-    PeerId: Valuable<FragmentFromBuilder<typeof PeerId>>;
-    WorldId: null;
-}>>;
+export interface FilterOptIdFilterId extends Opaque<FilterOptIdFilterId__actual, FilterOptIdFilterId> {
+}
 
 // @public (undocumented)
-export const IdentifiableBox: ScaleEnumBuilder<Enum<{
-    Account: Valuable<FragmentFromBuilder<typeof Account>>;
-    NewAccount: Valuable<FragmentFromBuilder<typeof NewAccount>>;
-    Asset: Valuable<FragmentFromBuilder<typeof Asset>>;
-    AssetDefinition: Valuable<FragmentFromBuilder<typeof AssetDefinition>>;
-    Domain: Valuable<FragmentFromBuilder<typeof Domain>>;
-    Peer: Valuable<FragmentFromBuilder<typeof Peer>>;
-    World: null;
-}>>;
+export const FilterOptIdFilterId: EnumCodecAndFactory<FilterOptIdFilterId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterPeerId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Instruction: ScaleEnumBuilder<Enum<{
-    Register: Valuable<FragmentFromBuilder<typeof RegisterBox>>;
-    Unregister: Valuable<FragmentFromBuilder<typeof UnregisterBox>>;
-    Mint: Valuable<FragmentFromBuilder<typeof MintBox>>;
-    Burn: Valuable<FragmentFromBuilder<typeof BurnBox>>;
-    Transfer: Valuable<FragmentFromBuilder<typeof TransferBox>>;
-    If: Valuable<FragmentFromBuilder<typeof IsiIf>>;
-    Pair: Valuable<FragmentFromBuilder<typeof Pair>>;
-    Sequence: Valuable<FragmentFromBuilder<typeof SequenceBox>>;
-    Fail: Valuable<FragmentFromBuilder<typeof FailBox>>;
-    SetKeyValue: Valuable<FragmentFromBuilder<typeof SetKeyValueBox>>;
-    RemoveKeyValue: Valuable<FragmentFromBuilder<typeof RemoveKeyValueBox>>;
-    Grant: Valuable<FragmentFromBuilder<typeof GrantBox>>;
-    Revoke: Valuable<FragmentFromBuilder<typeof RevokeBox>>;
-}>>;
+export interface FilterOptIdFilterPeerId extends Opaque<FilterOptIdFilterPeerId__actual, FilterOptIdFilterPeerId> {
+}
 
 // @public (undocumented)
-export const InstructionExecutionFail: ScaleStructBuilder<{
-    instruction: FragmentFromBuilder<typeof Instruction>;
-    reason: FragmentFromBuilder<typeof Str>;
-}>;
+export const FilterOptIdFilterPeerId: EnumCodecAndFactory<FilterOptIdFilterPeerId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterTriggerId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const IpfsPath: typeof Str;
+export interface FilterOptIdFilterTriggerId extends Opaque<FilterOptIdFilterTriggerId__actual, FilterOptIdFilterTriggerId> {
+}
 
 // @public (undocumented)
-export const IsiIf: ScaleStructBuilder<{
-    condition: FragmentFromBuilder<typeof EvaluatesToBool>;
-    then: FragmentFromBuilder<typeof Instruction>;
-    otherwise: FragmentFromBuilder<typeof OptionInstruction>;
-}>;
+export const FilterOptIdFilterTriggerId: EnumCodecAndFactory<FilterOptIdFilterTriggerId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptPeerEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const LeafVersionedTransaction: ScaleStructBuilder<{
-    hash: FragmentFromBuilder<typeof HashOfVersionedTransaction>;
-}>;
+export interface FilterOptPeerEventFilter extends Opaque<FilterOptPeerEventFilter__actual, FilterOptPeerEventFilter> {
+}
 
 // @public (undocumented)
-export const Less: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export const FilterOptPeerEventFilter: EnumCodecAndFactory<FilterOptPeerEventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptPeerFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const MerkleTreeVersionedTransaction: ScaleStructBuilder<{
-    root_node: FragmentFromBuilder<typeof NodeVersionedTransaction>;
-}>;
+export interface FilterOptPeerFilter extends Opaque<FilterOptPeerFilter__actual, FilterOptPeerFilter> {
+}
 
 // @public (undocumented)
-export const Metadata: ScaleStructBuilder<{
-    map: FragmentFromBuilder<typeof BTreeMapNameValue>;
-}>;
+export const FilterOptPeerFilter: EnumCodecAndFactory<FilterOptPeerFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptTriggerEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const MetadataUpdated: ScaleEnumBuilder<Enum<{
-    Inserted: null;
-    Removed: null;
-}>>;
+export interface FilterOptTriggerEventFilter extends Opaque<FilterOptTriggerEventFilter__actual, FilterOptTriggerEventFilter> {
+}
 
 // @public (undocumented)
-export const MintBox: ScaleStructBuilder<{
-    object: FragmentFromBuilder<typeof EvaluatesToValue>;
-    destination_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-}>;
+export const FilterOptTriggerEventFilter: EnumCodecAndFactory<FilterOptTriggerEventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptTriggerFilter__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Mod: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export interface FilterOptTriggerFilter extends Opaque<FilterOptTriggerFilter__actual, FilterOptTriggerFilter> {
+}
 
 // @public (undocumented)
-export const Multiply: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export const FilterOptTriggerFilter: EnumCodecAndFactory<FilterOptTriggerFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAccountById__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Name: typeof Str;
+export interface FindAccountById extends Opaque<FindAccountById__actual, FindAccountById> {
+}
 
 // @public (undocumented)
-export const NewAccount: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof AccountId>;
-    signatories: FragmentFromBuilder<typeof VecPublicKey>;
-    metadata: FragmentFromBuilder<typeof Metadata>;
-}>;
+export const FindAccountById: StructCodecAndFactory<FindAccountById__actual, FindAccountById>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAccountKeyValueByIdAndKey__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const NodeVersionedTransaction: ScaleEnumBuilder<Enum<{
-    Subtree: Valuable<FragmentFromBuilder<typeof SubtreeVersionedTransaction>>;
-    Leaf: Valuable<FragmentFromBuilder<typeof LeafVersionedTransaction>>;
-    Empty: null;
-}>>;
+export interface FindAccountKeyValueByIdAndKey extends Opaque<FindAccountKeyValueByIdAndKey__actual, FindAccountKeyValueByIdAndKey> {
+}
 
 // @public (undocumented)
-export const Not: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof EvaluatesToBool>;
-}>;
+export const FindAccountKeyValueByIdAndKey: StructCodecAndFactory<FindAccountKeyValueByIdAndKey__actual, FindAccountKeyValueByIdAndKey>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAccountsByDomainId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const NotPermittedFail: ScaleStructBuilder<{
-    reason: FragmentFromBuilder<typeof Str>;
-}>;
+export interface FindAccountsByDomainId extends Opaque<FindAccountsByDomainId__actual, FindAccountsByDomainId> {
+}
 
 // @public (undocumented)
-export const OptionAccountId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof AccountId>>>;
+export const FindAccountsByDomainId: StructCodecAndFactory<FindAccountsByDomainId__actual, FindAccountsByDomainId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAccountsByName__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const OptionAssetId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof AssetId>>>;
+export interface FindAccountsByName extends Opaque<FindAccountsByName__actual, FindAccountsByName> {
+}
 
 // @public (undocumented)
-export const OptionDefinitionId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof DefinitionId>>>;
+export const FindAccountsByName: StructCodecAndFactory<FindAccountsByName__actual, FindAccountsByName>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetById__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const OptionEntityFilter: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof EntityFilter>>>;
+export interface FindAssetById extends Opaque<FindAssetById__actual, FindAssetById> {
+}
 
 // @public (undocumented)
-export const OptionEntityType: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof EntityType>>>;
+export const FindAssetById: StructCodecAndFactory<FindAssetById__actual, FindAssetById>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetDefinitionKeyValueByIdAndKey__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const OptionHash: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Hash>>>;
+export interface FindAssetDefinitionKeyValueByIdAndKey extends Opaque<FindAssetDefinitionKeyValueByIdAndKey__actual, FindAssetDefinitionKeyValueByIdAndKey> {
+}
 
 // @public (undocumented)
-export const OptionId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Id>>>;
+export const FindAssetDefinitionKeyValueByIdAndKey: StructCodecAndFactory<FindAssetDefinitionKeyValueByIdAndKey__actual, FindAssetDefinitionKeyValueByIdAndKey>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetKeyValueByIdAndKey__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const OptionInstruction: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Instruction>>>;
+export interface FindAssetKeyValueByIdAndKey extends Opaque<FindAssetKeyValueByIdAndKey__actual, FindAssetKeyValueByIdAndKey> {
+}
 
 // @public (undocumented)
-export const OptionIpfsPath: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof IpfsPath>>>;
+export const FindAssetKeyValueByIdAndKey: StructCodecAndFactory<FindAssetKeyValueByIdAndKey__actual, FindAssetKeyValueByIdAndKey>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetQuantityById__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const OptionPeerId: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof PeerId>>>;
+export interface FindAssetQuantityById extends Opaque<FindAssetQuantityById__actual, FindAssetQuantityById> {
+}
 
 // @public (undocumented)
-export const OptionStatusFilter: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof StatusFilter>>>;
+export const FindAssetQuantityById: StructCodecAndFactory<FindAssetQuantityById__actual, FindAssetQuantityById>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetsByAccountId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const OptionTopology: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Topology>>>;
+export interface FindAssetsByAccountId extends Opaque<FindAssetsByAccountId__actual, FindAssetsByAccountId> {
+}
 
 // @public (undocumented)
-export const OptionU32: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof U32>>>;
+export const FindAssetsByAccountId: StructCodecAndFactory<FindAssetsByAccountId__actual, FindAssetsByAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetsByAssetDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const OptionUpdated: ScaleEnumBuilder<Option_2<FragmentFromBuilder<typeof Updated>>>;
+export interface FindAssetsByAssetDefinitionId extends Opaque<FindAssetsByAssetDefinitionId__actual, FindAssetsByAssetDefinitionId> {
+}
 
 // @public (undocumented)
-export const Or: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToBool>;
-    right: FragmentFromBuilder<typeof EvaluatesToBool>;
-}>;
+export const FindAssetsByAssetDefinitionId: StructCodecAndFactory<FindAssetsByAssetDefinitionId__actual, FindAssetsByAssetDefinitionId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetsByDomainId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Pair: ScaleStructBuilder<{
-    left_instruction: FragmentFromBuilder<typeof Instruction>;
-    right_instruction: FragmentFromBuilder<typeof Instruction>;
-}>;
+export interface FindAssetsByDomainId extends Opaque<FindAssetsByDomainId__actual, FindAssetsByDomainId> {
+}
 
 // @public (undocumented)
-export const Parameter: ScaleEnumBuilder<Enum<{
-    MaximumFaultyPeersAmount: Valuable<FragmentFromBuilder<typeof U32>>;
-    BlockTime: Valuable<FragmentFromBuilder<typeof U128>>;
-    CommitTime: Valuable<FragmentFromBuilder<typeof U128>>;
-    TransactionReceiptTime: Valuable<FragmentFromBuilder<typeof U128>>;
-}>>;
+export const FindAssetsByDomainId: StructCodecAndFactory<FindAssetsByDomainId__actual, FindAssetsByDomainId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetsByDomainIdAndAssetDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Peer: ScaleStructBuilder<{
-    id: FragmentFromBuilder<typeof PeerId>;
-}>;
+export interface FindAssetsByDomainIdAndAssetDefinitionId extends Opaque<FindAssetsByDomainIdAndAssetDefinitionId__actual, FindAssetsByDomainIdAndAssetDefinitionId> {
+}
 
 // @public (undocumented)
-export const PeerId: ScaleStructBuilder<{
-    address: FragmentFromBuilder<typeof Str>;
-    public_key: FragmentFromBuilder<typeof PublicKey>;
-}>;
+export const FindAssetsByDomainIdAndAssetDefinitionId: StructCodecAndFactory<FindAssetsByDomainIdAndAssetDefinitionId__actual, FindAssetsByDomainIdAndAssetDefinitionId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetsByName__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const PermissionToken: ScaleStructBuilder<{
-    name: FragmentFromBuilder<typeof Name>;
-    params: FragmentFromBuilder<typeof BTreeMapNameValue>;
-}>;
+export interface FindAssetsByName extends Opaque<FindAssetsByName__actual, FindAssetsByName> {
+}
 
 // @public (undocumented)
-export const PipelineEvent: ScaleStructBuilder<{
-    entity_type: FragmentFromBuilder<typeof EntityType>;
-    status: FragmentFromBuilder<typeof Status>;
-    hash: FragmentFromBuilder<typeof Hash>;
-}>;
+export const FindAssetsByName: StructCodecAndFactory<FindAssetsByName__actual, FindAssetsByName>;
 
+// Warning: (ae-forgotten-export) The symbol "FindDomainById__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const PipelineEventFilter: ScaleStructBuilder<{
-    entity: FragmentFromBuilder<typeof OptionEntityType>;
-    hash: FragmentFromBuilder<typeof OptionHash>;
-}>;
+export interface FindDomainById extends Opaque<FindDomainById__actual, FindDomainById> {
+}
 
 // @public (undocumented)
-export const Proof: ScaleStructBuilder<{
-    payload: FragmentFromBuilder<typeof ProofPayload>;
-    signatures: FragmentFromBuilder<typeof SignaturesOfProof>;
-}>;
+export const FindDomainById: StructCodecAndFactory<FindDomainById__actual, FindDomainById>;
 
+// Warning: (ae-forgotten-export) The symbol "FindDomainKeyValueByIdAndKey__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const ProofChain: ScaleStructBuilder<{
-    proofs: FragmentFromBuilder<typeof VecProof>;
-}>;
+export interface FindDomainKeyValueByIdAndKey extends Opaque<FindDomainKeyValueByIdAndKey__actual, FindDomainKeyValueByIdAndKey> {
+}
 
 // @public (undocumented)
-export const ProofPayload: ScaleStructBuilder<{
-    previous_proof: FragmentFromBuilder<typeof HashOfProof>;
-    latest_block: FragmentFromBuilder<typeof HashOfVersionedCommittedBlock>;
-    reason: FragmentFromBuilder<typeof Reason>;
-}>;
+export const FindDomainKeyValueByIdAndKey: StructCodecAndFactory<FindDomainKeyValueByIdAndKey__actual, FindDomainKeyValueByIdAndKey>;
 
+// Warning: (ae-forgotten-export) The symbol "FindError__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const PublicKey: ScaleStructBuilder<{
-    digest_function: FragmentFromBuilder<typeof Str>;
-    payload: FragmentFromBuilder<typeof BytesVec>;
-}>;
+export interface FindError extends Opaque<FindError__actual, FindError> {
+}
 
 // @public (undocumented)
-export const QueryBox: ScaleEnumBuilder<Enum<{
-    FindAllAccounts: Valuable<FragmentFromBuilder<typeof Void>>;
-    FindAccountById: Valuable<FragmentFromBuilder<typeof FindAccountById>>;
-    FindAccountKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindAccountKeyValueByIdAndKey>>;
-    FindAccountsByName: Valuable<FragmentFromBuilder<typeof FindAccountsByName>>;
-    FindAccountsByDomainId: Valuable<FragmentFromBuilder<typeof FindAccountsByDomainId>>;
-    FindAllAssets: Valuable<FragmentFromBuilder<typeof Void>>;
-    FindAllAssetsDefinitions: Valuable<FragmentFromBuilder<typeof Void>>;
-    FindAssetById: Valuable<FragmentFromBuilder<typeof FindAssetById>>;
-    FindAssetsByName: Valuable<FragmentFromBuilder<typeof FindAssetsByName>>;
-    FindAssetsByAccountId: Valuable<FragmentFromBuilder<typeof FindAssetsByAccountId>>;
-    FindAssetsByAssetDefinitionId: Valuable<FragmentFromBuilder<typeof FindAssetsByAssetDefinitionId>>;
-    FindAssetsByDomainId: Valuable<FragmentFromBuilder<typeof FindAssetsByDomainId>>;
-    FindAssetsByDomainIdAndAssetDefinitionId: Valuable<FragmentFromBuilder<typeof FindAssetsByDomainIdAndAssetDefinitionId>>;
-    FindAssetQuantityById: Valuable<FragmentFromBuilder<typeof FindAssetQuantityById>>;
-    FindAssetKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindAssetKeyValueByIdAndKey>>;
-    FindAssetDefinitionKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindAssetDefinitionKeyValueByIdAndKey>>;
-    FindAllDomains: Valuable<FragmentFromBuilder<typeof Void>>;
-    FindDomainById: Valuable<FragmentFromBuilder<typeof FindDomainById>>;
-    FindDomainKeyValueByIdAndKey: Valuable<FragmentFromBuilder<typeof FindDomainKeyValueByIdAndKey>>;
-    FindAllPeers: Valuable<FragmentFromBuilder<typeof Void>>;
-    FindTransactionsByAccountId: Valuable<FragmentFromBuilder<typeof FindTransactionsByAccountId>>;
-    FindTransactionByHash: Valuable<FragmentFromBuilder<typeof FindTransactionByHash>>;
-    FindPermissionTokensByAccountId: Valuable<FragmentFromBuilder<typeof FindPermissionTokensByAccountId>>;
-}>>;
+export const FindError: EnumCodecAndFactory<FindError>;
 
+// Warning: (ae-forgotten-export) The symbol "FindPermissionTokensByAccountId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const QueryPayload: ScaleStructBuilder<{
-    timestamp_ms: FragmentFromBuilder<typeof Compact>;
-    query: FragmentFromBuilder<typeof QueryBox>;
-    account_id: FragmentFromBuilder<typeof AccountId>;
-}>;
+export interface FindPermissionTokensByAccountId extends Opaque<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId> {
+}
 
 // @public (undocumented)
-export const QueryResult: typeof Value;
+export const FindPermissionTokensByAccountId: StructCodecAndFactory<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindTransactionByHash__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const RaiseTo: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export interface FindTransactionByHash extends Opaque<FindTransactionByHash__actual, FindTransactionByHash> {
+}
 
 // @public (undocumented)
-export const RawGenesisBlock: ScaleStructBuilder<{
-    transactions: FragmentFromBuilder<typeof VecGenesisTransaction>;
-}>;
+export const FindTransactionByHash: StructCodecAndFactory<FindTransactionByHash__actual, FindTransactionByHash>;
 
+// Warning: (ae-forgotten-export) The symbol "FindTransactionsByAccountId__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Reason: ScaleEnumBuilder<Enum<{
-    CommitTimeout: Valuable<FragmentFromBuilder<typeof CommitTimeout>>;
-    NoTransactionReceiptReceived: Valuable<FragmentFromBuilder<typeof Void>>;
-    BlockCreationTimeout: Valuable<FragmentFromBuilder<typeof Void>>;
-}>>;
+export interface FindTransactionsByAccountId extends Opaque<FindTransactionsByAccountId__actual, FindTransactionsByAccountId> {
+}
 
 // @public (undocumented)
-export const RegisterBox: ScaleStructBuilder<{
-    object: FragmentFromBuilder<typeof EvaluatesToIdentifiableBox>;
-}>;
+export const FindTransactionsByAccountId: StructCodecAndFactory<FindTransactionsByAccountId__actual, FindTransactionsByAccountId>;
 
 // @public (undocumented)
-export const RejectedTransaction: ScaleStructBuilder<{
-    payload: FragmentFromBuilder<typeof TransactionPayload>;
-    signatures: FragmentFromBuilder<typeof SignaturesOfTransactionPayload>;
-    rejection_reason: FragmentFromBuilder<typeof TransactionRejectionReason>;
-}>;
+export type Fixed = FixedPointI64;
 
 // @public (undocumented)
-export const RejectionReason: ScaleEnumBuilder<Enum<{
-    Block: Valuable<FragmentFromBuilder<typeof BlockRejectionReason>>;
-    Transaction: Valuable<FragmentFromBuilder<typeof TransactionRejectionReason>>;
-}>>;
+export const Fixed: Codec<Fixed>;
 
 // @public (undocumented)
-export const RemoveKeyValueBox: ScaleStructBuilder<{
-    object_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-    key: FragmentFromBuilder<typeof EvaluatesToName>;
-}>;
+export type FixedPointI64 = string;
 
 // @public (undocumented)
-export const RevokeBox: ScaleStructBuilder<{
-    object: FragmentFromBuilder<typeof EvaluatesToValue>;
-    destination_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-}>;
+export const FixedPointI64: Codec<string, string>;
 
+// Warning: (ae-forgotten-export) The symbol "GenesisTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const SequenceBox: ScaleStructBuilder<{
-    instructions: FragmentFromBuilder<typeof VecInstruction>;
-}>;
+export interface GenesisTransaction extends Opaque<GenesisTransaction__actual, GenesisTransaction> {
+}
 
 // @public (undocumented)
-export const SetKeyValueBox: ScaleStructBuilder<{
-    object_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-    key: FragmentFromBuilder<typeof EvaluatesToName>;
-    value: FragmentFromBuilder<typeof EvaluatesToValue>;
-}>;
+export const GenesisTransaction: StructCodecAndFactory<GenesisTransaction__actual, GenesisTransaction>;
 
+// Warning: (ae-forgotten-export) The symbol "GrantBox__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const Signature: ScaleStructBuilder<{
-    public_key: FragmentFromBuilder<typeof PublicKey>;
-    signature: FragmentFromBuilder<typeof BytesVec>;
-}>;
+export interface GrantBox extends Opaque<GrantBox__actual, GrantBox> {
+}
 
 // @public (undocumented)
-export const SignatureCheckCondition: typeof EvaluatesToBool;
+export const GrantBox: StructCodecAndFactory<GrantBox__actual, GrantBox>;
 
+// Warning: (ae-forgotten-export) The symbol "Greater__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const SignatureOfCommittedBlock: typeof Signature;
+export interface Greater extends Opaque<Greater__actual, Greater> {
+}
 
 // @public (undocumented)
-export const SignatureOfProof: typeof Signature;
+export const Greater: StructCodecAndFactory<Greater__actual, Greater>;
 
 // @public (undocumented)
-export const SignatureOfQueryPayload: typeof Signature;
+export type Hash = ArrayU8L32;
 
 // @public (undocumented)
-export const SignatureOfTransactionPayload: typeof Signature;
+export const Hash: Codec<Hash>;
 
 // @public (undocumented)
-export const SignatureOfValidBlock: typeof Signature;
+export type HashOfMerkleTreeVersionedTransaction = Hash;
 
 // @public (undocumented)
-export const SignaturesOfCommittedBlock: ScaleStructBuilder<{
-    signatures: FragmentFromBuilder<typeof BTreeMapPublicKeySignatureOfCommittedBlock>;
-}>;
+export const HashOfMerkleTreeVersionedTransaction: Codec<HashOfMerkleTreeVersionedTransaction>;
 
 // @public (undocumented)
-export const SignaturesOfProof: ScaleStructBuilder<{
-    signatures: FragmentFromBuilder<typeof BTreeMapPublicKeySignatureOfProof>;
-}>;
+export type HashOfNodeVersionedTransaction = Hash;
 
 // @public (undocumented)
-export const SignaturesOfTransactionPayload: ScaleStructBuilder<{
-    signatures: FragmentFromBuilder<typeof BTreeMapPublicKeySignatureOfTransactionPayload>;
-}>;
+export const HashOfNodeVersionedTransaction: Codec<HashOfNodeVersionedTransaction>;
 
 // @public (undocumented)
-export const SignedQueryRequest: ScaleStructBuilder<{
-    payload: FragmentFromBuilder<typeof QueryPayload>;
-    signature: FragmentFromBuilder<typeof SignatureOfQueryPayload>;
-}>;
+export type HashOfProof = Hash;
 
 // @public (undocumented)
-export const Status: ScaleEnumBuilder<Enum<{
-    Validating: null;
-    Rejected: Valuable<FragmentFromBuilder<typeof RejectionReason>>;
-    Committed: null;
-}>>;
+export const HashOfProof: Codec<HashOfProof>;
 
 // @public (undocumented)
-export const StatusFilter: ScaleEnumBuilder<Enum<{
-    Created: null;
-    Updated: Valuable<FragmentFromBuilder<typeof OptionUpdated>>;
-    Deleted: null;
-}>>;
+export type HashOfVersionedCommittedBlock = Hash;
 
 // @public (undocumented)
-export const Subtract: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof EvaluatesToU32>;
-    right: FragmentFromBuilder<typeof EvaluatesToU32>;
-}>;
+export const HashOfVersionedCommittedBlock: Codec<HashOfVersionedCommittedBlock>;
 
 // @public (undocumented)
-export const SubtreeVersionedTransaction: ScaleStructBuilder<{
-    left: FragmentFromBuilder<typeof NodeVersionedTransaction>;
-    right: FragmentFromBuilder<typeof NodeVersionedTransaction>;
-    hash: FragmentFromBuilder<typeof HashOfNodeVersionedTransaction>;
-}>;
+export type HashOfVersionedTransaction = Hash;
 
 // @public (undocumented)
-export const Topology: ScaleStructBuilder<{
-    sorted_peers: FragmentFromBuilder<typeof VecPeerId>;
-    reshuffle_after_n_view_changes: FragmentFromBuilder<typeof U64>;
-    at_block: FragmentFromBuilder<typeof HashOfVersionedCommittedBlock>;
-    view_change_proofs: FragmentFromBuilder<typeof ProofChain>;
-}>;
+export const HashOfVersionedTransaction: Codec<HashOfVersionedTransaction>;
 
 // @public (undocumented)
-export const Transaction: ScaleStructBuilder<{
-    payload: FragmentFromBuilder<typeof TransactionPayload>;
-    signatures: FragmentFromBuilder<typeof BTreeSetSignatureOfTransactionPayload>;
-}>;
+export type HashOfVersionedValidBlock = Hash;
 
 // @public (undocumented)
-export const TransactionLimitError: typeof Str;
+export const HashOfVersionedValidBlock: Codec<HashOfVersionedValidBlock>;
 
+// Warning: (ae-forgotten-export) The symbol "Id__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const TransactionPayload: ScaleStructBuilder<{
-    account_id: FragmentFromBuilder<typeof AccountId>;
-    instructions: FragmentFromBuilder<typeof Executable>;
-    creation_time: FragmentFromBuilder<typeof U64>;
-    time_to_live_ms: FragmentFromBuilder<typeof U64>;
-    nonce: FragmentFromBuilder<typeof OptionU32>;
-    metadata: FragmentFromBuilder<typeof BTreeMapNameValue>;
-}>;
+export interface Id extends Opaque<Id__actual, Id> {
+}
 
 // @public (undocumented)
-export const TransactionRejectionReason: ScaleEnumBuilder<Enum<{
-    NotPermitted: Valuable<FragmentFromBuilder<typeof NotPermittedFail>>;
-    UnsatisfiedSignatureCondition: Valuable<FragmentFromBuilder<typeof UnsatisfiedSignatureConditionFail>>;
-    LimitCheck: Valuable<FragmentFromBuilder<typeof TransactionLimitError>>;
-    InstructionExecution: Valuable<FragmentFromBuilder<typeof InstructionExecutionFail>>;
-    WasmExecution: Valuable<FragmentFromBuilder<typeof WasmExecutionFail>>;
-    UnexpectedGenesisAccountSignature: null;
-}>>;
+export const Id: StructCodecAndFactory<Id__actual, Id>;
 
+// Warning: (ae-forgotten-export) The symbol "IdBox__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const TransactionValue: ScaleEnumBuilder<Enum<{
-    Transaction: Valuable<FragmentFromBuilder<typeof VersionedTransaction>>;
-    RejectedTransaction: Valuable<FragmentFromBuilder<typeof VersionedRejectedTransaction>>;
-}>>;
+export interface IdBox extends Opaque<IdBox__actual, IdBox> {
+}
 
 // @public (undocumented)
-export const TransferBox: ScaleStructBuilder<{
-    source_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-    object: FragmentFromBuilder<typeof EvaluatesToValue>;
-    destination_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-}>;
+export const IdBox: EnumCodecAndFactory<IdBox>;
 
+// Warning: (ae-forgotten-export) The symbol "IdentifiableBox__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const UnregisterBox: ScaleStructBuilder<{
-    object_id: FragmentFromBuilder<typeof EvaluatesToIdBox>;
-}>;
+export interface IdentifiableBox extends Opaque<IdentifiableBox__actual, IdentifiableBox> {
+}
 
 // @public (undocumented)
-export const UnsatisfiedSignatureConditionFail: ScaleStructBuilder<{
-    reason: FragmentFromBuilder<typeof Str>;
-}>;
+export const IdentifiableBox: EnumCodecAndFactory<IdentifiableBox>;
 
 // @public (undocumented)
-export const Updated: ScaleEnumBuilder<Enum<{
-    Metadata: Valuable<FragmentFromBuilder<typeof MetadataUpdated>>;
-    Authentication: null;
-    Permission: null;
-    Asset: Valuable<FragmentFromBuilder<typeof AssetUpdated>>;
-}>>;
+export type IdFilterAccountId = AccountId;
 
 // @public (undocumented)
-export const ValidBlock: ScaleStructBuilder<{
-    header: FragmentFromBuilder<typeof BlockHeader>;
-    rejected_transactions: FragmentFromBuilder<typeof VecVersionedRejectedTransaction>;
-    transactions: FragmentFromBuilder<typeof VecVersionedValidTransaction>;
-    signatures: FragmentFromBuilder<typeof BTreeSetSignatureOfValidBlock>;
-}>;
+export const IdFilterAccountId: Codec<IdFilterAccountId>;
 
 // @public (undocumented)
-export const ValidTransaction: ScaleStructBuilder<{
-    payload: FragmentFromBuilder<typeof TransactionPayload>;
-    signatures: FragmentFromBuilder<typeof SignaturesOfTransactionPayload>;
-}>;
+export type IdFilterAssetId = AssetId;
 
 // @public (undocumented)
-export const Value: ScaleEnumBuilder<Enum<{
-    U32: Valuable<FragmentFromBuilder<typeof U32>>;
-    U128: Valuable<FragmentFromBuilder<typeof U128>>;
-    Bool: Valuable<FragmentFromBuilder<typeof Bool>>;
-    String: Valuable<FragmentFromBuilder<typeof Str>>;
-    Name: Valuable<FragmentFromBuilder<typeof Name>>;
-    Fixed: Valuable<FragmentFromBuilder<typeof Fixed>>;
-    Vec: Valuable<FragmentFromBuilder<typeof VecValue>>;
-    LimitedMetadata: Valuable<FragmentFromBuilder<typeof Metadata>>;
-    Id: Valuable<FragmentFromBuilder<typeof IdBox>>;
-    Identifiable: Valuable<FragmentFromBuilder<typeof IdentifiableBox>>;
-    PublicKey: Valuable<FragmentFromBuilder<typeof PublicKey>>;
-    Parameter: Valuable<FragmentFromBuilder<typeof Parameter>>;
-    SignatureCheckCondition: Valuable<FragmentFromBuilder<typeof SignatureCheckCondition>>;
-    TransactionValue: Valuable<FragmentFromBuilder<typeof TransactionValue>>;
-    PermissionToken: Valuable<FragmentFromBuilder<typeof PermissionToken>>;
-    Hash: Valuable<FragmentFromBuilder<typeof Hash>>;
-}>>;
+export const IdFilterAssetId: Codec<IdFilterAssetId>;
 
 // @public (undocumented)
-export const VecGenesisTransaction: ScaleArrayBuilder<FragmentFromBuilder<typeof GenesisTransaction>[]>;
+export type IdFilterDefinitionId = DefinitionId;
 
 // @public (undocumented)
-export const VecHashOfVersionedValidBlock: ScaleArrayBuilder<FragmentFromBuilder<typeof HashOfVersionedValidBlock>[]>;
+export const IdFilterDefinitionId: Codec<IdFilterDefinitionId>;
 
 // @public (undocumented)
-export const VecInstruction: ScaleArrayBuilder<FragmentFromBuilder<typeof Instruction>[]>;
+export type IdFilterId = Id;
 
 // @public (undocumented)
-export const VecPeerId: ScaleArrayBuilder<FragmentFromBuilder<typeof PeerId>[]>;
+export const IdFilterId: Codec<IdFilterId>;
 
 // @public (undocumented)
-export const VecPermissionToken: ScaleArrayBuilder<FragmentFromBuilder<typeof PermissionToken>[]>;
+export type IdFilterPeerId = PeerId;
 
 // @public (undocumented)
-export const VecProof: ScaleArrayBuilder<FragmentFromBuilder<typeof Proof>[]>;
+export const IdFilterPeerId: Codec<IdFilterPeerId>;
 
 // @public (undocumented)
-export const VecPublicKey: ScaleArrayBuilder<FragmentFromBuilder<typeof PublicKey>[]>;
+export type IdFilterTriggerId = TriggerId;
 
 // @public (undocumented)
-export const VecSignatureOfTransactionPayload: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfTransactionPayload>[]>;
+export const IdFilterTriggerId: Codec<IdFilterTriggerId>;
 
+// Warning: (ae-forgotten-export) The symbol "Instruction__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const VecSignatureOfValidBlock: ScaleArrayBuilder<FragmentFromBuilder<typeof SignatureOfValidBlock>[]>;
+export interface Instruction extends Opaque<Instruction__actual, Instruction> {
+}
 
 // @public (undocumented)
-export const VecValue: ScaleArrayBuilder<FragmentFromBuilder<typeof Value>[]>;
+export const Instruction: EnumCodecAndFactory<Instruction>;
 
+// Warning: (ae-forgotten-export) The symbol "InstructionExecutionFail__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const VecVersionedRejectedTransaction: ScaleArrayBuilder<FragmentFromBuilder<typeof VersionedRejectedTransaction>[]>;
+export interface InstructionExecutionFail extends Opaque<InstructionExecutionFail__actual, InstructionExecutionFail> {
+}
 
 // @public (undocumented)
-export const VecVersionedValidTransaction: ScaleArrayBuilder<FragmentFromBuilder<typeof VersionedValidTransaction>[]>;
+export const InstructionExecutionFail: StructCodecAndFactory<InstructionExecutionFail__actual, InstructionExecutionFail>;
 
 // @public (undocumented)
-export const VersionedBlockPublisherMessage: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof BlockPublisherMessage>>;
-}>>;
+export type IpfsPath = Str;
 
 // @public (undocumented)
-export const VersionedBlockSubscriberMessage: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof BlockSubscriberMessage>>;
-}>>;
+export const IpfsPath: Codec<IpfsPath>;
 
+// Warning: (ae-forgotten-export) The symbol "IsiIf__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const VersionedCommittedBlock: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof CommittedBlock>>;
-}>>;
+export interface IsiIf extends Opaque<IsiIf__actual, IsiIf> {
+}
 
 // @public (undocumented)
-export const VersionedEventPublisherMessage: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof EventPublisherMessage>>;
-}>>;
+export const IsiIf: StructCodecAndFactory<IsiIf__actual, IsiIf>;
 
+// Warning: (ae-forgotten-export) The symbol "LeafVersionedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const VersionedEventSubscriberMessage: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof EventSubscriberMessage>>;
-}>>;
+export interface LeafVersionedTransaction extends Opaque<LeafVersionedTransaction__actual, LeafVersionedTransaction> {
+}
 
 // @public (undocumented)
-export const VersionedQueryResult: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof QueryResult>>;
-}>>;
+export const LeafVersionedTransaction: StructCodecAndFactory<LeafVersionedTransaction__actual, LeafVersionedTransaction>;
 
+// Warning: (ae-forgotten-export) The symbol "Less__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const VersionedRejectedTransaction: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof RejectedTransaction>>;
-}>>;
+export interface Less extends Opaque<Less__actual, Less> {
+}
 
 // @public (undocumented)
-export const VersionedSignedQueryRequest: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof SignedQueryRequest>>;
-}>>;
+export const Less: StructCodecAndFactory<Less__actual, Less>;
 
+// Warning: (ae-forgotten-export) The symbol "MerkleTreeVersionedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const VersionedTransaction: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof Transaction>>;
-}>>;
+export interface MerkleTreeVersionedTransaction extends Opaque<MerkleTreeVersionedTransaction__actual, MerkleTreeVersionedTransaction> {
+}
 
 // @public (undocumented)
-export const VersionedValidBlock: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof ValidBlock>>;
-}>>;
+export const MerkleTreeVersionedTransaction: StructCodecAndFactory<MerkleTreeVersionedTransaction__actual, MerkleTreeVersionedTransaction>;
 
+// Warning: (ae-forgotten-export) The symbol "Metadata__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const VersionedValidTransaction: ScaleEnumBuilder<Enum<{
-    V1: Valuable<FragmentFromBuilder<typeof ValidTransaction>>;
-}>>;
+export interface Metadata extends Opaque<Metadata__actual, Metadata> {
+}
+
+// @public (undocumented)
+export const Metadata: StructCodecAndFactory<Metadata__actual, Metadata>;
+
+// Warning: (ae-forgotten-export) The symbol "MintBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface MintBox extends Opaque<MintBox__actual, MintBox> {
+}
+
+// @public (undocumented)
+export const MintBox: StructCodecAndFactory<MintBox__actual, MintBox>;
+
+// Warning: (ae-forgotten-export) The symbol "Mod__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Mod extends Opaque<Mod__actual, Mod> {
+}
+
+// @public (undocumented)
+export const Mod: StructCodecAndFactory<Mod__actual, Mod>;
+
+// Warning: (ae-forgotten-export) The symbol "Multiply__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Multiply extends Opaque<Multiply__actual, Multiply> {
+}
+
+// @public (undocumented)
+export const Multiply: StructCodecAndFactory<Multiply__actual, Multiply>;
+
+// @public (undocumented)
+export type Name = Str;
+
+// @public (undocumented)
+export const Name: Codec<Name>;
+
+// Warning: (ae-forgotten-export) The symbol "NewAccount__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface NewAccount extends Opaque<NewAccount__actual, NewAccount> {
+}
+
+// @public (undocumented)
+export const NewAccount: StructCodecAndFactory<NewAccount__actual, NewAccount>;
+
+// Warning: (ae-forgotten-export) The symbol "NodeVersionedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface NodeVersionedTransaction extends Opaque<NodeVersionedTransaction__actual, NodeVersionedTransaction> {
+}
+
+// @public (undocumented)
+export const NodeVersionedTransaction: EnumCodecAndFactory<NodeVersionedTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "Not__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Not extends Opaque<Not__actual, Not> {
+}
+
+// @public (undocumented)
+export const Not: StructCodecAndFactory<Not__actual, Not>;
+
+// Warning: (ae-forgotten-export) The symbol "NotPermittedFail__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface NotPermittedFail extends Opaque<NotPermittedFail__actual, NotPermittedFail> {
+}
+
+// @public (undocumented)
+export const NotPermittedFail: StructCodecAndFactory<NotPermittedFail__actual, NotPermittedFail>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionEntityType__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionEntityType extends Opaque<OptionEntityType__actual, OptionEntityType> {
+}
+
+// @public (undocumented)
+export const OptionEntityType: EnumCodecAndFactory<OptionEntityType>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionHash__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionHash extends Opaque<OptionHash__actual, OptionHash> {
+}
+
+// @public (undocumented)
+export const OptionHash: EnumCodecAndFactory<OptionHash>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionInstruction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionInstruction extends Opaque<OptionInstruction__actual, OptionInstruction> {
+}
+
+// @public (undocumented)
+export const OptionInstruction: EnumCodecAndFactory<OptionInstruction>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionIpfsPath__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionIpfsPath extends Opaque<OptionIpfsPath__actual, OptionIpfsPath> {
+}
+
+// @public (undocumented)
+export const OptionIpfsPath: EnumCodecAndFactory<OptionIpfsPath>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionTopology__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionTopology extends Opaque<OptionTopology__actual, OptionTopology> {
+}
+
+// @public (undocumented)
+export const OptionTopology: EnumCodecAndFactory<OptionTopology>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionU32__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionU32 extends Opaque<OptionU32__actual, OptionU32> {
+}
+
+// @public (undocumented)
+export const OptionU32: EnumCodecAndFactory<OptionU32>;
+
+// Warning: (ae-forgotten-export) The symbol "Or__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Or extends Opaque<Or__actual, Or> {
+}
+
+// @public (undocumented)
+export const Or: StructCodecAndFactory<Or__actual, Or>;
+
+// Warning: (ae-forgotten-export) The symbol "Pair__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Pair extends Opaque<Pair__actual, Pair> {
+}
+
+// @public (undocumented)
+export const Pair: StructCodecAndFactory<Pair__actual, Pair>;
+
+// Warning: (ae-forgotten-export) The symbol "Parameter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Parameter extends Opaque<Parameter__actual, Parameter> {
+}
+
+// @public (undocumented)
+export const Parameter: EnumCodecAndFactory<Parameter>;
+
+// @public (undocumented)
+export type ParentHashNotFound = HashOfVersionedCommittedBlock;
+
+// @public (undocumented)
+export const ParentHashNotFound: Codec<ParentHashNotFound>;
+
+// Warning: (ae-forgotten-export) The symbol "Peer__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Peer extends Opaque<Peer__actual, Peer> {
+}
+
+// @public (undocumented)
+export const Peer: StructCodecAndFactory<Peer__actual, Peer>;
+
+// Warning: (ae-forgotten-export) The symbol "PeerEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PeerEvent extends Opaque<PeerEvent__actual, PeerEvent> {
+}
+
+// @public (undocumented)
+export const PeerEvent: EnumCodecAndFactory<PeerEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "PeerEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PeerEventFilter extends Opaque<PeerEventFilter__actual, PeerEventFilter> {
+}
+
+// @public (undocumented)
+export const PeerEventFilter: EnumCodecAndFactory<PeerEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "PeerFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PeerFilter extends Opaque<PeerFilter__actual, PeerFilter> {
+}
+
+// @public (undocumented)
+export const PeerFilter: StructCodecAndFactory<PeerFilter__actual, PeerFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "PeerId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PeerId extends Opaque<PeerId__actual, PeerId> {
+}
+
+// @public (undocumented)
+export const PeerId: StructCodecAndFactory<PeerId__actual, PeerId>;
+
+// Warning: (ae-forgotten-export) The symbol "PermissionToken__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PermissionToken extends Opaque<PermissionToken__actual, PermissionToken> {
+}
+
+// @public (undocumented)
+export const PermissionToken: StructCodecAndFactory<PermissionToken__actual, PermissionToken>;
+
+// Warning: (ae-forgotten-export) The symbol "PipelineEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PipelineEvent extends Opaque<PipelineEvent__actual, PipelineEvent> {
+}
+
+// @public (undocumented)
+export const PipelineEvent: StructCodecAndFactory<PipelineEvent__actual, PipelineEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "PipelineEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PipelineEventFilter extends Opaque<PipelineEventFilter__actual, PipelineEventFilter> {
+}
+
+// @public (undocumented)
+export const PipelineEventFilter: StructCodecAndFactory<PipelineEventFilter__actual, PipelineEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "Proof__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Proof extends Opaque<Proof__actual, Proof> {
+}
+
+// @public (undocumented)
+export const Proof: StructCodecAndFactory<Proof__actual, Proof>;
+
+// Warning: (ae-forgotten-export) The symbol "ProofChain__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ProofChain extends Opaque<ProofChain__actual, ProofChain> {
+}
+
+// @public (undocumented)
+export const ProofChain: StructCodecAndFactory<ProofChain__actual, ProofChain>;
+
+// Warning: (ae-forgotten-export) The symbol "ProofPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ProofPayload extends Opaque<ProofPayload__actual, ProofPayload> {
+}
+
+// @public (undocumented)
+export const ProofPayload: StructCodecAndFactory<ProofPayload__actual, ProofPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "PublicKey__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PublicKey extends Opaque<PublicKey__actual, PublicKey> {
+}
+
+// @public (undocumented)
+export const PublicKey: StructCodecAndFactory<PublicKey__actual, PublicKey>;
+
+// Warning: (ae-forgotten-export) The symbol "QueryBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface QueryBox extends Opaque<QueryBox__actual, QueryBox> {
+}
+
+// @public (undocumented)
+export const QueryBox: EnumCodecAndFactory<QueryBox>;
+
+// Warning: (ae-forgotten-export) The symbol "QueryError__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface QueryError extends Opaque<QueryError__actual, QueryError> {
+}
+
+// @public (undocumented)
+export const QueryError: EnumCodecAndFactory<QueryError>;
+
+// Warning: (ae-forgotten-export) The symbol "QueryPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface QueryPayload extends Opaque<QueryPayload__actual, QueryPayload> {
+}
+
+// @public (undocumented)
+export const QueryPayload: StructCodecAndFactory<QueryPayload__actual, QueryPayload>;
+
+// @public (undocumented)
+export type QueryResult = Value;
+
+// @public (undocumented)
+export const QueryResult: Codec<QueryResult>;
+
+// Warning: (ae-forgotten-export) The symbol "QueryUnsupportedVersionError__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface QueryUnsupportedVersionError extends Opaque<QueryUnsupportedVersionError__actual, QueryUnsupportedVersionError> {
+}
+
+// @public (undocumented)
+export const QueryUnsupportedVersionError: StructCodecAndFactory<QueryUnsupportedVersionError__actual, QueryUnsupportedVersionError>;
+
+// Warning: (ae-forgotten-export) The symbol "RaiseTo__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RaiseTo extends Opaque<RaiseTo__actual, RaiseTo> {
+}
+
+// @public (undocumented)
+export const RaiseTo: StructCodecAndFactory<RaiseTo__actual, RaiseTo>;
+
+// Warning: (ae-forgotten-export) The symbol "RawGenesisBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RawGenesisBlock extends Opaque<RawGenesisBlock__actual, RawGenesisBlock> {
+}
+
+// @public (undocumented)
+export const RawGenesisBlock: StructCodecAndFactory<RawGenesisBlock__actual, RawGenesisBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "RawVersioned__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RawVersioned extends Opaque<RawVersioned__actual, RawVersioned> {
+}
+
+// @public (undocumented)
+export const RawVersioned: EnumCodecAndFactory<RawVersioned>;
+
+// Warning: (ae-forgotten-export) The symbol "Reason__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Reason extends Opaque<Reason__actual, Reason> {
+}
+
+// @public (undocumented)
+export const Reason: EnumCodecAndFactory<Reason>;
+
+// Warning: (ae-forgotten-export) The symbol "RegisterBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RegisterBox extends Opaque<RegisterBox__actual, RegisterBox> {
+}
+
+// @public (undocumented)
+export const RegisterBox: StructCodecAndFactory<RegisterBox__actual, RegisterBox>;
+
+// Warning: (ae-forgotten-export) The symbol "RejectedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RejectedTransaction extends Opaque<RejectedTransaction__actual, RejectedTransaction> {
+}
+
+// @public (undocumented)
+export const RejectedTransaction: StructCodecAndFactory<RejectedTransaction__actual, RejectedTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "RejectionReason__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RejectionReason extends Opaque<RejectionReason__actual, RejectionReason> {
+}
+
+// @public (undocumented)
+export const RejectionReason: EnumCodecAndFactory<RejectionReason>;
+
+// Warning: (ae-forgotten-export) The symbol "RemoveKeyValueBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RemoveKeyValueBox extends Opaque<RemoveKeyValueBox__actual, RemoveKeyValueBox> {
+}
+
+// @public (undocumented)
+export const RemoveKeyValueBox: StructCodecAndFactory<RemoveKeyValueBox__actual, RemoveKeyValueBox>;
+
+// Warning: (ae-forgotten-export) The symbol "Repeats__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Repeats extends Opaque<Repeats__actual, Repeats> {
+}
+
+// @public (undocumented)
+export const Repeats: EnumCodecAndFactory<Repeats>;
+
+// Warning: (ae-forgotten-export) The symbol "RevokeBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RevokeBox extends Opaque<RevokeBox__actual, RevokeBox> {
+}
+
+// @public (undocumented)
+export const RevokeBox: StructCodecAndFactory<RevokeBox__actual, RevokeBox>;
+
+// Warning: (ae-forgotten-export) The symbol "SequenceBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SequenceBox extends Opaque<SequenceBox__actual, SequenceBox> {
+}
+
+// @public (undocumented)
+export const SequenceBox: StructCodecAndFactory<SequenceBox__actual, SequenceBox>;
+
+// Warning: (ae-forgotten-export) The symbol "SetKeyValueBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SetKeyValueBox extends Opaque<SetKeyValueBox__actual, SetKeyValueBox> {
+}
+
+// @public (undocumented)
+export const SetKeyValueBox: StructCodecAndFactory<SetKeyValueBox__actual, SetKeyValueBox>;
+
+// Warning: (ae-forgotten-export) The symbol "Signature__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Signature extends Opaque<Signature__actual, Signature> {
+}
+
+// @public (undocumented)
+export const Signature: StructCodecAndFactory<Signature__actual, Signature>;
+
+// @public (undocumented)
+export type SignatureCheckCondition = EvaluatesToBool;
+
+// @public (undocumented)
+export const SignatureCheckCondition: Codec<SignatureCheckCondition>;
+
+// @public (undocumented)
+export type SignatureOfCommittedBlock = Signature;
+
+// @public (undocumented)
+export const SignatureOfCommittedBlock: Codec<SignatureOfCommittedBlock>;
+
+// @public (undocumented)
+export type SignatureOfProof = Signature;
+
+// @public (undocumented)
+export const SignatureOfProof: Codec<SignatureOfProof>;
+
+// @public (undocumented)
+export type SignatureOfQueryPayload = Signature;
+
+// @public (undocumented)
+export const SignatureOfQueryPayload: Codec<SignatureOfQueryPayload>;
+
+// @public (undocumented)
+export type SignatureOfTransactionPayload = Signature;
+
+// @public (undocumented)
+export const SignatureOfTransactionPayload: Codec<SignatureOfTransactionPayload>;
+
+// @public (undocumented)
+export type SignatureOfValidBlock = Signature;
+
+// @public (undocumented)
+export const SignatureOfValidBlock: Codec<SignatureOfValidBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "SignaturesOfCommittedBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SignaturesOfCommittedBlock extends Opaque<SignaturesOfCommittedBlock__actual, SignaturesOfCommittedBlock> {
+}
+
+// @public (undocumented)
+export const SignaturesOfCommittedBlock: StructCodecAndFactory<SignaturesOfCommittedBlock__actual, SignaturesOfCommittedBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "SignaturesOfProof__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SignaturesOfProof extends Opaque<SignaturesOfProof__actual, SignaturesOfProof> {
+}
+
+// @public (undocumented)
+export const SignaturesOfProof: StructCodecAndFactory<SignaturesOfProof__actual, SignaturesOfProof>;
+
+// Warning: (ae-forgotten-export) The symbol "SignaturesOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SignaturesOfTransactionPayload extends Opaque<SignaturesOfTransactionPayload__actual, SignaturesOfTransactionPayload> {
+}
+
+// @public (undocumented)
+export const SignaturesOfTransactionPayload: StructCodecAndFactory<SignaturesOfTransactionPayload__actual, SignaturesOfTransactionPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "SignedQueryRequest__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SignedQueryRequest extends Opaque<SignedQueryRequest__actual, SignedQueryRequest> {
+}
+
+// @public (undocumented)
+export const SignedQueryRequest: StructCodecAndFactory<SignedQueryRequest__actual, SignedQueryRequest>;
+
+// Warning: (ae-forgotten-export) The symbol "Status__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Status extends Opaque<Status__actual, Status> {
+}
+
+// @public (undocumented)
+export const Status: EnumCodecAndFactory<Status>;
+
+// Warning: (ae-forgotten-export) The symbol "Subtract__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Subtract extends Opaque<Subtract__actual, Subtract> {
+}
+
+// @public (undocumented)
+export const Subtract: StructCodecAndFactory<Subtract__actual, Subtract>;
+
+// Warning: (ae-forgotten-export) The symbol "SubtreeVersionedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SubtreeVersionedTransaction extends Opaque<SubtreeVersionedTransaction__actual, SubtreeVersionedTransaction> {
+}
+
+// @public (undocumented)
+export const SubtreeVersionedTransaction: StructCodecAndFactory<SubtreeVersionedTransaction__actual, SubtreeVersionedTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "Topology__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Topology extends Opaque<Topology__actual, Topology> {
+}
+
+// @public (undocumented)
+export const Topology: StructCodecAndFactory<Topology__actual, Topology>;
+
+// Warning: (ae-forgotten-export) The symbol "Transaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Transaction extends Opaque<Transaction__actual, Transaction> {
+}
+
+// @public (undocumented)
+export const Transaction: StructCodecAndFactory<Transaction__actual, Transaction>;
+
+// @public (undocumented)
+export type TransactionLimitError = Str;
+
+// @public (undocumented)
+export const TransactionLimitError: Codec<TransactionLimitError>;
+
+// Warning: (ae-forgotten-export) The symbol "TransactionPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TransactionPayload extends Opaque<TransactionPayload__actual, TransactionPayload> {
+}
+
+// @public (undocumented)
+export const TransactionPayload: StructCodecAndFactory<TransactionPayload__actual, TransactionPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "TransactionRejectionReason__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TransactionRejectionReason extends Opaque<TransactionRejectionReason__actual, TransactionRejectionReason> {
+}
+
+// @public (undocumented)
+export const TransactionRejectionReason: EnumCodecAndFactory<TransactionRejectionReason>;
+
+// Warning: (ae-forgotten-export) The symbol "TransactionValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TransactionValue extends Opaque<TransactionValue__actual, TransactionValue> {
+}
+
+// @public (undocumented)
+export const TransactionValue: EnumCodecAndFactory<TransactionValue>;
+
+// Warning: (ae-forgotten-export) The symbol "TransferBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TransferBox extends Opaque<TransferBox__actual, TransferBox> {
+}
+
+// @public (undocumented)
+export const TransferBox: StructCodecAndFactory<TransferBox__actual, TransferBox>;
+
+// Warning: (ae-forgotten-export) The symbol "Trigger__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Trigger extends Opaque<Trigger__actual, Trigger> {
+}
+
+// @public (undocumented)
+export const Trigger: StructCodecAndFactory<Trigger__actual, Trigger>;
+
+// Warning: (ae-forgotten-export) The symbol "TriggerEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TriggerEvent extends Opaque<TriggerEvent__actual, TriggerEvent> {
+}
+
+// @public (undocumented)
+export const TriggerEvent: EnumCodecAndFactory<TriggerEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "TriggerEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TriggerEventFilter extends Opaque<TriggerEventFilter__actual, TriggerEventFilter> {
+}
+
+// @public (undocumented)
+export const TriggerEventFilter: EnumCodecAndFactory<TriggerEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "TriggerFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TriggerFilter extends Opaque<TriggerFilter__actual, TriggerFilter> {
+}
+
+// @public (undocumented)
+export const TriggerFilter: StructCodecAndFactory<TriggerFilter__actual, TriggerFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "TriggerId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TriggerId extends Opaque<TriggerId__actual, TriggerId> {
+}
+
+// @public (undocumented)
+export const TriggerId: StructCodecAndFactory<TriggerId__actual, TriggerId>;
+
+// Warning: (ae-forgotten-export) The symbol "UnregisterBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface UnregisterBox extends Opaque<UnregisterBox__actual, UnregisterBox> {
+}
+
+// @public (undocumented)
+export const UnregisterBox: StructCodecAndFactory<UnregisterBox__actual, UnregisterBox>;
+
+// Warning: (ae-forgotten-export) The symbol "UnsatisfiedSignatureConditionFail__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface UnsatisfiedSignatureConditionFail extends Opaque<UnsatisfiedSignatureConditionFail__actual, UnsatisfiedSignatureConditionFail> {
+}
+
+// @public (undocumented)
+export const UnsatisfiedSignatureConditionFail: StructCodecAndFactory<UnsatisfiedSignatureConditionFail__actual, UnsatisfiedSignatureConditionFail>;
+
+// Warning: (ae-forgotten-export) The symbol "UnsupportedVersion__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface UnsupportedVersion extends Opaque<UnsupportedVersion__actual, UnsupportedVersion> {
+}
+
+// @public (undocumented)
+export const UnsupportedVersion: StructCodecAndFactory<UnsupportedVersion__actual, UnsupportedVersion>;
+
+// Warning: (ae-forgotten-export) The symbol "ValidBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ValidBlock extends Opaque<ValidBlock__actual, ValidBlock> {
+}
+
+// @public (undocumented)
+export const ValidBlock: StructCodecAndFactory<ValidBlock__actual, ValidBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "ValidTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ValidTransaction extends Opaque<ValidTransaction__actual, ValidTransaction> {
+}
+
+// @public (undocumented)
+export const ValidTransaction: StructCodecAndFactory<ValidTransaction__actual, ValidTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "Value__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Value extends Opaque<Value__actual, Value> {
+}
+
+// @public (undocumented)
+export const Value: EnumCodecAndFactory<Value>;
+
+// Warning: (ae-forgotten-export) The symbol "VecAction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecAction extends Opaque<VecAction__actual, VecAction> {
+}
+
+// @public (undocumented)
+export const VecAction: ArrayCodecAndFactory<VecAction__actual, VecAction>;
+
+// Warning: (ae-forgotten-export) The symbol "VecGenesisTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecGenesisTransaction extends Opaque<VecGenesisTransaction__actual, VecGenesisTransaction> {
+}
+
+// @public (undocumented)
+export const VecGenesisTransaction: ArrayCodecAndFactory<VecGenesisTransaction__actual, VecGenesisTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "VecHashOfVersionedValidBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecHashOfVersionedValidBlock extends Opaque<VecHashOfVersionedValidBlock__actual, VecHashOfVersionedValidBlock> {
+}
+
+// @public (undocumented)
+export const VecHashOfVersionedValidBlock: ArrayCodecAndFactory<VecHashOfVersionedValidBlock__actual, VecHashOfVersionedValidBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "VecInstruction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecInstruction extends Opaque<VecInstruction__actual, VecInstruction> {
+}
+
+// @public (undocumented)
+export const VecInstruction: ArrayCodecAndFactory<VecInstruction__actual, VecInstruction>;
+
+// Warning: (ae-forgotten-export) The symbol "VecPeerId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecPeerId extends Opaque<VecPeerId__actual, VecPeerId> {
+}
+
+// @public (undocumented)
+export const VecPeerId: ArrayCodecAndFactory<VecPeerId__actual, VecPeerId>;
+
+// Warning: (ae-forgotten-export) The symbol "VecPermissionToken__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecPermissionToken extends Opaque<VecPermissionToken__actual, VecPermissionToken> {
+}
+
+// @public (undocumented)
+export const VecPermissionToken: ArrayCodecAndFactory<VecPermissionToken__actual, VecPermissionToken>;
+
+// Warning: (ae-forgotten-export) The symbol "VecProof__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecProof extends Opaque<VecProof__actual, VecProof> {
+}
+
+// @public (undocumented)
+export const VecProof: ArrayCodecAndFactory<VecProof__actual, VecProof>;
+
+// Warning: (ae-forgotten-export) The symbol "VecPublicKey__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecPublicKey extends Opaque<VecPublicKey__actual, VecPublicKey> {
+}
+
+// @public (undocumented)
+export const VecPublicKey: ArrayCodecAndFactory<VecPublicKey__actual, VecPublicKey>;
+
+// Warning: (ae-forgotten-export) The symbol "VecSignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecSignatureOfTransactionPayload extends Opaque<VecSignatureOfTransactionPayload__actual, VecSignatureOfTransactionPayload> {
+}
+
+// @public (undocumented)
+export const VecSignatureOfTransactionPayload: ArrayCodecAndFactory<VecSignatureOfTransactionPayload__actual, VecSignatureOfTransactionPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "VecSignatureOfValidBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecSignatureOfValidBlock extends Opaque<VecSignatureOfValidBlock__actual, VecSignatureOfValidBlock> {
+}
+
+// @public (undocumented)
+export const VecSignatureOfValidBlock: ArrayCodecAndFactory<VecSignatureOfValidBlock__actual, VecSignatureOfValidBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "VecValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecValue extends Opaque<VecValue__actual, VecValue> {
+}
+
+// @public (undocumented)
+export const VecValue: ArrayCodecAndFactory<VecValue__actual, VecValue>;
+
+// Warning: (ae-forgotten-export) The symbol "VecVersionedRejectedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecVersionedRejectedTransaction extends Opaque<VecVersionedRejectedTransaction__actual, VecVersionedRejectedTransaction> {
+}
+
+// @public (undocumented)
+export const VecVersionedRejectedTransaction: ArrayCodecAndFactory<VecVersionedRejectedTransaction__actual, VecVersionedRejectedTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "VecVersionedValidTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecVersionedValidTransaction extends Opaque<VecVersionedValidTransaction__actual, VecVersionedValidTransaction> {
+}
+
+// @public (undocumented)
+export const VecVersionedValidTransaction: ArrayCodecAndFactory<VecVersionedValidTransaction__actual, VecVersionedValidTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedBlockPublisherMessage__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedBlockPublisherMessage extends Opaque<VersionedBlockPublisherMessage__actual, VersionedBlockPublisherMessage> {
+}
+
+// @public (undocumented)
+export const VersionedBlockPublisherMessage: EnumCodecAndFactory<VersionedBlockPublisherMessage>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedBlockSubscriberMessage__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedBlockSubscriberMessage extends Opaque<VersionedBlockSubscriberMessage__actual, VersionedBlockSubscriberMessage> {
+}
+
+// @public (undocumented)
+export const VersionedBlockSubscriberMessage: EnumCodecAndFactory<VersionedBlockSubscriberMessage>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedCommittedBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedCommittedBlock extends Opaque<VersionedCommittedBlock__actual, VersionedCommittedBlock> {
+}
+
+// @public (undocumented)
+export const VersionedCommittedBlock: EnumCodecAndFactory<VersionedCommittedBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedEventPublisherMessage__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedEventPublisherMessage extends Opaque<VersionedEventPublisherMessage__actual, VersionedEventPublisherMessage> {
+}
+
+// @public (undocumented)
+export const VersionedEventPublisherMessage: EnumCodecAndFactory<VersionedEventPublisherMessage>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedEventSubscriberMessage__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedEventSubscriberMessage extends Opaque<VersionedEventSubscriberMessage__actual, VersionedEventSubscriberMessage> {
+}
+
+// @public (undocumented)
+export const VersionedEventSubscriberMessage: EnumCodecAndFactory<VersionedEventSubscriberMessage>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedQueryResult__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedQueryResult extends Opaque<VersionedQueryResult__actual, VersionedQueryResult> {
+}
+
+// @public (undocumented)
+export const VersionedQueryResult: EnumCodecAndFactory<VersionedQueryResult>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedRejectedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedRejectedTransaction extends Opaque<VersionedRejectedTransaction__actual, VersionedRejectedTransaction> {
+}
+
+// @public (undocumented)
+export const VersionedRejectedTransaction: EnumCodecAndFactory<VersionedRejectedTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedSignedQueryRequest__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedSignedQueryRequest extends Opaque<VersionedSignedQueryRequest__actual, VersionedSignedQueryRequest> {
+}
+
+// @public (undocumented)
+export const VersionedSignedQueryRequest: EnumCodecAndFactory<VersionedSignedQueryRequest>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedTransaction extends Opaque<VersionedTransaction__actual, VersionedTransaction> {
+}
+
+// @public (undocumented)
+export const VersionedTransaction: EnumCodecAndFactory<VersionedTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedValidBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedValidBlock extends Opaque<VersionedValidBlock__actual, VersionedValidBlock> {
+}
+
+// @public (undocumented)
+export const VersionedValidBlock: EnumCodecAndFactory<VersionedValidBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionedValidTransaction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionedValidTransaction extends Opaque<VersionedValidTransaction__actual, VersionedValidTransaction> {
+}
+
+// @public (undocumented)
+export const VersionedValidTransaction: EnumCodecAndFactory<VersionedValidTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "VersionError__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VersionError extends Opaque<VersionError__actual, VersionError> {
+}
+
+// @public (undocumented)
+export const VersionError: EnumCodecAndFactory<VersionError>;
 
 export { Void as BlockCreationTimeout }
 export { Void as FindAllAccounts }
@@ -1151,21 +2146,32 @@ export { Void as FindAllDomains }
 export { Void as FindAllPeers }
 export { Void as NoTransactionReceiptReceived }
 
+// Warning: (ae-forgotten-export) The symbol "WasmExecutionFail__actual" needs to be exported by the entry point lib.d.ts
+//
 // @public (undocumented)
-export const WasmExecutionFail: ScaleStructBuilder<{
-    reason: FragmentFromBuilder<typeof Str>;
-}>;
+export interface WasmExecutionFail extends Opaque<WasmExecutionFail__actual, WasmExecutionFail> {
+}
 
 // @public (undocumented)
-export const WasmSmartContract: ScaleStructBuilder<{
-    raw_data: FragmentFromBuilder<typeof BytesVec>;
-}>;
+export const WasmExecutionFail: StructCodecAndFactory<WasmExecutionFail__actual, WasmExecutionFail>;
+
+// Warning: (ae-forgotten-export) The symbol "WasmSmartContract__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface WasmSmartContract extends Opaque<WasmSmartContract__actual, WasmSmartContract> {
+}
 
 // @public (undocumented)
-export const Where: ScaleStructBuilder<{
-    expression: FragmentFromBuilder<typeof EvaluatesToValue>;
-    values: FragmentFromBuilder<typeof BTreeMapStringEvaluatesToValue>;
-}>;
+export const WasmSmartContract: StructCodecAndFactory<WasmSmartContract__actual, WasmSmartContract>;
+
+// Warning: (ae-forgotten-export) The symbol "Where__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Where extends Opaque<Where__actual, Where> {
+}
+
+// @public (undocumented)
+export const Where: StructCodecAndFactory<Where__actual, Where>;
 
 
 export * from "@scale-codec/definition-runtime";

@@ -23,7 +23,7 @@ interface Event_2 {
 export { Event_2 as Event }
 
 // @public (undocumented)
-export type IncomingData = string | ArrayBuffer;
+export type IncomingData = ArrayBufferView;
 
 // @public (undocumented)
 export function initWebSocket(params: InitWebSocketParams): IsomorphicWebSocket;

@@ -20,11 +20,11 @@
     },
     "dependencies": {
         "@iroha2/i64-fixnum": "workspace:^0.3.0",
-        "@scale-codec/definition-compiler": "^1.0.0",
         "@scale-codec/definition-runtime": "^1.0.0"
     },
     "devDependencies": {
         "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
+        "@scale-codec/definition-compiler": "^1.0.0",
         "@types/debug": "^4.1.7",
         "@types/gulp": "^4.0.9",
         "@types/lodash-es": "^4.17.5",

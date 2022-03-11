@@ -1,5 +1,5 @@
 import consola from 'consola';
-import { $ } from 'zx';
+import execa from 'execa';
 import { preview } from 'vite';
 import { run } from '@iroha2/test-peer/src/api/server';
 import { PORT_PEER_SERVER } from './meta';
@@ -9,9 +9,10 @@ async function main() {
     await Promise.all([run(PORT_PEER_SERVER), preview({})]);
 
     consola.info('Running Cypress');
-    await $`pnpm cypress run`;
+    await execa(`pnpm`, ['cypress', 'run'], { stdio: 'inherit' });
 
     consola.success('Tests are passed!');
+    process.exit(0);
 }
 
 main().catch((err) => {

@@ -1,29 +1,11 @@
 import { Extractor, ExtractorConfig, ExtractorResult } from '@microsoft/api-extractor';
-import path from 'path';
-
-const UNSCOPED_PACKAGES_NAMES = [
-    'client',
-    'client-isomorphic-ws',
-    'client-isomorphic-fetch',
-    'data-model',
-    'i64-fixnum',
-    'crypto-core',
-    'crypto-target-node',
-    'crypto-target-web',
-    'crypto-target-bundler',
-];
-
-function resolvePkgExtractorConfig(unscopedName: string): string {
-    if (unscopedName.startsWith('crypto-')) {
-        const [, tail] = unscopedName.match(/^crypto-(.+)$/)!;
-        return path.resolve(__dirname, `../packages/crypto/packages/${tail}/api-extractor.json`);
-    }
-    return path.resolve(__dirname, `../packages/${unscopedName}/api-extractor.json`);
-}
+import { PUBLIC_PACKAGES, getPackageApiExtractorConfigFile } from '../meta';
 
 export async function runApiExtractor(localBuild = false) {
-    for (const pkg of UNSCOPED_PACKAGES_NAMES) {
-        const extractorConfig: ExtractorConfig = ExtractorConfig.loadFileAndPrepare(resolvePkgExtractorConfig(pkg));
+    for (const pkg of PUBLIC_PACKAGES) {
+        const extractorConfig: ExtractorConfig = ExtractorConfig.loadFileAndPrepare(
+            getPackageApiExtractorConfigFile(pkg),
+        );
 
         // Invoke API Extractor
         const extractorResult: ExtractorResult = Extractor.invoke(extractorConfig, {
@@ -33,7 +15,7 @@ export async function runApiExtractor(localBuild = false) {
 
         if (!extractorResult.succeeded) {
             throw new Error(
-                `API Extractor completed with ${extractorResult.errorCount} errors` +
+                `API Extractor for package ${pkg} completed with ${extractorResult.errorCount} errors` +
                     ` and ${extractorResult.warningCount} warnings`,
             );
         }

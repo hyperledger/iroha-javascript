@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SetupEventsReturn } from '@iroha2/client';
-import { EntityType, Enum } from '@iroha2/data-model';
+import { EntityType, EventFilter, OptionEntityType, OptionHash, PipelineEventFilter } from '@iroha2/data-model';
 import { shallowReactive, shallowRef, computed } from 'vue';
 import { bytesToHex } from 'hada';
 import { client } from '../client';
@@ -17,10 +17,13 @@ const isListening = computed(() => !!currentListener.value);
 
 async function startListening() {
     currentListener.value = await client.listenForEvents({
-        filter: Enum.variant('Pipeline', {
-            entity: Enum.variant('Some', Enum.variant<EntityType>('Transaction')),
-            hash: Enum.variant('None'),
-        }),
+        filter: EventFilter(
+            'Pipeline',
+            PipelineEventFilter({
+                entity: OptionEntityType('Some', EntityType('Transaction')),
+                hash: OptionHash('None'),
+            }),
+        ),
     });
 
     currentListener.value.ee.on('event', (event) => {

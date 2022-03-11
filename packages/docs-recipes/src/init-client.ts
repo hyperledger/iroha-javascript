@@ -17,7 +17,7 @@ initCryptoWeb().then(() => {
 
 // And finally, create a client!
 
-const client = Client.create({
+const client = new Client({
     torii: {
         // Both URLs are optional - in case you need only a part of endpoints,
         // e.g. only Telemetry ones
