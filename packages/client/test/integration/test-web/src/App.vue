@@ -11,3 +11,10 @@ import StatusChecker from './components/StatusChecker.vue';
     <hr>
     <Listener />
 </template>
+
+<style lang="scss">
+#app {
+    padding: 16px;
+    font-family: sans-serif;
+}
+</style>
