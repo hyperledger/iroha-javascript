@@ -1,5 +1,5 @@
 import { crypto } from '@iroha2/crypto-target-node';
-import { Client, setCrypto } from '@iroha2/client';
+import { Client, setCrypto, SetupBlocksStreamReturn } from '@iroha2/client';
 import {
     Instruction,
     AssetValueType,
@@ -51,7 +51,6 @@ import { Seq } from 'immutable';
 import { startPeer, setConfiguration, cleanConfiguration, StartPeerReturn } from '@iroha2/test-peer';
 import { delay } from '../util';
 import { client_config, peer_config, peer_genesis, PIPELINE_MS } from '../config';
-import { SetupBlocksStreamReturn } from '../../../src/blocks-stream';
 
 // for debugging convenience
 new ScaleLogger().mount();
