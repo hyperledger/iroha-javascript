@@ -41,11 +41,6 @@ export default defineConfig({
         alias: {
             '@iroha2/client-isomorphic-ws': resolveInPkgSrc('client-isomorphic-ws', 'dist/native.js'),
             '@iroha2/client-isomorphic-fetch': resolveInPkgSrc('client-isomorphic-fetch', 'dist/native.js'),
-            // tmp to fix pnpm link
-            '@scale-codec/util': path.resolve('/Users/0x/dev/scale-codec-js-library/packages/util/src/lib.ts'),
-            '@scale-codec/definition-runtime': path.resolve(
-                '/Users/0x/dev/scale-codec-js-library/packages/definition-runtime/src/lib.ts',
-            ),
         },
     },
 });
