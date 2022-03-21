@@ -71,9 +71,9 @@ importers:
   packages/client:
     specifiers:
       '@iroha2/client-isomorphic-fetch': workspace:^0.1.0
-      '@iroha2/client-isomorphic-ws': workspace:^0.1.0
+      '@iroha2/client-isomorphic-ws': workspace:^0.2.0
       '@iroha2/crypto-core': workspace:^0.1.0
-      '@iroha2/data-model': workspace:^0.5.0
+      '@iroha2/data-model': workspace:^1.0.0
       consola: ^2.15.3
       debug: ^4.3.3
       emittery: ^0.10.1
@@ -119,7 +119,7 @@ importers:
 
   packages/client/test/integration/test-node:
     specifiers:
-      '@iroha2/client': workspace:^0.4.0
+      '@iroha2/client': workspace:^1.0.0
       '@iroha2/crypto-target-node': workspace:^0.1.1
       '@iroha2/test-peer': workspace:^0.0.1
       consola: ^2.15.3
@@ -146,10 +146,10 @@ importers:
     specifiers:
       '@bahmutov/cypress-esbuild-preprocessor': ^2.1.2
       '@cypress/vite-dev-server': ^2.2.2
-      '@iroha2/client': workspace:^0.4.0
+      '@iroha2/client': workspace:^1.0.0
       '@iroha2/crypto-core': workspace:^0.1.0
       '@iroha2/crypto-target-web': workspace:^0.1.1
-      '@iroha2/data-model': workspace:^0.5.0
+      '@iroha2/data-model': workspace:^1.0.0
       '@iroha2/test-peer': workspace:^0.0.1
       '@scale-codec/util': ^1.0.0
       '@vitejs/plugin-vue': ^2.2.4
@@ -339,12 +339,12 @@ importers:
 
   packages/docs-recipes:
     specifiers:
-      '@iroha2/client': workspace:^0.4.0
+      '@iroha2/client': workspace:^1.0.0
       '@iroha2/crypto-core': workspace:^0.1.0
       '@iroha2/crypto-target-bundler': workspace:^0.1.1
       '@iroha2/crypto-target-node': workspace:^0.1.1
       '@iroha2/crypto-target-web': workspace:^0.1.1
-      '@iroha2/data-model': workspace:^0.5.0
+      '@iroha2/data-model': workspace:^1.0.0
       hada: ^0.0.8
     dependencies:
       '@iroha2/client': link:../client
