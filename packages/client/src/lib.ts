@@ -6,5 +6,6 @@
  */
 
 export * from './client';
+export * from './events';
+export * from './blocks-stream';
 export * from './crypto-singleton';
-export type { SetupEventsReturn, EventsEmitteryMap, SetupEventsParams } from './events';

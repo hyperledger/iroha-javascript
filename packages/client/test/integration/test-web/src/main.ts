@@ -5,7 +5,7 @@ import { crypto } from './crypto';
 import { setCrypto } from '@iroha2/client';
 
 setCrypto(crypto);
-// new Logger().mount();
+new Logger().mount();
 localStorage.debug = '*';
 
 createApp(App).mount('#app');

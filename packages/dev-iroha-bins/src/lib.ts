@@ -1,81 +1,37 @@
+export { KnownBinaries } from './types';
+
 import path from 'path';
 import makeDir from 'make-dir';
 import del from 'del';
-import fs from 'fs/promises';
 import { $ } from 'zx';
 import consola from 'consola';
-
-export enum KnownBinaries {
-    /**
-     * Introspect binary, for schema generation
-     */
-    Introspect = 'introspect',
-    /**
-     * Main Iroha CLI binary - runs peer
-     */
-    Cli = 'cli',
-}
-
-export type BinaryNameMap = { [K in KnownBinaries]: string };
-
-export interface InstallConfig {
-    gitRepo: string;
-    gitBranch: string;
-    binaryNameMap: BinaryNameMap;
-}
+import { KnownBinaries, Config } from './types';
+import config from './config';
 
 const TMP_DIR = path.resolve(__dirname, '../tmp');
-const resolveTmp = (...paths: string[]) => path.resolve(TMP_DIR, ...paths);
-const TMP_CARGO_ROOT = resolveTmp('cargo');
-const TMP_BINARIES_MAP_JSON = resolveTmp('bins.json');
+const TMP_CARGO_ROOT = path.resolve(TMP_DIR, 'cargo');
 
-async function readSavedBinariesMap(): Promise<BinaryNameMap> {
-    const contents = await fs.readFile(TMP_BINARIES_MAP_JSON, { encoding: 'utf-8' });
-    const parsed: BinaryNameMap = JSON.parse(contents);
-    return parsed;
-}
-
-async function initTmpDir() {
+async function prepareTmpDir() {
     await makeDir(TMP_DIR);
 }
 
-async function determineInstallTargets(allTargets: BinaryNameMap, skipInstalled = false): Promise<string[]> {
-    let savedBins: string[] = [];
-    try {
-        const saved = await readSavedBinariesMap();
-        savedBins = Object.keys(saved);
-    } catch {}
-
-    const requestedBinaries = Object.values(allTargets);
-
-    return skipInstalled ? requestedBinaries.filter((x) => !savedBins.includes(x)) : requestedBinaries;
+function cargoInstallArgs(config: Pick<Config, 'git'>, binaryName: string): string[] {
+    return [
+        '--root',
+        TMP_CARGO_ROOT,
+        '--git',
+        config.git.repo,
+        ...(config.git.branch ? ['--branch', config.git.branch] : []),
+        ...(config.git.revision ? ['--rev', config.git.revision] : []),
+        binaryName,
+    ];
 }
 
-/**
- * Installs all known binaries (from {@link KnownBinaries})
- */
-export async function installBinaries(
-    config: InstallConfig,
-    opts?: {
-        skipInstalled?: boolean;
-    },
-): Promise<void> {
-    await initTmpDir();
-
-    const binsArgs = await determineInstallTargets(config.binaryNameMap, opts?.skipInstalled);
-
-    if (!binsArgs.length) {
-        consola.info('Skipping installation');
-        return;
-    }
-
-    await $`cargo install \\
-        --root ${TMP_CARGO_ROOT} \\
-        --git ${config.gitRepo} \\
-        --branch ${config.gitBranch} \\
-        ${binsArgs}`;
-
-    await fs.writeFile(TMP_BINARIES_MAP_JSON, JSON.stringify(config.binaryNameMap));
+export async function install(binary: KnownBinaries): Promise<void> {
+    await prepareTmpDir();
+    const actualBinary = config.binaries[binary];
+    consola.info(`Installing binary with cargo: ${binary} (${actualBinary})`);
+    await $`cargo install ${cargoInstallArgs(config, actualBinary)}`;
 }
 
 /**
@@ -85,7 +41,7 @@ export async function clean() {
     await del(TMP_DIR);
 }
 
-export async function resolveBinaryPath(bin: KnownBinaries): Promise<string> {
-    const saved = await readSavedBinariesMap();
-    return path.resolve(TMP_CARGO_ROOT, 'bin', saved[bin]);
+export async function resolveBinaryPath(binary: KnownBinaries): Promise<string> {
+    const { binaries: binaryNameMap } = config;
+    return path.resolve(TMP_CARGO_ROOT, 'bin', binaryNameMap[binary]);
 }

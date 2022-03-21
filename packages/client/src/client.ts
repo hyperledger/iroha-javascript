@@ -1,27 +1,43 @@
 import {
-    BTreeSetSignature,
+    AccountId,
+    BTreeMapNameValue,
+    BTreeSetSignatureOfTransactionPayload,
     Enum,
-    FragmentFromBuilder,
+    Executable,
+    OptionU32,
+    PublicKey,
+    QueryBox,
+    QueryError,
     QueryPayload,
+    QueryResult,
     Result,
     Signature,
     SignedQueryRequest,
     Transaction,
     TransactionPayload,
-    Value,
     VersionedQueryResult,
     VersionedSignedQueryRequest,
     VersionedTransaction,
 } from '@iroha2/data-model';
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core';
 import { fetch } from '@iroha2/client-isomorphic-fetch';
-import { SetupEventsParams, SetupEventsReturn, setupEventsWebsocketConnection } from './events';
-import { collect, createScope } from './collect-garbage';
-import { normalizeArray } from './util';
-import { useCrypto } from './crypto-singleton';
+import { collect as collectGarbage, createScope as createGarbageScope } from './collect-garbage';
+import { randomU32 } from './util';
+import { getCrypto } from './crypto-singleton';
+import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events';
+import { setupBlocksStream, SetupBlocksStreamParams, SetupBlocksStreamReturn } from './blocks-stream';
+import {
+    ENDPOINT_CONFIGURATION,
+    ENDPOINT_HEALTH,
+    ENDPOINT_METRICS,
+    ENDPOINT_QUERY,
+    ENDPOINT_STATUS,
+    ENDPOINT_TRANSACTION,
+    HEALTHY_RESPONSE,
+} from './const';
 
 function useCryptoAssertive(): IrohaCryptoInterface {
-    const crypto = useCrypto();
+    const crypto = getCrypto();
     if (!crypto) {
         throw new Error(
             '"crypto" is not defined, but required for Iroha Client to function. ' +
@@ -31,241 +47,279 @@ function useCryptoAssertive(): IrohaCryptoInterface {
     return crypto;
 }
 
-export interface SubmitTransactionParams {
-    payload: FragmentFromBuilder<typeof TransactionPayload>;
-    signing: KeyPair | KeyPair[];
+export class ClientIncompleteConfigError extends Error {
+    public constructor(missing: string) {
+        super(`You are trying to use client with incomplete configuration. Missing: ${missing}`);
+    }
 }
 
-export type CheckHealthResult = Result<null, Error>;
+export class ResponseError extends Error {
+    public static throwIfStatusIsNot(response: Response, status: number) {
+        if (response.status !== status) throw new ResponseError(response);
+    }
 
-export interface MakeQueryParams {
-    payload: FragmentFromBuilder<typeof QueryPayload>;
-    signing: KeyPair;
+    public constructor(response: Response) {
+        super(`${response.status}: ${response.statusText}`);
+    }
 }
 
-export type MakeQueryResult = Result<FragmentFromBuilder<typeof Value>, Error>;
+export interface SubmitParams {
+    nonce?: number;
+    metadata?: BTreeMapNameValue;
+}
+
+export type HealthResult = Result<null, string>;
+
+export type RequestResult = Result<QueryResult, QueryError>;
 
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
+
+export type ListenBlocksStreamParams = Pick<SetupBlocksStreamParams, 'height'>;
 
 export interface PeerStatus {
     peers: number;
     blocks: number;
     txs: number;
-    uptime: number;
+    uptime: {
+        secs: number;
+        nanos: number;
+    };
+}
+
+export interface SetPeerConfigParams {
+    LogLevel?: 'WARN' | 'ERROR' | 'INFO' | 'DEBUG' | 'TRACE';
 }
 
 export interface UserConfig {
     torii: {
         apiURL?: string | null;
-        statusURL?: string | null;
+        telemetryURL?: string | null;
+    };
+    keyPair?: KeyPair;
+    accountId?: AccountId;
+    transaction?: {
+        /**
+         * @default 100_000n
+         */
+        timeToLiveMs?: bigint;
+        /**
+         * @default false
+         */
+        addNonce?: boolean;
     };
 }
 
-function makeSignature(keyPair: KeyPair, payload: Uint8Array): FragmentFromBuilder<typeof Signature> {
+function makeSignature(keyPair: KeyPair, payload: Uint8Array): Signature {
     const { createSignature } = useCryptoAssertive();
 
-    const signature = collect(createSignature(keyPair, payload));
+    const signature = collectGarbage(createSignature(keyPair, payload));
 
     // Should it be collected?
     const pubKey = keyPair.publicKey();
 
-    return Signature.wrap({
-        public_key: {
+    return Signature({
+        public_key: PublicKey({
             digest_function: pubKey.digestFunction(),
             payload: pubKey.payload(),
-        },
+        }),
         signature: signature.signatureBytes(),
     });
 }
 
-const HEALTHY_RESPONSE = `"Healthy"`;
-
+/**
+ *
+ * @remarks
+ *
+ * TODO: `submitBlocking` method, i.e. `submit` + listening for submit
+ */
 export class Client {
-    public static create(config: UserConfig): Client {
-        return new Client(config);
-    }
+    public toriiApiURL: string | null;
+    public toriiTelemetryURL: string | null;
+    public keyPair: null | KeyPair;
+    public accountId: null | AccountId;
+    public transactionDefaultTTL: bigint;
+    public transactionAddNonce: boolean;
 
-    private toriiApiURL: null | string;
-    private toriiStatusURL: null | string;
-
-    private constructor(config: UserConfig) {
+    public constructor(config: UserConfig) {
         this.toriiApiURL = config.torii.apiURL ?? null;
-        this.toriiStatusURL = config.torii.statusURL ?? null;
+        this.toriiTelemetryURL = config.torii.telemetryURL ?? null;
+        this.transactionAddNonce = config.transaction?.addNonce ?? false;
+        this.transactionDefaultTTL = config.transaction?.timeToLiveMs ?? 100_000n;
+        this.keyPair = config.keyPair ?? null;
+        this.accountId = config.accountId ?? null;
     }
 
-    /**
-     * The way to define Torii API URL if it wasn't defined in the initial config.
-     */
-    public setApiURL(url: string): Client {
-        this.toriiApiURL = url;
-        return this;
-    }
+    // TODO nice to have
+    // public signQuery(payload: QueryPayload): SignedQueryRequest {}
+    // public signTransaction(tx: Transaction): Transaction {}
 
-    /**
-     * The way to define Torii Status URL if it wasn't defined in the initial config.
-     */
-    public setStatusURL(url: string): Client {
-        this.toriiStatusURL = url;
-        return this;
-    }
+    public async getHealth(): Promise<HealthResult> {
+        const url = this.forceGetApiURL();
 
-    /**
-     * "Status" endpoint implementation.
-     *
-     * @remarks
-     *
-     * Requires Torii Status URL in the config.
-     */
-    public async checkStatus(): Promise<PeerStatus> {
-        return fetch(`${this.forceGetToriiStatusURL()}/status`).then((x) => x.json());
-    }
+        const response = await fetch(url + ENDPOINT_HEALTH);
+        ResponseError.throwIfStatusIsNot(response, 200);
 
-    /**
-     * "Health" endpoint implementation.
-     *
-     * @remarks
-     *
-     * Requires Torii API URL in the config.
-     */
-    public async checkHealth(): Promise<CheckHealthResult> {
-        try {
-            await fetch(`${this.forceGetToriiApiURL()}/health`)
-                .then((x) => {
-                    if (x.status !== 200) {
-                        throw new Error(`Response status is ${x.status}`);
-                    }
-                    return x.text();
-                })
-                .then((text) => {
-                    if (text !== HEALTHY_RESPONSE) {
-                        throw new Error(`Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`);
-                    }
-                });
-
-            return Enum.valuable('Ok', null);
-        } catch (err) {
-            return Enum.valuable('Err', err);
+        const text = await response.text();
+        if (text !== HEALTHY_RESPONSE) {
+            return Enum.variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`);
         }
+
+        return Enum.variant('Ok', null);
     }
 
-    /**
-     * "Transaction" enpoint implementation.
-     *
-     * @remarks
-     *
-     * Requires Torii API URL in the config.
-     */
-    public async submitTransaction(params: SubmitTransactionParams): Promise<void> {
-        const scope = createScope();
-        const { payload, signing } = params;
+    public async submit(executable: Executable, params?: SubmitParams): Promise<void> {
+        const scope = createGarbageScope();
+
         const { createHash } = useCryptoAssertive();
-        const baseURL = this.forceGetToriiApiURL();
+        const accountId = this.forceGetAccountId();
+        const keyPair = this.forceGetKeyPair();
+        const url = this.forceGetApiURL();
+
+        const payload = TransactionPayload({
+            instructions: executable,
+            time_to_live_ms: this.transactionDefaultTTL,
+            nonce: params?.nonce
+                ? OptionU32('Some', params.nonce)
+                : this.transactionAddNonce
+                ? OptionU32('Some', randomU32())
+                : OptionU32('None'),
+            metadata: params?.metadata ?? BTreeMapNameValue(new Map()),
+            creation_time: BigInt(Date.now()),
+            account_id: accountId,
+        });
 
         try {
-            let txBytes: Uint8Array;
+            let finalBytes: Uint8Array;
 
             scope.run(() => {
-                const payloadHash = collect(createHash(payload.bytes));
-                const signatures = normalizeArray(signing).map((x) => makeSignature(x, payloadHash.bytes()));
+                const payloadHash = collectGarbage(createHash(TransactionPayload.toBuffer(payload)));
+                const signature = makeSignature(keyPair, payloadHash.bytes());
 
-                txBytes = VersionedTransaction.variants.V1(
-                    Transaction.fromValue({
-                        payload,
-                        signatures: BTreeSetSignature.fromValue(new Set(signatures)),
-                    }),
-                ).bytes;
+                finalBytes = VersionedTransaction.toBuffer(
+                    VersionedTransaction(
+                        'V1',
+                        Transaction({ payload, signatures: BTreeSetSignatureOfTransactionPayload([signature]) }),
+                    ),
+                );
             });
 
-            await fetch(`${baseURL}/transaction`, {
+            const response = await fetch(url + ENDPOINT_TRANSACTION, {
+                body: finalBytes!,
                 method: 'POST',
-                body: txBytes!,
-            }).then((x) => {
-                if (x.status !== 200) throw new Error(`Response status: ${x.status}`);
             });
+
+            ResponseError.throwIfStatusIsNot(response, 200);
         } finally {
             scope.free();
         }
     }
 
-    /**
-     * "Query" endpoint implementation.
-     *
-     * @remarks
-     *
-     * Requires Torii API URL in the config.
-     */
-    public async makeQuery(params: MakeQueryParams): Promise<MakeQueryResult> {
-        const scope = createScope();
-        const { payload, signing } = params;
+    public async request(query: QueryBox): Promise<RequestResult> {
+        const scope = createGarbageScope();
         const { createHash } = useCryptoAssertive();
-        const baseURL = this.forceGetToriiApiURL();
+        const url = this.forceGetApiURL();
+        const accountId = this.forceGetAccountId();
+        const keyPair = this.forceGetKeyPair();
+
+        const payload = QueryPayload({
+            query,
+            account_id: accountId,
+            timestamp_ms: BigInt(Date.now()),
+        });
 
         try {
             let queryBytes: Uint8Array;
 
             scope.run(() => {
-                const payloadHash = collect(createHash(payload.bytes));
-                const signature = makeSignature(signing, payloadHash.bytes());
+                const payloadHash = collectGarbage(createHash(QueryPayload.toBuffer(payload)));
+                const signature = makeSignature(keyPair, payloadHash.bytes());
 
-                queryBytes = VersionedSignedQueryRequest.variants.V1(
-                    SignedQueryRequest.fromValue({ payload, signature }),
-                ).bytes;
+                queryBytes = VersionedSignedQueryRequest.toBuffer(
+                    VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature })),
+                );
             });
 
-            const resp = await fetch(`${baseURL}/query`, {
+            const response = await fetch(url + ENDPOINT_QUERY, {
                 method: 'POST',
                 body: queryBytes!,
-            });
+            }).then();
 
-            const { status } = resp;
+            const bytes = new Uint8Array(await response.arrayBuffer());
 
-            if (status === 500) {
-                return Enum.valuable('Err', new Error(`Request failed with message from Iroha: ${await resp.text()}`));
+            if (response.status === 200) {
+                // OK
+                const value = VersionedQueryResult.fromBuffer(bytes).as('V1');
+                return Enum.variant('Ok', value);
+            } else {
+                // ERROR
+                const error = QueryError.fromBuffer(bytes);
+                return Enum.variant('Err', error);
             }
-
-            if (status === 400) {
-                return Enum.valuable('Err', new Error(String(await resp.text())));
-            }
-
-            const value: FragmentFromBuilder<typeof Value> = VersionedQueryResult.fromBytes(
-                new Uint8Array(await resp.arrayBuffer()),
-            ).value.as('V1');
-
-            return Enum.valuable('Ok', value);
         } finally {
             scope.free();
         }
     }
 
-    /**
-     * "Events" implementation.
-     *
-     * @remarks
-     *
-     * Requires Torii API URL in the config
-     */
     public async listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn> {
-        return setupEventsWebsocketConnection({
+        return setupEvents({
             filter: params.filter,
-            toriiApiURL: this.forceGetToriiApiURL(),
+            toriiApiURL: this.forceGetApiURL(),
         });
     }
 
-    private forceGetToriiApiURL(): string {
-        if (!this.toriiApiURL) {
-            throw new Error(
-                'It looks like you use some endpoint that requires Torii API URL to be set, but it is undefined.',
-            );
-        }
+    public async listenForBlocksStream(params: ListenBlocksStreamParams): Promise<SetupBlocksStreamReturn> {
+        return setupBlocksStream({
+            height: params.height,
+            toriiApiURL: this.forceGetApiURL(),
+        });
+    }
+
+    // TODO Iroha WIP
+    // public async getPeerConfig() {
+    //     await fetch(this.forceGetToriiApiURL() + '/configuration');
+    // }
+
+    public async setPeerConfig(params: SetPeerConfigParams): Promise<void> {
+        const response = await fetch(this.forceGetApiURL() + ENDPOINT_CONFIGURATION, {
+            method: 'POST',
+            body: JSON.stringify(params),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        ResponseError.throwIfStatusIsNot(response, 200);
+    }
+
+    public async getStatus(): Promise<PeerStatus> {
+        const response = await fetch(this.forceGetTelemetryURL() + ENDPOINT_STATUS);
+        ResponseError.throwIfStatusIsNot(response, 200);
+        return response.json();
+    }
+
+    public async getMetrics(): Promise<string> {
+        return fetch(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
+            ResponseError.throwIfStatusIsNot(response, 200);
+            return response.text();
+        });
+    }
+
+    private forceGetApiURL(): string {
+        if (!this.toriiApiURL) throw new ClientIncompleteConfigError('Torii API URL');
         return this.toriiApiURL;
     }
 
-    private forceGetToriiStatusURL(): string {
-        if (!this.toriiStatusURL) {
-            throw new Error(
-                'It looks like you use some endpoint that requires Torii Status URL to be set, but it is undefined.',
-            );
-        }
-        return this.toriiStatusURL;
+    private forceGetTelemetryURL(): string {
+        if (!this.toriiTelemetryURL) throw new ClientIncompleteConfigError('Torii Telemetry URL');
+        return this.toriiTelemetryURL;
+    }
+
+    private forceGetAccountId(): AccountId {
+        if (!this.accountId) throw new ClientIncompleteConfigError('Account ID');
+        return this.accountId;
+    }
+
+    private forceGetKeyPair(): KeyPair {
+        if (!this.keyPair) throw new ClientIncompleteConfigError('Key Pair');
+        return this.keyPair;
     }
 }

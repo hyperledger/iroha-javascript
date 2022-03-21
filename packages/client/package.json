@@ -15,7 +15,10 @@
         "node": ">=14.0.0"
     },
     "scripts": {
-        "test": "run-s test:node test:web",
+        "test": "run-s test:prepare test:node test:web",
+        "test:prepare": "run-p test:prepare:build-isomorphic test:prepare:peer",
+        "test:prepare:build-isomorphic": "pnpm run build --parallel --filter \"@iroha2/client-isomorphic-*\"",
+        "test:prepare:peer": "esno test/integration/prepare-peer",
         "test:node": "pnpm test --filter client-test-node",
         "test:web": "pnpm test --filter client-test-web",
         "build:tsc": "tsc"
@@ -26,9 +29,12 @@
         "@iroha2/crypto-core": "workspace:^0.1.0",
         "@iroha2/data-model": "workspace:^0.5.0",
         "debug": "^4.3.3",
-        "emittery": "^0.10.0"
+        "emittery": "^0.10.1"
     },
     "devDependencies": {
-        "npm-run-all": "^4.1.5"
+        "consola": "^2.15.3",
+        "esno": "^0.12.1",
+        "npm-run-all": "^4.1.5",
+        "type-fest": "^2.12.0"
     }
 }

@@ -6,13 +6,7 @@ const resolvePkgSrc = (unscopedName, ...paths) => path.resolve(__dirname, '../..
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
     transform: {
-        '^.+\\.(ts|js)$': [
-            'esbuild-jest',
-            {
-                sourcemap: true,
-                target: 'esnext',
-            },
-        ],
+        '^.+\\.(ts|js)$': 'esbuild-runner/jest',
     },
     transformIgnorePatterns: [],
     testEnvironment: 'node',

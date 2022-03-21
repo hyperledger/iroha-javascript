@@ -1,27 +1,21 @@
 import { Client } from '@iroha2/client';
-import { AccountId } from '@iroha2/data-model';
 import { crypto } from './crypto';
 import { KeyPair } from '@iroha2/crypto-core';
 import { hexToBytes } from 'hada';
 import { client_config } from '../../config';
+import { AccountId } from '@iroha2/data-model';
 
-// proxified with vite
-export const API_URL = `http://${window.location.host}/torii`;
-
-export const ACCOUNT_ID = AccountId.defineUnwrap({
-    name: 'alice',
-    domain_name: 'wonderland',
-});
-
-export const KEY_PAIR = generateKeyPair({
-    publicKeyMultihash: client_config.publicKey,
-    privateKey: client_config.privateKey,
-});
-
-export const client = Client.create({
+export const client = new Client({
     torii: {
-        apiURL: API_URL,
+        // proxified with vite
+        apiURL: `http://${window.location.host}/torii/api`,
+        telemetryURL: `http://${window.location.host}/torii/telemetry`,
     },
+    accountId: client_config.account as AccountId,
+    keyPair: generateKeyPair({
+        publicKeyMultihash: client_config.publicKey,
+        privateKey: client_config.privateKey,
+    }),
 });
 
 function generateKeyPair(params: {

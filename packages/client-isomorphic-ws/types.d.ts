@@ -1,5 +1,5 @@
 export type SendData = string | ArrayBuffer;
-export type IncomingData = string | ArrayBuffer;
+export type IncomingData = ArrayBufferView;
 
 export interface IsomorphicWebSocket {
     readonly send: (data: SendData) => void;

@@ -4,6 +4,7 @@ import {
   OptionEntityType,
   OptionHash,
   EntityType,
+  PipelineEventFilter,
 } from '@iroha2/data-model';
 
 async function listenForEachBlockCommitment({
@@ -12,38 +13,39 @@ async function listenForEachBlockCommitment({
 }: {
   client: Client;
   onCommited: (blockHash: Uint8Array) => void;
-}): Promise<{ close: () => void }> {
-  const filter = EventFilter.wrap(
-    EventFilter.variantsUnwrapped.Pipeline({
-      entity: OptionEntityType.variantsUnwrapped.Some(EntityType.variantsUnwrapped.Block),
-      hash: OptionHash.variantsUnwrapped.None,
+}): Promise<{ stop: () => Promise<void> }> {
+  const filter = EventFilter(
+    'Pipeline',
+    PipelineEventFilter({
+      entity: OptionEntityType('Some', EntityType('Block')),
+      hash: OptionHash('None'),
     }),
   );
 
-  const { close, ee } = await client.listenForEvents({ filter });
+  const { stop, ee } = await client.listenForEvents({ filter });
 
   ee.on('event', (e) => {
-    const pipelineEvent = e.unwrap().as('Pipeline');
+    const pipelineEvent = e.as('Pipeline');
     if (pipelineEvent.status.is('Committed')) {
       onCommited(pipelineEvent.hash);
     }
   });
 
-  return { close };
+  return { stop };
 }
 
 async function main() {
   // lets listen for 5 block commits
   let commitedCount = 0;
 
-  const { close } = await listenForEachBlockCommitment({
+  const { stop } = await listenForEachBlockCommitment({
     // for educational purposes
     client: null as any,
     onCommited: (hash) => {
       console.log('Block is commited! Its has: %o', hash);
       commitedCount++;
 
-      if (commitedCount >= 5) close();
+      if (commitedCount >= 5) stop();
     },
   });
 }
