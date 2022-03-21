@@ -1,6 +1,6 @@
 {
     "name": "@iroha2/client",
-    "version": "0.4.1",
+    "version": "1.0.0",
     "main": "src/lib.ts",
     "publishConfig": {
         "main": "dist/lib.cjs.js",
@@ -25,9 +25,9 @@
     },
     "dependencies": {
         "@iroha2/client-isomorphic-fetch": "workspace:^0.1.0",
-        "@iroha2/client-isomorphic-ws": "workspace:^0.1.0",
+        "@iroha2/client-isomorphic-ws": "workspace:^0.2.0",
         "@iroha2/crypto-core": "workspace:^0.1.0",
-        "@iroha2/data-model": "workspace:^0.5.0",
+        "@iroha2/data-model": "workspace:^1.0.0",
         "debug": "^4.3.3",
         "emittery": "^0.10.1"
     },
