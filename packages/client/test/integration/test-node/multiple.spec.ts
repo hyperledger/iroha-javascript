@@ -455,60 +455,25 @@ describe('Setting configuration', () => {
 
 describe('Blocks Stream API', () => {
     test('When commiting 3 blocks sequentially, nothing fails', async () => {
-        async function* iterOverBlocks(stream: SetupBlocksStreamReturn) {
-            let resolveCurrent: () => void;
-            let rejectCurrent: (err: any) => void;
+        const stream = await client.listenForBlocksStream({ height: 0n });
 
-            function initPromise(): Promise<void> {
-                return new Promise((resolve, reject) => {
-                    resolveCurrent = resolve;
-                    rejectCurrent = reject;
-                });
-            }
+        for (const assetName of ['xor', 'val', 'vat']) {
+            // listening for some block
+            const blockPromise = stream.ee.once('block');
 
-            let blocksQueue: VersionedCommittedBlock[] = [];
-            stream.ee.on('block', (block) => {
-                blocksQueue.push(block);
-                resolveCurrent();
-            });
-            stream.ee.on('error', () => rejectCurrent(new Error('Errored')));
-            stream.ee.on('close', () => resolveCurrent());
-
-            while (!stream.isClosed()) {
-                await initPromise();
-
-                if (blocksQueue.length) {
-                    yield* blocksQueue;
-                    blocksQueue = [];
-                }
-            }
-        }
-
-        const SAMPLE_ASSET_NAMES = ['xor', 'val', 'vat'];
-        const ACTIONS = SAMPLE_ASSET_NAMES.length;
-
-        async function triggerNewBlockWithSomething() {
+            // triggering block creation
             await addAsset(
                 DefinitionId({
-                    name: SAMPLE_ASSET_NAMES.pop()!,
+                    name: assetName,
                     domain_id: Id({
                         name: 'wonderland',
                     }),
                 }),
             );
+
+            // waiting for it
+            await blockPromise;
         }
-
-        // Let's go...
-
-        const stream = await client.listenForBlocksStream({ height: 0n });
-
-        let count = 0;
-        for await (const _block of iterOverBlocks(stream)) {
-            await triggerNewBlockWithSomething();
-            if (++count >= ACTIONS) break;
-        }
-
-        expect(count).toBe(ACTIONS);
 
         stream.stop();
     });
