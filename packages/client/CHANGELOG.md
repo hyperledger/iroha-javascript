@@ -1,5 +1,23 @@
 # @iroha2/client
 
+## 1.0.0
+
+### Major Changes
+
+-   b86aa76: Target Iroha: `iroha v2.0.0-pre-rc.2` (`920e4d12754b0f3bf08cbaa5221d91c27863fcdc`)
+
+    -   Using updated Data Model
+    -   Completely refactor client methods, extend them with new APIs - `setPeerConfig()`, `getMetrics()`, `listenForBlocksStream()`
+    -   New client configuration accepts account id and key pair
+    -   `Client.create()` -> `new Client()`
+
+### Patch Changes
+
+-   Updated dependencies [b86aa76]
+-   Updated dependencies [b86aa76]
+    -   @iroha2/data-model@1.0.0
+    -   @iroha2/client-isomorphic-ws@0.2.0
+
 ## 0.4.1
 
 ### Patch Changes

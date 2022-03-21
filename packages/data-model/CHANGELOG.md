@@ -1,5 +1,11 @@
 # @iroha2/data-model
 
+## 1.0.0
+
+### Major Changes
+
+-   b86aa76: **feat**: compile Iroha Data Model accordingly to `iroha v2.0.0-pre-rc.2` (`920e4d12754b0f3bf08cbaa5221d91c27863fcdc`)
+
 ## 0.5.0
 
 ### Minor Changes
