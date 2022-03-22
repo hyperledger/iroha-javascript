@@ -13,19 +13,19 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
-const { startDevServer } = require('@cypress/vite-dev-server');
+const createBundler = require('@bahmutov/cypress-esbuild-preprocessor')
+const { startDevServer } = require('@cypress/vite-dev-server')
 
 /**
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
 module.exports = (on, config) => {
-    on('file:preprocessor', createBundler());
+  on('file:preprocessor', createBundler())
 
-    on('dev-server:start', (options) => {
-        return startDevServer({ options });
-    });
+  on('dev-server:start', (options) => {
+    return startDevServer({ options })
+  })
 
-    return config;
-};
+  return config
+}

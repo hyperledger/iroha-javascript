@@ -1,4 +1,4 @@
-import { Client } from '@iroha2/client';
+import { Client } from '@iroha2/client'
 import {
   RegisterBox,
   EvaluatesToIdentifiableBox,
@@ -16,9 +16,9 @@ import {
   VecInstruction,
   Instruction,
   QueryBox,
-} from '@iroha2/data-model';
+} from '@iroha2/data-model'
 
-declare const client: Client;
+declare const client: Client
 
 async function registerDomain(domainName: string) {
   const registerBox = RegisterBox({
@@ -42,27 +42,27 @@ async function registerDomain(domainName: string) {
         ),
       ),
     }),
-  });
+  })
 
   await client.submit(
     Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
-  );
+  )
 }
 
 async function ensureDomainExistence(domainName: string) {
-  const result = await client.request(QueryBox('FindAllDomains', null));
+  const result = await client.request(QueryBox('FindAllDomains', null))
 
-  result.as('Ok');
+  result.as('Ok')
 
   const domain = result
     .as('Ok')
     .as('Vec')
     .map((x) => x.as('Identifiable').as('Domain'))
-    .find((x) => x.id.name === domainName);
+    .find((x) => x.id.name === domainName)
 
-  if (!domain) throw new Error('Not found');
+  if (!domain) throw new Error('Not found')
 }
 
-await registerDomain('test');
+await registerDomain('test')
 
-await ensureDomainExistence('test');
+await ensureDomainExistence('test')

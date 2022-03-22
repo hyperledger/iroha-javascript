@@ -1,11 +1,11 @@
 {
-    "name": "@iroha2/dev-iroha-bins",
-    "version": "0.0.0",
-    "private": true,
-    "main": "src/lib.ts",
-    "dependencies": {
-        "del": "^6.0.0",
-        "make-dir": "^3.1.0",
-        "zx": "^4.2.0"
-    }
+  "name": "@iroha2/dev-iroha-bins",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/lib.ts",
+  "dependencies": {
+    "del": "^6.0.0",
+    "make-dir": "^3.1.0",
+    "zx": "^4.2.0"
+  }
 }

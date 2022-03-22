@@ -1,37 +1,37 @@
 {
-    "name": "@iroha2/client-test-web",
-    "version": "0.0.1",
-    "scripts": {
-        "dev:app": "vite",
-        "dev:peer-server": "DEBUG=@iroha2* esno etc/dev-peer-server",
-        "dev:cy": "cypress open",
-        "test": "run-s test:app:build test:run",
-        "test:app:build": "vite build",
-        "test:run": "DEBUG=@iroha2* esno etc/test-run"
-    },
-    "dependencies": {
-        "@iroha2/client": "workspace:^1.0.0",
-        "@iroha2/crypto-core": "workspace:^0.1.0",
-        "@iroha2/crypto-target-web": "workspace:^0.1.1",
-        "@iroha2/data-model": "workspace:^1.0.0",
-        "@scale-codec/util": "^1.0.0",
-        "@vueuse/core": "^8.0.1",
-        "hada": "^0.0.8",
-        "vue": "^3.2.31"
-    },
-    "devDependencies": {
-        "@bahmutov/cypress-esbuild-preprocessor": "^2.1.2",
-        "@cypress/vite-dev-server": "^2.2.2",
-        "@iroha2/test-peer": "workspace:^0.0.1",
-        "@vitejs/plugin-vue": "^2.2.4",
-        "consola": "^2.15.3",
-        "cross-env": "^7.0.3",
-        "cypress": "^9.5.2",
-        "esno": "^0.12.1",
-        "execa": "5.1.1",
-        "npm-run-all": "^4.1.5",
-        "start-server-and-test": "^1.14.0",
-        "typescript": "^4.6.2",
-        "vite": "^2.8.6"
-    }
+  "name": "@iroha2/client-test-web",
+  "version": "0.0.1",
+  "scripts": {
+    "dev:app": "vite",
+    "dev:peer-server": "DEBUG=@iroha2* esno etc/dev-peer-server",
+    "dev:cy": "cypress open",
+    "test": "run-s test:app:build test:run",
+    "test:app:build": "vite build",
+    "test:run": "DEBUG=@iroha2* esno etc/test-run"
+  },
+  "dependencies": {
+    "@iroha2/client": "workspace:^1.0.0",
+    "@iroha2/crypto-core": "workspace:^0.1.0",
+    "@iroha2/crypto-target-web": "workspace:^0.1.1",
+    "@iroha2/data-model": "workspace:^1.0.0",
+    "@scale-codec/util": "^1.0.0",
+    "@vueuse/core": "^8.0.1",
+    "hada": "^0.0.8",
+    "vue": "^3.2.31"
+  },
+  "devDependencies": {
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.1.2",
+    "@cypress/vite-dev-server": "^2.2.2",
+    "@iroha2/test-peer": "workspace:^0.0.1",
+    "@vitejs/plugin-vue": "^2.2.4",
+    "consola": "^2.15.3",
+    "cross-env": "^7.0.3",
+    "cypress": "^9.5.2",
+    "esno": "^0.12.1",
+    "execa": "5.1.1",
+    "npm-run-all": "^4.1.5",
+    "start-server-and-test": "^1.14.0",
+    "typescript": "^4.6.2",
+    "vite": "^2.8.6"
+  }
 }

@@ -1,22 +1,22 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "esnext",
-        "lib": ["esnext", "DOM"],
-        "esModuleInterop": true,
-        "declaration": true,
-        "outDir": "ts-dist",
-        // "removeComments": false,
-        // "stripInternal": true,
-        // since 2.3
-        // "strict": true,
-        "alwaysStrict": true,
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        "strictNullChecks": true,
-        "moduleResolution": "node",
-        "skipLibCheck": true,
-        "resolveJsonModule": true
-    },
-    "exclude": ["**/dist/**/*", "**/node_modules/**/*", "**/client/test/integration/test-web/cypress/integration/**/*"]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "DOM"],
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "ts-dist",
+    // "removeComments": false,
+    // "stripInternal": true,
+    // since 2.3
+    // "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["**/dist/**/*", "**/node_modules/**/*", "**/client/test/integration/test-web/cypress/integration/**/*"]
 }

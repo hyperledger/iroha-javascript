@@ -1,3 +1,3 @@
-const nativeFetch = fetch;
+const nativeFetch = fetch
 
-export { nativeFetch as fetch };
+export { nativeFetch as fetch }

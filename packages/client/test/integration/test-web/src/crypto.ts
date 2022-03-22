@@ -1,5 +1,5 @@
-import { init, crypto } from '@iroha2/crypto-target-web';
+import { init, crypto } from '@iroha2/crypto-target-web'
 
-await init();
+await init()
 
-export { crypto };
+export { crypto }

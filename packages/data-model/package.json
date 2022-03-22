@@ -1,47 +1,47 @@
 {
-    "name": "@iroha2/data-model",
-    "version": "1.0.0",
-    "main": "src/lib.ts",
-    "publishConfig": {
-        "main": "dist/lib.cjs.js",
-        "module": "dist/lib.esm.js",
-        "types": "dist/lib.d.ts",
-        "files": [
-            "dist"
-        ]
-    },
-    "license": "Apache 2.0",
-    "scripts": {
-        "test": "jest",
-        "build:tsc": "tsc",
-        "gulpts": "gulp --require esbuild-register -f gulpfile.ts",
-        "compile:input": "pnpm gulpts -- compile_input",
-        "compile:output": "pnpm gulpts -- compile_output"
-    },
-    "dependencies": {
-        "@iroha2/i64-fixnum": "workspace:^0.3.0",
-        "@scale-codec/definition-runtime": "^2.0.0"
-    },
-    "devDependencies": {
-        "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
-        "@scale-codec/definition-compiler": "^2.0.0",
-        "@types/debug": "^4.1.7",
-        "@types/gulp": "^4.0.9",
-        "@types/lodash-es": "^4.17.5",
-        "axios": "^0.24.0",
-        "case": "^1.6.3",
-        "chalk": "4.1.2",
-        "consola": "^2.15.3",
-        "debug": "^4.3.3",
-        "esbuild": "^0.14.27",
-        "esbuild-register": "^3.3.2",
-        "esbuild-runner": "^2.2.1",
-        "execa": "5.1.1",
-        "gulp": "^4.0.2",
-        "immutable": "^4.0.0",
-        "jest": "^27.5.1",
-        "lodash-es": "^4.17.21",
-        "node-fetch": "^3.1.0",
-        "type-fest": "^2.12.0"
-    }
+  "name": "@iroha2/data-model",
+  "version": "1.0.0",
+  "main": "src/lib.ts",
+  "publishConfig": {
+    "main": "dist/lib.cjs.js",
+    "module": "dist/lib.esm.js",
+    "types": "dist/lib.d.ts",
+    "files": [
+      "dist"
+    ]
+  },
+  "license": "Apache 2.0",
+  "scripts": {
+    "test": "jest",
+    "build:tsc": "tsc",
+    "gulpts": "gulp --require esbuild-register -f gulpfile.ts",
+    "compile:input": "pnpm gulpts -- compile_input",
+    "compile:output": "pnpm gulpts -- compile_output"
+  },
+  "dependencies": {
+    "@iroha2/i64-fixnum": "workspace:^0.3.0",
+    "@scale-codec/definition-runtime": "^2.0.0"
+  },
+  "devDependencies": {
+    "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
+    "@scale-codec/definition-compiler": "^2.0.0",
+    "@types/debug": "^4.1.7",
+    "@types/gulp": "^4.0.9",
+    "@types/lodash-es": "^4.17.5",
+    "axios": "^0.24.0",
+    "case": "^1.6.3",
+    "chalk": "4.1.2",
+    "consola": "^2.15.3",
+    "debug": "^4.3.3",
+    "esbuild": "^0.14.27",
+    "esbuild-register": "^3.3.2",
+    "esbuild-runner": "^2.2.1",
+    "execa": "5.1.1",
+    "gulp": "^4.0.2",
+    "immutable": "^4.0.0",
+    "jest": "^27.5.1",
+    "lodash-es": "^4.17.21",
+    "node-fetch": "^3.1.0",
+    "type-fest": "^2.12.0"
+  }
 }

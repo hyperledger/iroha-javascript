@@ -1,55 +1,55 @@
 // this the shared base config for all packages.
 {
-    "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
 
-    // to set /etc folder relative to project root independently from each package location
-    "projectFolder": ".",
+  // to set /etc folder relative to project root independently from each package location
+  "projectFolder": ".",
 
-    "apiReport": {
-        "enabled": true,
-        "reportFolder": "<projectFolder>/etc/api/reports",
-        "reportTempFolder": "<projectFolder>/etc/api/tmp"
+  "apiReport": {
+    "enabled": true,
+    "reportFolder": "<projectFolder>/etc/api/reports",
+    "reportTempFolder": "<projectFolder>/etc/api/tmp"
+  },
+
+  "docModel": {
+    "enabled": true,
+    "apiJsonFilePath": "<projectFolder>/etc/api/tmp/<unscopedPackageName>.api.json"
+  },
+
+  "dtsRollup": {
+    "enabled": true
+  },
+
+  "tsdocMetadata": {
+    "enabled": false
+  },
+
+  "messages": {
+    "compilerMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+      }
     },
 
-    "docModel": {
-        "enabled": true,
-        "apiJsonFilePath": "<projectFolder>/etc/api/tmp/<unscopedPackageName>.api.json"
+    "extractorMessageReporting": {
+      "default": {
+        "logLevel": "warning",
+        "addToApiReportFile": true
+      },
+
+      "ae-missing-release-tag": {
+        "logLevel": "none"
+      }
     },
 
-    "dtsRollup": {
-        "enabled": true
-    },
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+      },
 
-    "tsdocMetadata": {
-        "enabled": false
-    },
-
-    "messages": {
-        "compilerMessageReporting": {
-            "default": {
-                "logLevel": "warning"
-            }
-        },
-
-        "extractorMessageReporting": {
-            "default": {
-                "logLevel": "warning",
-                "addToApiReportFile": true
-            },
-
-            "ae-missing-release-tag": {
-                "logLevel": "none"
-            }
-        },
-
-        "tsdocMessageReporting": {
-            "default": {
-                "logLevel": "warning"
-            },
-
-            "tsdoc-undefined-tag": {
-                "logLevel": "none"
-            }
-        }
+      "tsdoc-undefined-tag": {
+        "logLevel": "none"
+      }
     }
+  }
 }

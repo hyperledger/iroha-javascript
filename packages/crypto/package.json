@@ -1,26 +1,26 @@
 {
-    "name": "@iroha2/monorepo-crypto",
-    "private": true,
-    "version": "0.0.0",
-    "scripts": {
-        "gulpts": "gulp --require esbuild-register -f gulpfile.ts",
-        "build": "pnpm gulpts",
-        "build:wasm": "pnpm gulpts -- build_wasm",
-        "build:entries": "pnpm gulpts -- build_target_entries",
-        "rollup-types": "rollup -c rollup.dts.config.js",
-        "test": "pnpm test --parallel --filter \"@iroha2/crypto-test-*\""
-    },
-    "devDependencies": {
-        "@iroha2/crypto-target-web": "workspace:^0.1.0",
-        "@types/gulp": "^4.0.9",
-        "consola": "^2.15.3",
-        "del": "^6.0.0",
-        "esbuild": "^0.14.27",
-        "esbuild-register": "^3.3.2",
-        "gulp": "^4.0.2",
-        "make-dir": "^3.1.0",
-        "rollup": "^2.70.1",
-        "rollup-plugin-dts": "^4.2.0",
-        "zx": "^4.2.0"
-    }
+  "name": "@iroha2/monorepo-crypto",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "gulpts": "gulp --require esbuild-register -f gulpfile.ts",
+    "build": "pnpm gulpts",
+    "build:wasm": "pnpm gulpts -- build_wasm",
+    "build:entries": "pnpm gulpts -- build_target_entries",
+    "rollup-types": "rollup -c rollup.dts.config.js",
+    "test": "pnpm test --parallel --filter \"@iroha2/crypto-test-*\""
+  },
+  "devDependencies": {
+    "@iroha2/crypto-target-web": "workspace:^0.1.0",
+    "@types/gulp": "^4.0.9",
+    "consola": "^2.15.3",
+    "del": "^6.0.0",
+    "esbuild": "^0.14.27",
+    "esbuild-register": "^3.3.2",
+    "gulp": "^4.0.2",
+    "make-dir": "^3.1.0",
+    "rollup": "^2.70.1",
+    "rollup-plugin-dts": "^4.2.0",
+    "zx": "^4.2.0"
+  }
 }
