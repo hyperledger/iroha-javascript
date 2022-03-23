@@ -7,60 +7,60 @@
 // @public (undocumented)
 interface CloseEvent_2 {
     // (undocumented)
-    readonly code: number;
+    readonly code: number
     // (undocumented)
-    readonly reason: string;
+    readonly reason: string
     // (undocumented)
-    readonly wasClean: boolean;
+    readonly wasClean: boolean
 }
 export { CloseEvent_2 as CloseEvent }
 
 // @public (undocumented)
 interface Event_2 {
     // (undocumented)
-    readonly type: string;
+    readonly type: string
 }
 export { Event_2 as Event }
 
 // @public (undocumented)
-export type IncomingData = ArrayBufferView;
+export type IncomingData = ArrayBufferView
 
 // @public (undocumented)
-export function initWebSocket(params: InitWebSocketParams): IsomorphicWebSocket;
+export function initWebSocket(params: InitWebSocketParams): IsomorphicWebSocket
 
 // @public (undocumented)
 export interface InitWebSocketParams {
     // (undocumented)
-    onclose: (event: CloseEvent_2) => void;
+    onclose: (event: CloseEvent_2) => void
     // (undocumented)
-    onerror: (event: Event_2) => void;
+    onerror: (event: Event_2) => void
     // (undocumented)
-    onmessage: (event: MessageEvent_2) => void;
+    onmessage: (event: MessageEvent_2) => void
     // (undocumented)
-    onopen: (event: Event_2) => void;
+    onopen: (event: Event_2) => void
     // (undocumented)
-    url: string;
+    url: string
 }
 
 // @public (undocumented)
 export interface IsomorphicWebSocket {
     // (undocumented)
-    readonly close: (code?: number, reason?: string) => void;
+    readonly close: (code?: number, reason?: string) => void
     // (undocumented)
-    readonly isClosed: () => boolean;
+    readonly isClosed: () => boolean
     // (undocumented)
-    readonly send: (data: SendData) => void;
+    readonly send: (data: SendData) => void
 }
 
 // @public (undocumented)
 interface MessageEvent_2 {
     // (undocumented)
-    readonly data: IncomingData;
+    readonly data: IncomingData
 }
 export { MessageEvent_2 as MessageEvent }
 
 // @public (undocumented)
-export type SendData = string | ArrayBuffer;
+export type SendData = string | ArrayBuffer
 
 // (No @packageDocumentation comment for this package)
 

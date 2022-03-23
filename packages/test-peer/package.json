@@ -1,32 +1,32 @@
 {
-    "name": "@iroha2/test-peer",
-    "version": "0.0.1",
-    "private": true,
-    "main": "src/lib.ts",
-    "scripts": {
-        "cli": "DEBUG=* esno etc/cli.ts",
-        "cli:config": "pnpm cli -- config:set-from-client-tests"
-    },
-    "dependencies": {
-        "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
-        "@koa/router": "^10.1.1",
-        "@types/debug": "^4.1.7",
-        "@types/koa": "^2.13.4",
-        "@types/koa-bodyparser": "^4.3.5",
-        "@types/koa-morgan": "^1.0.5",
-        "@types/koa__router": "^8.0.11",
-        "axios": "^0.24.0",
-        "cac": "^6.7.12",
-        "chalk": "4.1.2",
-        "consola": "^2.15.3",
-        "debug": "^4.3.3",
-        "del": "^6.0.0",
-        "esno": "^0.12.1",
-        "execa": "5.1.1",
-        "koa": "^2.13.4",
-        "koa-bodyparser": "^4.3.0",
-        "koa-morgan": "^1.0.1",
-        "make-dir": "^3.1.0",
-        "zx": "^4.2.0"
-    }
+  "name": "@iroha2/test-peer",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/lib.ts",
+  "scripts": {
+    "cli": "DEBUG=* esno etc/cli.ts",
+    "cli:config": "pnpm cli -- config:set-from-client-tests"
+  },
+  "dependencies": {
+    "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
+    "@koa/router": "^10.1.1",
+    "@types/debug": "^4.1.7",
+    "@types/koa": "^2.13.4",
+    "@types/koa-bodyparser": "^4.3.5",
+    "@types/koa-morgan": "^1.0.5",
+    "@types/koa__router": "^8.0.11",
+    "axios": "^0.24.0",
+    "cac": "^6.7.12",
+    "chalk": "4.1.2",
+    "consola": "^2.15.3",
+    "debug": "^4.3.3",
+    "del": "^6.0.0",
+    "esno": "^0.12.1",
+    "execa": "5.1.1",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-morgan": "^1.0.1",
+    "make-dir": "^3.1.0",
+    "zx": "^4.2.0"
+  }
 }

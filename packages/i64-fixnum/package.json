@@ -1,25 +1,25 @@
 {
-    "name": "@iroha2/i64-fixnum",
-    "version": "0.3.0",
-    "main": "src/lib.ts",
-    "publishConfig": {
-        "main": "dist/lib.cjs.js",
-        "module": "dist/lib.esm.js",
-        "types": "dist/lib.d.ts",
-        "files": [
-            "dist"
-        ]
-    },
-    "license": "Apache 2.0",
-    "scripts": {
-        "test": "jest",
-        "build:tsc": "tsc"
-    },
-    "dependencies": {
-        "@scale-codec/util": "^1.0.0"
-    },
-    "devDependencies": {
-        "esbuild-jest": "^0.5.0",
-        "jest": "^27.5.1"
-    }
+  "name": "@iroha2/i64-fixnum",
+  "version": "0.3.0",
+  "main": "src/lib.ts",
+  "publishConfig": {
+    "main": "dist/lib.cjs.js",
+    "module": "dist/lib.esm.js",
+    "types": "dist/lib.d.ts",
+    "files": [
+      "dist"
+    ]
+  },
+  "license": "Apache 2.0",
+  "scripts": {
+    "test": "jest",
+    "build:tsc": "tsc"
+  },
+  "dependencies": {
+    "@scale-codec/util": "^1.0.0"
+  },
+  "devDependencies": {
+    "esbuild-jest": "^0.5.0",
+    "jest": "^27.5.1"
+  }
 }

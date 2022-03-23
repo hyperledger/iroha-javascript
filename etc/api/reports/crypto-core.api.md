@@ -7,16 +7,16 @@
 // @public (undocumented)
 class Algorithm_2 {
     // (undocumented)
-    free(): void;
+    free(): void
 }
 export { Algorithm_2 as Algorithm }
 
 // @public (undocumented)
 export class Hash {
     // (undocumented)
-    bytes(): Uint8Array;
+    bytes(): Uint8Array
     // (undocumented)
-    free(): void;
+    free(): void
 }
 
 // @public (undocumented)
@@ -24,153 +24,153 @@ export interface IrohaCryptoInterface {
     // Warning: (ae-forgotten-export) The symbol "AlgorithmBlsNormal" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    AlgorithmBlsNormal: typeof AlgorithmBlsNormal;
+    AlgorithmBlsNormal: typeof AlgorithmBlsNormal
     // Warning: (ae-forgotten-export) The symbol "AlgorithmBlsSmall" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    AlgorithmBlsSmall: typeof AlgorithmBlsSmall;
+    AlgorithmBlsSmall: typeof AlgorithmBlsSmall
     // Warning: (ae-forgotten-export) The symbol "AlgorithmEd25519" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    AlgorithmEd25519: typeof AlgorithmEd25519;
+    AlgorithmEd25519: typeof AlgorithmEd25519
     // Warning: (ae-forgotten-export) The symbol "AlgorithmSecp256k1" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    AlgorithmSecp256k1: typeof AlgorithmSecp256k1;
+    AlgorithmSecp256k1: typeof AlgorithmSecp256k1
     // Warning: (ae-forgotten-export) The symbol "createHash" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createHash: typeof createHash;
+    createHash: typeof createHash
     // Warning: (ae-forgotten-export) The symbol "createKeyGenConfiguration" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createKeyGenConfiguration: typeof createKeyGenConfiguration;
+    createKeyGenConfiguration: typeof createKeyGenConfiguration
     // Warning: (ae-forgotten-export) The symbol "createKeyPairFromKeys" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createKeyPairFromKeys: typeof createKeyPairFromKeys;
+    createKeyPairFromKeys: typeof createKeyPairFromKeys
     // Warning: (ae-forgotten-export) The symbol "createMultihashDigestFunctionFromString" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createMultihashDigestFunctionFromString: typeof createMultihashDigestFunctionFromString;
+    createMultihashDigestFunctionFromString: typeof createMultihashDigestFunctionFromString
     // Warning: (ae-forgotten-export) The symbol "createMultihashFromBytes" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createMultihashFromBytes: typeof createMultihashFromBytes;
+    createMultihashFromBytes: typeof createMultihashFromBytes
     // Warning: (ae-forgotten-export) The symbol "createMultihashFromPublicKey" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createMultihashFromPublicKey: typeof createMultihashFromPublicKey;
+    createMultihashFromPublicKey: typeof createMultihashFromPublicKey
     // Warning: (ae-forgotten-export) The symbol "createPrivateKeyFromJsKey" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createPrivateKeyFromJsKey: typeof createPrivateKeyFromJsKey;
+    createPrivateKeyFromJsKey: typeof createPrivateKeyFromJsKey
     // Warning: (ae-forgotten-export) The symbol "createPublicKeyFromMultihash" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createPublicKeyFromMultihash: typeof createPublicKeyFromMultihash;
+    createPublicKeyFromMultihash: typeof createPublicKeyFromMultihash
     // Warning: (ae-forgotten-export) The symbol "createSignature" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    createSignature: typeof createSignature;
+    createSignature: typeof createSignature
     // Warning: (ae-forgotten-export) The symbol "generateKeyPairWithConfiguration" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    generateKeyPairWithConfiguration: typeof generateKeyPairWithConfiguration;
+    generateKeyPairWithConfiguration: typeof generateKeyPairWithConfiguration
     // Warning: (ae-forgotten-export) The symbol "MultihashDigestBls12381g1Pub" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    MultihashDigestBls12381g1Pub: typeof MultihashDigestBls12381g1Pub;
+    MultihashDigestBls12381g1Pub: typeof MultihashDigestBls12381g1Pub
     // Warning: (ae-forgotten-export) The symbol "MultihashDigestBls12381g2Pub" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    MultihashDigestBls12381g2Pub: typeof MultihashDigestBls12381g2Pub;
+    MultihashDigestBls12381g2Pub: typeof MultihashDigestBls12381g2Pub
     // Warning: (ae-forgotten-export) The symbol "MultihashDigestEd25519Pub" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    MultihashDigestEd25519Pub: typeof MultihashDigestEd25519Pub;
+    MultihashDigestEd25519Pub: typeof MultihashDigestEd25519Pub
     // Warning: (ae-forgotten-export) The symbol "MultihashDigestSecp256k1Pub" needs to be exported by the entry point index.d.ts
     //
     // (undocumented)
-    MultihashDigestSecp256k1Pub: typeof MultihashDigestSecp256k1Pub;
+    MultihashDigestSecp256k1Pub: typeof MultihashDigestSecp256k1Pub
 }
 
 // @public (undocumented)
 export interface Key {
     // (undocumented)
-    digestFunction: string;
+    digestFunction: string
     // (undocumented)
-    payload: string;
+    payload: string
 }
 
 // @public
 export class KeyGenConfiguration {
     // (undocumented)
-    free(): void;
-    usePrivateKey(private_key: PrivateKey): KeyGenConfiguration;
-    useSeed(seed: Uint8Array): KeyGenConfiguration;
-    withAlgorithm(algorithm: Algorithm_2): KeyGenConfiguration;
+    free(): void
+    usePrivateKey(private_key: PrivateKey): KeyGenConfiguration
+    useSeed(seed: Uint8Array): KeyGenConfiguration
+    withAlgorithm(algorithm: Algorithm_2): KeyGenConfiguration
 }
 
 // @public (undocumented)
 export class KeyPair {
     // (undocumented)
-    free(): void;
+    free(): void
     // (undocumented)
-    privateKey(): PrivateKey;
+    privateKey(): PrivateKey
     // (undocumented)
-    publicKey(): PublicKey;
+    publicKey(): PublicKey
 }
 
 // @public (undocumented)
 export class Multihash {
     // (undocumented)
-    digestFunction(): MultihashDigestFunction;
+    digestFunction(): MultihashDigestFunction
     // (undocumented)
-    free(): void;
+    free(): void
     // (undocumented)
-    payload(): Uint8Array;
+    payload(): Uint8Array
     // (undocumented)
-    toBytes(): Uint8Array;
+    toBytes(): Uint8Array
 }
 
 // @public (undocumented)
 export class MultihashDigestFunction {
     // (undocumented)
-    free(): void;
+    free(): void
     // (undocumented)
-    toString(): string;
+    toString(): string
 }
 
 // @public (undocumented)
 export class PrivateKey {
     // (undocumented)
-    digestFunction(): string;
+    digestFunction(): string
     // (undocumented)
-    free(): void;
+    free(): void
     // (undocumented)
-    payload(): Uint8Array;
+    payload(): Uint8Array
 }
 
 // @public (undocumented)
 export class PublicKey {
     // (undocumented)
-    digestFunction(): string;
+    digestFunction(): string
     // (undocumented)
-    free(): void;
+    free(): void
     // (undocumented)
-    payload(): Uint8Array;
+    payload(): Uint8Array
 }
 
 // @public (undocumented)
 export class Signature {
     // (undocumented)
-    free(): void;
+    free(): void
     // (undocumented)
-    publicKey(): PublicKey;
+    publicKey(): PublicKey
     // (undocumented)
-    signatureBytes(): Uint8Array;
-    verify(payload: Uint8Array): void;
+    signatureBytes(): Uint8Array
+    verify(payload: Uint8Array): void
 }
 
 // (No @packageDocumentation comment for this package)

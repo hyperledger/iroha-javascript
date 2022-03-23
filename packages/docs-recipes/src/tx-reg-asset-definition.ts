@@ -1,4 +1,4 @@
-import { Client } from '@iroha2/client';
+import { Client } from '@iroha2/client'
 import {
   AssetDefinition,
   Expression,
@@ -14,14 +14,14 @@ import {
   Id,
   Metadata,
   BTreeMapNameValue,
-} from '@iroha2/data-model';
+} from '@iroha2/data-model'
 
 async function registerAssetDefinition({
   client,
   assetDefinition,
 }: {
-  client: Client;
-  assetDefinition: AssetDefinition;
+  client: Client
+  assetDefinition: AssetDefinition
 }): Promise<void> {
   await client.submit(
     Executable(
@@ -43,7 +43,7 @@ async function registerAssetDefinition({
         ),
       ]),
     ),
-  );
+  )
 }
 
 registerAssetDefinition({
@@ -63,4 +63,4 @@ registerAssetDefinition({
 
   // for educational purposes
   client: null as any,
-});
+})

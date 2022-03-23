@@ -1,1 +1,1 @@
-export * from './convert-rust-def';
+export * from './convert-rust-def'
