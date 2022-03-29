@@ -5,9 +5,9 @@
   "scripts": {
     "gulpts": "pnpm gulp --require esbuild-register -f gulpfile.ts",
     "preinstall": "npx only-allow pnpm",
-    "test": "run-s test:i64-fixnum test:crypto test:client",
+    "test": "run-s test:unit test:crypto test:client",
     "test:crypto": "pnpm test --filter monorepo-crypto",
-    "test:i64-fixnum": "pnpm test --filter i64-fixnum",
+    "test:unit": "pnpm test --parallel --filter i64-fixnum --filter data-model",
     "test:client": "pnpm test --filter client",
     "clean": "pnpm gulpts clean",
     "build": "pnpm gulpts build",

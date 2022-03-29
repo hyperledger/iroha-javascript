@@ -62,6 +62,9 @@
       "decimal_places": 9
     }
   },
+  "Option<core::time::Duration>": {
+    "Option": "core::time::Duration"
+  },
   "Option<iroha_core::sumeragi::network_topology::Topology>": {
     "Option": "iroha_core::sumeragi::network_topology::Topology"
   },
@@ -73,6 +76,9 @@
   },
   "Option<iroha_data_model::events::pipeline::EntityType>": {
     "Option": "iroha_data_model::events::pipeline::EntityType"
+  },
+  "Option<iroha_data_model::events::time::Interval>": {
+    "Option": "iroha_data_model::events::time::Interval"
   },
   "Option<iroha_data_model::isi::Instruction>": {
     "Option": "iroha_data_model::isi::Instruction"
@@ -102,6 +108,9 @@
   "Vec<iroha_data_model::Value>": {
     "Vec": "iroha_data_model::Value"
   },
+  "Vec<iroha_data_model::events::Event>": {
+    "Vec": "iroha_data_model::events::Event"
+  },
   "Vec<iroha_data_model::isi::Instruction>": {
     "Vec": "iroha_data_model::isi::Instruction"
   },
@@ -117,9 +126,6 @@
   "Vec<iroha_data_model::transaction::VersionedValidTransaction>": {
     "Vec": "iroha_data_model::transaction::VersionedValidTransaction"
   },
-  "Vec<iroha_data_model::trigger::Action>": {
-    "Vec": "iroha_data_model::trigger::Action"
-  },
   "Vec<u8>": {
     "Vec": "u8"
   },
@@ -130,6 +136,14 @@
     }
   },
   "bool": "Bool",
+  "core::time::Duration": {
+    "TupleStruct": {
+      "types": [
+        "u64",
+        "u32"
+      ]
+    }
+  },
   "i64": {
     "Int": "FixedWidth"
   },
@@ -139,6 +153,10 @@
         {
           "name": "timestamp",
           "ty": "u128"
+        },
+        {
+          "name": "consensus_estimation",
+          "ty": "u64"
         },
         {
           "name": "height",
@@ -187,8 +205,8 @@
           "ty": "Vec<iroha_data_model::transaction::VersionedValidTransaction>"
         },
         {
-          "name": "trigger_recommendations",
-          "ty": "Vec<iroha_data_model::trigger::Action>"
+          "name": "event_recommendations",
+          "ty": "Vec<iroha_data_model::events::Event>"
         },
         {
           "name": "signatures",
@@ -217,8 +235,8 @@
           "ty": "BTreeSet<iroha_crypto::signature::SignatureOf<iroha_core::block::ValidBlock>>"
         },
         {
-          "name": "trigger_recommendations",
-          "ty": "Vec<iroha_data_model::trigger::Action>"
+          "name": "event_recommendations",
+          "ty": "Vec<iroha_data_model::events::Event>"
         }
       ]
     }
@@ -1140,6 +1158,16 @@
           "name": "Data",
           "discriminant": 1,
           "ty": "iroha_data_model::events::data::events::Event"
+        },
+        {
+          "name": "Time",
+          "discriminant": 2,
+          "ty": "iroha_data_model::events::time::Event"
+        },
+        {
+          "name": "ExecuteTrigger",
+          "discriminant": 3,
+          "ty": "iroha_data_model::events::execute_trigger::Event"
         }
       ]
     }
@@ -1156,6 +1184,16 @@
           "name": "Data",
           "discriminant": 1,
           "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::EntityFilter>"
+        },
+        {
+          "name": "Time",
+          "discriminant": 2,
+          "ty": "iroha_data_model::events::time::EventFilter"
+        },
+        {
+          "name": "ExecuteTrigger",
+          "discriminant": 3,
+          "ty": "iroha_data_model::events::execute_trigger::EventFilter"
         }
       ]
     }
@@ -2098,6 +2136,34 @@
       ]
     }
   },
+  "iroha_data_model::events::execute_trigger::Event": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "trigger_id",
+          "ty": "iroha_data_model::trigger::Id"
+        },
+        {
+          "name": "authority",
+          "ty": "iroha_data_model::account::Id"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::execute_trigger::EventFilter": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "trigger_id",
+          "ty": "iroha_data_model::trigger::Id"
+        },
+        {
+          "name": "authority",
+          "ty": "iroha_data_model::account::Id"
+        }
+      ]
+    }
+  },
   "iroha_data_model::events::pipeline::EntityType": {
     "Enum": {
       "variants": [
@@ -2163,6 +2229,55 @@
           "name": "Committed",
           "discriminant": 2,
           "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::time::Event": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "prev_interval",
+          "ty": "Option<iroha_data_model::events::time::Interval>"
+        },
+        {
+          "name": "interval",
+          "ty": "iroha_data_model::events::time::Interval"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::time::EventFilter": {
+    "TupleStruct": {
+      "types": [
+        "iroha_data_model::events::time::Schedule"
+      ]
+    }
+  },
+  "iroha_data_model::events::time::Interval": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "since",
+          "ty": "core::time::Duration"
+        },
+        {
+          "name": "length",
+          "ty": "core::time::Duration"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::time::Schedule": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "start",
+          "ty": "core::time::Duration"
+        },
+        {
+          "name": "period",
+          "ty": "Option<core::time::Duration>"
         }
       ]
     }
@@ -2655,6 +2770,16 @@
       ]
     }
   },
+  "iroha_data_model::isi::ExecuteTriggerBox": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "trigger_id",
+          "ty": "iroha_data_model::trigger::Id"
+        }
+      ]
+    }
+  },
   "iroha_data_model::isi::FailBox": {
     "Struct": {
       "declarations": [
@@ -2764,6 +2889,11 @@
           "name": "Revoke",
           "discriminant": 12,
           "ty": "iroha_data_model::isi::RevokeBox"
+        },
+        {
+          "name": "ExecuteTrigger",
+          "discriminant": 13,
+          "ty": "iroha_data_model::isi::ExecuteTriggerBox"
         }
       ]
     }

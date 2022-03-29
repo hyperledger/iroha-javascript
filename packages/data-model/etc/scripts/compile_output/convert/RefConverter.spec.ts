@@ -29,6 +29,10 @@ describe('Refs transformation', () => {
     ['iroha_version::error::Error', 'VersionError'],
     ['iroha_core::smartcontracts::isi::query::UnsupportedVersionError', 'QueryUnsupportedVersionError'],
     ['iroha_core::smartcontracts::isi::query::Error', 'QueryError'],
+    ['iroha_data_model::events::execute_trigger::Event', 'ExecuteTriggerEvent'],
+    ['iroha_data_model::events::execute_trigger::EventFilter', 'ExecuteTriggerEventFilter'],
+    ['iroha_data_model::events::time::Interval', 'TimeInterval'],
+    ['iroha_data_model::events::time::Event', 'TimeEvent'],
   ])('%p transformed into %p', (input, output) => {
     const sut = new RefConverter()
 

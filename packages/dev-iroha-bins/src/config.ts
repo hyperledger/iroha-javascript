@@ -4,8 +4,8 @@ const config: Config = {
   git: {
     repo: 'https://github.com/hyperledger/iroha.git',
 
-    // v2.0.0-pre-rc.2
-    revision: '920e4d12754b0f3bf08cbaa5221d91c27863fcdc',
+    // v2.0.0-pre-rc.3
+    revision: '85d881c566abb55a4756d0585b8b3669a15c4b3a',
   },
   binaries: {
     [KnownBinaries.Introspect]: 'iroha_schema_bin',
