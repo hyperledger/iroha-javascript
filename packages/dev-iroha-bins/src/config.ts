@@ -1,6 +1,7 @@
 import { Config, KnownBinaries } from './types'
 
 const config: Config = {
+  // should be slmilar with the ref from packages/data-model-rust-samples
   git: {
     repo: 'https://github.com/hyperledger/iroha.git',
 

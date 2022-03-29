@@ -286,6 +286,7 @@ importers:
       '@iroha2/i64-fixnum': workspace:^0.3.0
       '@scale-codec/definition-compiler': ^2.1.0
       '@scale-codec/definition-runtime': ^2.0.0
+      '@scale-codec/util': ^1.0.0
       '@types/debug': ^4.1.7
       '@types/gulp': ^4.0.9
       '@types/lodash-es': ^4.17.5
@@ -310,6 +311,7 @@ importers:
     devDependencies:
       '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
       '@scale-codec/definition-compiler': 2.1.0
+      '@scale-codec/util': 1.0.0
       '@types/debug': 4.1.7
       '@types/gulp': 4.0.9
       '@types/lodash-es': 4.17.5

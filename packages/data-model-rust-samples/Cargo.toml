@@ -1,0 +1,12 @@
+[package]
+name = "data-model-rust-samples"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+iroha_data_model = { git = 'https://github.com/hyperledger/iroha', rev = '85d881c566abb55a4756d0585b8b3669a15c4b3a' }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+parity-scale-codec = "2.3.1"

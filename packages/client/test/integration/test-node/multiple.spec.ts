@@ -17,7 +17,6 @@ import {
   Enum,
   Result,
   Logger as ScaleLogger,
-  VersionedCommittedBlock,
   AssetDefinition,
   Metadata,
   BTreeMapNameValue,
@@ -159,7 +158,7 @@ async function killStartedPeer() {
   await startedPeer?.kill({ cleanSideEffects: true })
 }
 
-async function ensureGenesisIsCommitted() {
+async function waitForGenesisCommitted() {
   while (true) {
     const { blocks } = await client.getStatus()
     if (blocks >= 1) return
@@ -181,7 +180,7 @@ beforeEach(async () => {
 
   startedPeer = await startPeer()
 
-  await ensureGenesisIsCommitted()
+  await waitForGenesisCommitted()
 })
 
 afterAll(async () => {
