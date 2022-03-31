@@ -1,9 +1,9 @@
 import { Client } from '@iroha2/client'
 import {
   EventFilter,
-  OptionEntityType,
+  OptionPipelineEntityType,
   OptionHash,
-  EntityType,
+  PipelineEntityType,
   PipelineEventFilter,
 } from '@iroha2/data-model'
 
@@ -17,7 +17,7 @@ async function listenForEachBlockCommitment({
   const filter = EventFilter(
     'Pipeline',
     PipelineEventFilter({
-      entity: OptionEntityType('Some', EntityType('Block')),
+      entity: OptionPipelineEntityType('Some', PipelineEntityType('Block')),
       hash: OptionHash('None'),
     }),
   )

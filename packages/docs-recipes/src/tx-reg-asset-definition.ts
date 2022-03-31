@@ -10,8 +10,8 @@ import {
   VecInstruction,
   RegisterBox,
   EvaluatesToIdentifiableBox,
-  DefinitionId,
-  Id,
+  AssetDefinitionId,
+  DomainId,
   Metadata,
   BTreeMapNameValue,
 } from '@iroha2/data-model'
@@ -48,9 +48,9 @@ async function registerAssetDefinition({
 
 registerAssetDefinition({
   assetDefinition: AssetDefinition({
-    id: DefinitionId({
+    id: AssetDefinitionId({
       name: 'xor',
-      domain_id: Id({
+      domain_id: DomainId({
         name: 'Wonderland',
       }),
     }),

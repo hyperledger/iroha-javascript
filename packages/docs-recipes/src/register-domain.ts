@@ -6,11 +6,11 @@ import {
   Value,
   IdentifiableBox,
   Domain,
-  Id,
+  DomainId,
   BTreeMapAccountIdAccount,
   Metadata,
   BTreeMapNameValue,
-  BTreeMapDefinitionIdAssetDefinitionEntry,
+  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
   OptionIpfsPath,
   Executable,
   VecInstruction,
@@ -30,12 +30,12 @@ async function registerDomain(domainName: string) {
           IdentifiableBox(
             'Domain',
             Domain({
-              id: Id({
+              id: DomainId({
                 name: domainName,
               }),
               accounts: BTreeMapAccountIdAccount(new Map()),
               metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-              asset_definitions: BTreeMapDefinitionIdAssetDefinitionEntry(new Map()),
+              asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
               logo: OptionIpfsPath('None'),
             }),
           ),
