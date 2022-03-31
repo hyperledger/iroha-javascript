@@ -1,6 +1,7 @@
 import SAMPLES from '../../../data-model-rust-samples/output.json'
 import * as lib from '../lib'
 import { toHex, fromHex } from '@scale-codec/util'
+import { test, describe, expect } from 'vitest'
 
 // eslint-disable-next-line max-params
 function defineCase<T>(label: keyof typeof SAMPLES, codec: lib.Codec<T>, value: T) {

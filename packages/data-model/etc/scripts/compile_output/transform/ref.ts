@@ -1,58 +1,16 @@
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
-import { NamespaceDefinition } from '@scale-codec/definition-compiler'
-import debugRoot from 'debug'
 import { pascal } from 'case'
 
-const debug = debugRoot('@iroha2/data-model:rust-refs-converter')
+export function transform(ref: string): string {
+  // Schema contains arrays, but on both
+
+  return [transformDefaultRuntimeLibAliases, transformArray, normalizeIdentifier].reduce((acc, fn) => fn(acc), ref)
+}
 
 const STD_ALIASES: Record<string, string> = {
   String: 'Str',
 }
 
-export default class {
-  #addTypes: NamespaceDefinition = {}
-
-  public handle(ref: string): string {
-    this.#parse(ref)
-    return this.#convert(ref)
-  }
-
-  public get collectedTypes(): NamespaceDefinition {
-    return this.#addTypes
-  }
-
-  #convert(ref: string): string {
-    return [
-      replaceStdAlias,
-      parseArray,
-      normalizeIdentifier,
-
-      (v: string) => {
-        ref !== v && debug(`ref %o converted to %o`, ref, v)
-        return v
-      },
-    ].reduce<string>((acc, fn) => fn(acc), ref)
-  }
-
-  #parse(ref: string): void {
-    for (const fn of [tryCollectBTreeSet]) {
-      fn(this.#addTypes, ref)
-    }
-  }
-}
-
-function tryCollectBTreeSet(acc: NamespaceDefinition, ref: string): void {
-  const match = ref.match(/^BTreeSet<(.+)>$/)
-  if (match) {
-    debug('collecting BTreeSet: %o', ref)
-    acc[normalizeIdentifier(ref)] = {
-      t: 'set',
-      entry: normalizeIdentifier(match[1]),
-    }
-  }
-}
-
-function replaceStdAlias(ref: string): string {
+function transformDefaultRuntimeLibAliases(ref: string): string {
   if (ref in STD_ALIASES) {
     return STD_ALIASES[ref]
   }
@@ -65,10 +23,14 @@ function replaceStdAlias(ref: string): string {
   return ref
 }
 
-function parseArray(ref: string): string {
+function transformArray(ref: string): string {
+  // Arrays in form [x; x] are defined as separated types too,
+  // so no need to move them into additional types
+
   const match = ref.match(/^\[\s*(.+)\s*;\s*(\d+)\s*\]$/)
   if (match) {
     const [, ty, count] = match
+
     return `Array_${ty}_l${count}`
   }
 
@@ -76,8 +38,9 @@ function parseArray(ref: string): string {
 }
 
 /**
- * - Removes module path
+ * - Removes module paths
  * - Handles special collision cases like data::Event / pipeline::Event
+ * - Transforms BTreeMap to VecTuple and BTreeSet to Vec
  * - Makes identifiers valid JS identifiers in PascalCase
  */
 function normalizeIdentifier(ref: string): string {
@@ -95,6 +58,8 @@ function normalizeIdentifier(ref: string): string {
     .replace(/iroha_data_model::isi::If/g, 'IfInstruction')
     .replace(/iroha_version::error::Error/g, 'VersionError')
     .replace(/query::(\w+)?Error/g, 'Query$1Error')
+    .replace(/^BTreeMap/, 'VecTuple')
+    .replace(/^BTreeSet/, 'Vec')
     .replace(/(?:\w+::)*(\w+)/g, '$1')
     .replace(/[^\w]/g, '_')
 

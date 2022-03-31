@@ -12,7 +12,7 @@
   },
   "license": "Apache 2.0",
   "scripts": {
-    "test": "jest",
+    "test": "vitest run",
     "build:tsc": "tsc",
     "gulpts": "gulp --require esbuild-register -f gulpfile.ts",
     "compile:input": "pnpm gulpts -- compile_input",
@@ -36,13 +36,12 @@
     "debug": "^4.3.3",
     "esbuild": "^0.14.27",
     "esbuild-register": "^3.3.2",
-    "esbuild-runner": "^2.2.1",
     "execa": "5.1.1",
     "gulp": "^4.0.2",
     "immutable": "^4.0.0",
-    "jest": "^27.5.1",
     "lodash-es": "^4.17.21",
     "node-fetch": "^3.1.0",
-    "type-fest": "^2.12.0"
+    "type-fest": "^2.12.0",
+    "vitest": "^0.8.1"
   }
 }
