@@ -10,7 +10,6 @@ import { Codec } from '@scale-codec/definition-runtime';
 import { Compact } from '@scale-codec/definition-runtime';
 import { Enum } from '@scale-codec/definition-runtime';
 import type { EnumCodecAndFactory } from '@scale-codec/definition-runtime';
-import type { MapCodecAndFactory } from '@scale-codec/definition-runtime';
 import type { Opaque } from '@scale-codec/definition-runtime';
 import type { Option as Option_2 } from '@scale-codec/definition-runtime';
 import { Str } from '@scale-codec/definition-runtime';
@@ -252,105 +251,6 @@ export interface BlockSubscriberMessage extends Opaque<BlockSubscriberMessage__a
 
 // @public (undocumented)
 export const BlockSubscriberMessage: EnumCodecAndFactory<BlockSubscriberMessage>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapAccountIdAccount__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapAccountIdAccount extends Opaque<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount> {
-}
-
-// @public (undocumented)
-export const BTreeMapAccountIdAccount: MapCodecAndFactory<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapAssetDefinitionIdAssetDefinitionEntry__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapAssetDefinitionIdAssetDefinitionEntry extends Opaque<BTreeMapAssetDefinitionIdAssetDefinitionEntry__actual, BTreeMapAssetDefinitionIdAssetDefinitionEntry> {
-}
-
-// @public (undocumented)
-export const BTreeMapAssetDefinitionIdAssetDefinitionEntry: MapCodecAndFactory<BTreeMapAssetDefinitionIdAssetDefinitionEntry__actual, BTreeMapAssetDefinitionIdAssetDefinitionEntry>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapAssetIdAsset__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapAssetIdAsset extends Opaque<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset> {
-}
-
-// @public (undocumented)
-export const BTreeMapAssetIdAsset: MapCodecAndFactory<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapNameValue__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapNameValue extends Opaque<BTreeMapNameValue__actual, BTreeMapNameValue> {
-}
-
-// @public (undocumented)
-export const BTreeMapNameValue: MapCodecAndFactory<BTreeMapNameValue__actual, BTreeMapNameValue>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapPublicKeySignatureOfCommittedBlock__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapPublicKeySignatureOfCommittedBlock extends Opaque<BTreeMapPublicKeySignatureOfCommittedBlock__actual, BTreeMapPublicKeySignatureOfCommittedBlock> {
-}
-
-// @public (undocumented)
-export const BTreeMapPublicKeySignatureOfCommittedBlock: MapCodecAndFactory<BTreeMapPublicKeySignatureOfCommittedBlock__actual, BTreeMapPublicKeySignatureOfCommittedBlock>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapPublicKeySignatureOfProof__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapPublicKeySignatureOfProof extends Opaque<BTreeMapPublicKeySignatureOfProof__actual, BTreeMapPublicKeySignatureOfProof> {
-}
-
-// @public (undocumented)
-export const BTreeMapPublicKeySignatureOfProof: MapCodecAndFactory<BTreeMapPublicKeySignatureOfProof__actual, BTreeMapPublicKeySignatureOfProof>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapPublicKeySignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapPublicKeySignatureOfTransactionPayload extends Opaque<BTreeMapPublicKeySignatureOfTransactionPayload__actual, BTreeMapPublicKeySignatureOfTransactionPayload> {
-}
-
-// @public (undocumented)
-export const BTreeMapPublicKeySignatureOfTransactionPayload: MapCodecAndFactory<BTreeMapPublicKeySignatureOfTransactionPayload__actual, BTreeMapPublicKeySignatureOfTransactionPayload>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapStringEvaluatesToValue__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapStringEvaluatesToValue extends Opaque<BTreeMapStringEvaluatesToValue__actual, BTreeMapStringEvaluatesToValue> {
-}
-
-// @public (undocumented)
-export const BTreeMapStringEvaluatesToValue: MapCodecAndFactory<BTreeMapStringEvaluatesToValue__actual, BTreeMapStringEvaluatesToValue>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeSetPermissionToken__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeSetPermissionToken extends Opaque<BTreeSetPermissionToken__actual, BTreeSetPermissionToken> {
-}
-
-// @public (undocumented)
-export const BTreeSetPermissionToken: ArrayCodecAndFactory<BTreeSetPermissionToken__actual, BTreeSetPermissionToken>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeSetSignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeSetSignatureOfTransactionPayload extends Opaque<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload> {
-}
-
-// @public (undocumented)
-export const BTreeSetSignatureOfTransactionPayload: ArrayCodecAndFactory<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeSetSignatureOfValidBlock__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeSetSignatureOfValidBlock extends Opaque<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock> {
-}
-
-// @public (undocumented)
-export const BTreeSetSignatureOfValidBlock: ArrayCodecAndFactory<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock>;
 
 // Warning: (ae-forgotten-export) The symbol "BurnBox__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -677,6 +577,15 @@ export interface ExecuteTriggerEventFilter extends Opaque<ExecuteTriggerEventFil
 // @public (undocumented)
 export const ExecuteTriggerEventFilter: StructCodecAndFactory<ExecuteTriggerEventFilter__actual, ExecuteTriggerEventFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "ExecutionTime__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ExecutionTime extends Opaque<ExecutionTime__actual, ExecutionTime> {
+}
+
+// @public (undocumented)
+export const ExecutionTime: EnumCodecAndFactory<ExecutionTime>;
+
 // Warning: (ae-forgotten-export) The symbol "Expression__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -821,6 +730,15 @@ export interface FilterOptIdFilterPeerId extends Opaque<FilterOptIdFilterPeerId_
 // @public (undocumented)
 export const FilterOptIdFilterPeerId: EnumCodecAndFactory<FilterOptIdFilterPeerId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterRoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterOptIdFilterRoleId extends Opaque<FilterOptIdFilterRoleId__actual, FilterOptIdFilterRoleId> {
+}
+
+// @public (undocumented)
+export const FilterOptIdFilterRoleId: EnumCodecAndFactory<FilterOptIdFilterRoleId>;
+
 // Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterTriggerId__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -847,6 +765,24 @@ export interface FilterOptPeerFilter extends Opaque<FilterOptPeerFilter__actual,
 
 // @public (undocumented)
 export const FilterOptPeerFilter: EnumCodecAndFactory<FilterOptPeerFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "FilterOptRoleEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterOptRoleEventFilter extends Opaque<FilterOptRoleEventFilter__actual, FilterOptRoleEventFilter> {
+}
+
+// @public (undocumented)
+export const FilterOptRoleEventFilter: EnumCodecAndFactory<FilterOptRoleEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "FilterOptRoleFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterOptRoleFilter extends Opaque<FilterOptRoleFilter__actual, FilterOptRoleFilter> {
+}
+
+// @public (undocumented)
+export const FilterOptRoleFilter: EnumCodecAndFactory<FilterOptRoleFilter>;
 
 // Warning: (ae-forgotten-export) The symbol "FilterOptTriggerEventFilter__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1019,6 +955,15 @@ export interface FindPermissionTokensByAccountId extends Opaque<FindPermissionTo
 // @public (undocumented)
 export const FindPermissionTokensByAccountId: StructCodecAndFactory<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindRolesByAccountId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindRolesByAccountId extends Opaque<FindRolesByAccountId__actual, FindRolesByAccountId> {
+}
+
+// @public (undocumented)
+export const FindRolesByAccountId: StructCodecAndFactory<FindRolesByAccountId__actual, FindRolesByAccountId>;
+
 // Warning: (ae-forgotten-export) The symbol "FindTransactionByHash__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1165,6 +1110,12 @@ export type IdFilterPeerId = PeerId;
 
 // @public (undocumented)
 export const IdFilterPeerId: Codec<IdFilterPeerId>;
+
+// @public (undocumented)
+export type IdFilterRoleId = RoleId;
+
+// @public (undocumented)
+export const IdFilterRoleId: Codec<IdFilterRoleId>;
 
 // @public (undocumented)
 export type IdFilterTriggerId = TriggerId;
@@ -1682,6 +1633,51 @@ export interface RevokeBox extends Opaque<RevokeBox__actual, RevokeBox> {
 // @public (undocumented)
 export const RevokeBox: StructCodecAndFactory<RevokeBox__actual, RevokeBox>;
 
+// Warning: (ae-forgotten-export) The symbol "Role__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Role extends Opaque<Role__actual, Role> {
+}
+
+// @public (undocumented)
+export const Role: StructCodecAndFactory<Role__actual, Role>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleEvent extends Opaque<RoleEvent__actual, RoleEvent> {
+}
+
+// @public (undocumented)
+export const RoleEvent: EnumCodecAndFactory<RoleEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleEventFilter extends Opaque<RoleEventFilter__actual, RoleEventFilter> {
+}
+
+// @public (undocumented)
+export const RoleEventFilter: EnumCodecAndFactory<RoleEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleFilter extends Opaque<RoleFilter__actual, RoleFilter> {
+}
+
+// @public (undocumented)
+export const RoleFilter: StructCodecAndFactory<RoleFilter__actual, RoleFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleId extends Opaque<RoleId__actual, RoleId> {
+}
+
+// @public (undocumented)
+export const RoleId: StructCodecAndFactory<RoleId__actual, RoleId>;
+
 // Warning: (ae-forgotten-export) The symbol "SequenceBox__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1818,7 +1814,7 @@ export interface TimeEvent extends Opaque<TimeEvent__actual, TimeEvent> {
 export const TimeEvent: StructCodecAndFactory<TimeEvent__actual, TimeEvent>;
 
 // @public (undocumented)
-export type TimeEventFilter = TimeSchedule;
+export type TimeEventFilter = ExecutionTime;
 
 // @public (undocumented)
 export const TimeEventFilter: Codec<TimeEventFilter>;
@@ -1946,6 +1942,78 @@ export interface TriggerId extends Opaque<TriggerId__actual, TriggerId> {
 // @public (undocumented)
 export const TriggerId: StructCodecAndFactory<TriggerId__actual, TriggerId>;
 
+// Warning: (ae-forgotten-export) The symbol "TupleAccountIdAccount__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TupleAccountIdAccount extends Opaque<TupleAccountIdAccount__actual, TupleAccountIdAccount> {
+}
+
+// @public (undocumented)
+export const TupleAccountIdAccount: ArrayCodecAndFactory<TupleAccountIdAccount__actual, TupleAccountIdAccount>;
+
+// Warning: (ae-forgotten-export) The symbol "TupleAssetDefinitionIdAssetDefinitionEntry__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TupleAssetDefinitionIdAssetDefinitionEntry extends Opaque<TupleAssetDefinitionIdAssetDefinitionEntry__actual, TupleAssetDefinitionIdAssetDefinitionEntry> {
+}
+
+// @public (undocumented)
+export const TupleAssetDefinitionIdAssetDefinitionEntry: ArrayCodecAndFactory<TupleAssetDefinitionIdAssetDefinitionEntry__actual, TupleAssetDefinitionIdAssetDefinitionEntry>;
+
+// Warning: (ae-forgotten-export) The symbol "TupleAssetIdAsset__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TupleAssetIdAsset extends Opaque<TupleAssetIdAsset__actual, TupleAssetIdAsset> {
+}
+
+// @public (undocumented)
+export const TupleAssetIdAsset: ArrayCodecAndFactory<TupleAssetIdAsset__actual, TupleAssetIdAsset>;
+
+// Warning: (ae-forgotten-export) The symbol "TupleNameValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TupleNameValue extends Opaque<TupleNameValue__actual, TupleNameValue> {
+}
+
+// @public (undocumented)
+export const TupleNameValue: ArrayCodecAndFactory<TupleNameValue__actual, TupleNameValue>;
+
+// Warning: (ae-forgotten-export) The symbol "TuplePublicKeySignatureOfCommittedBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TuplePublicKeySignatureOfCommittedBlock extends Opaque<TuplePublicKeySignatureOfCommittedBlock__actual, TuplePublicKeySignatureOfCommittedBlock> {
+}
+
+// @public (undocumented)
+export const TuplePublicKeySignatureOfCommittedBlock: ArrayCodecAndFactory<TuplePublicKeySignatureOfCommittedBlock__actual, TuplePublicKeySignatureOfCommittedBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "TuplePublicKeySignatureOfProof__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TuplePublicKeySignatureOfProof extends Opaque<TuplePublicKeySignatureOfProof__actual, TuplePublicKeySignatureOfProof> {
+}
+
+// @public (undocumented)
+export const TuplePublicKeySignatureOfProof: ArrayCodecAndFactory<TuplePublicKeySignatureOfProof__actual, TuplePublicKeySignatureOfProof>;
+
+// Warning: (ae-forgotten-export) The symbol "TuplePublicKeySignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TuplePublicKeySignatureOfTransactionPayload extends Opaque<TuplePublicKeySignatureOfTransactionPayload__actual, TuplePublicKeySignatureOfTransactionPayload> {
+}
+
+// @public (undocumented)
+export const TuplePublicKeySignatureOfTransactionPayload: ArrayCodecAndFactory<TuplePublicKeySignatureOfTransactionPayload__actual, TuplePublicKeySignatureOfTransactionPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "TupleStrEvaluatesToValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TupleStrEvaluatesToValue extends Opaque<TupleStrEvaluatesToValue__actual, TupleStrEvaluatesToValue> {
+}
+
+// @public (undocumented)
+export const TupleStrEvaluatesToValue: ArrayCodecAndFactory<TupleStrEvaluatesToValue__actual, TupleStrEvaluatesToValue>;
+
 // Warning: (ae-forgotten-export) The symbol "UnregisterBox__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -2072,6 +2140,15 @@ export interface VecPublicKey extends Opaque<VecPublicKey__actual, VecPublicKey>
 // @public (undocumented)
 export const VecPublicKey: ArrayCodecAndFactory<VecPublicKey__actual, VecPublicKey>;
 
+// Warning: (ae-forgotten-export) The symbol "VecRoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecRoleId extends Opaque<VecRoleId__actual, VecRoleId> {
+}
+
+// @public (undocumented)
+export const VecRoleId: ArrayCodecAndFactory<VecRoleId__actual, VecRoleId>;
+
 // Warning: (ae-forgotten-export) The symbol "VecSignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -2089,6 +2166,78 @@ export interface VecSignatureOfValidBlock extends Opaque<VecSignatureOfValidBloc
 
 // @public (undocumented)
 export const VecSignatureOfValidBlock: ArrayCodecAndFactory<VecSignatureOfValidBlock__actual, VecSignatureOfValidBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTupleAccountIdAccount__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTupleAccountIdAccount extends Opaque<VecTupleAccountIdAccount__actual, VecTupleAccountIdAccount> {
+}
+
+// @public (undocumented)
+export const VecTupleAccountIdAccount: ArrayCodecAndFactory<VecTupleAccountIdAccount__actual, VecTupleAccountIdAccount>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTupleAssetDefinitionIdAssetDefinitionEntry__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTupleAssetDefinitionIdAssetDefinitionEntry extends Opaque<VecTupleAssetDefinitionIdAssetDefinitionEntry__actual, VecTupleAssetDefinitionIdAssetDefinitionEntry> {
+}
+
+// @public (undocumented)
+export const VecTupleAssetDefinitionIdAssetDefinitionEntry: ArrayCodecAndFactory<VecTupleAssetDefinitionIdAssetDefinitionEntry__actual, VecTupleAssetDefinitionIdAssetDefinitionEntry>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTupleAssetIdAsset__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTupleAssetIdAsset extends Opaque<VecTupleAssetIdAsset__actual, VecTupleAssetIdAsset> {
+}
+
+// @public (undocumented)
+export const VecTupleAssetIdAsset: ArrayCodecAndFactory<VecTupleAssetIdAsset__actual, VecTupleAssetIdAsset>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTupleNameValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTupleNameValue extends Opaque<VecTupleNameValue__actual, VecTupleNameValue> {
+}
+
+// @public (undocumented)
+export const VecTupleNameValue: ArrayCodecAndFactory<VecTupleNameValue__actual, VecTupleNameValue>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTuplePublicKeySignatureOfCommittedBlock__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTuplePublicKeySignatureOfCommittedBlock extends Opaque<VecTuplePublicKeySignatureOfCommittedBlock__actual, VecTuplePublicKeySignatureOfCommittedBlock> {
+}
+
+// @public (undocumented)
+export const VecTuplePublicKeySignatureOfCommittedBlock: ArrayCodecAndFactory<VecTuplePublicKeySignatureOfCommittedBlock__actual, VecTuplePublicKeySignatureOfCommittedBlock>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTuplePublicKeySignatureOfProof__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTuplePublicKeySignatureOfProof extends Opaque<VecTuplePublicKeySignatureOfProof__actual, VecTuplePublicKeySignatureOfProof> {
+}
+
+// @public (undocumented)
+export const VecTuplePublicKeySignatureOfProof: ArrayCodecAndFactory<VecTuplePublicKeySignatureOfProof__actual, VecTuplePublicKeySignatureOfProof>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTuplePublicKeySignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTuplePublicKeySignatureOfTransactionPayload extends Opaque<VecTuplePublicKeySignatureOfTransactionPayload__actual, VecTuplePublicKeySignatureOfTransactionPayload> {
+}
+
+// @public (undocumented)
+export const VecTuplePublicKeySignatureOfTransactionPayload: ArrayCodecAndFactory<VecTuplePublicKeySignatureOfTransactionPayload__actual, VecTuplePublicKeySignatureOfTransactionPayload>;
+
+// Warning: (ae-forgotten-export) The symbol "VecTupleStringEvaluatesToValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecTupleStringEvaluatesToValue extends Opaque<VecTupleStringEvaluatesToValue__actual, VecTupleStringEvaluatesToValue> {
+}
+
+// @public (undocumented)
+export const VecTupleStringEvaluatesToValue: ArrayCodecAndFactory<VecTupleStringEvaluatesToValue__actual, VecTupleStringEvaluatesToValue>;
 
 // Warning: (ae-forgotten-export) The symbol "VecValue__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -2231,6 +2380,7 @@ export { Void as FindAllAssets }
 export { Void as FindAllAssetsDefinitions }
 export { Void as FindAllDomains }
 export { Void as FindAllPeers }
+export { Void as FindAllRoles }
 export { Void as NoTransactionReceiptReceived }
 
 // Warning: (ae-forgotten-export) The symbol "WasmExecutionFail__actual" needs to be exported by the entry point lib.d.ts
