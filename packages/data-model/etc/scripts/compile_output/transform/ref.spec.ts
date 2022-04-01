@@ -8,6 +8,7 @@ describe('Refs transformation', () => {
     ['iroha_data_model::domain::Id', 'DomainId'],
     ['iroha_data_model::account::Id', 'AccountId'],
     ['iroha_data_model::peer::Id', 'PeerId'],
+    ['iroha_data_model::role::Id', 'RoleId'],
     ['iroha_data_model::asset::Id', 'AssetId'],
     ['iroha_data_model::asset::DefinitionId', 'AssetDefinitionId'],
     ['iroha_data_model::asset::AssetDefinition', 'AssetDefinition'],
@@ -24,6 +25,7 @@ describe('Refs transformation', () => {
     ['iroha_data_model::events::time::EventFilter', 'TimeEventFilter'],
     ['iroha_data_model::events::time::Interval', 'TimeInterval'],
     ['iroha_data_model::events::time::Schedule', 'TimeSchedule'],
+    ['iroha_data_model::events::time::ExecutionTime', 'ExecutionTime'],
 
     ['iroha_data_model::events::data::events::Event', 'DataEvent'],
     ['iroha_data_model::events::data::EventFilter', 'DataEventFilter'],

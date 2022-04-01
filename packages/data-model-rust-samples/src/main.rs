@@ -6,7 +6,8 @@ use std::time::Duration;
 
 use iroha_data_model::prelude::{
     AccountId, Action, AssetDefinitionId, AssetId, DomainId, EventFilter, Executable,
-    IdentifiableBox, MintBox, RegisterBox, Repeats, TimeEventFilter, TimeSchedule, Trigger,
+    ExecutionTime, IdentifiableBox, MintBox, RegisterBox, Repeats, TimeEventFilter, TimeSchedule,
+    Trigger,
 };
 
 fn main() {
@@ -88,10 +89,10 @@ fn create_some_time_based_trigger_isi() -> RegisterBox {
                 Executable::from(vec![MintBox::new(1_u32, asset_id.clone()).into()]),
                 Repeats::Indefinitely,
                 asset_id.account_id,
-                EventFilter::Time(TimeEventFilter(
+                EventFilter::Time(TimeEventFilter(ExecutionTime::Schedule(
                     TimeSchedule::starting_at(Duration::from_secs(4141203402341234))
                         .with_period(Duration::from_millis(3_000)),
-                )),
+                ))),
             ),
         )
         .unwrap(),

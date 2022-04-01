@@ -46,12 +46,13 @@ function transformArray(ref: string): string {
 function normalizeIdentifier(ref: string): string {
   const randCase = ref
     .replace(/::events::data::events::(\w+)/g, '::events_data_events::Data_$1')
+    .replace(/::events::time::ExecutionTime/g, '::events::ExecutionTime')
     .replace(/::time::(\w+)/g, '::time_$1')
     .replace(/::events::pipeline::Pipeline(\w+)?/g, '::events::pipeline::_$1')
     .replace(/::events::pipeline::(\w+)?/g, '::events::pipeline_$1')
     .replace(/::events::(data|pipeline|execute_trigger)::Event(Filter)?/g, '::events::$1_Event$2')
     .replace(/::metadata::Limits/g, '::MetadataLimits')
-    .replace(/iroha_data_model::(account|asset|peer|trigger|domain)::Id/g, '$1_Id')
+    .replace(/iroha_data_model::(account|asset|peer|trigger|domain|role)::Id/g, '$1_Id')
     .replace(/iroha_data_model::asset::DefinitionId/g, 'AssetDefinitionId')
     .replace(/iroha_data_model::(query|transaction)::Payload/g, '$1_Payload')
     .replace(/iroha_data_model::expression::If/g, 'IfExpression')

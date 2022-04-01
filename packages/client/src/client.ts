@@ -1,7 +1,7 @@
 import {
   AccountId,
-  BTreeMapNameValue,
-  BTreeSetSignatureOfTransactionPayload,
+  VecTupleNameValue,
+  VecSignatureOfTransactionPayload,
   Enum,
   Executable,
   OptionU32,
@@ -40,7 +40,7 @@ function useCryptoAssertive(): IrohaCryptoInterface {
   const crypto = getCrypto()
   if (!crypto) {
     throw new Error(
-      '"crypto" is not defined, but required for Iroha Client to function. ' + 'Have you set it with `setCrypto()`?',
+      '"crypto" is not defined, but required for Iroha Client to function. Have you set it with `setCrypto()`?',
     )
   }
   return crypto
@@ -64,7 +64,7 @@ export class ResponseError extends Error {
 
 export interface SubmitParams {
   nonce?: number
-  metadata?: BTreeMapNameValue
+  metadata?: VecTupleNameValue
 }
 
 export type HealthResult = Result<null, string>
@@ -182,7 +182,7 @@ export class Client {
         : this.transactionAddNonce
         ? OptionU32('Some', randomU32())
         : OptionU32('None'),
-      metadata: params?.metadata ?? BTreeMapNameValue(new Map()),
+      metadata: params?.metadata ?? VecTupleNameValue([]),
       creation_time: BigInt(Date.now()),
       account_id: accountId,
     })
@@ -197,7 +197,7 @@ export class Client {
         finalBytes = VersionedTransaction.toBuffer(
           VersionedTransaction(
             'V1',
-            Transaction({ payload, signatures: BTreeSetSignatureOfTransactionPayload([signature]) }),
+            Transaction({ payload, signatures: VecSignatureOfTransactionPayload([signature]) }),
           ),
         )
       })

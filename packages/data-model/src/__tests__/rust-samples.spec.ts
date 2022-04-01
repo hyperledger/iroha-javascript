@@ -95,14 +95,17 @@ defineCase(
                   repeats: lib.Repeats('Indefinitely'),
                   filter: lib.EventFilter(
                     'Time',
-                    lib.TimeSchedule({
-                      start: lib.TimeDuration([4141203402341234n, 0]),
-                      period: lib.OptionTimeDuration('Some', lib.TimeDuration([3n, 0])),
-                    }),
+                    lib.ExecutionTime(
+                      'Schedule',
+                      lib.TimeSchedule({
+                        start: lib.TimeDuration([4141203402341234n, 0]),
+                        period: lib.OptionTimeDuration('Some', lib.TimeDuration([3n, 0])),
+                      }),
+                    ),
                   ),
                   technical_account: assetId.account_id,
                 }),
-                metadata: lib.Metadata({ map: new Map() as lib.BTreeMapNameValue }),
+                metadata: lib.Metadata({ map: lib.VecTupleNameValue([]) }),
               }),
             ),
           ),
@@ -117,13 +120,14 @@ test('Metadata', () => {
     '0c 38 61 75 74 68 65 6e 74 69 63 61 74 69 6f 6e 03 01 01 38 30 32 35 32 61 64 37 39 63 36 38 63 30 31 65 63 38 39 34 36 39 38 33 34 31 31 63 65 33 62 37 63 62 65 61 32 31 64 32 35 66 36 38 63 38 35 34 36 63 36 38 37 62 32 61 37 65 32 35 30 35 63 63 14 65 6d 61 69 6c 03 40 75 73 65 72 31 32 33 40 6d 61 69 6c 2e 63 6f 6d 10 73 61 6c 74 03 1c 41 42 43 44 45 46 47'
 
   const JS = lib.Metadata({
-    map: lib.BTreeMapNameValue(
-      new Map([
-        ['authentication', lib.Value('String', '80252ad79c68c01ec8946983411ce3b7cbea21d25f68c8546c687b2a7e2505cc')],
-        ['email', lib.Value('String', 'user123@mail.com')],
-        ['salt', lib.Value('String', 'ABCDEFG')],
+    map: lib.VecTupleNameValue([
+      lib.TupleNameValue([
+        'authentication',
+        lib.Value('String', '80252ad79c68c01ec8946983411ce3b7cbea21d25f68c8546c687b2a7e2505cc'),
       ]),
-    ),
+      lib.TupleNameValue(['email', lib.Value('String', 'user123@mail.com')]),
+      lib.TupleNameValue(['salt', lib.Value('String', 'ABCDEFG')]),
+    ]),
   })
 
   expect(toHex(lib.Metadata.toBuffer(JS))).toEqual(HEX)

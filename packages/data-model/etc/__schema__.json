@@ -56,6 +56,9 @@
   "BTreeSet<iroha_data_model::permissions::PermissionToken>": {
     "Vec": "iroha_data_model::permissions::PermissionToken"
   },
+  "BTreeSet<iroha_data_model::role::Id>": {
+    "Vec": "iroha_data_model::role::Id"
+  },
   "FixedPoint<i64>": {
     "FixedPoint": {
       "base": "i64",
@@ -366,28 +369,33 @@
           "ty": "iroha_data_model::Name"
         },
         {
-          "name": "Block",
+          "name": "Role",
           "discriminant": 5,
+          "ty": "iroha_data_model::role::Id"
+        },
+        {
+          "name": "Block",
+          "discriminant": 6,
           "ty": "iroha_core::smartcontracts::isi::error::ParentHashNotFound"
         },
         {
           "name": "Transaction",
-          "discriminant": 6,
+          "discriminant": 7,
           "ty": "iroha_crypto::hash::HashOf<iroha_data_model::transaction::VersionedTransaction>"
         },
         {
           "name": "Context",
-          "discriminant": 7,
+          "discriminant": 8,
           "ty": "String"
         },
         {
           "name": "Peer",
-          "discriminant": 8,
+          "discriminant": 9,
           "ty": "iroha_data_model::peer::Id"
         },
         {
           "name": "Trigger",
-          "discriminant": 9,
+          "discriminant": 10,
           "ty": "iroha_data_model::trigger::Id"
         }
       ]
@@ -727,13 +735,18 @@
           "ty": "iroha_data_model::peer::Id"
         },
         {
-          "name": "TriggerId",
+          "name": "RoleId",
           "discriminant": 5,
+          "ty": "iroha_data_model::role::Id"
+        },
+        {
+          "name": "TriggerId",
+          "discriminant": 6,
           "ty": "iroha_data_model::trigger::Id"
         },
         {
           "name": "WorldId",
-          "discriminant": 6,
+          "discriminant": 7,
           "ty": null
         }
       ]
@@ -773,13 +786,18 @@
           "ty": "iroha_data_model::peer::Peer"
         },
         {
-          "name": "Trigger",
+          "name": "Role",
           "discriminant": 6,
+          "ty": "iroha_data_model::role::Role"
+        },
+        {
+          "name": "Trigger",
+          "discriminant": 7,
           "ty": "iroha_data_model::trigger::Trigger"
         },
         {
           "name": "World",
-          "discriminant": 7,
+          "discriminant": 8,
           "ty": null
         }
       ]
@@ -930,6 +948,10 @@
         {
           "name": "metadata",
           "ty": "iroha_data_model::metadata::Metadata"
+        },
+        {
+          "name": "roles",
+          "ty": "BTreeSet<iroha_data_model::role::Id>"
         }
       ]
     }
@@ -1266,23 +1288,28 @@
           "ty": "iroha_data_model::events::data::events::peer::PeerEvent"
         },
         {
-          "name": "Account",
+          "name": "Role",
           "discriminant": 2,
+          "ty": "iroha_data_model::events::data::events::role::RoleEvent"
+        },
+        {
+          "name": "Account",
+          "discriminant": 3,
           "ty": "iroha_data_model::events::data::events::account::AccountEvent"
         },
         {
           "name": "AssetDefinition",
-          "discriminant": 3,
+          "discriminant": 4,
           "ty": "iroha_data_model::events::data::events::asset::AssetDefinitionEvent"
         },
         {
           "name": "Asset",
-          "discriminant": 4,
+          "discriminant": 5,
           "ty": "iroha_data_model::events::data::events::asset::AssetEvent"
         },
         {
           "name": "Trigger",
-          "discriminant": 5,
+          "discriminant": 6,
           "ty": "iroha_data_model::events::data::events::trigger::TriggerEvent"
         }
       ]
@@ -1453,6 +1480,22 @@
       ]
     }
   },
+  "iroha_data_model::events::data::events::role::RoleEvent": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Created",
+          "discriminant": 0,
+          "ty": "iroha_data_model::role::Id"
+        },
+        {
+          "name": "Deleted",
+          "discriminant": 1,
+          "ty": "iroha_data_model::role::Id"
+        }
+      ]
+    }
+  },
   "iroha_data_model::events::data::events::trigger::TriggerEvent": {
     "Enum": {
       "variants": [
@@ -1493,23 +1536,28 @@
           "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::peer::PeerFilter>"
         },
         {
-          "name": "ByAccount",
+          "name": "ByRole",
           "discriminant": 2,
+          "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::role::RoleFilter>"
+        },
+        {
+          "name": "ByAccount",
+          "discriminant": 3,
           "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::account::AccountFilter>"
         },
         {
           "name": "ByAssetDefinition",
-          "discriminant": 3,
+          "discriminant": 4,
           "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::asset::AssetDefinitionFilter>"
         },
         {
           "name": "ByAsset",
-          "discriminant": 4,
+          "discriminant": 5,
           "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::asset::AssetFilter>"
         },
         {
           "name": "ByTrigger",
-          "discriminant": 5,
+          "discriminant": 6,
           "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::trigger::TriggerFilter>"
         }
       ]
@@ -1607,6 +1655,22 @@
           "name": "BySome",
           "discriminant": 1,
           "ty": "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::peer::Id>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::IdFilter<iroha_data_model::role::Id>>": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "AcceptAll",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "BySome",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::role::Id>"
         }
       ]
     }
@@ -1787,6 +1851,38 @@
       ]
     }
   },
+  "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::role::RoleEventFilter>": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "AcceptAll",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "BySome",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::data::filters::role::RoleEventFilter"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::role::RoleFilter>": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "AcceptAll",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "BySome",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::data::filters::role::RoleFilter"
+        }
+      ]
+    }
+  },
   "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::trigger::TriggerEventFilter>": {
     "Enum": {
       "variants": [
@@ -1851,6 +1947,13 @@
     "TupleStruct": {
       "types": [
         "iroha_data_model::peer::Id"
+      ]
+    }
+  },
+  "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::role::Id>": {
+    "TupleStruct": {
+      "types": [
+        "iroha_data_model::role::Id"
       ]
     }
   },
@@ -2096,6 +2199,36 @@
       ]
     }
   },
+  "iroha_data_model::events::data::filters::role::RoleEventFilter": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "ByCreated",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "ByDeleted",
+          "discriminant": 1,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::data::filters::role::RoleFilter": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "id_filter",
+          "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::IdFilter<iroha_data_model::role::Id>>"
+        },
+        {
+          "name": "event_filter",
+          "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::role::RoleEventFilter>"
+        }
+      ]
+    }
+  },
   "iroha_data_model::events::data::filters::trigger::TriggerEventFilter": {
     "Enum": {
       "variants": [
@@ -2250,7 +2383,23 @@
   "iroha_data_model::events::time::EventFilter": {
     "TupleStruct": {
       "types": [
-        "iroha_data_model::events::time::Schedule"
+        "iroha_data_model::events::time::ExecutionTime"
+      ]
+    }
+  },
+  "iroha_data_model::events::time::ExecutionTime": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "PreCommit",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Schedule",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::time::Schedule"
+        }
       ]
     }
   },
@@ -3259,8 +3408,18 @@
           "ty": "iroha_data_model::query::transaction::FindTransactionByHash"
         },
         {
-          "name": "FindPermissionTokensByAccountId",
+          "name": "FindAllRoles",
           "discriminant": 22,
+          "ty": "iroha_data_model::query::role::FindAllRoles"
+        },
+        {
+          "name": "FindRolesByAccountId",
+          "discriminant": 23,
+          "ty": "iroha_data_model::query::role::FindRolesByAccountId"
+        },
+        {
+          "name": "FindPermissionTokensByAccountId",
+          "discriminant": 24,
           "ty": "iroha_data_model::query::permissions::FindPermissionTokensByAccountId"
         }
       ]
@@ -3514,6 +3673,21 @@
       ]
     }
   },
+  "iroha_data_model::query::role::FindAllRoles": {
+    "Struct": {
+      "declarations": []
+    }
+  },
+  "iroha_data_model::query::role::FindRolesByAccountId": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>"
+        }
+      ]
+    }
+  },
   "iroha_data_model::query::transaction::FindTransactionByHash": {
     "Struct": {
       "declarations": [
@@ -3530,6 +3704,30 @@
         {
           "name": "account_id",
           "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::role::Id": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "name",
+          "ty": "iroha_data_model::Name"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::role::Role": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "id",
+          "ty": "iroha_data_model::role::Id"
+        },
+        {
+          "name": "permissions",
+          "ty": "BTreeSet<iroha_data_model::permissions::PermissionToken>"
         }
       ]
     }
