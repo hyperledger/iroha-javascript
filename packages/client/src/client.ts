@@ -1,7 +1,7 @@
 import {
   AccountId,
-  VecTupleNameValue,
-  VecSignatureOfTransactionPayload,
+  BTreeMapNameValue,
+  BTreeSetSignatureOfTransactionPayload,
   Enum,
   Executable,
   OptionU32,
@@ -64,7 +64,7 @@ export class ResponseError extends Error {
 
 export interface SubmitParams {
   nonce?: number
-  metadata?: VecTupleNameValue
+  metadata?: BTreeMapNameValue
 }
 
 export type HealthResult = Result<null, string>
@@ -182,7 +182,7 @@ export class Client {
         : this.transactionAddNonce
         ? OptionU32('Some', randomU32())
         : OptionU32('None'),
-      metadata: params?.metadata ?? VecTupleNameValue([]),
+      metadata: params?.metadata ?? BTreeMapNameValue(new Map()),
       creation_time: BigInt(Date.now()),
       account_id: accountId,
     })
@@ -197,7 +197,7 @@ export class Client {
         finalBytes = VersionedTransaction.toBuffer(
           VersionedTransaction(
             'V1',
-            Transaction({ payload, signatures: VecSignatureOfTransactionPayload([signature]) }),
+            Transaction({ payload, signatures: BTreeSetSignatureOfTransactionPayload(new Set([signature])) }),
           ),
         )
       })

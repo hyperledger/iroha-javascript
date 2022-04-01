@@ -59,8 +59,6 @@ function normalizeIdentifier(ref: string): string {
     .replace(/iroha_data_model::isi::If/g, 'IfInstruction')
     .replace(/iroha_version::error::Error/g, 'VersionError')
     .replace(/query::(\w+)?Error/g, 'Query$1Error')
-    .replace(/^BTreeMap/, 'VecTuple')
-    .replace(/^BTreeSet/, 'Vec')
     .replace(/(?:\w+::)*(\w+)/g, '$1')
     .replace(/[^\w]/g, '_')
 

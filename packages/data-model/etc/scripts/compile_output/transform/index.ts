@@ -50,33 +50,37 @@ function rawSchemaFilter(value: RustTypeDefinitionVariant, key: string): boolean
   return true
 }
 
-function extractAdditionalTypesFromBTreeStructures(map: Map<string, RustTypeDefinitionVariant>): Map<string, TypeDef> {
-  return map.reduce((acc, value, key) => {
-    if (key.startsWith('BTreeMap')) {
-      if (!isRustMapDef(value)) throw new Error(`"${key}" is btreemap but not a map`)
+function extractAdditionalTypesFromBTreeStructures(
+  map: Map<string, RustTypeDefinitionVariant>,
+): [added: Map<string, TypeDef>, filtered: Set<string>] {
+  return map.reduce(
+    ([add, filter], value, key) => {
+      if (key.startsWith('BTreeMap')) {
+        if (!isRustMapDef(value)) throw new Error(`"${key}" is btreemap but not a map`)
 
-      const [refKey, refValue] = [value.Map.key, value.Map.value].map((x) => transformRef(x))
+        return [
+          add.set(transformRef(key), {
+            t: 'map',
+            key: transformRef(value.Map.key),
+            value: transformRef(value.Map.value),
+          }),
+          filter.add(key),
+        ]
+      } else if (key.startsWith('BTreeSet')) {
+        if (!isRustVecDef(value)) throw new Error(`"${key}" is btreeset but not a vec`)
 
-      const tuple = `Tuple${refKey}${refValue}`
-      return acc
-        .set(tuple, {
-          t: 'tuple',
-          items: [refKey, refValue],
-        })
-        .set(transformRef(key), {
-          t: 'vec',
-          item: tuple,
-        })
-    } else if (key.startsWith('BTreeSet')) {
-      if (!isRustVecDef(value)) throw new Error(`"${key}" is btreeset but not a vec`)
-
-      return acc.set(transformRef(key), {
-        t: 'vec',
-        item: transformRef(value.Vec),
-      })
-    }
-    return acc
-  }, Map())
+        return [
+          add.set(transformRef(key), {
+            t: 'set',
+            entry: transformRef(value.Vec),
+          }),
+          filter.add(key),
+        ]
+      }
+      return [add, filter]
+    },
+    [Map(), Set()],
+  )
 }
 
 function ok<Ok, Err>(ok: Ok): Result<Ok, Err> {
@@ -176,9 +180,12 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
 export function transformSchema(schema: RustDefinitions): NamespaceDefinition {
   let schemaMap = Map(schema).filter(rawSchemaFilter)
 
+  const [add, filter] = extractAdditionalTypesFromBTreeStructures(schemaMap)
+
   return schemaMap
+    .filter((v, key) => !filter.has(key))
     .mapEntries(([key, value]) => [transformRef(key), transformRustDef(value).as('Ok')])
-    .merge(extractAdditionalTypesFromBTreeStructures(schemaMap))
+    .merge(add)
     .reduce<NamespaceDefinition>((acc, value, key) => {
       acc[key] = value
       return acc

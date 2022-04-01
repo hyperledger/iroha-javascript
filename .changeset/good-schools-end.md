@@ -6,15 +6,14 @@
 
 List of changes:
 
-| Before             | After                      |
-| ------------------ | -------------------------- |
-| `BTreeMapIdAsset`  | `BTreeMapAssetIdAsset`     |
-| `DefinitionId`     | `AssetDefinitionId`        |
-| `Id`               | `DomainId`                 |
-| `EntityType`       | `PipelineEntityType`       |
-| `OptionEntityType` | `OptionPipelineEntityType` |
-| `Status`           | `PipelineStatus`           |
-| `ExpressionIf`     | `IfExpression`             |
-| `IsiIf`            | `IfInstruction`            |
+| Before                    | After                      |
+| ------------------------- | -------------------------- |
+| `DefinitionId`            | `AssetDefinitionId`        |
+| `Id`                      | `DomainId`                 |
+| `EntityType`              | `PipelineEntityType`       |
+| ...and `OptionEntityType` | `OptionPipelineEntityType` |
+| `Status`                  | `PipelineStatus`           |
+| `ExpressionIf`            | `IfExpression`             |
+| `IsiIf`                   | `IfInstruction`            |
 
 ...and some others.

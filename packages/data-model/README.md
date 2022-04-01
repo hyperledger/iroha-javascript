@@ -23,3 +23,9 @@ Then, install packages:
 ```bash
 npm i @iroha2/data-model
 ```
+
+## Known issues
+
+### Entries ordering in `BTreeMap` and `BTreeSet`
+
+In Rust, these structs assume that items are `PartialOrd`-ordered while encoding to ensure consistency for signatures creation. This library doesn't provide this feature and you should put entries in the correct order by yourself.

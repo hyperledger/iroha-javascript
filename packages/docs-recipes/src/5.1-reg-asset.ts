@@ -4,7 +4,7 @@ import {
   AssetDefinitionId,
   DomainId,
   Metadata,
-  VecTupleNameValue,
+  BTreeMapNameValue,
   RegisterBox,
   EvaluatesToIdentifiableBox,
   Expression,
@@ -19,7 +19,7 @@ const time = AssetDefinition({
     name: 'time',
     domain_id: DomainId({ name: 'looking_glass' }),
   }),
-  metadata: Metadata({ map: VecTupleNameValue([]) }),
+  metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
   mintable: false, // If only we could mint more time.
 })
 

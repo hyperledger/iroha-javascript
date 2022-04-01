@@ -43,14 +43,14 @@ describe('Refs transformation', () => {
     ['[u32; 5]', 'ArrayU32L5'],
     ['String', 'Str'],
     ['Vec<u32>', 'VecU32'],
-    ['BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::AssetId>', 'VecTupleAccountIdAssetId'],
+    ['BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::AssetId>', 'BTreeMapAccountIdAssetId'],
     [
       'BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>',
-      'VecTupleStringEvaluatesToValue',
+      'BTreeMapStringEvaluatesToValue',
     ],
     [
       'BTreeSet<iroha_crypto::signature::SignatureOf<iroha_data_model::transaction::Payload>>',
-      'VecSignatureOfTransactionPayload',
+      'BTreeSetSignatureOfTransactionPayload',
     ],
     ['Fixed<i64>', 'FixedI64'],
     ['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>', 'EvaluatesToAccountId'],

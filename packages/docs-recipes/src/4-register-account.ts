@@ -10,7 +10,7 @@ import {
   Metadata,
   NewAccount,
   VecPublicKey,
-  VecTupleNameValue,
+  BTreeMapNameValue,
   Instruction,
 } from '@iroha2/data-model'
 
@@ -41,7 +41,7 @@ const registerAccountInstruction = Instruction(
             NewAccount({
               id: accountId,
               signatories: VecPublicKey([key]),
-              metadata: Metadata({ map: VecTupleNameValue([]) }),
+              metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
             }),
           ),
         ),

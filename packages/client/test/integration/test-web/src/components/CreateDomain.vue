@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
-  VecTupleAccountIdAccount,
-  VecTupleAssetDefinitionIdAssetDefinitionEntry,
-  VecTupleNameValue,
+  BTreeMapAccountIdAccount,
+  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
+  BTreeMapNameValue,
   Domain,
   EvaluatesToIdentifiableBox,
   Executable,
@@ -44,9 +44,9 @@ async function register() {
                         id: DomainId({
                           name: domainName.value,
                         }),
-                        accounts: VecTupleAccountIdAccount([]),
-                        metadata: Metadata({ map: VecTupleNameValue([]) }),
-                        asset_definitions: VecTupleAssetDefinitionIdAssetDefinitionEntry([]),
+                        accounts: BTreeMapAccountIdAccount(new Map()),
+                        metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
+                        asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
                         logo: OptionIpfsPath('None'),
                       }),
                     ),
