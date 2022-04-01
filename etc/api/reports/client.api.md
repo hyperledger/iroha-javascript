@@ -5,6 +5,7 @@
 ```ts
 
 import { AccountId } from '@iroha2/data-model';
+import { BTreeMapNameValue } from '@iroha2/data-model';
 import { CloseEvent as CloseEvent_2 } from '@iroha2/client-isomorphic-ws';
 import Emittery from 'emittery';
 import { Event as Event_2 } from '@iroha2/client-isomorphic-ws';
@@ -17,7 +18,6 @@ import { QueryBox } from '@iroha2/data-model';
 import { QueryError } from '@iroha2/data-model';
 import { QueryResult } from '@iroha2/data-model';
 import { Result } from '@iroha2/data-model';
-import { VecTupleNameValue } from '@iroha2/data-model';
 import { VersionedCommittedBlock } from '@iroha2/data-model';
 
 // Warning: (ae-forgotten-export) The symbol "SocketEmitMapBase" needs to be exported by the entry point lib.d.ts
@@ -163,7 +163,7 @@ export interface SetupEventsReturn {
 // @public (undocumented)
 export interface SubmitParams {
     // (undocumented)
-    metadata?: VecTupleNameValue;
+    metadata?: BTreeMapNameValue;
     // (undocumented)
     nonce?: number;
 }
