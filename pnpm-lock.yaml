@@ -69,7 +69,7 @@ importers:
       '@iroha2/client-isomorphic-fetch': workspace:^0.1.0
       '@iroha2/client-isomorphic-ws': workspace:^0.2.0
       '@iroha2/crypto-core': workspace:^0.1.0
-      '@iroha2/data-model': workspace:^1.0.0
+      '@iroha2/data-model': workspace:^1.1.0
       consola: ^2.15.3
       debug: ^4.3.3
       emittery: ^0.10.1
@@ -85,7 +85,7 @@ importers:
       emittery: 0.10.1
     devDependencies:
       consola: 2.15.3
-      esno: 0.12.1_typescript@4.6.2
+      esno: 0.12.1_typescript@4.6.3
       npm-run-all: 4.1.5
       type-fest: 2.12.0
 
@@ -208,7 +208,7 @@ importers:
       gulp: 4.0.2
       make-dir: 3.1.0
       rollup: 2.70.1
-      rollup-plugin-dts: 4.2.0_rollup@2.70.1+typescript@4.6.2
+      rollup-plugin-dts: 4.2.0_rollup@2.70.1+typescript@4.6.3
       zx: 4.2.0
 
   packages/crypto/packages/core:
@@ -398,7 +398,7 @@ importers:
       consola: 2.15.3
       debug: 4.3.3
       del: 6.0.0
-      esno: 0.12.1_typescript@4.6.2
+      esno: 0.12.1_typescript@4.6.3
       execa: 5.1.1
       koa: 2.13.4
       koa-bodyparser: 4.3.0
@@ -4460,6 +4460,15 @@ packages:
     dependencies:
       esbuild: 0.13.15
       typescript: 4.6.2
+    dev: true
+
+  /esbuild-node-loader/0.6.3_typescript@4.6.3:
+    resolution: {integrity: sha512-Bf6o8SiMMh5+r20jsjAThNOtzo3t8Ye4Qdzz+twWHnxu28SdkGUr5ahq8iX0qbd+I9ge8sLNX7oQoNW1YzHlqA==}
+    peerDependencies:
+      typescript: ^4.0
+    dependencies:
+      esbuild: 0.13.15
+      typescript: 4.6.3
 
   /esbuild-openbsd-64/0.13.15:
     resolution: {integrity: sha512-wTfvtwYJYAFL1fSs8yHIdf5GEE4NkbtbXtjLWjM3Cw8mmQKqsg8kTiqJ9NJQe5NX/5Qlo7Xd9r1yKMMkHllp5g==}
@@ -4851,6 +4860,19 @@ packages:
       cross-spawn: 7.0.3
       esbuild: 0.13.15
       esbuild-node-loader: 0.6.3_typescript@4.6.2
+      esbuild-register: 3.3.2_esbuild@0.13.15
+      import-meta-resolve: 1.1.1
+    transitivePeerDependencies:
+      - typescript
+    dev: true
+
+  /esno/0.12.1_typescript@4.6.3:
+    resolution: {integrity: sha512-OmPcnNEXVmfiGANoPxsUZHYs+USGgWveC+RVVbvyFXRtwwoBQa7K2TjRe9o2FCkfLB56ewq/0MiEmowyCE3ARA==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      esbuild: 0.13.15
+      esbuild-node-loader: 0.6.3_typescript@4.6.3
       esbuild-register: 3.3.2_esbuild@0.13.15
       import-meta-resolve: 1.1.1
     transitivePeerDependencies:
@@ -8773,7 +8795,7 @@ packages:
     dependencies:
       glob: 7.2.0
 
-  /rollup-plugin-dts/4.2.0_rollup@2.70.1+typescript@4.6.2:
+  /rollup-plugin-dts/4.2.0_rollup@2.70.1+typescript@4.6.3:
     resolution: {integrity: sha512-lx6irWVhz/x4//tIqRhzk4FOqGQ0n37ZM2wpPCn4uafl/EmiV92om7ZdAsq7Bzho6C+Xh5GfsyuP9H+Udv72Lg==}
     engines: {node: '>=v12.22.10'}
     peerDependencies:
@@ -8782,7 +8804,7 @@ packages:
     dependencies:
       magic-string: 0.26.1
       rollup: 2.70.1
-      typescript: 4.6.2
+      typescript: 4.6.3
     optionalDependencies:
       '@babel/code-frame': 7.16.7
     dev: true
