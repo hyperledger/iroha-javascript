@@ -1,9 +1,0 @@
-$iroha-brand: #e4232d;
-
-:root {
-    --c-brand: #{$iroha-brand};
-    --c-brand-light: #{lighten($iroha-brand, 10%)};
-    --code-font-family: 'JetBrains Mono', 'Fira Code', var(--font-family-mono);
-    --code-font-size: 13px;
-    --code-line-height: 1.2em;
-}

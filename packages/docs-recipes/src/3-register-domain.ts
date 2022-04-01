@@ -7,10 +7,10 @@ import {
   IdentifiableBox,
   Domain,
   DomainId,
-  BTreeMapAccountIdAccount,
+  VecTupleAccountIdAccount,
   Metadata,
-  BTreeMapNameValue,
-  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
+  VecTupleNameValue,
+  VecTupleAssetDefinitionIdAssetDefinitionEntry,
   OptionIpfsPath,
   Executable,
   VecInstruction,
@@ -18,7 +18,10 @@ import {
   QueryBox,
 } from '@iroha2/data-model'
 
+/* --snip-- */
 declare const client: Client
+
+// 1.
 
 async function registerDomain(domainName: string) {
   const registerBox = RegisterBox({
@@ -33,9 +36,9 @@ async function registerDomain(domainName: string) {
               id: DomainId({
                 name: domainName,
               }),
-              accounts: BTreeMapAccountIdAccount(new Map()),
-              metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-              asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
+              accounts: VecTupleAccountIdAccount([]),
+              metadata: Metadata({ map: VecTupleNameValue([]) }),
+              asset_definitions: VecTupleAssetDefinitionIdAssetDefinitionEntry([]),
               logo: OptionIpfsPath('None'),
             }),
           ),
@@ -49,10 +52,14 @@ async function registerDomain(domainName: string) {
   )
 }
 
+// 2.
+
+await registerDomain('test')
+
+// 3.
+
 async function ensureDomainExistence(domainName: string) {
   const result = await client.request(QueryBox('FindAllDomains', null))
-
-  result.as('Ok')
 
   const domain = result
     .as('Ok')
@@ -63,6 +70,6 @@ async function ensureDomainExistence(domainName: string) {
   if (!domain) throw new Error('Not found')
 }
 
-await registerDomain('test')
+// 4.
 
 await ensureDomainExistence('test')
