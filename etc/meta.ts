@@ -53,6 +53,8 @@ export function scopePackage(name: AllPackages): string {
 }
 
 export function getBundlePackageInput(name: BundlePackages): string {
+  if (name === 'data-model') return resolve('packages/data-model/dist-tsc/data-model/src/lib.js')
+
   return resolve('packages', name, 'dist-tsc/lib.js')
 }
 
