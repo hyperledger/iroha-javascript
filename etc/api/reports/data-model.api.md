@@ -13,6 +13,7 @@ import type { EnumCodecAndFactory } from '@scale-codec/definition-runtime';
 import type { MapCodecAndFactory } from '@scale-codec/definition-runtime';
 import type { Opaque } from '@scale-codec/definition-runtime';
 import type { Option as Option_2 } from '@scale-codec/definition-runtime';
+import type { SetCodecAndFactory } from '@scale-codec/definition-runtime';
 import { Str } from '@scale-codec/definition-runtime';
 import type { StructCodecAndFactory } from '@scale-codec/definition-runtime';
 import { U128 } from '@scale-codec/definition-runtime';
@@ -154,6 +155,15 @@ export interface AssetDefinitionFilter extends Opaque<AssetDefinitionFilter__act
 // @public (undocumented)
 export const AssetDefinitionFilter: StructCodecAndFactory<AssetDefinitionFilter__actual, AssetDefinitionFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "AssetDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AssetDefinitionId extends Opaque<AssetDefinitionId__actual, AssetDefinitionId> {
+}
+
+// @public (undocumented)
+export const AssetDefinitionId: StructCodecAndFactory<AssetDefinitionId__actual, AssetDefinitionId>;
+
 // Warning: (ae-forgotten-export) The symbol "AssetEvent__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -253,6 +263,15 @@ export interface BTreeMapAccountIdAccount extends Opaque<BTreeMapAccountIdAccoun
 // @public (undocumented)
 export const BTreeMapAccountIdAccount: MapCodecAndFactory<BTreeMapAccountIdAccount__actual, BTreeMapAccountIdAccount>;
 
+// Warning: (ae-forgotten-export) The symbol "BTreeMapAssetDefinitionIdAssetDefinitionEntry__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeMapAssetDefinitionIdAssetDefinitionEntry extends Opaque<BTreeMapAssetDefinitionIdAssetDefinitionEntry__actual, BTreeMapAssetDefinitionIdAssetDefinitionEntry> {
+}
+
+// @public (undocumented)
+export const BTreeMapAssetDefinitionIdAssetDefinitionEntry: MapCodecAndFactory<BTreeMapAssetDefinitionIdAssetDefinitionEntry__actual, BTreeMapAssetDefinitionIdAssetDefinitionEntry>;
+
 // Warning: (ae-forgotten-export) The symbol "BTreeMapAssetIdAsset__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -261,15 +280,6 @@ export interface BTreeMapAssetIdAsset extends Opaque<BTreeMapAssetIdAsset__actua
 
 // @public (undocumented)
 export const BTreeMapAssetIdAsset: MapCodecAndFactory<BTreeMapAssetIdAsset__actual, BTreeMapAssetIdAsset>;
-
-// Warning: (ae-forgotten-export) The symbol "BTreeMapDefinitionIdAssetDefinitionEntry__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface BTreeMapDefinitionIdAssetDefinitionEntry extends Opaque<BTreeMapDefinitionIdAssetDefinitionEntry__actual, BTreeMapDefinitionIdAssetDefinitionEntry> {
-}
-
-// @public (undocumented)
-export const BTreeMapDefinitionIdAssetDefinitionEntry: MapCodecAndFactory<BTreeMapDefinitionIdAssetDefinitionEntry__actual, BTreeMapDefinitionIdAssetDefinitionEntry>;
 
 // Warning: (ae-forgotten-export) The symbol "BTreeMapNameValue__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -323,7 +333,16 @@ export interface BTreeSetPermissionToken extends Opaque<BTreeSetPermissionToken_
 }
 
 // @public (undocumented)
-export const BTreeSetPermissionToken: ArrayCodecAndFactory<BTreeSetPermissionToken__actual, BTreeSetPermissionToken>;
+export const BTreeSetPermissionToken: SetCodecAndFactory<BTreeSetPermissionToken__actual, BTreeSetPermissionToken>;
+
+// Warning: (ae-forgotten-export) The symbol "BTreeSetRoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BTreeSetRoleId extends Opaque<BTreeSetRoleId__actual, BTreeSetRoleId> {
+}
+
+// @public (undocumented)
+export const BTreeSetRoleId: SetCodecAndFactory<BTreeSetRoleId__actual, BTreeSetRoleId>;
 
 // Warning: (ae-forgotten-export) The symbol "BTreeSetSignatureOfTransactionPayload__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -332,7 +351,7 @@ export interface BTreeSetSignatureOfTransactionPayload extends Opaque<BTreeSetSi
 }
 
 // @public (undocumented)
-export const BTreeSetSignatureOfTransactionPayload: ArrayCodecAndFactory<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload>;
+export const BTreeSetSignatureOfTransactionPayload: SetCodecAndFactory<BTreeSetSignatureOfTransactionPayload__actual, BTreeSetSignatureOfTransactionPayload>;
 
 // Warning: (ae-forgotten-export) The symbol "BTreeSetSignatureOfValidBlock__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -341,7 +360,7 @@ export interface BTreeSetSignatureOfValidBlock extends Opaque<BTreeSetSignatureO
 }
 
 // @public (undocumented)
-export const BTreeSetSignatureOfValidBlock: ArrayCodecAndFactory<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock>;
+export const BTreeSetSignatureOfValidBlock: SetCodecAndFactory<BTreeSetSignatureOfValidBlock__actual, BTreeSetSignatureOfValidBlock>;
 
 // Warning: (ae-forgotten-export) The symbol "BurnBox__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -415,15 +434,6 @@ export interface DataEvent extends Opaque<DataEvent__actual, DataEvent> {
 // @public (undocumented)
 export const DataEvent: EnumCodecAndFactory<DataEvent>;
 
-// Warning: (ae-forgotten-export) The symbol "DefinitionId__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface DefinitionId extends Opaque<DefinitionId__actual, DefinitionId> {
-}
-
-// @public (undocumented)
-export const DefinitionId: StructCodecAndFactory<DefinitionId__actual, DefinitionId>;
-
 // Warning: (ae-forgotten-export) The symbol "Divide__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -469,6 +479,15 @@ export interface DomainFilter extends Opaque<DomainFilter__actual, DomainFilter>
 // @public (undocumented)
 export const DomainFilter: StructCodecAndFactory<DomainFilter__actual, DomainFilter>;
 
+// Warning: (ae-forgotten-export) The symbol "DomainId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface DomainId extends Opaque<DomainId__actual, DomainId> {
+}
+
+// @public (undocumented)
+export const DomainId: StructCodecAndFactory<DomainId__actual, DomainId>;
+
 // Warning: (ae-forgotten-export) The symbol "EntityFilter__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -477,15 +496,6 @@ export interface EntityFilter extends Opaque<EntityFilter__actual, EntityFilter>
 
 // @public (undocumented)
 export const EntityFilter: EnumCodecAndFactory<EntityFilter>;
-
-// Warning: (ae-forgotten-export) The symbol "EntityType__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface EntityType extends Opaque<EntityType__actual, EntityType> {
-}
-
-// @public (undocumented)
-export const EntityType: EnumCodecAndFactory<EntityType>;
 
 // Warning: (ae-forgotten-export) The symbol "Equal__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -505,6 +515,15 @@ export interface EvaluatesToAccountId extends Opaque<EvaluatesToAccountId__actua
 // @public (undocumented)
 export const EvaluatesToAccountId: StructCodecAndFactory<EvaluatesToAccountId__actual, EvaluatesToAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToAssetDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToAssetDefinitionId extends Opaque<EvaluatesToAssetDefinitionId__actual, EvaluatesToAssetDefinitionId> {
+}
+
+// @public (undocumented)
+export const EvaluatesToAssetDefinitionId: StructCodecAndFactory<EvaluatesToAssetDefinitionId__actual, EvaluatesToAssetDefinitionId>;
+
 // Warning: (ae-forgotten-export) The symbol "EvaluatesToAssetId__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -523,14 +542,14 @@ export interface EvaluatesToBool extends Opaque<EvaluatesToBool__actual, Evaluat
 // @public (undocumented)
 export const EvaluatesToBool: StructCodecAndFactory<EvaluatesToBool__actual, EvaluatesToBool>;
 
-// Warning: (ae-forgotten-export) The symbol "EvaluatesToDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToDomainId__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
-export interface EvaluatesToDefinitionId extends Opaque<EvaluatesToDefinitionId__actual, EvaluatesToDefinitionId> {
+export interface EvaluatesToDomainId extends Opaque<EvaluatesToDomainId__actual, EvaluatesToDomainId> {
 }
 
 // @public (undocumented)
-export const EvaluatesToDefinitionId: StructCodecAndFactory<EvaluatesToDefinitionId__actual, EvaluatesToDefinitionId>;
+export const EvaluatesToDomainId: StructCodecAndFactory<EvaluatesToDomainId__actual, EvaluatesToDomainId>;
 
 // Warning: (ae-forgotten-export) The symbol "EvaluatesToHash__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -540,15 +559,6 @@ export interface EvaluatesToHash extends Opaque<EvaluatesToHash__actual, Evaluat
 
 // @public (undocumented)
 export const EvaluatesToHash: StructCodecAndFactory<EvaluatesToHash__actual, EvaluatesToHash>;
-
-// Warning: (ae-forgotten-export) The symbol "EvaluatesToId__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface EvaluatesToId extends Opaque<EvaluatesToId__actual, EvaluatesToId> {
-}
-
-// @public (undocumented)
-export const EvaluatesToId: StructCodecAndFactory<EvaluatesToId__actual, EvaluatesToId>;
 
 // Warning: (ae-forgotten-export) The symbol "EvaluatesToIdBox__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -650,6 +660,42 @@ export interface Executable extends Opaque<Executable__actual, Executable> {
 // @public (undocumented)
 export const Executable: EnumCodecAndFactory<Executable>;
 
+// Warning: (ae-forgotten-export) The symbol "ExecuteTriggerBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ExecuteTriggerBox extends Opaque<ExecuteTriggerBox__actual, ExecuteTriggerBox> {
+}
+
+// @public (undocumented)
+export const ExecuteTriggerBox: StructCodecAndFactory<ExecuteTriggerBox__actual, ExecuteTriggerBox>;
+
+// Warning: (ae-forgotten-export) The symbol "ExecuteTriggerEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ExecuteTriggerEvent extends Opaque<ExecuteTriggerEvent__actual, ExecuteTriggerEvent> {
+}
+
+// @public (undocumented)
+export const ExecuteTriggerEvent: StructCodecAndFactory<ExecuteTriggerEvent__actual, ExecuteTriggerEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "ExecuteTriggerEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ExecuteTriggerEventFilter extends Opaque<ExecuteTriggerEventFilter__actual, ExecuteTriggerEventFilter> {
+}
+
+// @public (undocumented)
+export const ExecuteTriggerEventFilter: StructCodecAndFactory<ExecuteTriggerEventFilter__actual, ExecuteTriggerEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "ExecutionTime__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ExecutionTime extends Opaque<ExecutionTime__actual, ExecutionTime> {
+}
+
+// @public (undocumented)
+export const ExecutionTime: EnumCodecAndFactory<ExecutionTime>;
+
 // Warning: (ae-forgotten-export) The symbol "Expression__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -658,15 +704,6 @@ export interface Expression extends Opaque<Expression__actual, Expression> {
 
 // @public (undocumented)
 export const Expression: EnumCodecAndFactory<Expression>;
-
-// Warning: (ae-forgotten-export) The symbol "ExpressionIf__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface ExpressionIf extends Opaque<ExpressionIf__actual, ExpressionIf> {
-}
-
-// @public (undocumented)
-export const ExpressionIf: StructCodecAndFactory<ExpressionIf__actual, ExpressionIf>;
 
 // Warning: (ae-forgotten-export) The symbol "FailBox__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -767,6 +804,15 @@ export interface FilterOptIdFilterAccountId extends Opaque<FilterOptIdFilterAcco
 // @public (undocumented)
 export const FilterOptIdFilterAccountId: EnumCodecAndFactory<FilterOptIdFilterAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterAssetDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterOptIdFilterAssetDefinitionId extends Opaque<FilterOptIdFilterAssetDefinitionId__actual, FilterOptIdFilterAssetDefinitionId> {
+}
+
+// @public (undocumented)
+export const FilterOptIdFilterAssetDefinitionId: EnumCodecAndFactory<FilterOptIdFilterAssetDefinitionId>;
+
 // Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterAssetId__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -776,23 +822,14 @@ export interface FilterOptIdFilterAssetId extends Opaque<FilterOptIdFilterAssetI
 // @public (undocumented)
 export const FilterOptIdFilterAssetId: EnumCodecAndFactory<FilterOptIdFilterAssetId>;
 
-// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterDefinitionId__actual" needs to be exported by the entry point lib.d.ts
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterDomainId__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
-export interface FilterOptIdFilterDefinitionId extends Opaque<FilterOptIdFilterDefinitionId__actual, FilterOptIdFilterDefinitionId> {
+export interface FilterOptIdFilterDomainId extends Opaque<FilterOptIdFilterDomainId__actual, FilterOptIdFilterDomainId> {
 }
 
 // @public (undocumented)
-export const FilterOptIdFilterDefinitionId: EnumCodecAndFactory<FilterOptIdFilterDefinitionId>;
-
-// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterId__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface FilterOptIdFilterId extends Opaque<FilterOptIdFilterId__actual, FilterOptIdFilterId> {
-}
-
-// @public (undocumented)
-export const FilterOptIdFilterId: EnumCodecAndFactory<FilterOptIdFilterId>;
+export const FilterOptIdFilterDomainId: EnumCodecAndFactory<FilterOptIdFilterDomainId>;
 
 // Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterPeerId__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -802,6 +839,15 @@ export interface FilterOptIdFilterPeerId extends Opaque<FilterOptIdFilterPeerId_
 
 // @public (undocumented)
 export const FilterOptIdFilterPeerId: EnumCodecAndFactory<FilterOptIdFilterPeerId>;
+
+// Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterRoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterOptIdFilterRoleId extends Opaque<FilterOptIdFilterRoleId__actual, FilterOptIdFilterRoleId> {
+}
+
+// @public (undocumented)
+export const FilterOptIdFilterRoleId: EnumCodecAndFactory<FilterOptIdFilterRoleId>;
 
 // Warning: (ae-forgotten-export) The symbol "FilterOptIdFilterTriggerId__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -829,6 +875,24 @@ export interface FilterOptPeerFilter extends Opaque<FilterOptPeerFilter__actual,
 
 // @public (undocumented)
 export const FilterOptPeerFilter: EnumCodecAndFactory<FilterOptPeerFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "FilterOptRoleEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterOptRoleEventFilter extends Opaque<FilterOptRoleEventFilter__actual, FilterOptRoleEventFilter> {
+}
+
+// @public (undocumented)
+export const FilterOptRoleEventFilter: EnumCodecAndFactory<FilterOptRoleEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "FilterOptRoleFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterOptRoleFilter extends Opaque<FilterOptRoleFilter__actual, FilterOptRoleFilter> {
+}
+
+// @public (undocumented)
+export const FilterOptRoleFilter: EnumCodecAndFactory<FilterOptRoleFilter>;
 
 // Warning: (ae-forgotten-export) The symbol "FilterOptTriggerEventFilter__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1001,6 +1065,15 @@ export interface FindPermissionTokensByAccountId extends Opaque<FindPermissionTo
 // @public (undocumented)
 export const FindPermissionTokensByAccountId: StructCodecAndFactory<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindRolesByAccountId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindRolesByAccountId extends Opaque<FindRolesByAccountId__actual, FindRolesByAccountId> {
+}
+
+// @public (undocumented)
+export const FindRolesByAccountId: StructCodecAndFactory<FindRolesByAccountId__actual, FindRolesByAccountId>;
+
 // Warning: (ae-forgotten-export) The symbol "FindTransactionByHash__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1100,15 +1173,6 @@ export type HashOfVersionedValidBlock = Hash;
 // @public (undocumented)
 export const HashOfVersionedValidBlock: Codec<HashOfVersionedValidBlock>;
 
-// Warning: (ae-forgotten-export) The symbol "Id__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface Id extends Opaque<Id__actual, Id> {
-}
-
-// @public (undocumented)
-export const Id: StructCodecAndFactory<Id__actual, Id>;
-
 // Warning: (ae-forgotten-export) The symbol "IdBox__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1134,22 +1198,22 @@ export type IdFilterAccountId = AccountId;
 export const IdFilterAccountId: Codec<IdFilterAccountId>;
 
 // @public (undocumented)
+export type IdFilterAssetDefinitionId = AssetDefinitionId;
+
+// @public (undocumented)
+export const IdFilterAssetDefinitionId: Codec<IdFilterAssetDefinitionId>;
+
+// @public (undocumented)
 export type IdFilterAssetId = AssetId;
 
 // @public (undocumented)
 export const IdFilterAssetId: Codec<IdFilterAssetId>;
 
 // @public (undocumented)
-export type IdFilterDefinitionId = DefinitionId;
+export type IdFilterDomainId = DomainId;
 
 // @public (undocumented)
-export const IdFilterDefinitionId: Codec<IdFilterDefinitionId>;
-
-// @public (undocumented)
-export type IdFilterId = Id;
-
-// @public (undocumented)
-export const IdFilterId: Codec<IdFilterId>;
+export const IdFilterDomainId: Codec<IdFilterDomainId>;
 
 // @public (undocumented)
 export type IdFilterPeerId = PeerId;
@@ -1158,10 +1222,34 @@ export type IdFilterPeerId = PeerId;
 export const IdFilterPeerId: Codec<IdFilterPeerId>;
 
 // @public (undocumented)
+export type IdFilterRoleId = RoleId;
+
+// @public (undocumented)
+export const IdFilterRoleId: Codec<IdFilterRoleId>;
+
+// @public (undocumented)
 export type IdFilterTriggerId = TriggerId;
 
 // @public (undocumented)
 export const IdFilterTriggerId: Codec<IdFilterTriggerId>;
+
+// Warning: (ae-forgotten-export) The symbol "IfExpression__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface IfExpression extends Opaque<IfExpression__actual, IfExpression> {
+}
+
+// @public (undocumented)
+export const IfExpression: StructCodecAndFactory<IfExpression__actual, IfExpression>;
+
+// Warning: (ae-forgotten-export) The symbol "IfInstruction__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface IfInstruction extends Opaque<IfInstruction__actual, IfInstruction> {
+}
+
+// @public (undocumented)
+export const IfInstruction: StructCodecAndFactory<IfInstruction__actual, IfInstruction>;
 
 // Warning: (ae-forgotten-export) The symbol "Instruction__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1186,15 +1274,6 @@ export type IpfsPath = Str;
 
 // @public (undocumented)
 export const IpfsPath: Codec<IpfsPath>;
-
-// Warning: (ae-forgotten-export) The symbol "IsiIf__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface IsiIf extends Opaque<IsiIf__actual, IsiIf> {
-}
-
-// @public (undocumented)
-export const IsiIf: StructCodecAndFactory<IsiIf__actual, IsiIf>;
 
 // Warning: (ae-forgotten-export) The symbol "LeafVersionedTransaction__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1301,15 +1380,6 @@ export interface NotPermittedFail extends Opaque<NotPermittedFail__actual, NotPe
 // @public (undocumented)
 export const NotPermittedFail: StructCodecAndFactory<NotPermittedFail__actual, NotPermittedFail>;
 
-// Warning: (ae-forgotten-export) The symbol "OptionEntityType__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface OptionEntityType extends Opaque<OptionEntityType__actual, OptionEntityType> {
-}
-
-// @public (undocumented)
-export const OptionEntityType: EnumCodecAndFactory<OptionEntityType>;
-
 // Warning: (ae-forgotten-export) The symbol "OptionHash__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1336,6 +1406,33 @@ export interface OptionIpfsPath extends Opaque<OptionIpfsPath__actual, OptionIpf
 
 // @public (undocumented)
 export const OptionIpfsPath: EnumCodecAndFactory<OptionIpfsPath>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionPipelineEntityType__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionPipelineEntityType extends Opaque<OptionPipelineEntityType__actual, OptionPipelineEntityType> {
+}
+
+// @public (undocumented)
+export const OptionPipelineEntityType: EnumCodecAndFactory<OptionPipelineEntityType>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionTimeDuration__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionTimeDuration extends Opaque<OptionTimeDuration__actual, OptionTimeDuration> {
+}
+
+// @public (undocumented)
+export const OptionTimeDuration: EnumCodecAndFactory<OptionTimeDuration>;
+
+// Warning: (ae-forgotten-export) The symbol "OptionTimeInterval__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface OptionTimeInterval extends Opaque<OptionTimeInterval__actual, OptionTimeInterval> {
+}
+
+// @public (undocumented)
+export const OptionTimeInterval: EnumCodecAndFactory<OptionTimeInterval>;
 
 // Warning: (ae-forgotten-export) The symbol "OptionTopology__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1442,6 +1539,15 @@ export interface PermissionToken extends Opaque<PermissionToken__actual, Permiss
 // @public (undocumented)
 export const PermissionToken: StructCodecAndFactory<PermissionToken__actual, PermissionToken>;
 
+// Warning: (ae-forgotten-export) The symbol "PipelineEntityType__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PipelineEntityType extends Opaque<PipelineEntityType__actual, PipelineEntityType> {
+}
+
+// @public (undocumented)
+export const PipelineEntityType: EnumCodecAndFactory<PipelineEntityType>;
+
 // Warning: (ae-forgotten-export) The symbol "PipelineEvent__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1459,6 +1565,15 @@ export interface PipelineEventFilter extends Opaque<PipelineEventFilter__actual,
 
 // @public (undocumented)
 export const PipelineEventFilter: StructCodecAndFactory<PipelineEventFilter__actual, PipelineEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "PipelineStatus__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PipelineStatus extends Opaque<PipelineStatus__actual, PipelineStatus> {
+}
+
+// @public (undocumented)
+export const PipelineStatus: EnumCodecAndFactory<PipelineStatus>;
 
 // Warning: (ae-forgotten-export) The symbol "Proof__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1628,6 +1743,51 @@ export interface RevokeBox extends Opaque<RevokeBox__actual, RevokeBox> {
 // @public (undocumented)
 export const RevokeBox: StructCodecAndFactory<RevokeBox__actual, RevokeBox>;
 
+// Warning: (ae-forgotten-export) The symbol "Role__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Role extends Opaque<Role__actual, Role> {
+}
+
+// @public (undocumented)
+export const Role: StructCodecAndFactory<Role__actual, Role>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleEvent extends Opaque<RoleEvent__actual, RoleEvent> {
+}
+
+// @public (undocumented)
+export const RoleEvent: EnumCodecAndFactory<RoleEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleEventFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleEventFilter extends Opaque<RoleEventFilter__actual, RoleEventFilter> {
+}
+
+// @public (undocumented)
+export const RoleEventFilter: EnumCodecAndFactory<RoleEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleFilter__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleFilter extends Opaque<RoleFilter__actual, RoleFilter> {
+}
+
+// @public (undocumented)
+export const RoleFilter: StructCodecAndFactory<RoleFilter__actual, RoleFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "RoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface RoleId extends Opaque<RoleId__actual, RoleId> {
+}
+
+// @public (undocumented)
+export const RoleId: StructCodecAndFactory<RoleId__actual, RoleId>;
+
 // Warning: (ae-forgotten-export) The symbol "SequenceBox__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1727,15 +1887,6 @@ export interface SignedQueryRequest extends Opaque<SignedQueryRequest__actual, S
 // @public (undocumented)
 export const SignedQueryRequest: StructCodecAndFactory<SignedQueryRequest__actual, SignedQueryRequest>;
 
-// Warning: (ae-forgotten-export) The symbol "Status__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface Status extends Opaque<Status__actual, Status> {
-}
-
-// @public (undocumented)
-export const Status: EnumCodecAndFactory<Status>;
-
 // Warning: (ae-forgotten-export) The symbol "Subtract__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1753,6 +1904,48 @@ export interface SubtreeVersionedTransaction extends Opaque<SubtreeVersionedTran
 
 // @public (undocumented)
 export const SubtreeVersionedTransaction: StructCodecAndFactory<SubtreeVersionedTransaction__actual, SubtreeVersionedTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "TimeDuration__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TimeDuration extends Opaque<TimeDuration__actual, TimeDuration> {
+}
+
+// @public (undocumented)
+export const TimeDuration: ArrayCodecAndFactory<TimeDuration__actual, TimeDuration>;
+
+// Warning: (ae-forgotten-export) The symbol "TimeEvent__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TimeEvent extends Opaque<TimeEvent__actual, TimeEvent> {
+}
+
+// @public (undocumented)
+export const TimeEvent: StructCodecAndFactory<TimeEvent__actual, TimeEvent>;
+
+// @public (undocumented)
+export type TimeEventFilter = ExecutionTime;
+
+// @public (undocumented)
+export const TimeEventFilter: Codec<TimeEventFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "TimeInterval__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TimeInterval extends Opaque<TimeInterval__actual, TimeInterval> {
+}
+
+// @public (undocumented)
+export const TimeInterval: StructCodecAndFactory<TimeInterval__actual, TimeInterval>;
+
+// Warning: (ae-forgotten-export) The symbol "TimeSchedule__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TimeSchedule extends Opaque<TimeSchedule__actual, TimeSchedule> {
+}
+
+// @public (undocumented)
+export const TimeSchedule: StructCodecAndFactory<TimeSchedule__actual, TimeSchedule>;
 
 // Warning: (ae-forgotten-export) The symbol "Topology__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1913,14 +2106,14 @@ export interface Value extends Opaque<Value__actual, Value> {
 // @public (undocumented)
 export const Value: EnumCodecAndFactory<Value>;
 
-// Warning: (ae-forgotten-export) The symbol "VecAction__actual" needs to be exported by the entry point lib.d.ts
+// Warning: (ae-forgotten-export) The symbol "VecEvent__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
-export interface VecAction extends Opaque<VecAction__actual, VecAction> {
+export interface VecEvent extends Opaque<VecEvent__actual, VecEvent> {
 }
 
 // @public (undocumented)
-export const VecAction: ArrayCodecAndFactory<VecAction__actual, VecAction>;
+export const VecEvent: ArrayCodecAndFactory<VecEvent__actual, VecEvent>;
 
 // Warning: (ae-forgotten-export) The symbol "VecGenesisTransaction__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -2144,6 +2337,7 @@ export { Void as FindAllAssets }
 export { Void as FindAllAssetsDefinitions }
 export { Void as FindAllDomains }
 export { Void as FindAllPeers }
+export { Void as FindAllRoles }
 export { Void as NoTransactionReceiptReceived }
 
 // Warning: (ae-forgotten-export) The symbol "WasmExecutionFail__actual" needs to be exported by the entry point lib.d.ts

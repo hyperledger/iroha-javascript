@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { SetupEventsReturn } from '@iroha2/client'
-import { EntityType, EventFilter, OptionEntityType, OptionHash, PipelineEventFilter } from '@iroha2/data-model'
-import { shallowReactive, shallowRef, computed } from 'vue'
+import {
+  PipelineEntityType,
+  EventFilter,
+  OptionPipelineEntityType,
+  OptionHash,
+  PipelineEventFilter,
+} from '@iroha2/data-model'
+import { shallowReactive, shallowRef, computed, onBeforeUnmount } from 'vue'
 import { bytesToHex } from 'hada'
 import { client } from '../client'
 
@@ -21,7 +27,7 @@ async function startListening() {
     filter: EventFilter(
       'Pipeline',
       PipelineEventFilter({
-        entity: OptionEntityType('Some', EntityType('Transaction')),
+        entity: OptionPipelineEntityType('Some', PipelineEntityType('Transaction')),
         hash: OptionHash('None'),
       }),
     ),
@@ -44,6 +50,8 @@ async function stopListening() {
   await currentListener.value?.stop()
   currentListener.value = null
 }
+
+onBeforeUnmount(stopListening)
 </script>
 
 <template>

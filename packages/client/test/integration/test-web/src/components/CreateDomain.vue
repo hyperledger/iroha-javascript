@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {
   BTreeMapAccountIdAccount,
-  BTreeMapDefinitionIdAssetDefinitionEntry,
+  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
   BTreeMapNameValue,
   Domain,
   EvaluatesToIdentifiableBox,
   Executable,
   Expression,
-  Id,
+  DomainId,
   IdentifiableBox,
   Instruction,
   Metadata,
@@ -41,12 +41,12 @@ async function register() {
                     IdentifiableBox(
                       'Domain',
                       Domain({
-                        id: Id({
+                        id: DomainId({
                           name: domainName.value,
                         }),
                         accounts: BTreeMapAccountIdAccount(new Map()),
                         metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-                        asset_definitions: BTreeMapDefinitionIdAssetDefinitionEntry(new Map()),
+                        asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
                         logo: OptionIpfsPath('None'),
                       }),
                     ),
@@ -78,8 +78,5 @@ async function register() {
         Register domain{{ isPending ? '...' : '' }}
       </button>
     </p>
-    <!-- <p v-if="lastTxHash">
-            Transaction payload hash: <code>{{ lastTxHash }}</code>
-        </p> -->
   </div>
 </template>

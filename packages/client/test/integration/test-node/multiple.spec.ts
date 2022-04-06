@@ -1,23 +1,22 @@
 import { crypto } from '@iroha2/crypto-target-node'
-import { Client, setCrypto, SetupBlocksStreamReturn } from '@iroha2/client'
+import { Client, setCrypto } from '@iroha2/client'
 import {
   Instruction,
   AssetValueType,
-  DefinitionId,
+  AssetDefinitionId,
   MintBox,
   EventFilter,
   Expression,
   Value,
   IdentifiableBox,
   AccountId,
-  OptionEntityType,
-  EntityType,
+  OptionPipelineEntityType,
+  PipelineEntityType,
   IdBox,
   RegisterBox,
   Enum,
   Result,
   Logger as ScaleLogger,
-  VersionedCommittedBlock,
   AssetDefinition,
   Metadata,
   BTreeMapNameValue,
@@ -29,7 +28,7 @@ import {
   BTreeSetPermissionToken,
   EvaluatesToBool,
   VecPublicKey,
-  Id,
+  DomainId,
   QueryBox,
   EvaluatesToValue,
   EvaluatesToIdBox,
@@ -38,12 +37,13 @@ import {
   EvaluatesToAccountId,
   Domain,
   BTreeMapAccountIdAccount,
-  BTreeMapDefinitionIdAssetDefinitionEntry,
+  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
   OptionIpfsPath,
   OptionHash,
   PipelineEventFilter,
   FindAssetById,
   EvaluatesToAssetId,
+  BTreeSetRoleId,
 } from '@iroha2/data-model'
 import { hexToBytes } from 'hada'
 import { Seq } from 'immutable'
@@ -72,7 +72,7 @@ const client = new Client({
 })
 
 async function addAsset(
-  definitionId: DefinitionId,
+  definitionId: AssetDefinitionId,
   assetType: AssetValueType = Enum.variant('BigQuantity'),
   opts?: {
     mintable?: boolean
@@ -127,12 +127,13 @@ async function addAccount(accountId: AccountId) {
                     Account({
                       id: accountId,
                       assets: BTreeMapAssetIdAsset(new Map()),
-                      permission_tokens: BTreeSetPermissionToken([]),
+                      permission_tokens: BTreeSetPermissionToken(new Set()),
                       signature_check_condition: EvaluatesToBool({
                         expression: Expression('Raw', Value('Bool', false)),
                       }),
                       signatories: VecPublicKey([]),
                       metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
+                      roles: BTreeSetRoleId(new Set()),
                     }),
                   ),
                 ),
@@ -159,7 +160,7 @@ async function killStartedPeer() {
   await startedPeer?.kill({ cleanSideEffects: true })
 }
 
-async function ensureGenesisIsCommitted() {
+async function waitForGenesisCommitted() {
   while (true) {
     const { blocks } = await client.getStatus()
     if (blocks >= 1) return
@@ -181,7 +182,7 @@ beforeEach(async () => {
 
   startedPeer = await startPeer()
 
-  await ensureGenesisIsCommitted()
+  await waitForGenesisCommitted()
 })
 
 afterAll(async () => {
@@ -194,18 +195,18 @@ test('Peer is healthy', async () => {
 })
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-  const normalAssetDefinitionId = DefinitionId({
+  const normalAssetDefinitionId = AssetDefinitionId({
     name: 'xor',
-    domain_id: Id({
+    domain_id: DomainId({
       name: 'wonderland',
     }),
   })
   await addAsset(normalAssetDefinitionId)
 
   const tooLongAssetName = '0'.repeat(2 ** 14)
-  const invalidAssetDefinitionId = DefinitionId({
+  const invalidAssetDefinitionId = AssetDefinitionId({
     name: tooLongAssetName,
-    domain_id: Id({
+    domain_id: DomainId({
       name: 'wonderland',
     }),
   })
@@ -215,7 +216,7 @@ test('AddAsset instruction with name length more than limit is not committed', a
 
   const queryResult = await client.request(QueryBox('FindAllAssetsDefinitions', null))
 
-  const existingDefinitions: DefinitionId[] = queryResult
+  const existingDefinitions: AssetDefinitionId[] = queryResult
     .as('Ok')
     .as('Vec')
     .map((val) => val.as('Identifiable').as('AssetDefinition').id)
@@ -227,13 +228,13 @@ test('AddAsset instruction with name length more than limit is not committed', a
 test('AddAccount instruction with name length more than limit is not committed', async () => {
   const normal = AccountId({
     name: 'bob',
-    domain_id: Id({
+    domain_id: DomainId({
       name: 'wonderland',
     }),
   })
   const incorrect = AccountId({
     name: '0'.repeat(2 ** 14),
-    domain_id: Id({
+    domain_id: DomainId({
       name: 'wonderland',
     }),
   })
@@ -254,9 +255,9 @@ test('AddAccount instruction with name length more than limit is not committed',
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
   // Creating asset by definition
-  const ASSET_DEFINITION_ID = DefinitionId({
+  const ASSET_DEFINITION_ID = AssetDefinitionId({
     name: 'xor',
-    domain_id: Id({
+    domain_id: DomainId({
       name: 'wonderland',
     }),
   })
@@ -322,12 +323,12 @@ test('Registering domain', async () => {
             IdentifiableBox(
               'Domain',
               Domain({
-                id: Id({
+                id: DomainId({
                   name: domainName,
                 }),
                 accounts: BTreeMapAccountIdAccount(new Map()),
                 metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-                asset_definitions: BTreeMapDefinitionIdAssetDefinitionEntry(new Map()),
+                asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
                 logo: OptionIpfsPath('None'),
               }),
             ),
@@ -371,13 +372,13 @@ test('When querying for unexisting domain, returns FindError', async () => {
                 AssetId({
                   account_id: AccountId({
                     name: 'alice',
-                    domain_id: Id({
+                    domain_id: DomainId({
                       name: 'wonderland',
                     }),
                   }),
                   definition_id: AccountId({
                     name: 'XOR',
-                    domain_id: Id({
+                    domain_id: DomainId({
                       name: 'wonderland',
                     }),
                   }),
@@ -399,7 +400,7 @@ describe('Events API', () => {
     const filter = EventFilter(
       'Pipeline',
       PipelineEventFilter({
-        entity: OptionEntityType('Some', EntityType('Transaction')),
+        entity: OptionPipelineEntityType('Some', PipelineEntityType('Transaction')),
         hash: OptionHash('None'),
       }),
     )
@@ -424,9 +425,9 @@ describe('Events API', () => {
 
     // Triggering transaction
     await addAsset(
-      DefinitionId({
+      AssetDefinitionId({
         name: 'xor',
-        domain_id: Id({
+        domain_id: DomainId({
           name: 'wonderland',
         }),
       }),
@@ -463,9 +464,9 @@ describe('Blocks Stream API', () => {
 
       // triggering block creation
       await addAsset(
-        DefinitionId({
+        AssetDefinitionId({
           name: assetName,
-          domain_id: Id({
+          domain_id: DomainId({
             name: 'wonderland',
           }),
         }),

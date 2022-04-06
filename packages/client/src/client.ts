@@ -40,7 +40,7 @@ function useCryptoAssertive(): IrohaCryptoInterface {
   const crypto = getCrypto()
   if (!crypto) {
     throw new Error(
-      '"crypto" is not defined, but required for Iroha Client to function. ' + 'Have you set it with `setCrypto()`?',
+      '"crypto" is not defined, but required for Iroha Client to function. Have you set it with `setCrypto()`?',
     )
   }
   return crypto
@@ -197,7 +197,7 @@ export class Client {
         finalBytes = VersionedTransaction.toBuffer(
           VersionedTransaction(
             'V1',
-            Transaction({ payload, signatures: BTreeSetSignatureOfTransactionPayload([signature]) }),
+            Transaction({ payload, signatures: BTreeSetSignatureOfTransactionPayload(new Set([signature])) }),
           ),
         )
       })
