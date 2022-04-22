@@ -1,4 +1,4 @@
-import { init, crypto } from '@iroha2/crypto-target-web'
+import { crypto, init } from '@iroha2/crypto-target-web'
 
 await init()
 

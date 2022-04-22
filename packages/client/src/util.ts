@@ -1,4 +1,4 @@
-import { initWebSocket, CloseEvent, Event as WsEvent, SendData } from '@iroha2/client-isomorphic-ws'
+import { CloseEvent, SendData, Event as WsEvent, initWebSocket } from '@iroha2/client-isomorphic-ws'
 import { Debugger } from 'debug'
 import Emittery from 'emittery'
 

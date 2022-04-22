@@ -3,7 +3,7 @@ import execa from 'execa'
 import consola from 'consola'
 import chalk from 'chalk'
 import fs from 'fs'
-import { KnownBinaries, resolveBinaryPath, install } from '@iroha2/dev-iroha-bins'
+import { KnownBinaries, install, resolveBinaryPath } from '@iroha2/dev-iroha-bins'
 import { COMPILED_SCHEMA_FILE } from './meta'
 
 async function main() {

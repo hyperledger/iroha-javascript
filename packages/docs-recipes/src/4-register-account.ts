@@ -1,17 +1,17 @@
 import {
   AccountId,
   DomainId,
-  PublicKey,
-  RegisterBox,
+  EvaluatesToRegistrableBox,
   Expression,
-  Value,
   IdentifiableBox,
-  EvaluatesToIdentifiableBox,
+  Instruction,
+  MapNameValue,
   Metadata,
   NewAccount,
+  PublicKey,
+  RegisterBox,
+  Value,
   VecPublicKey,
-  BTreeMapNameValue,
-  Instruction,
 } from '@iroha2/data-model'
 
 const accountId = AccountId({
@@ -31,7 +31,7 @@ const key = PublicKey({
 const registerAccountInstruction = Instruction(
   'Register',
   RegisterBox({
-    object: EvaluatesToIdentifiableBox({
+    object: EvaluatesToRegistrableBox({
       expression: Expression(
         'Raw',
         Value(
@@ -41,7 +41,7 @@ const registerAccountInstruction = Instruction(
             NewAccount({
               id: accountId,
               signatories: VecPublicKey([key]),
-              metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
+              metadata: Metadata({ map: MapNameValue(new Map()) }),
             }),
           ),
         ),

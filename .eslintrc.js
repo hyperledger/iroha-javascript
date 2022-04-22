@@ -3,6 +3,16 @@ module.exports = {
   rules: {
     'no-promise-executor-return': 'off',
     'spaced-comment': ['error', 'always', { markers: ['/'] }],
+    'sort-imports': [
+      'warn',
+      {
+        ignoreCase: false,
+        ignoreDeclarationSort: true,
+        ignoreMemberSort: false,
+        memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+        allowSeparatedGroups: false,
+      },
+    ],
   },
   globals: {
     BigInt: true,

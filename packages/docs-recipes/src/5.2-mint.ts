@@ -1,13 +1,13 @@
 import {
-  Instruction,
-  MintBox,
-  EvaluatesToValue,
-  Expression,
-  Value,
-  EvaluatesToIdBox,
-  IdBox,
   AssetDefinitionId,
   DomainId,
+  EvaluatesToRegistrableBox,
+  EvaluatesToValue,
+  Expression,
+  IdBox,
+  Instruction,
+  MintBox,
+  Value,
 } from '@iroha2/data-model'
 
 const mint = Instruction(
@@ -16,7 +16,7 @@ const mint = Instruction(
     object: EvaluatesToValue({
       expression: Expression('Raw', Value('U32', 42)),
     }),
-    destination_id: EvaluatesToIdBox({
+    destination_id: EvaluatesToRegistrableBox({
       expression: Expression(
         'Raw',
         Value(

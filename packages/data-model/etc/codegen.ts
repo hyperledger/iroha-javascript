@@ -3,7 +3,7 @@ import consola from 'consola'
 import chalk from 'chalk'
 import fs from 'fs/promises'
 import { renderNamespaceDefinition } from '@scale-codec/definition-compiler'
-import { transformSchema, SCHEMA } from '@iroha2/data-model-schema'
+import { SCHEMA, transformSchema } from '@iroha2/data-model-schema'
 import { CODEGEN_OUTPUT_FILE } from './meta'
 
 async function main() {

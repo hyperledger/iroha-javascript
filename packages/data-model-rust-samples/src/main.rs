@@ -1,14 +1,10 @@
+use iroha_data_model::prelude::*;
 use parity_scale_codec::Encode;
 use serde::Serialize;
 use std::collections::HashMap;
 use std::fmt::Debug;
+use std::str::FromStr;
 use std::time::Duration;
-
-use iroha_data_model::prelude::{
-    AccountId, Action, AssetDefinitionId, AssetId, DomainId, EventFilter, Executable,
-    ExecutionTime, IdentifiableBox, MintBox, RegisterBox, Repeats, TimeEventFilter, TimeSchedule,
-    Trigger,
-};
 
 fn main() {
     println!(
@@ -26,6 +22,10 @@ fn main() {
             .add(
                 "Time-based Trigger ISI",
                 &create_some_time_based_trigger_isi()
+            )
+            .add(
+                "Event-based Trigger ISI",
+                &create_some_event_based_trigger_isi()
             )
             .to_json()
     );
@@ -93,6 +93,31 @@ fn create_some_time_based_trigger_isi() -> RegisterBox {
                     TimeSchedule::starting_at(Duration::from_secs(4141203402341234))
                         .with_period(Duration::from_millis(3_000)),
                 ))),
+            ),
+        )
+        .unwrap(),
+    ))
+}
+
+fn create_some_event_based_trigger_isi() -> RegisterBox {
+    let asset_definition_id = "rose#wonderland".parse().unwrap();
+    let account_id = <Account as Identifiable>::Id::from_str("alice@wonderland").unwrap();
+    let asset_id = AssetId::new(asset_definition_id, account_id.clone());
+    let instruction = MintBox::new(1_u32, asset_id.clone());
+
+    RegisterBox::new(IdentifiableBox::from(
+        Trigger::new(
+            "mint_rose",
+            Action::new(
+                Executable::from(vec![instruction.into()]),
+                Repeats::Indefinitely,
+                account_id,
+                EventFilter::Data(BySome(EntityFilter::ByAssetDefinition(BySome(
+                    AssetDefinitionFilter::new(
+                        AcceptAll,
+                        BySome(AssetDefinitionEventFilter::ByCreated),
+                    ),
+                )))),
             ),
         )
         .unwrap(),

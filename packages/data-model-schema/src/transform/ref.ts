@@ -40,7 +40,7 @@ function transformArray(ref: string): string {
 /**
  * - Removes module paths
  * - Handles special collision cases like data::Event / pipeline::Event
- * - Transforms BTreeMap to VecTuple and BTreeSet to Vec
+ * - Transforms Map to VecTuple and Set to Vec
  * - Makes identifiers valid JS identifiers in PascalCase
  */
 function normalizeIdentifier(ref: string): string {

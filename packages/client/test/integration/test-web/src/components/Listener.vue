@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { SetupEventsReturn } from '@iroha2/client'
 import {
-  PipelineEntityType,
   EventFilter,
-  OptionPipelineEntityType,
   OptionHash,
+  OptionPipelineEntityKind,
+  OptionPipelineStatusKind,
+  PipelineEntityKind,
   PipelineEventFilter,
+  PipelineStatusKind,
 } from '@iroha2/data-model'
-import { shallowReactive, shallowRef, computed, onBeforeUnmount } from 'vue'
+import { computed, onBeforeUnmount, shallowReactive, shallowRef } from 'vue'
 import { bytesToHex } from 'hada'
 import { client } from '../client'
 
@@ -27,7 +29,8 @@ async function startListening() {
     filter: EventFilter(
       'Pipeline',
       PipelineEventFilter({
-        entity: OptionPipelineEntityType('Some', PipelineEntityType('Transaction')),
+        entity_kind: OptionPipelineEntityKind('Some', PipelineEntityKind('Transaction')),
+        status_kind: OptionPipelineStatusKind('Some', PipelineStatusKind('Committed')),
         hash: OptionHash('None'),
       }),
     ),

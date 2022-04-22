@@ -7,7 +7,7 @@ import {
 } from '@iroha2/data-model'
 import Emittery from 'emittery'
 import Debug from 'debug'
-import { setupWebSocket, SocketEmitMapBase } from './util'
+import { SocketEmitMapBase, setupWebSocket } from './util'
 import { ENDPOINT_EVENTS } from './const'
 
 const debug = Debug('@iroha2/client:events')

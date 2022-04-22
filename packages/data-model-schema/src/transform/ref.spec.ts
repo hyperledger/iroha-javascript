@@ -1,5 +1,5 @@
 import { transform } from './ref'
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 
 describe('Refs transformation', () => {
   test.each([
@@ -43,14 +43,11 @@ describe('Refs transformation', () => {
     ['[u32; 5]', 'ArrayU32L5'],
     ['String', 'Str'],
     ['Vec<u32>', 'VecU32'],
-    ['BTreeMap<iroha_data_model::account::Id, iroha_data_model::account::AssetId>', 'BTreeMapAccountIdAssetId'],
+    ['Map<iroha_data_model::account::Id, iroha_data_model::account::AssetId>', 'MapAccountIdAssetId'],
+    ['Map<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>', 'MapStringEvaluatesToValue'],
     [
-      'BTreeMap<String, iroha_data_model::expression::EvaluatesTo<iroha_data_model::Value>>',
-      'BTreeMapStringEvaluatesToValue',
-    ],
-    [
-      'BTreeSet<iroha_crypto::signature::SignatureOf<iroha_data_model::transaction::Payload>>',
-      'BTreeSetSignatureOfTransactionPayload',
+      'Set<iroha_crypto::signature::SignatureOf<iroha_data_model::transaction::Payload>>',
+      'SetSignatureOfTransactionPayload',
     ],
     ['Fixed<i64>', 'FixedI64'],
     ['iroha_data_model::expression::EvaluatesTo<iroha_data_model::account::Id>', 'EvaluatesToAccountId'],

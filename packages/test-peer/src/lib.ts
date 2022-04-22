@@ -5,7 +5,7 @@ import { $, fs } from 'zx'
 import { rmForce, saveDataAsJSON } from './util'
 import readline from 'readline'
 import debugRoot from 'debug'
-import { KnownBinaries, resolveBinaryPath, install } from '@iroha2/dev-iroha-bins'
+import { KnownBinaries, install, resolveBinaryPath } from '@iroha2/dev-iroha-bins'
 import makeDir from 'make-dir'
 
 const debug = debugRoot('@iroha2/test-peer')

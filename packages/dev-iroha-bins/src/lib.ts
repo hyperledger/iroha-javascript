@@ -5,7 +5,7 @@ import makeDir from 'make-dir'
 import del from 'del'
 import { $ } from 'zx'
 import consola from 'consola'
-import { KnownBinaries, Config } from './types'
+import { Config, KnownBinaries } from './types'
 import config from './config'
 
 const TMP_DIR = path.resolve(__dirname, '../tmp')

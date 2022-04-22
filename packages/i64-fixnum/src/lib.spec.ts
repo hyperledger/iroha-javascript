@@ -1,4 +1,4 @@
-import { f64StrToBigint, bigintToF64Str } from './lib'
+import { bigintToF64Str, f64StrToBigint } from './lib'
 
 const CASES = [
   { repr_str: '0.0', repr_i64: '0', precision: 4 },

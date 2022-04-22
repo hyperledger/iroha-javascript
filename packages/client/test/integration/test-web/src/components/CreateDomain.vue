@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import {
-  BTreeMapAccountIdAccount,
-  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
-  BTreeMapNameValue,
   Domain,
-  EvaluatesToIdentifiableBox,
+  DomainId,
+  EvaluatesToRegistrableBox,
   Executable,
   Expression,
-  DomainId,
   IdentifiableBox,
   Instruction,
+  MapAccountIdAccount,
+  MapAssetDefinitionIdAssetDefinitionEntry,
+  MapNameValue,
   Metadata,
   OptionIpfsPath,
   RegisterBox,
@@ -33,7 +33,7 @@ async function register() {
           Instruction(
             'Register',
             RegisterBox({
-              object: EvaluatesToIdentifiableBox({
+              object: EvaluatesToRegistrableBox({
                 expression: Expression(
                   'Raw',
                   Value(
@@ -44,9 +44,9 @@ async function register() {
                         id: DomainId({
                           name: domainName.value,
                         }),
-                        accounts: BTreeMapAccountIdAccount(new Map()),
-                        metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-                        asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
+                        accounts: MapAccountIdAccount(new Map()),
+                        metadata: Metadata({ map: MapNameValue(new Map()) }),
+                        asset_definitions: MapAssetDefinitionIdAssetDefinitionEntry(new Map()),
                         logo: OptionIpfsPath('None'),
                       }),
                     ),

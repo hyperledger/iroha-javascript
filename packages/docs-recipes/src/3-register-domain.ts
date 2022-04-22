@@ -1,21 +1,21 @@
 import { Client } from '@iroha2/client'
 import {
-  RegisterBox,
-  EvaluatesToIdentifiableBox,
-  Expression,
-  Value,
-  IdentifiableBox,
   Domain,
   DomainId,
-  BTreeMapAccountIdAccount,
-  Metadata,
-  BTreeMapNameValue,
-  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
-  OptionIpfsPath,
+  EvaluatesToRegistrableBox,
   Executable,
-  VecInstruction,
+  Expression,
+  IdentifiableBox,
   Instruction,
+  MapAccountIdAccount,
+  MapAssetDefinitionIdAssetDefinitionEntry,
+  MapNameValue,
+  Metadata,
+  OptionIpfsPath,
   QueryBox,
+  RegisterBox,
+  Value,
+  VecInstruction,
 } from '@iroha2/data-model'
 
 /* --snip-- */
@@ -25,7 +25,7 @@ declare const client: Client
 
 async function registerDomain(domainName: string) {
   const registerBox = RegisterBox({
-    object: EvaluatesToIdentifiableBox({
+    object: EvaluatesToRegistrableBox({
       expression: Expression(
         'Raw',
         Value(
@@ -36,9 +36,9 @@ async function registerDomain(domainName: string) {
               id: DomainId({
                 name: domainName,
               }),
-              accounts: BTreeMapAccountIdAccount(new Map()),
-              metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-              asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
+              accounts: MapAccountIdAccount(new Map()),
+              metadata: Metadata({ map: MapNameValue(new Map()) }),
+              asset_definitions: MapAssetDefinitionIdAssetDefinitionEntry(new Map()),
               logo: OptionIpfsPath('None'),
             }),
           ),
@@ -63,7 +63,7 @@ async function ensureDomainExistence(domainName: string) {
 
   const domain = result
     .as('Ok')
-    .as('Vec')
+    .result.as('Vec')
     .map((x) => x.as('Identifiable').as('Domain'))
     .find((x) => x.id.name === domainName)
 

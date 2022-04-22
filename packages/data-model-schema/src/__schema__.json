@@ -4,10 +4,7 @@
   },
   "Duration": {
     "Tuple": {
-      "types": [
-        "u64",
-        "u32"
-      ]
+      "types": ["u64", "u32"]
     }
   },
   "FixedPoint<i64>": {
@@ -454,9 +451,7 @@
   },
   "iroha_core::smartcontracts::isi::error::ParentHashNotFound": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"
-      ]
+      "types": ["iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"]
     }
   },
   "iroha_core::smartcontracts::isi::query::Error": {
@@ -631,44 +626,32 @@
   },
   "iroha_crypto::hash::Hash": {
     "Tuple": {
-      "types": [
-        "[u8; 32]"
-      ]
+      "types": ["[u8; 32]"]
     }
   },
   "iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::hash::Hash"
-      ]
+      "types": ["iroha_crypto::hash::Hash"]
     }
   },
   "iroha_crypto::hash::HashOf<iroha_core::block::VersionedValidBlock>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::hash::Hash"
-      ]
+      "types": ["iroha_crypto::hash::Hash"]
     }
   },
   "iroha_crypto::hash::HashOf<iroha_core::sumeragi::view_change::Proof>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::hash::Hash"
-      ]
+      "types": ["iroha_crypto::hash::Hash"]
     }
   },
   "iroha_crypto::hash::HashOf<iroha_crypto::merkle::MerkleTree<iroha_data_model::transaction::VersionedTransaction>>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::hash::Hash"
-      ]
+      "types": ["iroha_crypto::hash::Hash"]
     }
   },
   "iroha_crypto::hash::HashOf<iroha_data_model::transaction::VersionedTransaction>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::hash::Hash"
-      ]
+      "types": ["iroha_crypto::hash::Hash"]
     }
   },
   "iroha_crypto::merkle::MerkleTree<iroha_data_model::transaction::VersionedTransaction>": {
@@ -693,37 +676,27 @@
   },
   "iroha_crypto::signature::SignatureOf<iroha_core::block::CommittedBlock>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::signature::Signature"
-      ]
+      "types": ["iroha_crypto::signature::Signature"]
     }
   },
   "iroha_crypto::signature::SignatureOf<iroha_core::block::ValidBlock>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::signature::Signature"
-      ]
+      "types": ["iroha_crypto::signature::Signature"]
     }
   },
   "iroha_crypto::signature::SignatureOf<iroha_core::sumeragi::view_change::Proof>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::signature::Signature"
-      ]
+      "types": ["iroha_crypto::signature::Signature"]
     }
   },
   "iroha_crypto::signature::SignatureOf<iroha_data_model::query::Payload>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::signature::Signature"
-      ]
+      "types": ["iroha_crypto::signature::Signature"]
     }
   },
   "iroha_crypto::signature::SignatureOf<iroha_data_model::transaction::Payload>": {
     "Tuple": {
-      "types": [
-        "iroha_crypto::signature::Signature"
-      ]
+      "types": ["iroha_crypto::signature::Signature"]
     }
   },
   "iroha_crypto::signature::SignaturesOf<iroha_core::block::CommittedBlock>": {
@@ -850,9 +823,7 @@
   },
   "iroha_data_model::Name": {
     "Tuple": {
-      "types": [
-        "String"
-      ]
+      "types": ["String"]
     }
   },
   "iroha_data_model::Parameter": {
@@ -1076,9 +1047,7 @@
   },
   "iroha_data_model::account::SignatureCheckCondition": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::expression::EvaluatesTo<bool>"
-      ]
+      "types": ["iroha_data_model::expression::EvaluatesTo<bool>"]
     }
   },
   "iroha_data_model::asset::Asset": {
@@ -1270,9 +1239,7 @@
   },
   "iroha_data_model::domain::IpfsPath": {
     "Tuple": {
-      "types": [
-        "String"
-      ]
+      "types": ["String"]
     }
   },
   "iroha_data_model::domain::NewDomain": {
@@ -2047,51 +2014,37 @@
   },
   "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::account::Id>": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::account::Id"
-      ]
+      "types": ["iroha_data_model::account::Id"]
     }
   },
   "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::asset::DefinitionId>": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::asset::DefinitionId"
-      ]
+      "types": ["iroha_data_model::asset::DefinitionId"]
     }
   },
   "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::asset::Id>": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::asset::Id"
-      ]
+      "types": ["iroha_data_model::asset::Id"]
     }
   },
   "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::domain::Id>": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::domain::Id"
-      ]
+      "types": ["iroha_data_model::domain::Id"]
     }
   },
   "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::peer::Id>": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::peer::Id"
-      ]
+      "types": ["iroha_data_model::peer::Id"]
     }
   },
   "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::role::Id>": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::role::Id"
-      ]
+      "types": ["iroha_data_model::role::Id"]
     }
   },
   "iroha_data_model::events::data::filters::IdFilter<iroha_data_model::trigger::Id>": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::trigger::Id"
-      ]
+      "types": ["iroha_data_model::trigger::Id"]
     }
   },
   "iroha_data_model::events::data::filters::account::AccountEventFilter": {
@@ -2542,9 +2495,7 @@
   },
   "iroha_data_model::events::time::EventFilter": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::events::time::ExecutionTime"
-      ]
+      "types": ["iroha_data_model::events::time::ExecutionTime"]
     }
   },
   "iroha_data_model::events::time::ExecutionTime": {
@@ -3560,9 +3511,7 @@
   },
   "iroha_data_model::query::QueryResult": {
     "Tuple": {
-      "types": [
-        "iroha_data_model::Value"
-      ]
+      "types": ["iroha_data_model::Value"]
     }
   },
   "iroha_data_model::query::SignedQueryRequest": {
@@ -3996,9 +3945,7 @@
   },
   "iroha_data_model::transaction::TransactionLimitError": {
     "Tuple": {
-      "types": [
-        "String"
-      ]
+      "types": ["String"]
     }
   },
   "iroha_data_model::transaction::TransactionRejectionReason": {
@@ -4198,9 +4145,7 @@
   },
   "iroha_data_primitives::fixed::Fixed": {
     "Tuple": {
-      "types": [
-        "FixedPoint<i64>"
-      ]
+      "types": ["FixedPoint<i64>"]
     }
   },
   "iroha_version::RawVersioned": {
