@@ -1,27 +1,20 @@
 {
-  "name": "@iroha2/data-model",
-  "version": "1.1.0",
+  "name": "@iroha2/data-model-schema",
+  "version": "0.1.0",
+  "description": "Data model schema related utilities",
   "main": "src/lib.ts",
-  "publishConfig": {
-    "main": "dist/lib.cjs.js",
-    "module": "dist/lib.esm.js",
-    "types": "dist/lib.d.ts",
-    "files": [
-      "dist"
-    ]
-  },
+  "files": [
+    "src"
+  ],
   "license": "Apache 2.0",
   "scripts": {
     "test": "vitest run",
-    "build:tsc": "tsc",
-    "codegen": "esno etc/codegen"
+    "compile": "esno etc/compile"
   },
   "dependencies": {
-    "@iroha2/i64-fixnum": "workspace:^0.3.0",
     "@scale-codec/definition-runtime": "^2.0.0"
   },
   "devDependencies": {
-    "@iroha2/data-model-schema": "workspace:^0.1.0",
     "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
     "@scale-codec/definition-compiler": "^2.1.0",
     "@scale-codec/util": "^1.0.0",
@@ -33,6 +26,7 @@
     "esno": "^0.12.1",
     "execa": "5.1.1",
     "immutable": "^4.0.0",
+    "type-fest": "^2.12.0",
     "vitest": "^0.8.1"
   }
 }

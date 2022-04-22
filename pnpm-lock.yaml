@@ -276,50 +276,69 @@ importers:
 
   packages/data-model:
     specifiers:
+      '@iroha2/data-model-schema': workspace:^0.1.0
       '@iroha2/dev-iroha-bins': workspace:^0.0.0
       '@iroha2/i64-fixnum': workspace:^0.3.0
       '@scale-codec/definition-compiler': ^2.1.0
       '@scale-codec/definition-runtime': ^2.0.0
       '@scale-codec/util': ^1.0.0
       '@types/debug': ^4.1.7
-      '@types/gulp': ^4.0.9
-      '@types/lodash-es': ^4.17.5
-      axios: ^0.24.0
       case: ^1.6.3
       chalk: 4.1.2
       consola: ^2.15.3
       debug: ^4.3.3
-      esbuild: ^0.14.27
-      esbuild-register: ^3.3.2
+      esno: ^0.12.1
       execa: 5.1.1
-      gulp: ^4.0.2
       immutable: ^4.0.0
-      lodash-es: ^4.17.21
-      node-fetch: ^3.1.0
-      type-fest: ^2.12.0
       vitest: ^0.8.1
     dependencies:
       '@iroha2/i64-fixnum': link:../i64-fixnum
+      '@scale-codec/definition-runtime': 2.0.0
+    devDependencies:
+      '@iroha2/data-model-schema': link:../data-model-schema
+      '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
+      '@scale-codec/definition-compiler': 2.1.0
+      '@scale-codec/util': 1.0.0
+      '@types/debug': 4.1.7
+      case: 1.6.3
+      chalk: 4.1.2
+      consola: 2.15.3
+      debug: 4.3.3
+      esno: 0.12.1_typescript@4.6.3
+      execa: 5.1.1
+      immutable: 4.0.0
+      vitest: 0.8.1_sass@1.49.9
+
+  packages/data-model-schema:
+    specifiers:
+      '@iroha2/dev-iroha-bins': workspace:^0.0.0
+      '@scale-codec/definition-compiler': ^2.1.0
+      '@scale-codec/definition-runtime': ^2.0.0
+      '@scale-codec/util': ^1.0.0
+      '@types/debug': ^4.1.7
+      case: ^1.6.3
+      chalk: 4.1.2
+      consola: ^2.15.3
+      debug: ^4.3.3
+      esno: ^0.12.1
+      execa: 5.1.1
+      immutable: ^4.0.0
+      type-fest: ^2.12.0
+      vitest: ^0.8.1
+    dependencies:
       '@scale-codec/definition-runtime': 2.0.0
     devDependencies:
       '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
       '@scale-codec/definition-compiler': 2.1.0
       '@scale-codec/util': 1.0.0
       '@types/debug': 4.1.7
-      '@types/gulp': 4.0.9
-      '@types/lodash-es': 4.17.5
-      axios: 0.24.0_debug@4.3.3
       case: 1.6.3
       chalk: 4.1.2
       consola: 2.15.3
-      debug: 4.3.3
-      esbuild: 0.14.27
-      esbuild-register: 3.3.2_esbuild@0.14.27
+      debug: 4.3.4
+      esno: 0.12.1_typescript@4.6.3
       execa: 5.1.1
-      gulp: 4.0.2
       immutable: 4.0.0
-      lodash-es: 4.17.21
-      node-fetch: 3.1.0
       type-fest: 2.12.0
       vitest: 0.8.1_sass@1.49.9
 
@@ -1989,16 +2008,6 @@ packages:
       '@types/koa': 2.13.4
     dev: false
 
-  /@types/lodash-es/4.17.5:
-    resolution: {integrity: sha512-SHBoI8/0aoMQWAgUHMQ599VM6ZiSKg8sh/0cFqqlQQMyY9uEplc0ULU5yQNzcvdR4ZKa0ey8+vFmahuRbOCT1A==}
-    dependencies:
-      '@types/lodash': 4.14.172
-    dev: true
-
-  /@types/lodash/4.14.172:
-    resolution: {integrity: sha512-/BHF5HAx3em7/KkzVKm3LrsD6HZAXuXO1AJZQ3cRRBZj4oHZDviWPYu0aEplAqDFNHZPW6d3G7KN+ONcCCC7pw==}
-    dev: true
-
   /@types/mime/1.3.2:
     resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
     dev: false
@@ -2908,6 +2917,7 @@ packages:
       follow-redirects: 1.14.5_debug@4.3.2
     transitivePeerDependencies:
       - debug
+    dev: false
 
   /babel-jest/26.6.3_@babel+core@7.15.5:
     resolution: {integrity: sha512-pl4Q+GAVOHwvjrck6jKjvmGhnO3jHX/xuB9d27f+EJZ/6k+6nMuPjorrYp7s++bKKdANwzElBWnLWaObvTnaZA==}
@@ -3842,11 +3852,6 @@ packages:
     engines: {node: '>=0.10'}
     dependencies:
       assert-plus: 1.0.0
-    dev: true
-
-  /data-uri-to-buffer/4.0.0:
-    resolution: {integrity: sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==}
-    engines: {node: '>= 12'}
     dev: true
 
   /data-urls/2.0.0:
@@ -5188,21 +5193,6 @@ packages:
       pend: 1.2.0
     dev: true
 
-  /fetch-blob/3.1.3:
-    resolution: {integrity: sha512-ax1Y5I9w+9+JiM+wdHkhBoxew+zG4AJ2SvAD1v1szpddUIiPERVGBxrMcB2ZqW0Y3PP8bOWYv2zqQq1Jp2kqUQ==}
-    engines: {node: ^12.20 || >= 14.13}
-    dependencies:
-      web-streams-polyfill: 3.2.0
-    dev: true
-
-  /fetch-blob/3.1.4:
-    resolution: {integrity: sha512-Eq5Xv5+VlSrYWEqKrusxY1C3Hm/hjeAsCGVG3ft7pZahlUAChpGZT/Ms1WmSLnEAisEXszjzu/s+ce6HZB2VHA==}
-    engines: {node: ^12.20 || >= 14.13}
-    dependencies:
-      node-domexception: 1.0.0
-      web-streams-polyfill: 3.2.0
-    dev: true
-
   /figures/2.0.0:
     resolution: {integrity: sha1-OrGi0qYsi/tDGgyUy3l6L84nyWI=}
     engines: {node: '>=4'}
@@ -5403,13 +5393,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.32
-
-  /formdata-polyfill/4.0.10:
-    resolution: {integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==}
-    engines: {node: '>=12.20.0'}
-    dependencies:
-      fetch-blob: 3.1.4
-    dev: true
 
   /fragment-cache/0.2.1:
     resolution: {integrity: sha1-QpD60n8T6Jvn8zeZxrxaCr//DRk=}
@@ -7313,10 +7296,6 @@ packages:
       p-locate: 5.0.0
     dev: true
 
-  /lodash-es/4.17.21:
-    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
-    dev: true
-
   /lodash.get/4.4.2:
     resolution: {integrity: sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=}
     dev: true
@@ -7737,11 +7716,6 @@ packages:
   /nice-try/1.0.5:
     resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
 
-  /node-domexception/1.0.0:
-    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
-    engines: {node: '>=10.5.0'}
-    dev: true
-
   /node-fetch/2.6.2:
     resolution: {integrity: sha512-aLoxToI6RfZ+0NOjmWAgn9+LEd30YCkJKFSyWacNZdEKTit/ZMcKjGkTRo8uWEsnIb/hfKecNPEbln02PdWbcA==}
     engines: {node: 4.x || >=6.0.0}
@@ -7763,15 +7737,6 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: true
-
-  /node-fetch/3.1.0:
-    resolution: {integrity: sha512-QU0WbIfMUjd5+MUzQOYhenAazakV7Irh1SGkWCsRzBwvm4fAhzEUaHMJ6QLP7gWT6WO9/oH2zhKMMGMuIrDyKw==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dependencies:
-      data-uri-to-buffer: 4.0.0
-      fetch-blob: 3.1.3
-      formdata-polyfill: 4.0.10
     dev: true
 
   /node-int64/0.4.0:
@@ -10133,11 +10098,6 @@ packages:
     resolution: {integrity: sha1-8LDc+RW8X/FSivrbLA4XtTLaL+g=}
     dependencies:
       defaults: 1.0.3
-    dev: true
-
-  /web-streams-polyfill/3.2.0:
-    resolution: {integrity: sha512-EqPmREeOzttaLRm5HS7io98goBgZ7IVz79aDvqjD0kYXLtFZTc0T/U6wHTPKyIjb+MdN7DFIIX6hgdBEpWmfPA==}
-    engines: {node: '>= 8'}
     dev: true
 
   /webidl-conversions/3.0.1:
