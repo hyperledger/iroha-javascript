@@ -25,5 +25,9 @@ it('Register new domain and wait until committment', () => {
   cy.get('input').type('bob')
   cy.get('button').contains('Register domain').click()
 
+  // Ensure that blocks count is incremented
   cy.contains('Blocks: 2')
+
+  // And that events are cought
+  cy.get('ul.events-list').children('li').should('have.length', 1)
 })

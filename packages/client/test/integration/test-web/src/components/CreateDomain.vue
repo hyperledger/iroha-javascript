@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  Domain,
   DomainId,
   EvaluatesToRegistrableBox,
   Executable,
@@ -11,6 +10,7 @@ import {
   MapAssetDefinitionIdAssetDefinitionEntry,
   MapNameValue,
   Metadata,
+  NewDomain,
   OptionIpfsPath,
   RegisterBox,
   Value,
@@ -39,14 +39,12 @@ async function register() {
                   Value(
                     'Identifiable',
                     IdentifiableBox(
-                      'Domain',
-                      Domain({
+                      'NewDomain',
+                      NewDomain({
                         id: DomainId({
                           name: domainName.value,
                         }),
-                        accounts: MapAccountIdAccount(new Map()),
                         metadata: Metadata({ map: MapNameValue(new Map()) }),
-                        asset_definitions: MapAssetDefinitionIdAssetDefinitionEntry(new Map()),
                         logo: OptionIpfsPath('None'),
                       }),
                     ),

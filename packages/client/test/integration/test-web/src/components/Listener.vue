@@ -69,7 +69,7 @@ onBeforeUnmount(stopListening)
 
     <p>Events:</p>
 
-    <ul>
+    <ul class="events-list">
       <li
         v-for="{ hash, status } in events"
         :key="hash"
