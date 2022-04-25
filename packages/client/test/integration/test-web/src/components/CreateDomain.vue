@@ -6,8 +6,6 @@ import {
   Expression,
   IdentifiableBox,
   Instruction,
-  MapAccountIdAccount,
-  MapAssetDefinitionIdAssetDefinitionEntry,
   MapNameValue,
   Metadata,
   NewDomain,
