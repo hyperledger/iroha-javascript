@@ -20,20 +20,6 @@ module.exports = {
   overrides: [
     {
       files: [
-        '**/*.spec.ts',
-        '**/__tests__/*.ts',
-        '**/packages/client/e2e/tests/**/*.ts',
-        '**/packages/crypto/test/node/**/*.ts',
-      ],
-      env: {
-        jest: true,
-      },
-      rules: {
-        'max-nested-callbacks': ['error', 5],
-      },
-    },
-    {
-      files: [
         '**/packages/crypto/test/web/cypress/**/*.js',
         '**/packages/client/test/integration/test-web/cypress/integration/**/*.{js,ts}',
         '**/packages/client/test/integration/test-web/cypress/support/**/*.{js,ts}',

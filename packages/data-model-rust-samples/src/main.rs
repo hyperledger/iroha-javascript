@@ -1,34 +1,37 @@
 use iroha_data_model::prelude::*;
 use parity_scale_codec::Encode;
 use serde::Serialize;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::str::FromStr;
 use std::time::Duration;
 
 fn main() {
-    println!(
-        "{}",
-        SamplesMap::new()
-            .add("DomainId", &DomainId::new("Hey").unwrap())
-            .add(
-                "AssetDefinitionId",
-                &AssetDefinitionId::new("rose", "wonderland").unwrap()
-            )
-            .add(
-                "AccountId",
-                &AccountId::new("alice", "wonderland").expect("Valid")
-            )
-            .add(
-                "Time-based Trigger ISI",
-                &create_some_time_based_trigger_isi()
-            )
-            .add(
-                "Event-based Trigger ISI",
-                &create_some_event_based_trigger_isi()
-            )
-            .to_json()
-    );
+    let reg_box = RegisterBox::new(Domain::new("sora".parse().unwrap()));
+    println!("{:?}", reg_box);
+
+    // println!(
+    //     "{}",
+    //     SamplesMap::new()
+    //         .add("DomainId", &DomainId::from_str("Hey").unwrap())
+    //         .add(
+    //             "AssetDefinitionId",
+    //             &AssetDefinitionId::from_str("rose#wonderland").unwrap()
+    //         )
+    //         .add(
+    //             "AccountId",
+    //             &AccountId::from_str("alice@wonderland").unwrap()
+    //         )
+    //         .add(
+    //             "Time-based Trigger ISI",
+    //             &create_some_time_based_trigger_isi()
+    //         )
+    //         .add(
+    //             "Event-based Trigger ISI",
+    //             &create_some_event_based_trigger_isi()
+    //         )
+    //         .to_json()
+    // );
 }
 
 #[derive(Debug, Serialize)]
@@ -49,11 +52,11 @@ impl Sample {
     }
 }
 
-struct SamplesMap(HashMap<String, Sample>);
+struct SamplesMap(BTreeMap<String, Sample>);
 
 impl SamplesMap {
     fn new() -> Self {
-        Self(HashMap::new())
+        Self(BTreeMap::new())
     }
 
     fn add<T: Encode + Debug>(&mut self, label: &str, something: &T) -> &mut Self {
@@ -78,25 +81,22 @@ fn to_hex(val: &Vec<u8>) -> String {
 
 fn create_some_time_based_trigger_isi() -> RegisterBox {
     let asset_id = AssetId::new(
-        AssetDefinitionId::new("rose", "wonderland").unwrap(),
-        AccountId::new("alice", "wonderland").unwrap(),
+        AssetDefinitionId::from_str("rose#wonderland").unwrap(),
+        AccountId::from_str("alice@wonderland").unwrap(),
     );
 
-    RegisterBox::new(IdentifiableBox::from(
-        Trigger::new(
-            "mint_rose",
-            Action::new(
-                Executable::from(vec![MintBox::new(1_u32, asset_id.clone()).into()]),
-                Repeats::Indefinitely,
-                asset_id.account_id,
-                EventFilter::Time(TimeEventFilter(ExecutionTime::Schedule(
-                    TimeSchedule::starting_at(Duration::from_secs(4141203402341234))
-                        .with_period(Duration::from_millis(3_000)),
-                ))),
-            ),
-        )
-        .unwrap(),
-    ))
+    RegisterBox::new(IdentifiableBox::from(Trigger::new(
+        TriggerId::from_str("mint_rose").unwrap(),
+        Action::new(
+            Executable::from(vec![MintBox::new(1_u32, asset_id.clone()).into()]),
+            Repeats::Indefinitely,
+            asset_id.account_id,
+            EventFilter::Time(TimeEventFilter(ExecutionTime::Schedule(
+                TimeSchedule::starting_at(Duration::from_secs(4141203402341234))
+                    .with_period(Duration::from_millis(3_000)),
+            ))),
+        ),
+    )))
 }
 
 fn create_some_event_based_trigger_isi() -> RegisterBox {
@@ -105,21 +105,18 @@ fn create_some_event_based_trigger_isi() -> RegisterBox {
     let asset_id = AssetId::new(asset_definition_id, account_id.clone());
     let instruction = MintBox::new(1_u32, asset_id.clone());
 
-    RegisterBox::new(IdentifiableBox::from(
-        Trigger::new(
-            "mint_rose",
-            Action::new(
-                Executable::from(vec![instruction.into()]),
-                Repeats::Indefinitely,
-                account_id,
-                EventFilter::Data(BySome(EntityFilter::ByAssetDefinition(BySome(
-                    AssetDefinitionFilter::new(
-                        AcceptAll,
-                        BySome(AssetDefinitionEventFilter::ByCreated),
-                    ),
-                )))),
-            ),
-        )
-        .unwrap(),
-    ))
+    RegisterBox::new(IdentifiableBox::from(Trigger::new(
+        TriggerId::from_str("mint_rose").unwrap(),
+        Action::new(
+            Executable::from(vec![instruction.into()]),
+            Repeats::Indefinitely,
+            account_id,
+            EventFilter::Data(BySome(DataEntityFilter::ByAssetDefinition(BySome(
+                AssetDefinitionFilter::new(
+                    AcceptAll,
+                    BySome(AssetDefinitionEventFilter::ByCreated),
+                ),
+            )))),
+        ),
+    )))
 }

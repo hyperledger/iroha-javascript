@@ -18,7 +18,7 @@ import {
   VecInstruction,
 } from '@iroha2/data-model'
 
-/* --snip-- */
+// --snip--
 declare const client: Client
 
 // 1.

@@ -18,6 +18,9 @@ async function build(name: BundlePackages, format: 'esm' | 'cjs') {
     format,
     sourcemap: true,
     logLevel: 'info',
+    define: {
+      'import.meta.vitest': 'undefined',
+    },
   })
 }
 

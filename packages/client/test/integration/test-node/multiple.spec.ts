@@ -1,3 +1,4 @@
+import { afterAll, beforeEach, describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
 import { Client, setCrypto } from '@iroha2/client'
 import {
@@ -7,7 +8,6 @@ import {
   AssetDefinitionId,
   AssetId,
   AssetValueType,
-  Domain,
   DomainId,
   Enum,
   EvaluatesToAccountId,
@@ -23,13 +23,12 @@ import {
   IdBox,
   IdentifiableBox,
   Instruction,
-  MapAccountIdAccount,
-  MapAssetDefinitionIdAssetDefinitionEntry,
   MapAssetIdAsset,
   MapNameValue,
   Metadata,
   MintBox,
   Mintable,
+  NewDomain,
   OptionHash,
   OptionIpfsPath,
   OptionPipelineEntityKind,
@@ -322,14 +321,12 @@ test('Registering domain', async () => {
           Value(
             'Identifiable',
             IdentifiableBox(
-              'Domain',
-              Domain({
+              'NewDomain',
+              NewDomain({
                 id: DomainId({
                   name: domainName,
                 }),
-                accounts: MapAccountIdAccount(new Map()),
                 metadata: Metadata({ map: MapNameValue(new Map()) }),
-                asset_definitions: MapAssetDefinitionIdAssetDefinitionEntry(new Map()),
                 logo: OptionIpfsPath('None'),
               }),
             ),
@@ -498,11 +495,13 @@ test('status - peer uptime content check, not only type', async () => {
     expect.objectContaining({
       peers: expect.any(Number),
       blocks: expect.any(Number),
-      txs: expect.any(Number),
+      txs_accepted: expect.any(Number),
+      txs_rejected: expect.any(Number),
       uptime: expect.objectContaining({
         secs: expect.any(Number),
         nanos: expect.any(Number),
       }),
+      view_changes: expect.any(Number),
     }),
   )
 })

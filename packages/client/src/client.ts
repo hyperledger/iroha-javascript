@@ -22,7 +22,7 @@ import {
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core'
 import { fetch } from '@iroha2/client-isomorphic-fetch'
 import { collect as collectGarbage, createScope as createGarbageScope } from './collect-garbage'
-import { randomU32 } from './util'
+import { parseJsonWithBigInts, randomU32 } from './util'
 import { getCrypto } from './crypto-singleton'
 import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
@@ -76,11 +76,13 @@ export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>
 export type ListenBlocksStreamParams = Pick<SetupBlocksStreamParams, 'height'>
 
 export interface PeerStatus {
-  peers: number
-  blocks: number
-  txs: number
+  peers: bigint | number
+  blocks: bigint | number
+  txs_accepted: bigint | number
+  txs_rejected: bigint | number
+  view_changes: bigint | number
   uptime: {
-    secs: number
+    secs: bigint | number
     nanos: number
   }
 }
@@ -295,7 +297,7 @@ export class Client {
   public async getStatus(): Promise<PeerStatus> {
     const response = await fetch(this.forceGetTelemetryURL() + ENDPOINT_STATUS)
     ResponseError.throwIfStatusIsNot(response, 200)
-    return response.json()
+    return response.text().then(parseJsonWithBigInts)
   }
 
   public async getMetrics(): Promise<string> {

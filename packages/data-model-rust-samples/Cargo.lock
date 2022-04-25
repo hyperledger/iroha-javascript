@@ -724,6 +724,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "getset"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e45727250e75cc04ff2846a66397da8ef2b3db8e40e0cef4df67950a07621eb9"
+dependencies = [
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "ghash"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -926,9 +938,10 @@ checksum = "b33c9a5c599d67d051c4dc25eb1b6b4ef715d1763c20c85c688717a1734f204e"
 [[package]]
 name = "iroha_crypto"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "derive_more",
+ "getset",
  "hex",
  "iroha_schema",
  "parity-scale-codec",
@@ -939,9 +952,10 @@ dependencies = [
 [[package]]
 name = "iroha_data_model"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "derive_more",
+ "getset",
  "iroha_crypto",
  "iroha_data_primitives",
  "iroha_macro",
@@ -956,7 +970,7 @@ dependencies = [
 [[package]]
 name = "iroha_data_primitives"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "derive_more",
  "fixnum",
@@ -972,7 +986,7 @@ dependencies = [
 [[package]]
 name = "iroha_derive"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -982,7 +996,7 @@ dependencies = [
 [[package]]
 name = "iroha_macro"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "iroha_derive",
 ]
@@ -990,7 +1004,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "fixnum",
  "iroha_schema_derive",
@@ -1000,7 +1014,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema_derive"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1010,7 +1024,7 @@ dependencies = [
 [[package]]
 name = "iroha_version"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "iroha_macro",
  "iroha_schema",
@@ -1025,7 +1039,7 @@ dependencies = [
 [[package]]
 name = "iroha_version_derive"
 version = "2.0.0-pre-rc.3"
-source = "git+https://github.com/hyperledger/iroha?rev=8d83a3eff33f29b49004a0a5efe643b10f0f256e#8d83a3eff33f29b49004a0a5efe643b10f0f256e"
+source = "git+https://github.com/hyperledger/iroha?branch=iroha2-dev#e10a3e8e13d7b004e7d6947f40b82cf763f8600e"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",

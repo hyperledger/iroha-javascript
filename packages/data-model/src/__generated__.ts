@@ -3345,7 +3345,6 @@ const TimeSchedule: StructCodecAndFactory<TimeSchedule__actual, TimeSchedule> = 
 
 interface Topology__actual {
     sorted_peers: VecPeerId
-    reshuffle_after_n_view_changes: U64
     at_block: HashOfVersionedCommittedBlock
     view_change_proofs: ProofChain
 }
@@ -3354,7 +3353,6 @@ interface Topology extends Opaque<Topology__actual, Topology> {}
 
 const Topology: StructCodecAndFactory<Topology__actual, Topology> = createStructCodec<Topology__actual, Topology>('Topology', [
     ['sorted_peers', __dyn_VecPeerId],
-    ['reshuffle_after_n_view_changes', U64],
     ['at_block', __dyn_HashOfVersionedCommittedBlock],
     ['view_change_proofs', __dyn_ProofChain]
 ])
