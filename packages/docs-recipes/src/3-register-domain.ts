@@ -1,16 +1,14 @@
 import { Client } from '@iroha2/client'
 import {
-  Domain,
   DomainId,
   EvaluatesToRegistrableBox,
   Executable,
   Expression,
   IdentifiableBox,
   Instruction,
-  MapAccountIdAccount,
-  MapAssetDefinitionIdAssetDefinitionEntry,
   MapNameValue,
   Metadata,
+  NewDomain,
   OptionIpfsPath,
   QueryBox,
   RegisterBox,
@@ -31,14 +29,12 @@ async function registerDomain(domainName: string) {
         Value(
           'Identifiable',
           IdentifiableBox(
-            'Domain',
-            Domain({
+            'NewDomain',
+            NewDomain({
               id: DomainId({
                 name: domainName,
               }),
-              accounts: MapAccountIdAccount(new Map()),
               metadata: Metadata({ map: MapNameValue(new Map()) }),
-              asset_definitions: MapAssetDefinitionIdAssetDefinitionEntry(new Map()),
               logo: OptionIpfsPath('None'),
             }),
           ),
