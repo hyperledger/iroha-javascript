@@ -1,12 +1,12 @@
 export enum KnownBinaries {
   /**
-   * Introspect binary, for schema generation
+   * Kagami (teacher)
    */
-  Introspect = 'introspect',
+  Kagami = 'kagami',
   /**
    * Main Iroha CLI binary - runs peer
    */
-  Cli = 'cli',
+  Iroha = 'cli',
 }
 
 export type BinaryNameMap = { [K in KnownBinaries]: string }

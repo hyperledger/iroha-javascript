@@ -8,12 +8,12 @@ import { COMPILED_SCHEMA_FILE } from './meta'
 
 async function main() {
   consola.info('Installing binary')
-  await install(KnownBinaries.Introspect)
+  await install(KnownBinaries.Kagami)
 
   consola.info('Compiling schema')
   const stream = fs.createWriteStream(COMPILED_SCHEMA_FILE, { encoding: 'utf-8' })
   try {
-    const sub = execa(await resolveBinaryPath(KnownBinaries.Introspect))
+    const sub = execa(await resolveBinaryPath(KnownBinaries.Kagami), ['schema'])
     sub.stdout!.pipe(stream)
     await sub
   } finally {

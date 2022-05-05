@@ -6,12 +6,11 @@ const config: Config = {
     repo: 'https://github.com/hyperledger/iroha.git',
 
     // v2.0.0-pre-rc.4 (dev)
-    // revision: '9ac0528f3444a14ac84b4679541739734426aa6d',
-    branch: 'iroha2-dev',
+    revision: '322afe8f07eff0aefe11490ce4e9daf3e095737c',
   },
   binaries: {
-    [KnownBinaries.Introspect]: 'iroha_schema_bin',
-    [KnownBinaries.Cli]: 'iroha',
+    [KnownBinaries.Kagami]: 'kagami',
+    [KnownBinaries.Iroha]: 'iroha',
   },
 }
 

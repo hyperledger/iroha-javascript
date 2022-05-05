@@ -104,8 +104,8 @@ defineCase(
                     ),
                   ),
                   technical_account: assetId.account_id,
+                  metadata: lib.Metadata({ map: lib.MapNameValue(new Map()) }),
                 }),
-                metadata: lib.Metadata({ map: lib.MapNameValue(new Map()) }),
               }),
             ),
           ),
@@ -180,8 +180,8 @@ defineCase(
                     ),
                   ),
                   technical_account: assetId.account_id,
+                  metadata: lib.Metadata({ map: lib.MapNameValue(new Map()) }),
                 }),
-                metadata: lib.Metadata({ map: lib.MapNameValue(new Map()) }),
               }),
             ),
           ),
@@ -198,6 +198,7 @@ test('Metadata', () => {
   const JS = lib.Metadata({
     map: lib.MapNameValue(
       new Map([
+        // Test will fail if order is violated
         ['authentication', lib.Value('String', '80252ad79c68c01ec8946983411ce3b7cbea21d25f68c8546c687b2a7e2505cc')],
         ['email', lib.Value('String', 'user123@mail.com')],
         ['salt', lib.Value('String', 'ABCDEFG')],

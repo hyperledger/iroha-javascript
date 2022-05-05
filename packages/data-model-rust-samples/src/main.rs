@@ -7,35 +7,33 @@ use std::str::FromStr;
 use std::time::Duration;
 
 fn main() {
-    let reg_box = RegisterBox::new(Domain::new("sora".parse().unwrap()));
-    println!("{:?}", reg_box);
-
-    // println!(
-    //     "{}",
-    //     SamplesMap::new()
-    //         .add("DomainId", &DomainId::from_str("Hey").unwrap())
-    //         .add(
-    //             "AssetDefinitionId",
-    //             &AssetDefinitionId::from_str("rose#wonderland").unwrap()
-    //         )
-    //         .add(
-    //             "AccountId",
-    //             &AccountId::from_str("alice@wonderland").unwrap()
-    //         )
-    //         .add(
-    //             "Time-based Trigger ISI",
-    //             &create_some_time_based_trigger_isi()
-    //         )
-    //         .add(
-    //             "Event-based Trigger ISI",
-    //             &create_some_event_based_trigger_isi()
-    //         )
-    //         .to_json()
-    // );
+    println!(
+        "{}",
+        SamplesMap::new()
+            .add("DomainId", &DomainId::from_str("Hey").unwrap())
+            .add(
+                "AssetDefinitionId",
+                &AssetDefinitionId::from_str("rose#wonderland").unwrap()
+            )
+            .add(
+                "AccountId",
+                &AccountId::from_str("alice@wonderland").unwrap()
+            )
+            .add(
+                "Time-based Trigger ISI",
+                &create_some_time_based_trigger_isi()
+            )
+            .add(
+                "Event-based Trigger ISI",
+                &create_some_event_based_trigger_isi()
+            )
+            .to_json()
+    );
 }
 
 #[derive(Debug, Serialize)]
 struct Sample {
+    /// TODO replace with json-encoded form?
     debug: String,
     encoded: String,
 }
