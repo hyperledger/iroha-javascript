@@ -487,6 +487,24 @@ export interface EvaluatesToRegistrableBox extends Opaque<EvaluatesToRegistrable
 // @public (undocumented)
 export const EvaluatesToRegistrableBox: StructCodecAndFactory<EvaluatesToRegistrableBox__actual, EvaluatesToRegistrableBox>;
 
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToRoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToRoleId extends Opaque<EvaluatesToRoleId__actual, EvaluatesToRoleId> {
+}
+
+// @public (undocumented)
+export const EvaluatesToRoleId: StructCodecAndFactory<EvaluatesToRoleId__actual, EvaluatesToRoleId>;
+
+// Warning: (ae-forgotten-export) The symbol "EvaluatesToTriggerId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface EvaluatesToTriggerId extends Opaque<EvaluatesToTriggerId__actual, EvaluatesToTriggerId> {
+}
+
+// @public (undocumented)
+export const EvaluatesToTriggerId: StructCodecAndFactory<EvaluatesToTriggerId__actual, EvaluatesToTriggerId>;
+
 // Warning: (ae-forgotten-export) The symbol "EvaluatesToU32__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -965,6 +983,15 @@ export interface FindPermissionTokensByAccountId extends Opaque<FindPermissionTo
 // @public (undocumented)
 export const FindPermissionTokensByAccountId: StructCodecAndFactory<FindPermissionTokensByAccountId__actual, FindPermissionTokensByAccountId>;
 
+// Warning: (ae-forgotten-export) The symbol "FindRoleByRoleId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindRoleByRoleId extends Opaque<FindRoleByRoleId__actual, FindRoleByRoleId> {
+}
+
+// @public (undocumented)
+export const FindRoleByRoleId: StructCodecAndFactory<FindRoleByRoleId__actual, FindRoleByRoleId>;
+
 // Warning: (ae-forgotten-export) The symbol "FindRolesByAccountId__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -991,6 +1018,24 @@ export interface FindTransactionsByAccountId extends Opaque<FindTransactionsByAc
 
 // @public (undocumented)
 export const FindTransactionsByAccountId: StructCodecAndFactory<FindTransactionsByAccountId__actual, FindTransactionsByAccountId>;
+
+// Warning: (ae-forgotten-export) The symbol "FindTriggerById__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindTriggerById extends Opaque<FindTriggerById__actual, FindTriggerById> {
+}
+
+// @public (undocumented)
+export const FindTriggerById: StructCodecAndFactory<FindTriggerById__actual, FindTriggerById>;
+
+// Warning: (ae-forgotten-export) The symbol "FindTriggerKeyValueByIdAndKey__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindTriggerKeyValueByIdAndKey extends Opaque<FindTriggerKeyValueByIdAndKey__actual, FindTriggerKeyValueByIdAndKey> {
+}
+
+// @public (undocumented)
+export const FindTriggerKeyValueByIdAndKey: StructCodecAndFactory<FindTriggerKeyValueByIdAndKey__actual, FindTriggerKeyValueByIdAndKey>;
 
 // @public (undocumented)
 export type Fixed = FixedPointI64;
@@ -2335,10 +2380,12 @@ export const VersionError: EnumCodecAndFactory<VersionError>;
 
 export { Void as BlockCreationTimeout }
 export { Void as FindAllAccounts }
+export { Void as FindAllActiveTriggerIds }
 export { Void as FindAllAssets }
 export { Void as FindAllAssetsDefinitions }
 export { Void as FindAllDomains }
 export { Void as FindAllPeers }
+export { Void as FindAllRoleIds }
 export { Void as FindAllRoles }
 export { Void as NoTransactionReceiptReceived }
 
