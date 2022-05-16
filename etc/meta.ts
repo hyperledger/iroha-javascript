@@ -20,6 +20,7 @@ export const PUBLIC_PACKAGES = Set([
   'client-isomorphic-ws',
   'client-isomorphic-fetch',
   'data-model',
+  'data-model-schema',
   'i64-fixnum',
   'crypto-core',
   'crypto-target-node',
@@ -27,24 +28,30 @@ export const PUBLIC_PACKAGES = Set([
   'crypto-target-bundler',
 ] as const)
 
+export const PUBLIC_PACKAGES_WITH_API_REPORT: Set<Exclude<PublicPackage, 'data-model-schema'>> = PUBLIC_PACKAGES.delete(
+  'data-model-schema',
+) as Set<any>
+
 export const BUNDLE_PACKAGES = Set(['client', 'data-model', 'i64-fixnum'] as const)
 
 // add here private packages too if necessary
 export const ALL_PACKAGES = PUBLIC_PACKAGES.merge(BUNDLE_PACKAGES)
 
-export type PublicPackages = SetEntry<typeof PUBLIC_PACKAGES>
+export type PublicPackage = SetEntry<typeof PUBLIC_PACKAGES>
 
-export type BundlePackages = SetEntry<typeof BUNDLE_PACKAGES>
+export type PublicPackageWithApiReport = SetEntry<typeof PUBLIC_PACKAGES_WITH_API_REPORT>
+
+export type BundlePackage = SetEntry<typeof BUNDLE_PACKAGES>
 
 export type AllPackages = SetEntry<typeof ALL_PACKAGES>
 
-const BUNDLE_PACKAGES_EXTERNAL: Record<BundlePackages, Set<string>> = {
+const BUNDLE_PACKAGES_EXTERNAL: Record<BundlePackage, Set<string>> = {
   client: getProdDeps(packageClient),
   'data-model': getProdDeps(packageDataModel),
   'i64-fixnum': getProdDeps(packageFixnum),
 }
 
-export function getBundlePackageExternals(pkg: BundlePackages): Set<string> {
+export function getBundlePackageExternals(pkg: BundlePackage): Set<string> {
   return BUNDLE_PACKAGES_EXTERNAL[pkg]
 }
 
@@ -52,17 +59,17 @@ export function scopePackage(name: AllPackages): string {
   return `@iroha2/${name}`
 }
 
-export function getBundlePackageInput(name: BundlePackages): string {
+export function getBundlePackageInput(name: BundlePackage): string {
   if (name === 'data-model') return resolve('packages/data-model/dist-tsc/data-model/src/lib.js')
 
   return resolve('packages', name, 'dist-tsc/lib.js')
 }
 
-export function getBundlePackageOutput(name: BundlePackages, format: 'esm' | 'cjs'): string {
+export function getBundlePackageOutput(name: BundlePackage, format: 'esm' | 'cjs'): string {
   return resolve('packages', name, `dist/lib.${format}.js`)
 }
 
-export function getPackageApiExtractorConfigFile(name: PublicPackages): string {
+export function getPackageApiExtractorConfigFile(name: PublicPackageWithApiReport): string {
   if (name.startsWith('crypto-')) {
     const [, tail] = name.match(/^crypto-(.+)$/)!
     return resolve(`packages/crypto/packages/${tail}/api-extractor.json`)
