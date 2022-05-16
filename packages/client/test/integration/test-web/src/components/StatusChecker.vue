@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useIntervalFn, useAsyncState } from '@vueuse/core'
+import { useAsyncState, useIntervalFn } from '@vueuse/core'
 import { client } from '../client'
 
 const { state: status, execute: updateStatus } = useAsyncState(() => client.getStatus(), null, {

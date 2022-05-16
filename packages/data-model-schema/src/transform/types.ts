@@ -13,18 +13,29 @@ export type RustTypeDefinitionVariant =
   | RustArrayDefinition
   | RustIntDef
   | RustFixedPointDef
+  | RustTupleDef
 
 export interface RustMapDefinition {
   Map: {
     key: TypePath
     value: TypePath
+    sorted_by_key: boolean
+  }
+}
+
+export interface RustTupleDef {
+  Tuple: {
+    types: TypePath[]
   }
 }
 
 export type RustDirectAlias = TypePath
 
 export interface RustVecDefinition {
-  Vec: TypePath
+  Vec: {
+    ty: TypePath
+    sorted: boolean
+  }
 }
 
 export interface RustArrayDefinition {

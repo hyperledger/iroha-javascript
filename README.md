@@ -1,3 +1,3 @@
-# iroha-javascript
+# Iroha JavaScript
 
-JavaScript client for [Iroha 2](https://github.com/hyperledger/iroha/tree/iroha2/).
+JavaScript SDK for [Iroha 2](https://github.com/hyperledger/iroha/tree/iroha2/).

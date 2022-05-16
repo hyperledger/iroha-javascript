@@ -5,24 +5,24 @@
 // IrohaCryptoInterface
 
 import {
-  createHash,
-  createKeyGenConfiguration,
-  createPublicKeyFromMultihash,
-  createMultihashFromPublicKey,
-  createSignature,
-  generateKeyPairWithConfiguration,
-  createPrivateKeyFromJsKey,
-  createMultihashDigestFunctionFromString,
-  createMultihashFromBytes,
-  MultihashDigestBls12381g1Pub,
-  MultihashDigestBls12381g2Pub,
-  MultihashDigestEd25519Pub,
-  MultihashDigestSecp256k1Pub,
   AlgorithmBlsNormal,
   AlgorithmBlsSmall,
   AlgorithmEd25519,
   AlgorithmSecp256k1,
+  MultihashDigestBls12381g1Pub,
+  MultihashDigestBls12381g2Pub,
+  MultihashDigestEd25519Pub,
+  MultihashDigestSecp256k1Pub,
+  createHash,
+  createKeyGenConfiguration,
   createKeyPairFromKeys,
+  createMultihashDigestFunctionFromString,
+  createMultihashFromBytes,
+  createMultihashFromPublicKey,
+  createPrivateKeyFromJsKey,
+  createPublicKeyFromMultihash,
+  createSignature,
+  generateKeyPairWithConfiguration,
 } from '@iroha2/crypto-target-web/wasm_pack_output'
 
 export {

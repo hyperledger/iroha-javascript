@@ -2,16 +2,17 @@ import { NamespaceDefinition, TypeDef } from '@scale-codec/definition-compiler'
 import { Enum, Result } from '@scale-codec/definition-runtime'
 import { RustDefinitions, RustTypeDefinitionVariant } from './types'
 import {
-  isRustMapDef,
-  isRustVecDef,
-  isRustDirectAlias,
   isRustArrayDef,
+  isRustDirectAlias,
   isRustEnumDef,
-  isRustIntDef,
   isRustFixedPointDef,
+  isRustIntDef,
+  isRustMapDef,
   isRustOptionDef,
   isRustStructDef,
+  isRustTupleDef,
   isRustTupleStructDef,
+  isRustVecDef,
 } from './type-assertions'
 import { Map, Set } from 'immutable'
 import { transform as transformRef } from './ref'
@@ -50,39 +51,6 @@ function rawSchemaFilter(value: RustTypeDefinitionVariant, key: string): boolean
   return true
 }
 
-function extractAdditionalTypesFromBTreeStructures(
-  map: Map<string, RustTypeDefinitionVariant>,
-): [added: Map<string, TypeDef>, filtered: Set<string>] {
-  return map.reduce(
-    ([add, filter], value, key) => {
-      if (key.startsWith('BTreeMap')) {
-        if (!isRustMapDef(value)) throw new Error(`"${key}" is btreemap but not a map`)
-
-        return [
-          add.set(transformRef(key), {
-            t: 'map',
-            key: transformRef(value.Map.key),
-            value: transformRef(value.Map.value),
-          }),
-          filter.add(key),
-        ]
-      } else if (key.startsWith('BTreeSet')) {
-        if (!isRustVecDef(value)) throw new Error(`"${key}" is btreeset but not a vec`)
-
-        return [
-          add.set(transformRef(key), {
-            t: 'set',
-            entry: transformRef(value.Vec),
-          }),
-          filter.add(key),
-        ]
-      }
-      return [add, filter]
-    },
-    [Map(), Set()],
-  )
-}
-
 function ok<Ok, Err>(ok: Ok): Result<Ok, Err> {
   return Enum.variant('Ok', ok)
 }
@@ -116,6 +84,7 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
       t: 'map',
       key: transformRef(key),
       value: transformRef(value),
+      // TODO handle `def.Map.sorted_by_key` field
     })
   }
   if (isRustStructDef(def)) {
@@ -146,7 +115,8 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
   if (isRustVecDef(def)) {
     return ok({
       t: 'vec',
-      item: transformRef(def.Vec),
+      // TODO handle def.Vec.sorted
+      item: transformRef(def.Vec.ty),
     })
   }
   if (isRustTupleStructDef(def)) {
@@ -172,22 +142,37 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
     }
     return err(`Unsupported fixed point with base ${base} and ${decimal_places} decimal places`)
   }
+  if (isRustTupleDef(def)) {
+    return ok({
+      t: 'tuple',
+      items: def.Tuple.types.map(transformRef),
+    })
+  }
+  if (isRustIntDef(def)) {
+    return err(`Int should has been filtered on an earlier stage: ${def.Int}`)
+  }
+  if (isRustDirectAlias(def)) {
+    return err(`Alias should has been filtered: ${def}`)
+  }
 
-  debug('Unknown def: %O', def)
+  const undefinedDef: never = def
+  debug('Unknown def: %O', undefinedDef)
   return err('Unexpected definition')
 }
 
 export function transformSchema(schema: RustDefinitions): NamespaceDefinition {
   let schemaMap = Map(schema).filter(rawSchemaFilter)
 
-  const [add, filter] = extractAdditionalTypesFromBTreeStructures(schemaMap)
+  // const [add, filter] = extractAdditionalTypesFromStructures(schemaMap)
 
-  return schemaMap
-    .filter((v, key) => !filter.has(key))
-    .mapEntries(([key, value]) => [transformRef(key), transformRustDef(value).as('Ok')])
-    .merge(add)
-    .reduce<NamespaceDefinition>((acc, value, key) => {
-      acc[key] = value
-      return acc
-    }, {})
+  return (
+    schemaMap
+      // .filter((v, key) => !filter.has(key))
+      .mapEntries(([key, value]) => [transformRef(key), transformRustDef(value).as('Ok')])
+      // .merge(add)
+      .reduce<NamespaceDefinition>((acc, value, key) => {
+        acc[key] = value
+        return acc
+      }, {})
+  )
 }

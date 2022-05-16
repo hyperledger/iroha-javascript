@@ -5,7 +5,7 @@ import { $, fs } from 'zx'
 import { rmForce, saveDataAsJSON } from './util'
 import readline from 'readline'
 import debugRoot from 'debug'
-import { KnownBinaries, resolveBinaryPath, install } from '@iroha2/dev-iroha-bins'
+import { KnownBinaries, install, resolveBinaryPath } from '@iroha2/dev-iroha-bins'
 import makeDir from 'make-dir'
 
 const debug = debugRoot('@iroha2/test-peer')
@@ -49,10 +49,10 @@ export interface IrohaConfiguration {
  * Installs binary (if not installed) and copies it from `@iroha2/dev-iroha-bins`
  */
 export async function preparePackage() {
-  await install(KnownBinaries.Cli)
+  await install(KnownBinaries.Iroha)
   await rmForce(TMP_DIR)
   await makeDir(TMP_DIR)
-  await $`cp ${await resolveBinaryPath(KnownBinaries.Cli)} ${TMP_IROHA_BIN}`
+  await $`cp ${await resolveBinaryPath(KnownBinaries.Iroha)} ${TMP_IROHA_BIN}`
   debug('package is prepared')
 }
 

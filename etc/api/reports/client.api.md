@@ -5,18 +5,18 @@
 ```ts
 
 import { AccountId } from '@iroha2/data-model';
-import { BTreeMapNameValue } from '@iroha2/data-model';
 import { CloseEvent as CloseEvent_2 } from '@iroha2/client-isomorphic-ws';
 import Emittery from 'emittery';
 import { Event as Event_2 } from '@iroha2/client-isomorphic-ws';
 import { Event as Event_3 } from '@iroha2/data-model';
-import { EventFilter } from '@iroha2/data-model';
 import { Executable } from '@iroha2/data-model';
+import { FilterBox } from '@iroha2/data-model';
 import { IrohaCryptoInterface } from '@iroha2/crypto-core';
 import { KeyPair } from '@iroha2/crypto-core';
+import { MapNameValue } from '@iroha2/data-model';
+import { PaginatedQueryResult } from '@iroha2/data-model';
 import { QueryBox } from '@iroha2/data-model';
 import { QueryError } from '@iroha2/data-model';
-import { QueryResult } from '@iroha2/data-model';
 import { Result } from '@iroha2/data-model';
 import { VersionedCommittedBlock } from '@iroha2/data-model';
 
@@ -45,7 +45,6 @@ export class Client {
     listenForBlocksStream(params: ListenBlocksStreamParams): Promise<SetupBlocksStreamReturn>;
     // (undocumented)
     listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn>;
-    // (undocumented)
     request(query: QueryBox): Promise<RequestResult>;
     // (undocumented)
     setPeerConfig(params: SetPeerConfigParams): Promise<void>;
@@ -87,20 +86,24 @@ export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>;
 // @public (undocumented)
 export interface PeerStatus {
     // (undocumented)
-    blocks: number;
+    blocks: bigint | number;
     // (undocumented)
-    peers: number;
+    peers: bigint | number;
     // (undocumented)
-    txs: number;
+    txs_accepted: bigint | number;
+    // (undocumented)
+    txs_rejected: bigint | number;
     // (undocumented)
     uptime: {
-        secs: number;
+        secs: bigint | number;
         nanos: number;
     };
+    // (undocumented)
+    view_changes: bigint | number;
 }
 
 // @public (undocumented)
-export type RequestResult = Result<QueryResult, QueryError>;
+export type RequestResult = Result<PaginatedQueryResult, QueryError>;
 
 // @public (undocumented)
 export class ResponseError extends Error {
@@ -145,7 +148,7 @@ export function setupEvents(params: SetupEventsParams): Promise<SetupEventsRetur
 // @public (undocumented)
 export interface SetupEventsParams {
     // (undocumented)
-    filter: EventFilter;
+    filter: FilterBox;
     // (undocumented)
     toriiApiURL: string;
 }
@@ -163,7 +166,7 @@ export interface SetupEventsReturn {
 // @public (undocumented)
 export interface SubmitParams {
     // (undocumented)
-    metadata?: BTreeMapNameValue;
+    metadata?: MapNameValue;
     // (undocumented)
     nonce?: number;
 }

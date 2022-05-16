@@ -1,6 +1,6 @@
 import path from 'path'
 import del from 'del'
-import { series, parallel } from 'gulp'
+import { parallel, series } from 'gulp'
 import { $ } from 'zx'
 
 const TARGETS = ['web', 'node', 'bundler']

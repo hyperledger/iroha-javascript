@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { SetupEventsReturn } from '@iroha2/client'
 import {
-  PipelineEntityType,
-  EventFilter,
-  OptionPipelineEntityType,
+  FilterBox,
   OptionHash,
+  OptionPipelineEntityKind,
+  OptionPipelineStatusKind,
+  PipelineEntityKind,
   PipelineEventFilter,
+  PipelineStatusKind,
 } from '@iroha2/data-model'
-import { shallowReactive, shallowRef, computed, onBeforeUnmount } from 'vue'
+import { computed, onBeforeUnmount, shallowReactive, shallowRef } from 'vue'
 import { bytesToHex } from 'hada'
 import { client } from '../client'
 
@@ -24,10 +26,11 @@ const isListening = computed(() => !!currentListener.value)
 
 async function startListening() {
   currentListener.value = await client.listenForEvents({
-    filter: EventFilter(
+    filter: FilterBox(
       'Pipeline',
       PipelineEventFilter({
-        entity: OptionPipelineEntityType('Some', PipelineEntityType('Transaction')),
+        entity_kind: OptionPipelineEntityKind('Some', PipelineEntityKind('Transaction')),
+        status_kind: OptionPipelineStatusKind('Some', PipelineStatusKind('Committed')),
         hash: OptionHash('None'),
       }),
     ),
@@ -66,7 +69,7 @@ onBeforeUnmount(stopListening)
 
     <p>Events:</p>
 
-    <ul>
+    <ul class="events-list">
       <li
         v-for="{ hash, status } in events"
         :key="hash"

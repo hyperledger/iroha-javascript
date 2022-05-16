@@ -1,16 +1,17 @@
 import {
   AssetDefinition,
-  AssetValueType,
   AssetDefinitionId,
+  AssetValueType,
   DomainId,
-  Metadata,
-  BTreeMapNameValue,
-  RegisterBox,
-  EvaluatesToIdentifiableBox,
+  EvaluatesToRegistrableBox,
   Expression,
-  Value,
   IdentifiableBox,
   Instruction,
+  MapNameValue,
+  Metadata,
+  Mintable,
+  RegisterBox,
+  Value,
 } from '@iroha2/data-model'
 
 const time = AssetDefinition({
@@ -19,14 +20,14 @@ const time = AssetDefinition({
     name: 'time',
     domain_id: DomainId({ name: 'looking_glass' }),
   }),
-  metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-  mintable: false, // If only we could mint more time.
+  metadata: Metadata({ map: MapNameValue(new Map()) }),
+  mintable: Mintable('Infinitely'), // If only we could mint more time.
 })
 
 const register = Instruction(
   'Register',
   RegisterBox({
-    object: EvaluatesToIdentifiableBox({
+    object: EvaluatesToRegistrableBox({
       expression: Expression(
         'Raw',
         Value('Identifiable', IdentifiableBox('AssetDefinition', time)),

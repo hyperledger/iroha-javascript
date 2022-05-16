@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 # git source should be in sync with the ref used for data-model compilation
-iroha_data_model = { git = 'https://github.com/hyperledger/iroha', rev = '8d83a3eff33f29b49004a0a5efe643b10f0f256e' }
+iroha_data_model = { git = 'https://github.com/hyperledger/iroha', rev = 'd00e0a9172d2a887a97f504796db5f2e05939c10' }
 
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

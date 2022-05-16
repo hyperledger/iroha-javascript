@@ -1,6 +1,6 @@
 import consola from 'consola'
 import makeDir from 'make-dir'
-import { $, cd, path, glob } from 'zx'
+import { $, cd, glob, path } from 'zx'
 
 const CRATE_ROOT_DIR = path.resolve(__dirname, '../crypto-rs/iroha_crypto_wasm')
 const BUILD_TMP_DIR = path.resolve(CRATE_ROOT_DIR, '.tmp-pkg')

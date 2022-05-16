@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import { PORT_VITE, PORT_PEER_TELEMETRY, PORT_PEER_SERVER, PORT_PEER_API } from './etc/meta'
+import { PORT_PEER_API, PORT_PEER_SERVER, PORT_PEER_TELEMETRY, PORT_VITE } from './etc/meta'
 
 const resolveInPkgSrc = (unscopedName: string, ...paths: string[]) =>
   path.resolve(__dirname, '../../../../', unscopedName, ...paths)

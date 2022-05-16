@@ -1,3 +1,6 @@
+dist
+dist-tsc
+node_modules
 **/data-model/src/__generated__.ts
-**/data-model/etc/__schema__.json
-etc/api/*
+**/data-model-schema/src/__schema__.json
+etc/api/**/*

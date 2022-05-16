@@ -15,7 +15,7 @@ mod varint;
 
 use alloc::{
     borrow::ToOwned,
-    collections::BTreeMap,
+    collections::Map,
     string::{String, ToString},
     vec::Vec,
 };
@@ -523,7 +523,7 @@ impl Debug for Signature {
     // IntoSchema,
 )]
 pub struct Signatures {
-    signatures: BTreeMap<PublicKey, Signature>,
+    signatures: Map<PublicKey, Signature>,
 }
 
 impl Signatures {

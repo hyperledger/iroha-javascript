@@ -2,14 +2,15 @@ import {
   RustArrayDefinition,
   RustDirectAlias,
   RustEnumDefinition,
+  RustFixedPointDef,
   RustIntDef,
   RustMapDefinition,
   RustNamedStructDefinition,
   RustOptionDefinition,
-  RustTypeDefinitionVariant,
+  RustTupleDef,
   RustTupleStructDefinition,
+  RustTypeDefinitionVariant,
   RustVecDefinition,
-  RustFixedPointDef,
 } from './types'
 
 export function isRustMapDef(v: RustTypeDefinitionVariant): v is RustMapDefinition {
@@ -50,4 +51,8 @@ export function isRustArrayDef(v: RustTypeDefinitionVariant): v is RustArrayDefi
 
 export function isRustFixedPointDef(v: RustTypeDefinitionVariant): v is RustFixedPointDef {
   return !!(v as RustFixedPointDef).FixedPoint
+}
+
+export function isRustTupleDef(v: RustTypeDefinitionVariant): v is RustTupleDef {
+  return !!(v as RustTupleDef).Tuple
 }

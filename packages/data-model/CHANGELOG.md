@@ -1,5 +1,11 @@
 # @iroha2/data-model
 
+## 1.2.0
+
+### Minor Changes
+
+- update data model according to Iroha 2 RC 4 (`d00e0a9172d2a887a97f504796db5f2e05939c10`)
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,31 +1,31 @@
 import {
   AccountId,
-  BTreeMapNameValue,
-  BTreeSetSignatureOfTransactionPayload,
   Enum,
   Executable,
+  MapNameValue,
   OptionU32,
+  PaginatedQueryResult,
   PublicKey,
   QueryBox,
   QueryError,
   QueryPayload,
-  QueryResult,
   Result,
   Signature,
   SignedQueryRequest,
   Transaction,
   TransactionPayload,
-  VersionedQueryResult,
+  VecSignatureOfTransactionPayload,
+  VersionedPaginatedQueryResult,
   VersionedSignedQueryRequest,
   VersionedTransaction,
 } from '@iroha2/data-model'
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core'
 import { fetch } from '@iroha2/client-isomorphic-fetch'
 import { collect as collectGarbage, createScope as createGarbageScope } from './collect-garbage'
-import { randomU32 } from './util'
+import { parseJsonWithBigInts, randomU32 } from './util'
 import { getCrypto } from './crypto-singleton'
 import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events'
-import { setupBlocksStream, SetupBlocksStreamParams, SetupBlocksStreamReturn } from './blocks-stream'
+import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
 import {
   ENDPOINT_CONFIGURATION,
   ENDPOINT_HEALTH,
@@ -64,23 +64,25 @@ export class ResponseError extends Error {
 
 export interface SubmitParams {
   nonce?: number
-  metadata?: BTreeMapNameValue
+  metadata?: MapNameValue
 }
 
 export type HealthResult = Result<null, string>
 
-export type RequestResult = Result<QueryResult, QueryError>
+export type RequestResult = Result<PaginatedQueryResult, QueryError>
 
 export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>
 
 export type ListenBlocksStreamParams = Pick<SetupBlocksStreamParams, 'height'>
 
 export interface PeerStatus {
-  peers: number
-  blocks: number
-  txs: number
+  peers: bigint | number
+  blocks: bigint | number
+  txs_accepted: bigint | number
+  txs_rejected: bigint | number
+  view_changes: bigint | number
   uptime: {
-    secs: number
+    secs: bigint | number
     nanos: number
   }
 }
@@ -121,7 +123,7 @@ function makeSignature(keyPair: KeyPair, payload: Uint8Array): Signature {
       digest_function: pubKey.digestFunction(),
       payload: pubKey.payload(),
     }),
-    signature: signature.signatureBytes(),
+    payload: signature.signatureBytes(),
   })
 }
 
@@ -182,7 +184,7 @@ export class Client {
         : this.transactionAddNonce
         ? OptionU32('Some', randomU32())
         : OptionU32('None'),
-      metadata: params?.metadata ?? BTreeMapNameValue(new Map()),
+      metadata: params?.metadata ?? MapNameValue(new Map()),
       creation_time: BigInt(Date.now()),
       account_id: accountId,
     })
@@ -197,7 +199,7 @@ export class Client {
         finalBytes = VersionedTransaction.toBuffer(
           VersionedTransaction(
             'V1',
-            Transaction({ payload, signatures: BTreeSetSignatureOfTransactionPayload(new Set([signature])) }),
+            Transaction({ payload, signatures: VecSignatureOfTransactionPayload([signature]) }),
           ),
         )
       })
@@ -213,6 +215,9 @@ export class Client {
     }
   }
 
+  /**
+   * TODO support pagination
+   */
   public async request(query: QueryBox): Promise<RequestResult> {
     const scope = createGarbageScope()
     const { createHash } = useCryptoAssertive()
@@ -247,12 +252,12 @@ export class Client {
 
       if (response.status === 200) {
         // OK
-        const value = VersionedQueryResult.fromBuffer(bytes).as('V1')
-        return Enum.variant('Ok', value)
+        const value = VersionedPaginatedQueryResult.fromBuffer(bytes).as('V1')
+        return Enum.variant<RequestResult>('Ok', value)
       } else {
         // ERROR
         const error = QueryError.fromBuffer(bytes)
-        return Enum.variant('Err', error)
+        return Enum.variant<RequestResult>('Err', error)
       }
     } finally {
       scope.free()
@@ -292,7 +297,7 @@ export class Client {
   public async getStatus(): Promise<PeerStatus> {
     const response = await fetch(this.forceGetTelemetryURL() + ENDPOINT_STATUS)
     ResponseError.throwIfStatusIsNot(response, 200)
-    return response.json()
+    return response.text().then(parseJsonWithBigInts)
   }
 
   public async getMetrics(): Promise<string> {

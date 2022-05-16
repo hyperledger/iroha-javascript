@@ -3,25 +3,21 @@ module.exports = {
   rules: {
     'no-promise-executor-return': 'off',
     'spaced-comment': ['error', 'always', { markers: ['/'] }],
+    'sort-imports': [
+      'warn',
+      {
+        ignoreCase: false,
+        ignoreDeclarationSort: true,
+        ignoreMemberSort: false,
+        memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+        allowSeparatedGroups: false,
+      },
+    ],
   },
   globals: {
     BigInt: true,
   },
   overrides: [
-    {
-      files: [
-        '**/*.spec.ts',
-        '**/__tests__/*.ts',
-        '**/packages/client/e2e/tests/**/*.ts',
-        '**/packages/crypto/test/node/**/*.ts',
-      ],
-      env: {
-        jest: true,
-      },
-      rules: {
-        'max-nested-callbacks': ['error', 5],
-      },
-    },
     {
       files: [
         '**/packages/crypto/test/web/cypress/**/*.js',

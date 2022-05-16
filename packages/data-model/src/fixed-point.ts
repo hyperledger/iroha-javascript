@@ -1,5 +1,5 @@
-import { encodeI64, decodeI64, encodeFactory, trackableCodec, Decode } from '@scale-codec/definition-runtime'
-import { f64StrToBigint, bigintToF64Str } from '@iroha2/i64-fixnum'
+import { Decode, decodeI64, encodeFactory, encodeI64, trackableCodec } from '@scale-codec/definition-runtime'
+import { bigintToF64Str, f64StrToBigint } from '@iroha2/i64-fixnum'
 
 const PRECISION = 9
 

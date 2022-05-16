@@ -1,16 +1,16 @@
 import { Config, KnownBinaries } from './types'
 
 const config: Config = {
-  // should be slmilar with the ref from packages/data-model-rust-samples
+  // ! IMPORTANT ! should be similar with the ref at packages/data-model-rust-samples
   git: {
     repo: 'https://github.com/hyperledger/iroha.git',
 
-    // v2.0.0-pre-rc.3
-    revision: '8d83a3eff33f29b49004a0a5efe643b10f0f256e',
+    // v2.0.0-pre-rc.4
+    revision: 'd00e0a9172d2a887a97f504796db5f2e05939c10',
   },
   binaries: {
-    [KnownBinaries.Introspect]: 'iroha_schema_bin',
-    [KnownBinaries.Cli]: 'iroha',
+    [KnownBinaries.Kagami]: 'kagami',
+    [KnownBinaries.Iroha]: 'iroha',
   },
 }
 

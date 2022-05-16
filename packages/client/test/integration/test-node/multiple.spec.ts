@@ -1,56 +1,56 @@
+import { afterAll, beforeEach, describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
 import { Client, setCrypto } from '@iroha2/client'
 import {
-  Instruction,
-  AssetValueType,
-  AssetDefinitionId,
-  MintBox,
-  EventFilter,
-  Expression,
-  Value,
-  IdentifiableBox,
+  Account,
   AccountId,
-  OptionPipelineEntityType,
-  PipelineEntityType,
-  IdBox,
-  RegisterBox,
+  AssetDefinition,
+  AssetDefinitionId,
+  AssetId,
+  AssetValueType,
+  DomainId,
   Enum,
+  EvaluatesToAccountId,
+  EvaluatesToAssetId,
+  EvaluatesToBool,
+  EvaluatesToRegistrableBox,
+  EvaluatesToValue,
+  Executable,
+  Expression,
+  FilterBox,
+  FindAssetById,
+  FindAssetsByAccountId,
+  IdBox,
+  IdentifiableBox,
+  Instruction,
+  MapAssetIdAsset,
+  MapNameValue,
+  Metadata,
+  MintBox,
+  Mintable,
+  NewDomain,
+  OptionHash,
+  OptionIpfsPath,
+  OptionPipelineEntityKind,
+  OptionPipelineStatusKind,
+  PipelineEntityKind,
+  PipelineEventFilter,
+  PipelineStatusKind,
+  QueryBox,
+  RegisterBox,
   Result,
   Logger as ScaleLogger,
-  AssetDefinition,
-  Metadata,
-  BTreeMapNameValue,
-  Executable,
+  Value,
   VecInstruction,
-  EvaluatesToIdentifiableBox,
-  Account,
-  BTreeMapAssetIdAsset,
-  BTreeSetPermissionToken,
-  EvaluatesToBool,
+  VecPermissionToken,
   VecPublicKey,
-  DomainId,
-  QueryBox,
-  EvaluatesToValue,
-  EvaluatesToIdBox,
-  AssetId,
-  FindAssetsByAccountId,
-  EvaluatesToAccountId,
-  Domain,
-  BTreeMapAccountIdAccount,
-  BTreeMapAssetDefinitionIdAssetDefinitionEntry,
-  OptionIpfsPath,
-  OptionHash,
-  PipelineEventFilter,
-  FindAssetById,
-  EvaluatesToAssetId,
-  BTreeSetRoleId,
+  VecRoleId,
 } from '@iroha2/data-model'
 import { hexToBytes } from 'hada'
 import { Seq } from 'immutable'
-
-import { startPeer, setConfiguration, cleanConfiguration, StartPeerReturn } from '@iroha2/test-peer'
+import { StartPeerReturn, cleanConfiguration, setConfiguration, startPeer } from '@iroha2/test-peer'
 import { delay } from '../util'
-import { client_config, peer_config, peer_genesis, PIPELINE_MS } from '../config'
+import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../config'
 
 // for debugging convenience
 new ScaleLogger().mount()
@@ -75,7 +75,7 @@ async function addAsset(
   definitionId: AssetDefinitionId,
   assetType: AssetValueType = Enum.variant('BigQuantity'),
   opts?: {
-    mintable?: boolean
+    mintable?: Mintable
   },
 ) {
   await client.submit(
@@ -85,7 +85,7 @@ async function addAsset(
         Instruction(
           'Register',
           RegisterBox({
-            object: EvaluatesToIdentifiableBox({
+            object: EvaluatesToRegistrableBox({
               expression: Expression(
                 'Raw',
                 Value(
@@ -95,8 +95,8 @@ async function addAsset(
                     AssetDefinition({
                       id: definitionId,
                       value_type: assetType,
-                      metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-                      mintable: opts?.mintable ?? false,
+                      metadata: Metadata({ map: MapNameValue(new Map()) }),
+                      mintable: opts?.mintable ?? Mintable('Not'),
                     }),
                   ),
                 ),
@@ -117,7 +117,7 @@ async function addAccount(accountId: AccountId) {
         Instruction(
           'Register',
           RegisterBox({
-            object: EvaluatesToIdentifiableBox({
+            object: EvaluatesToRegistrableBox({
               expression: Expression(
                 'Raw',
                 Value(
@@ -126,14 +126,14 @@ async function addAccount(accountId: AccountId) {
                     'NewAccount',
                     Account({
                       id: accountId,
-                      assets: BTreeMapAssetIdAsset(new Map()),
-                      permission_tokens: BTreeSetPermissionToken(new Set()),
+                      assets: MapAssetIdAsset(new Map()),
+                      permission_tokens: VecPermissionToken([]),
                       signature_check_condition: EvaluatesToBool({
                         expression: Expression('Raw', Value('Bool', false)),
                       }),
                       signatories: VecPublicKey([]),
-                      metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-                      roles: BTreeSetRoleId(new Set()),
+                      metadata: Metadata({ map: MapNameValue(new Map()) }),
+                      roles: VecRoleId([]),
                     }),
                   ),
                 ),
@@ -218,7 +218,7 @@ test('AddAsset instruction with name length more than limit is not committed', a
 
   const existingDefinitions: AssetDefinitionId[] = queryResult
     .as('Ok')
-    .as('Vec')
+    .result.as('Vec')
     .map((val) => val.as('Identifiable').as('AssetDefinition').id)
 
   expect(existingDefinitions).toContainEqual(normalAssetDefinitionId)
@@ -246,7 +246,7 @@ test('AddAccount instruction with name length more than limit is not committed',
 
   const existingAccounts: AccountId[] = queryResult
     .as('Ok')
-    .as('Vec')
+    .result.as('Vec')
     .map((val) => val.as('Identifiable').as('Account').id)
 
   expect(existingAccounts).toContainEqual(normal)
@@ -261,7 +261,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
       name: 'wonderland',
     }),
   })
-  await addAsset(ASSET_DEFINITION_ID, AssetValueType('Fixed'), { mintable: true })
+  await addAsset(ASSET_DEFINITION_ID, AssetValueType('Fixed'), { mintable: Mintable('Infinitely') })
   await pipelineStepDelay()
 
   // Adding mint
@@ -271,7 +271,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
       object: EvaluatesToValue({
         expression: Expression('Raw', Value('Fixed', DECIMAL)),
       }),
-      destination_id: EvaluatesToIdBox({
+      destination_id: EvaluatesToRegistrableBox({
         expression: Expression(
           'Raw',
           Value(
@@ -303,7 +303,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
   )
 
   // Assert
-  const asset = Seq(result.as('Ok').as('Vec'))
+  const asset = Seq(result.as('Ok').result.as('Vec'))
     .map((x) => x.as('Identifiable').as('Asset'))
     .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
 
@@ -315,20 +315,18 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
 test('Registering domain', async () => {
   async function registerDomain(domainName: string) {
     const registerBox = RegisterBox({
-      object: EvaluatesToIdentifiableBox({
+      object: EvaluatesToRegistrableBox({
         expression: Expression(
           'Raw',
           Value(
             'Identifiable',
             IdentifiableBox(
-              'Domain',
-              Domain({
+              'NewDomain',
+              NewDomain({
                 id: DomainId({
                   name: domainName,
                 }),
-                accounts: BTreeMapAccountIdAccount(new Map()),
-                metadata: Metadata({ map: BTreeMapNameValue(new Map()) }),
-                asset_definitions: BTreeMapAssetDefinitionIdAssetDefinitionEntry(new Map()),
+                metadata: Metadata({ map: MapNameValue(new Map()) }),
                 logo: OptionIpfsPath('None'),
               }),
             ),
@@ -345,7 +343,7 @@ test('Registering domain', async () => {
 
     const domain = result
       .as('Ok')
-      .as('Vec')
+      .result.as('Vec')
       .map((x) => x.as('Identifiable').as('Domain'))
       .find((x) => x.id.name === domainName)
 
@@ -397,10 +395,11 @@ test('When querying for unexisting domain, returns FindError', async () => {
 
 describe('Events API', () => {
   test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
-    const filter = EventFilter(
+    const filter = FilterBox(
       'Pipeline',
       PipelineEventFilter({
-        entity: OptionPipelineEntityType('Some', PipelineEntityType('Transaction')),
+        entity_kind: OptionPipelineEntityKind('Some', PipelineEntityKind('Transaction')),
+        status_kind: OptionPipelineStatusKind('Some', PipelineStatusKind('Committed')),
         hash: OptionHash('None'),
       }),
     )
@@ -412,8 +411,8 @@ describe('Events API', () => {
     const committedPromise = new Promise<void>((resolve, reject) => {
       ee.on('event', (event) => {
         if (event.is('Pipeline')) {
-          const { entity_type, status } = event.as('Pipeline')
-          if (entity_type.is('Transaction') && status.is('Committed')) {
+          const { entity_kind, status } = event.as('Pipeline')
+          if (entity_kind.is('Transaction') && status.is('Committed')) {
             resolve()
           }
         }
@@ -496,11 +495,13 @@ test('status - peer uptime content check, not only type', async () => {
     expect.objectContaining({
       peers: expect.any(Number),
       blocks: expect.any(Number),
-      txs: expect.any(Number),
+      txs_accepted: expect.any(Number),
+      txs_rejected: expect.any(Number),
       uptime: expect.objectContaining({
         secs: expect.any(Number),
         nanos: expect.any(Number),
       }),
+      view_changes: expect.any(Number),
     }),
   )
 })

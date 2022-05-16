@@ -40,7 +40,7 @@ function transformArray(ref: string): string {
 /**
  * - Removes module paths
  * - Handles special collision cases like data::Event / pipeline::Event
- * - Transforms BTreeMap to VecTuple and BTreeSet to Vec
+ * - Transforms Map to VecTuple and Set to Vec
  * - Makes identifiers valid JS identifiers in PascalCase
  */
 function normalizeIdentifier(ref: string): string {
@@ -59,7 +59,10 @@ function normalizeIdentifier(ref: string): string {
     .replace(/iroha_data_model::isi::If/g, 'IfInstruction')
     .replace(/iroha_version::error::Error/g, 'VersionError')
     .replace(/query::(\w+)?Error/g, 'Query$1Error')
+    .replace('AtomicU32Wrapper', 'U32')
+    // removing module paths
     .replace(/(?:\w+::)*(\w+)/g, '$1')
+    // replacing all non-word chars with underscore
     .replace(/[^\w]/g, '_')
 
   return pascal(randCase)
