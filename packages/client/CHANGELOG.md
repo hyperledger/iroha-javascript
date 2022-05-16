@@ -1,5 +1,16 @@
 # @iroha2/client
 
+## 1.2.0
+
+### Minor Changes
+
+- update client according to updated data-model for RC4 (`d00e0a9172d2a887a97f504796db5f2e05939c10`)
+
+### Patch Changes
+
+- Updated dependencies
+  - @iroha2/data-model@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
