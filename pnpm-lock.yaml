@@ -67,7 +67,7 @@ importers:
       '@iroha2/client-isomorphic-fetch': workspace:^0.1.0
       '@iroha2/client-isomorphic-ws': workspace:^0.2.0
       '@iroha2/crypto-core': workspace:^0.1.0
-      '@iroha2/data-model': workspace:^1.1.0
+      '@iroha2/data-model': workspace:^1.2.0
       consola: ^2.15.3
       debug: ^4.3.4
       emittery: ^0.10.1
@@ -206,7 +206,7 @@ importers:
       gulp: 4.0.2
       make-dir: 3.1.0
       rollup: 2.70.1
-      rollup-plugin-dts: 4.2.0_rollup@2.70.1+typescript@4.6.3
+      rollup-plugin-dts: 4.2.0_rollup@2.70.1+typescript@4.6.4
       zx: 4.2.0
 
   packages/crypto/packages/core:
@@ -7038,7 +7038,7 @@ packages:
     dependencies:
       glob: 7.2.0
 
-  /rollup-plugin-dts/4.2.0_rollup@2.70.1+typescript@4.6.3:
+  /rollup-plugin-dts/4.2.0_rollup@2.70.1+typescript@4.6.4:
     resolution: {integrity: sha512-lx6irWVhz/x4//tIqRhzk4FOqGQ0n37ZM2wpPCn4uafl/EmiV92om7ZdAsq7Bzho6C+Xh5GfsyuP9H+Udv72Lg==}
     engines: {node: '>=v12.22.10'}
     peerDependencies:
@@ -7047,7 +7047,7 @@ packages:
     dependencies:
       magic-string: 0.26.1
       rollup: 2.70.1
-      typescript: 4.6.3
+      typescript: 4.6.4
     optionalDependencies:
       '@babel/code-frame': 7.16.7
     dev: true
