@@ -15,9 +15,9 @@ import {
   EvaluatesToBool,
   EvaluatesToRegistrableBox,
   EvaluatesToValue,
-  EventFilter,
   Executable,
   Expression,
+  FilterBox,
   FindAssetById,
   FindAssetsByAccountId,
   IdBox,
@@ -395,7 +395,7 @@ test('When querying for unexisting domain, returns FindError', async () => {
 
 describe('Events API', () => {
   test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
-    const filter = EventFilter(
+    const filter = FilterBox(
       'Pipeline',
       PipelineEventFilter({
         entity_kind: OptionPipelineEntityKind('Some', PipelineEntityKind('Transaction')),

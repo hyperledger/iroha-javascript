@@ -59,7 +59,10 @@ function normalizeIdentifier(ref: string): string {
     .replace(/iroha_data_model::isi::If/g, 'IfInstruction')
     .replace(/iroha_version::error::Error/g, 'VersionError')
     .replace(/query::(\w+)?Error/g, 'Query$1Error')
+    .replace('AtomicU32Wrapper', 'U32')
+    // removing module paths
     .replace(/(?:\w+::)*(\w+)/g, '$1')
+    // replacing all non-word chars with underscore
     .replace(/[^\w]/g, '_')
 
   return pascal(randCase)

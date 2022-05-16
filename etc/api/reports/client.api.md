@@ -9,8 +9,8 @@ import { CloseEvent as CloseEvent_2 } from '@iroha2/client-isomorphic-ws';
 import Emittery from 'emittery';
 import { Event as Event_2 } from '@iroha2/client-isomorphic-ws';
 import { Event as Event_3 } from '@iroha2/data-model';
-import { EventFilter } from '@iroha2/data-model';
 import { Executable } from '@iroha2/data-model';
+import { FilterBox } from '@iroha2/data-model';
 import { IrohaCryptoInterface } from '@iroha2/crypto-core';
 import { KeyPair } from '@iroha2/crypto-core';
 import { MapNameValue } from '@iroha2/data-model';
@@ -148,7 +148,7 @@ export function setupEvents(params: SetupEventsParams): Promise<SetupEventsRetur
 // @public (undocumented)
 export interface SetupEventsParams {
     // (undocumented)
-    filter: EventFilter;
+    filter: FilterBox;
     // (undocumented)
     toriiApiURL: string;
 }

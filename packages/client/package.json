@@ -29,7 +29,7 @@
     "@iroha2/client-isomorphic-ws": "workspace:^0.2.0",
     "@iroha2/crypto-core": "workspace:^0.1.0",
     "@iroha2/data-model": "workspace:^1.1.0",
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "emittery": "^0.10.1",
     "json-bigint": "^1.0.0"
   },

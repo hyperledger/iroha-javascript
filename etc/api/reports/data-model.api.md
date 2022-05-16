@@ -67,14 +67,14 @@ export interface AccountId extends Opaque<AccountId__actual, AccountId> {
 // @public (undocumented)
 export const AccountId: StructCodecAndFactory<AccountId__actual, AccountId>;
 
-// Warning: (ae-forgotten-export) The symbol "Action__actual" needs to be exported by the entry point lib.d.ts
+// Warning: (ae-forgotten-export) The symbol "ActionFilterBox__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
-export interface Action extends Opaque<Action__actual, Action> {
+export interface ActionFilterBox extends Opaque<ActionFilterBox__actual, ActionFilterBox> {
 }
 
 // @public (undocumented)
-export const Action: StructCodecAndFactory<Action__actual, Action>;
+export const ActionFilterBox: StructCodecAndFactory<ActionFilterBox__actual, ActionFilterBox>;
 
 // Warning: (ae-forgotten-export) The symbol "Add__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -542,15 +542,6 @@ interface Event_2 extends Opaque<Event__actual, Event_2> {
 const Event_2: EnumCodecAndFactory<Event_2>;
 export { Event_2 as Event }
 
-// Warning: (ae-forgotten-export) The symbol "EventFilter__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface EventFilter extends Opaque<EventFilter__actual, EventFilter> {
-}
-
-// @public (undocumented)
-export const EventFilter: EnumCodecAndFactory<EventFilter>;
-
 // Warning: (ae-forgotten-export) The symbol "EventPublisherMessage__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -631,6 +622,15 @@ export interface FailBox extends Opaque<FailBox__actual, FailBox> {
 
 // @public (undocumented)
 export const FailBox: StructCodecAndFactory<FailBox__actual, FailBox>;
+
+// Warning: (ae-forgotten-export) The symbol "FilterBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FilterBox extends Opaque<FilterBox__actual, FilterBox> {
+}
+
+// @public (undocumented)
+export const FilterBox: EnumCodecAndFactory<FilterBox>;
 
 // Warning: (ae-forgotten-export) The symbol "FilterOptAccountEventFilter__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -865,6 +865,15 @@ export interface FindAccountsByName extends Opaque<FindAccountsByName__actual, F
 
 // @public (undocumented)
 export const FindAccountsByName: StructCodecAndFactory<FindAccountsByName__actual, FindAccountsByName>;
+
+// Warning: (ae-forgotten-export) The symbol "FindAccountsWithAsset__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindAccountsWithAsset extends Opaque<FindAccountsWithAsset__actual, FindAccountsWithAsset> {
+}
+
+// @public (undocumented)
+export const FindAccountsWithAsset: StructCodecAndFactory<FindAccountsWithAsset__actual, FindAccountsWithAsset>;
 
 // Warning: (ae-forgotten-export) The symbol "FindAssetById__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -2045,15 +2054,6 @@ export interface TransferBox extends Opaque<TransferBox__actual, TransferBox> {
 // @public (undocumented)
 export const TransferBox: StructCodecAndFactory<TransferBox__actual, TransferBox>;
 
-// Warning: (ae-forgotten-export) The symbol "Trigger__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface Trigger extends Opaque<Trigger__actual, Trigger> {
-}
-
-// @public (undocumented)
-export const Trigger: StructCodecAndFactory<Trigger__actual, Trigger>;
-
 // Warning: (ae-forgotten-export) The symbol "TriggerEvent__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -2080,6 +2080,15 @@ export interface TriggerFilter extends Opaque<TriggerFilter__actual, TriggerFilt
 
 // @public (undocumented)
 export const TriggerFilter: StructCodecAndFactory<TriggerFilter__actual, TriggerFilter>;
+
+// Warning: (ae-forgotten-export) The symbol "TriggerFilterBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface TriggerFilterBox extends Opaque<TriggerFilterBox__actual, TriggerFilterBox> {
+}
+
+// @public (undocumented)
+export const TriggerFilterBox: StructCodecAndFactory<TriggerFilterBox__actual, TriggerFilterBox>;
 
 // Warning: (ae-forgotten-export) The symbol "TriggerId__actual" needs to be exported by the entry point lib.d.ts
 //

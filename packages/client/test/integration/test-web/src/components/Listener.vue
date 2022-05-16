@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SetupEventsReturn } from '@iroha2/client'
 import {
-  EventFilter,
+  FilterBox,
   OptionHash,
   OptionPipelineEntityKind,
   OptionPipelineStatusKind,
@@ -26,7 +26,7 @@ const isListening = computed(() => !!currentListener.value)
 
 async function startListening() {
   currentListener.value = await client.listenForEvents({
-    filter: EventFilter(
+    filter: FilterBox(
       'Pipeline',
       PipelineEventFilter({
         entity_kind: OptionPipelineEntityKind('Some', PipelineEntityKind('Transaction')),

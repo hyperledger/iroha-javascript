@@ -75,9 +75,9 @@ defineCase(
             'Identifiable',
             lib.IdentifiableBox(
               'Trigger',
-              lib.Trigger({
+              lib.TriggerFilterBox({
                 id: lib.DomainId({ name: 'mint_rose' }),
-                action: lib.Action({
+                action: lib.ActionFilterBox({
                   executable: lib.Executable(
                     'Instructions',
                     lib.VecInstruction([
@@ -93,7 +93,7 @@ defineCase(
                     ]),
                   ),
                   repeats: lib.Repeats('Indefinitely'),
-                  filter: lib.EventFilter(
+                  filter: lib.FilterBox(
                     'Time',
                     lib.ExecutionTime(
                       'Schedule',
@@ -142,9 +142,9 @@ defineCase(
             'Identifiable',
             lib.IdentifiableBox(
               'Trigger',
-              lib.Trigger({
+              lib.TriggerFilterBox({
                 id: lib.DomainId({ name: 'mint_rose' }),
-                action: lib.Action({
+                action: lib.ActionFilterBox({
                   executable: lib.Executable(
                     'Instructions',
                     lib.VecInstruction([
@@ -160,7 +160,7 @@ defineCase(
                     ]),
                   ),
                   repeats: lib.Repeats('Indefinitely'),
-                  filter: lib.EventFilter(
+                  filter: lib.FilterBox(
                     'Data',
                     lib.FilterOptEntityFilter(
                       'BySome',

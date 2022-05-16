@@ -1,7 +1,7 @@
 import {
   Event,
-  EventFilter,
   EventSubscriberMessage,
+  FilterBox,
   VersionedEventPublisherMessage,
   VersionedEventSubscriberMessage,
 } from '@iroha2/data-model'
@@ -18,7 +18,7 @@ export interface EventsEmitteryMap extends SocketEmitMapBase {
 
 export interface SetupEventsParams {
   toriiApiURL: string
-  filter: EventFilter
+  filter: FilterBox
 }
 
 export interface SetupEventsReturn {

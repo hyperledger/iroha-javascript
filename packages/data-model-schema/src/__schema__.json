@@ -1,4 +1,7 @@
 {
+  "AtomicU32Wrapper": {
+    "Int": "FixedWidth"
+  },
   "Compact<u128>": {
     "Int": "Compact"
   },
@@ -834,7 +837,7 @@
         {
           "name": "Trigger",
           "discriminant": 7,
-          "ty": "iroha_data_model::trigger::Trigger"
+          "ty": "iroha_data_model::trigger::Trigger<iroha_data_model::events::FilterBox>"
         },
         {
           "name": "Role",
@@ -908,7 +911,7 @@
         {
           "name": "Trigger",
           "discriminant": 5,
-          "ty": "iroha_data_model::trigger::Trigger"
+          "ty": "iroha_data_model::trigger::Trigger<iroha_data_model::events::FilterBox>"
         },
         {
           "name": "Role",
@@ -1315,32 +1318,6 @@
       ]
     }
   },
-  "iroha_data_model::events::EventFilter": {
-    "Enum": {
-      "variants": [
-        {
-          "name": "Pipeline",
-          "discriminant": 0,
-          "ty": "iroha_data_model::events::pipeline::EventFilter"
-        },
-        {
-          "name": "Data",
-          "discriminant": 1,
-          "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::EntityFilter>"
-        },
-        {
-          "name": "Time",
-          "discriminant": 2,
-          "ty": "iroha_data_model::events::time::EventFilter"
-        },
-        {
-          "name": "ExecuteTrigger",
-          "discriminant": 3,
-          "ty": "iroha_data_model::events::execute_trigger::EventFilter"
-        }
-      ]
-    }
-  },
   "iroha_data_model::events::EventPublisherMessage": {
     "Enum": {
       "variants": [
@@ -1363,12 +1340,38 @@
         {
           "name": "SubscriptionRequest",
           "discriminant": 0,
-          "ty": "iroha_data_model::events::EventFilter"
+          "ty": "iroha_data_model::events::FilterBox"
         },
         {
           "name": "EventReceived",
           "discriminant": 1,
           "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::events::FilterBox": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Pipeline",
+          "discriminant": 0,
+          "ty": "iroha_data_model::events::pipeline::EventFilter"
+        },
+        {
+          "name": "Data",
+          "discriminant": 1,
+          "ty": "iroha_data_model::events::data::filters::FilterOpt<iroha_data_model::events::data::filters::EntityFilter>"
+        },
+        {
+          "name": "Time",
+          "discriminant": 2,
+          "ty": "iroha_data_model::events::time::EventFilter"
+        },
+        {
+          "name": "ExecuteTrigger",
+          "discriminant": 3,
+          "ty": "iroha_data_model::events::execute_trigger::EventFilter"
         }
       ]
     }
@@ -3472,128 +3475,133 @@
           "ty": "iroha_data_model::query::account::FindAccountsByDomainId"
         },
         {
-          "name": "FindAllAssets",
+          "name": "FindAccountsWithAsset",
           "discriminant": 5,
+          "ty": "iroha_data_model::query::account::FindAccountsWithAsset"
+        },
+        {
+          "name": "FindAllAssets",
+          "discriminant": 6,
           "ty": "iroha_data_model::query::asset::FindAllAssets"
         },
         {
           "name": "FindAllAssetsDefinitions",
-          "discriminant": 6,
+          "discriminant": 7,
           "ty": "iroha_data_model::query::asset::FindAllAssetsDefinitions"
         },
         {
           "name": "FindAssetById",
-          "discriminant": 7,
+          "discriminant": 8,
           "ty": "iroha_data_model::query::asset::FindAssetById"
         },
         {
           "name": "FindAssetsByName",
-          "discriminant": 8,
+          "discriminant": 9,
           "ty": "iroha_data_model::query::asset::FindAssetsByName"
         },
         {
           "name": "FindAssetsByAccountId",
-          "discriminant": 9,
+          "discriminant": 10,
           "ty": "iroha_data_model::query::asset::FindAssetsByAccountId"
         },
         {
           "name": "FindAssetsByAssetDefinitionId",
-          "discriminant": 10,
+          "discriminant": 11,
           "ty": "iroha_data_model::query::asset::FindAssetsByAssetDefinitionId"
         },
         {
           "name": "FindAssetsByDomainId",
-          "discriminant": 11,
+          "discriminant": 12,
           "ty": "iroha_data_model::query::asset::FindAssetsByDomainId"
         },
         {
           "name": "FindAssetsByDomainIdAndAssetDefinitionId",
-          "discriminant": 12,
+          "discriminant": 13,
           "ty": "iroha_data_model::query::asset::FindAssetsByDomainIdAndAssetDefinitionId"
         },
         {
           "name": "FindAssetQuantityById",
-          "discriminant": 13,
+          "discriminant": 14,
           "ty": "iroha_data_model::query::asset::FindAssetQuantityById"
         },
         {
           "name": "FindAssetKeyValueByIdAndKey",
-          "discriminant": 14,
+          "discriminant": 15,
           "ty": "iroha_data_model::query::asset::FindAssetKeyValueByIdAndKey"
         },
         {
           "name": "FindAssetDefinitionKeyValueByIdAndKey",
-          "discriminant": 15,
+          "discriminant": 16,
           "ty": "iroha_data_model::query::asset::FindAssetDefinitionKeyValueByIdAndKey"
         },
         {
           "name": "FindAllDomains",
-          "discriminant": 16,
+          "discriminant": 17,
           "ty": "iroha_data_model::query::domain::FindAllDomains"
         },
         {
           "name": "FindDomainById",
-          "discriminant": 17,
+          "discriminant": 18,
           "ty": "iroha_data_model::query::domain::FindDomainById"
         },
         {
           "name": "FindDomainKeyValueByIdAndKey",
-          "discriminant": 18,
+          "discriminant": 19,
           "ty": "iroha_data_model::query::domain::FindDomainKeyValueByIdAndKey"
         },
         {
           "name": "FindAllPeers",
-          "discriminant": 19,
+          "discriminant": 20,
           "ty": "iroha_data_model::query::peer::FindAllPeers"
         },
         {
           "name": "FindTransactionsByAccountId",
-          "discriminant": 20,
+          "discriminant": 21,
           "ty": "iroha_data_model::query::transaction::FindTransactionsByAccountId"
         },
         {
           "name": "FindTransactionByHash",
-          "discriminant": 21,
+          "discriminant": 22,
           "ty": "iroha_data_model::query::transaction::FindTransactionByHash"
         },
         {
           "name": "FindPermissionTokensByAccountId",
-          "discriminant": 22,
+          "discriminant": 23,
           "ty": "iroha_data_model::query::permissions::FindPermissionTokensByAccountId"
         },
         {
           "name": "FindAllActiveTriggerIds",
-          "discriminant": 23,
+          "discriminant": 24,
           "ty": "iroha_data_model::query::trigger::FindAllActiveTriggerIds"
         },
         {
           "name": "FindTriggerById",
-          "discriminant": 24,
+          "discriminant": 25,
           "ty": "iroha_data_model::query::trigger::FindTriggerById"
         },
         {
           "name": "FindTriggerKeyValueByIdAndKey",
-          "discriminant": 25,
+          "discriminant": 26,
           "ty": "iroha_data_model::query::trigger::FindTriggerKeyValueByIdAndKey"
         },
         {
           "name": "FindAllRoles",
-          "discriminant": 26,
+          "discriminant": 27,
           "ty": "iroha_data_model::query::role::FindAllRoles"
         },
         {
           "name": "FindAllRoleIds",
-          "discriminant": 27,
+          "discriminant": 28,
           "ty": "iroha_data_model::query::role::FindAllRoleIds"
         },
         {
           "name": "FindRoleByRoleId",
-          "discriminant": 28,
+          "discriminant": 29,
           "ty": "iroha_data_model::query::role::FindRoleByRoleId"
         },
         {
           "name": "FindRolesByAccountId",
-          "discriminant": 29,
+          "discriminant": 30,
           "ty": "iroha_data_model::query::role::FindRolesByAccountId"
         }
       ]
@@ -3682,6 +3690,16 @@
         {
           "name": "name",
           "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::query::account::FindAccountsWithAsset": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "asset_definition_id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>"
         }
       ]
     }
@@ -4215,32 +4233,6 @@
       ]
     }
   },
-  "iroha_data_model::trigger::Action": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "executable",
-          "ty": "iroha_data_model::transaction::Executable"
-        },
-        {
-          "name": "repeats",
-          "ty": "iroha_data_model::trigger::Repeats"
-        },
-        {
-          "name": "technical_account",
-          "ty": "iroha_data_model::account::Id"
-        },
-        {
-          "name": "filter",
-          "ty": "iroha_data_model::events::EventFilter"
-        },
-        {
-          "name": "metadata",
-          "ty": "iroha_data_model::metadata::Metadata"
-        }
-      ]
-    }
-  },
   "iroha_data_model::trigger::Id": {
     "Struct": {
       "declarations": [
@@ -4251,7 +4243,47 @@
       ]
     }
   },
-  "iroha_data_model::trigger::Repeats": {
+  "iroha_data_model::trigger::Trigger<iroha_data_model::events::FilterBox>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "id",
+          "ty": "iroha_data_model::trigger::Id"
+        },
+        {
+          "name": "action",
+          "ty": "iroha_data_model::trigger::action::Action<iroha_data_model::events::FilterBox>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::trigger::action::Action<iroha_data_model::events::FilterBox>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "executable",
+          "ty": "iroha_data_model::transaction::Executable"
+        },
+        {
+          "name": "repeats",
+          "ty": "iroha_data_model::trigger::action::Repeats"
+        },
+        {
+          "name": "technical_account",
+          "ty": "iroha_data_model::account::Id"
+        },
+        {
+          "name": "filter",
+          "ty": "iroha_data_model::events::FilterBox"
+        },
+        {
+          "name": "metadata",
+          "ty": "iroha_data_model::metadata::Metadata"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::trigger::action::Repeats": {
     "Enum": {
       "variants": [
         {
@@ -4262,21 +4294,7 @@
         {
           "name": "Exactly",
           "discriminant": 1,
-          "ty": "u32"
-        }
-      ]
-    }
-  },
-  "iroha_data_model::trigger::Trigger": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "id",
-          "ty": "iroha_data_model::trigger::Id"
-        },
-        {
-          "name": "action",
-          "ty": "iroha_data_model::trigger::Action"
+          "ty": "AtomicU32Wrapper"
         }
       ]
     }

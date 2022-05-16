@@ -54,6 +54,9 @@ describe('Refs transformation', () => {
     ['iroha_version::error::Error', 'VersionError'],
     ['iroha_core::smartcontracts::isi::query::UnsupportedVersionError', 'QueryUnsupportedVersionError'],
     ['iroha_core::smartcontracts::isi::query::Error', 'QueryError'],
+
+    // New in RC4
+    ['AtomicU32Wrapper', 'U32'],
   ])('%s transformed into %s', (input, output) => {
     expect(transform(input)).toEqual(output)
   })
