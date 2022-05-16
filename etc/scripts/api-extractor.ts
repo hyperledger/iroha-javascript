@@ -1,8 +1,8 @@
 import { Extractor, ExtractorConfig, ExtractorResult } from '@microsoft/api-extractor'
-import { PUBLIC_PACKAGES, getPackageApiExtractorConfigFile } from '../meta'
+import { PUBLIC_PACKAGES_WITH_API_REPORT, getPackageApiExtractorConfigFile } from '../meta'
 
 export async function runApiExtractor(localBuild = false) {
-  for (const pkg of PUBLIC_PACKAGES) {
+  for (const pkg of PUBLIC_PACKAGES_WITH_API_REPORT) {
     const extractorConfig: ExtractorConfig = ExtractorConfig.loadFileAndPrepare(getPackageApiExtractorConfigFile(pkg))
 
     // Invoke API Extractor

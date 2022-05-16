@@ -1,13 +1,13 @@
 import * as esbuild from 'esbuild'
 import {
   BUNDLE_PACKAGES,
-  BundlePackages,
+  BundlePackage,
   getBundlePackageExternals,
   getBundlePackageInput,
   getBundlePackageOutput,
 } from '../meta'
 
-async function build(name: BundlePackages, format: 'esm' | 'cjs') {
+async function build(name: BundlePackage, format: 'esm' | 'cjs') {
   await esbuild.build({
     entryPoints: [getBundlePackageInput(name)],
     bundle: true,
