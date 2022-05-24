@@ -26,6 +26,7 @@
     "esno": "^0.12.1",
     "execa": "5.1.1",
     "immutable": "^4.0.0",
-    "type-fest": "^2.12.0"
+    "type-fest": "^2.12.0",
+    "typescript": "^4.6.4"
   }
 }

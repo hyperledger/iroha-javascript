@@ -2,9 +2,13 @@
   "name": "@iroha2/crypto-target-bundler",
   "version": "0.1.1",
   "license": "Apache 2.0",
-  "module": "index.js",
-  "types": "index.d.ts",
-  "devDependencies": {
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "dependencies": {
     "@iroha2/crypto-core": "workspace:^0.1.0"
   }
 }

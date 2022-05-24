@@ -5,11 +5,12 @@
   "publishConfig": {
     "main": "dist/lib.cjs.js",
     "module": "dist/lib.esm.js",
-    "types": "dist/lib.d.ts",
-    "files": [
-      "dist"
-    ]
+    "types": "dist/lib.d.ts"
   },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "license": "Apache 2.0",
   "scripts": {
     "build:tsc": "tsc"

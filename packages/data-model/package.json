@@ -5,11 +5,12 @@
   "publishConfig": {
     "main": "dist/lib.cjs.js",
     "module": "dist/lib.esm.js",
-    "types": "dist/lib.d.ts",
-    "files": [
-      "dist"
-    ]
+    "types": "dist/lib.d.ts"
   },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "license": "Apache 2.0",
   "scripts": {
     "test": "vitest run",
@@ -32,6 +33,7 @@
     "debug": "^4.3.4",
     "esno": "^0.12.1",
     "execa": "5.1.1",
-    "immutable": "^4.0.0"
+    "immutable": "^4.0.0",
+    "typescript": "^4.6.4"
   }
 }

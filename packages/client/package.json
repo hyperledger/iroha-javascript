@@ -5,11 +5,12 @@
   "publishConfig": {
     "main": "dist/lib.cjs.js",
     "module": "dist/lib.esm.js",
-    "types": "dist/lib.d.ts",
-    "files": [
-      "dist"
-    ]
+    "types": "dist/lib.d.ts"
   },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "license": "Apache 2.0",
   "engines": {
     "node": ">=14.0.0"
@@ -18,10 +19,10 @@
     "test": "vitest run",
     "test:integration": "run-s test:prepare test:node test:web",
     "test:prepare": "run-p test:prepare:build-isomorphic test:prepare:peer",
-    "test:prepare:build-isomorphic": "pnpm run build --parallel --filter \"@iroha2/client-isomorphic-*\"",
+    "test:prepare:build-isomorphic": "pnpm --parallel --filter \"@iroha2/client-isomorphic-*\" run build",
     "test:prepare:peer": "esno test/integration/prepare-peer",
-    "test:node": "pnpm test --filter client-test-node",
-    "test:web": "pnpm test --filter client-test-web",
+    "test:node": "pnpm --filter client-test-node test",
+    "test:web": "pnpm --filter client-test-web test",
     "build:tsc": "tsc"
   },
   "dependencies": {
@@ -34,6 +35,7 @@
     "json-bigint": "^1.0.0"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "consola": "^2.15.3",
     "esno": "^0.12.1",
     "npm-run-all": "^4.1.5",

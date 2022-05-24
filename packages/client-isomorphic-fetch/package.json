@@ -19,7 +19,7 @@
     "build:native": "esbuild --bundle src/native.ts --outfile=dist/native.js --format=esm"
   },
   "dependencies": {
-    "node-fetch": "^2.6.6"
+    "node-fetch": "^3.2.4"
   },
   "devDependencies": {
     "esbuild": "^0.14.27",

@@ -6,7 +6,12 @@ import { bundle } from './etc/scripts/bundle'
 import { PUBLIC_PACKAGES, scopePackage } from './etc/meta'
 
 export async function clean() {
-  await del(['**/dist', '**/dist-tsc'])
+  await del([
+    '**/dist',
+    // their dists are static
+    '!./packages/crypto/packages/*/dist',
+    '**/dist-tsc',
+  ])
 }
 
 async function buildTS() {
