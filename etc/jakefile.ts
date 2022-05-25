@@ -8,8 +8,9 @@ import del from 'del'
 import { $ } from 'zx'
 import {
   BUNDLE_PACKAGES,
-  BundlePackages as BundlePackage,
+  BundlePackage,
   PUBLIC_PACKAGES,
+  PUBLIC_PACKAGES_WITH_API_REPORT,
   getBundlePackageExternals,
   getBundlePackageInput,
   getBundlePackageOutput,
@@ -20,7 +21,7 @@ import { Extractor, ExtractorConfig, ExtractorResult } from '@microsoft/api-extr
 import * as esbuild from 'esbuild'
 
 async function runApiExtractor(localBuild = false) {
-  for (const pkg of PUBLIC_PACKAGES) {
+  for (const pkg of PUBLIC_PACKAGES_WITH_API_REPORT) {
     const extractorConfig: ExtractorConfig = ExtractorConfig.loadFileAndPrepare(getPackageApiExtractorConfigFile(pkg))
 
     // Invoke API Extractor
