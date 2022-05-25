@@ -6,5 +6,5 @@
   "access": "restricted",
   "baseBranch": "iroha2",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["@iroha2/crypto-test-*", "@iroha2/client-test-*"]
 }

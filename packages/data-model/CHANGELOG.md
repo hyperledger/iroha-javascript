@@ -1,5 +1,13 @@
 # @iroha2/data-model
 
+## 1.2.1
+
+### Patch Changes
+
+- 49c8451: chore: include only necessary files into `files` field in the `package.json`
+- Updated dependencies [49c8451]
+  - @iroha2/i64-fixnum@0.3.1
+
 ## 1.2.0
 
 ### Minor Changes

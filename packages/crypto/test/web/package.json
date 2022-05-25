@@ -10,7 +10,7 @@
     "test": "pnpm build && start-server-and-test preview http://127.0.0.1:3030 cy:run"
   },
   "devDependencies": {
-    "@iroha2/crypto-target-web": "workspace:^0.1.0",
+    "@iroha2/crypto-target-web": "workspace:^0.2.0",
     "cypress": "^9.5.2",
     "hada": "^0.0.8",
     "start-server-and-test": "^1.14.0",

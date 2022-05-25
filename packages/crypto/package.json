@@ -11,7 +11,7 @@
     "test": "pnpm --parallel --filter \"@iroha2/crypto-test-*\" run test"
   },
   "devDependencies": {
-    "@iroha2/crypto-target-web": "workspace:^0.1.0",
+    "@iroha2/crypto-target-web": "workspace:^0.2.0",
     "@types/jake": "^0.0.33",
     "chalk": "4.1.2",
     "consola": "^2.15.3",

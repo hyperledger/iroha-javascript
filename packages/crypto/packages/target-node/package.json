@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/crypto-target-node",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "Apache 2.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "CHANGELOG.md"
   ],
   "dependencies": {
-    "@iroha2/crypto-core": "workspace:^0.1.0"
+    "@iroha2/crypto-core": "workspace:^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.35",
