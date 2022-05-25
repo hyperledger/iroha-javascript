@@ -43,7 +43,7 @@ module.exports = {
     },
     // Jakefiles
     {
-      files: ['packages/crypto/etc/jakefile.ts'],
+      files: ['packages/crypto/etc/jakefile.ts', 'etc/jakefile.ts'],
       globals: {
         desc: true,
         task: true,
