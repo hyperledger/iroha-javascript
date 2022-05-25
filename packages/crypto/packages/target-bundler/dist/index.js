@@ -1,4 +1,4 @@
-import * as wasm from "./wasm_pack_output";
+import * as wasm from "./wasm/crypto";
 const crypto = wasm;
 export {
   crypto

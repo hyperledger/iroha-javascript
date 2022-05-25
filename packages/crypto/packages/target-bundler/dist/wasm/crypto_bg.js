@@ -1,4 +1,4 @@
-import * as wasm from './wasm_pack_output_bg.wasm';
+import * as wasm from './crypto_bg.wasm';
 
 const lTextDecoder = typeof TextDecoder === 'undefined' ? (0, module.require)('util').TextDecoder : TextDecoder;
 
@@ -789,6 +789,14 @@ export function __wbindgen_object_drop_ref(arg0) {
     takeObject(arg0);
 };
 
+export function __wbg_randomFillSync_d2ba53160aec6aba(arg0, arg1, arg2) {
+    getObject(arg0).randomFillSync(getArrayU8FromWasm0(arg1, arg2));
+};
+
+export function __wbg_getRandomValues_e57c9b75ddead065(arg0, arg1) {
+    getObject(arg0).getRandomValues(getObject(arg1));
+};
+
 export function __wbg_self_86b4b13392c7af56() { return handleError(function () {
     var ret = self.self;
     return addHeapObject(ret);
@@ -822,14 +830,6 @@ export function __wbg_require_f5521a5b85ad2542(arg0, arg1, arg2) {
 export function __wbg_getRandomValues_dd27e6b0652b3236(arg0) {
     var ret = getObject(arg0).getRandomValues;
     return addHeapObject(ret);
-};
-
-export function __wbg_getRandomValues_e57c9b75ddead065(arg0, arg1) {
-    getObject(arg0).getRandomValues(getObject(arg1));
-};
-
-export function __wbg_randomFillSync_d2ba53160aec6aba(arg0, arg1, arg2) {
-    getObject(arg0).randomFillSync(getArrayU8FromWasm0(arg1, arg2));
 };
 
 export function __wbg_buffer_eb2155f17856c20b(arg0) {
