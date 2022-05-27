@@ -15,7 +15,7 @@ mod varint;
 
 use alloc::{
     borrow::ToOwned,
-    collections::Map,
+    collections::BTreeMap as Map,
     string::{String, ToString},
     vec::Vec,
 };

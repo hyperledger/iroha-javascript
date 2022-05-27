@@ -1,5 +1,16 @@
 # @iroha2/client
 
+## 1.2.1
+
+### Patch Changes
+
+- 49c8451: chore: include only necessary files into `files` field in the `package.json`
+- Updated dependencies [49c8451]
+- Updated dependencies [49c8451]
+  - @iroha2/crypto-core@0.1.1
+  - @iroha2/data-model@1.2.1
+  - @iroha2/client-isomorphic-fetch@0.2.0
+
 ## 1.2.0
 
 ### Minor Changes

@@ -41,5 +41,13 @@ module.exports = {
         'vue/html-indent': ['warn', 2],
       },
     },
+    // Jakefiles
+    {
+      files: ['packages/crypto/etc/jakefile.ts', 'etc/jakefile.ts'],
+      globals: {
+        desc: true,
+        task: true,
+      },
+    },
   ],
 }
