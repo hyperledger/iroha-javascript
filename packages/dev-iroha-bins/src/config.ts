@@ -5,8 +5,8 @@ const config: Config = {
   git: {
     repo: 'https://github.com/hyperledger/iroha.git',
 
-    // v2.0.0-pre-rc.4
-    revision: 'd00e0a9172d2a887a97f504796db5f2e05939c10',
+    // v2.0.0-pre-rc.5
+    revision: '2ba9c8f73dabb5eda27a2a8dc66e44b7382e0405',
   },
   binaries: {
     [KnownBinaries.Kagami]: 'kagami',

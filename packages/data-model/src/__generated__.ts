@@ -26,6 +26,7 @@ const __dyn_Peer = dynCodec(() => Peer)
 const __dyn_AssetEventFilter = dynCodec(() => AssetEventFilter)
 const __dyn_VecPublicKey = dynCodec(() => VecPublicKey)
 const __dyn_SignaturesOfTransactionPayload = dynCodec(() => SignaturesOfTransactionPayload)
+const __dyn_VecHash = dynCodec(() => VecHash)
 const __dyn_ContainsAll = dynCodec(() => ContainsAll)
 const __dyn_Mod = dynCodec(() => Mod)
 const __dyn_TriggerEvent = dynCodec(() => TriggerEvent)
@@ -40,10 +41,12 @@ const __dyn_NotPermittedFail = dynCodec(() => NotPermittedFail)
 const __dyn_EvaluatesToHash = dynCodec(() => EvaluatesToHash)
 const __dyn_Or = dynCodec(() => Or)
 const __dyn_SignedQueryRequest = dynCodec(() => SignedQueryRequest)
+const __dyn_NewAssetDefinition = dynCodec(() => NewAssetDefinition)
 const __dyn_FindTransactionsByAccountId = dynCodec(() => FindTransactionsByAccountId)
 const __dyn_OptionHash = dynCodec(() => OptionHash)
 const __dyn_TimeSchedule = dynCodec(() => TimeSchedule)
 const __dyn_Domain = dynCodec(() => Domain)
+const __dyn_BlockValue = dynCodec(() => BlockValue)
 const __dyn_Proof = dynCodec(() => Proof)
 const __dyn_OptionTopology = dynCodec(() => OptionTopology)
 const __dyn_Multiply = dynCodec(() => Multiply)
@@ -69,7 +72,6 @@ const __dyn_EvaluatesToRoleId = dynCodec(() => EvaluatesToRoleId)
 const __dyn_VecEvent = dynCodec(() => VecEvent)
 const __dyn_QueryPayload = dynCodec(() => QueryPayload)
 const __dyn_Where = dynCodec(() => Where)
-const __dyn_ParentHashNotFound = dynCodec(() => ParentHashNotFound)
 const __dyn_FindAllDomains = dynCodec(() => FindAllDomains)
 const __dyn_VersionedTransaction = dynCodec(() => VersionedTransaction)
 const __dyn_RaiseTo = dynCodec(() => RaiseTo)
@@ -128,6 +130,7 @@ const __dyn_RejectionReason = dynCodec(() => RejectionReason)
 const __dyn_FilterOptAssetFilter = dynCodec(() => FilterOptAssetFilter)
 const __dyn_TimeEvent = dynCodec(() => TimeEvent)
 const __dyn_Instruction = dynCodec(() => Instruction)
+const __dyn_FindAllBlocks = dynCodec(() => FindAllBlocks)
 const __dyn_FindAllAccounts = dynCodec(() => FindAllAccounts)
 const __dyn_Hash = dynCodec(() => Hash)
 const __dyn_OptionIpfsPath = dynCodec(() => OptionIpfsPath)
@@ -214,6 +217,7 @@ const __dyn_PublicKey = dynCodec(() => PublicKey)
 const __dyn_VecPermissionToken = dynCodec(() => VecPermissionToken)
 const __dyn_EvaluatesToAssetId = dynCodec(() => EvaluatesToAssetId)
 const __dyn_AssetDefinitionEvent = dynCodec(() => AssetDefinitionEvent)
+const __dyn_BlockHeaderValue = dynCodec(() => BlockHeaderValue)
 const __dyn_SetKeyValueBox = dynCodec(() => SetKeyValueBox)
 const __dyn_FilterOptDomainFilter = dynCodec(() => FilterOptDomainFilter)
 const __dyn_WasmSmartContract = dynCodec(() => WasmSmartContract)
@@ -253,6 +257,7 @@ const __dyn_AssetDefinitionFilter = dynCodec(() => AssetDefinitionFilter)
 const __dyn_AssetValueType = dynCodec(() => AssetValueType)
 const __dyn_NoTransactionReceiptReceived = dynCodec(() => NoTransactionReceiptReceived)
 const __dyn_RoleEventFilter = dynCodec(() => RoleEventFilter)
+const __dyn_FindAssetDefinitionById = dynCodec(() => FindAssetDefinitionById)
 const __dyn_Mintable = dynCodec(() => Mintable)
 const __dyn_BurnBox = dynCodec(() => BurnBox)
 const __dyn_DomainFilter = dynCodec(() => DomainFilter)
@@ -263,6 +268,7 @@ const __dyn_QueryUnsupportedVersionError = dynCodec(() => QueryUnsupportedVersio
 const __dyn_ActionFilterBox = dynCodec(() => ActionFilterBox)
 const __dyn_PeerId = dynCodec(() => PeerId)
 const __dyn_VecValue = dynCodec(() => VecValue)
+const __dyn_FindAllTransactions = dynCodec(() => FindAllTransactions)
 const __dyn_FilterOptIdFilterAssetId = dynCodec(() => FilterOptIdFilterAssetId)
 const __dyn_FilterOptAssetEventFilter = dynCodec(() => FilterOptAssetEventFilter)
 const __dyn_ProofChain = dynCodec(() => ProofChain)
@@ -695,6 +701,28 @@ const BlockHeader: StructCodecAndFactory<BlockHeader__actual, BlockHeader> = cre
     ['genesis_topology', __dyn_OptionTopology]
 ])
 
+// Type: BlockHeaderValue
+
+interface BlockHeaderValue__actual {
+    timestamp: U128
+    height: U64
+    previous_block_hash: Hash
+    transactions_hash: HashOfMerkleTreeVersionedTransaction
+    rejected_transactions_hash: HashOfMerkleTreeVersionedTransaction
+    invalidated_blocks_hashes: VecHash
+}
+
+interface BlockHeaderValue extends Opaque<BlockHeaderValue__actual, BlockHeaderValue> {}
+
+const BlockHeaderValue: StructCodecAndFactory<BlockHeaderValue__actual, BlockHeaderValue> = createStructCodec<BlockHeaderValue__actual, BlockHeaderValue>('BlockHeaderValue', [
+    ['timestamp', U128],
+    ['height', U64],
+    ['previous_block_hash', __dyn_Hash],
+    ['transactions_hash', __dyn_HashOfMerkleTreeVersionedTransaction],
+    ['rejected_transactions_hash', __dyn_HashOfMerkleTreeVersionedTransaction],
+    ['invalidated_blocks_hashes', __dyn_VecHash]
+])
+
 // Type: BlockPublisherMessage
 
 type BlockPublisherMessage__actual = Enum<
@@ -733,6 +761,24 @@ interface BlockSubscriberMessage extends Opaque<BlockSubscriberMessage__actual, 
 const BlockSubscriberMessage: EnumCodecAndFactory<BlockSubscriberMessage> = createEnumCodec<BlockSubscriberMessage__actual, BlockSubscriberMessage>('BlockSubscriberMessage', [
     [0, 'SubscriptionRequest', U64],
     [1, 'BlockReceived']
+])
+
+// Type: BlockValue
+
+interface BlockValue__actual {
+    header: BlockHeaderValue
+    transactions: VecVersionedValidTransaction
+    rejected_transactions: VecVersionedRejectedTransaction
+    event_recommendations: VecEvent
+}
+
+interface BlockValue extends Opaque<BlockValue__actual, BlockValue> {}
+
+const BlockValue: StructCodecAndFactory<BlockValue__actual, BlockValue> = createStructCodec<BlockValue__actual, BlockValue>('BlockValue', [
+    ['header', __dyn_BlockHeaderValue],
+    ['transactions', __dyn_VecVersionedValidTransaction],
+    ['rejected_transactions', __dyn_VecVersionedRejectedTransaction],
+    ['event_recommendations', __dyn_VecEvent]
 ])
 
 // Type: BurnBox
@@ -1757,6 +1803,10 @@ import { Void as FindAllAssets } from '@scale-codec/definition-runtime'
 
 import { Void as FindAllAssetsDefinitions } from '@scale-codec/definition-runtime'
 
+// Type: FindAllBlocks
+
+import { Void as FindAllBlocks } from '@scale-codec/definition-runtime'
+
 // Type: FindAllDomains
 
 import { Void as FindAllDomains } from '@scale-codec/definition-runtime'
@@ -1773,6 +1823,10 @@ import { Void as FindAllRoleIds } from '@scale-codec/definition-runtime'
 
 import { Void as FindAllRoles } from '@scale-codec/definition-runtime'
 
+// Type: FindAllTransactions
+
+import { Void as FindAllTransactions } from '@scale-codec/definition-runtime'
+
 // Type: FindAssetById
 
 interface FindAssetById__actual {
@@ -1783,6 +1837,18 @@ interface FindAssetById extends Opaque<FindAssetById__actual, FindAssetById> {}
 
 const FindAssetById: StructCodecAndFactory<FindAssetById__actual, FindAssetById> = createStructCodec<FindAssetById__actual, FindAssetById>('FindAssetById', [
     ['id', __dyn_EvaluatesToAssetId]
+])
+
+// Type: FindAssetDefinitionById
+
+interface FindAssetDefinitionById__actual {
+    id: EvaluatesToAssetDefinitionId
+}
+
+interface FindAssetDefinitionById extends Opaque<FindAssetDefinitionById__actual, FindAssetDefinitionById> {}
+
+const FindAssetDefinitionById: StructCodecAndFactory<FindAssetDefinitionById__actual, FindAssetDefinitionById> = createStructCodec<FindAssetDefinitionById__actual, FindAssetDefinitionById>('FindAssetDefinitionById', [
+    ['id', __dyn_EvaluatesToAssetDefinitionId]
 ])
 
 // Type: FindAssetDefinitionKeyValueByIdAndKey
@@ -1921,7 +1987,7 @@ type FindError__actual = Enum<
     | ['Account', AccountId]
     | ['Domain', DomainId]
     | ['MetadataKey', Name]
-    | ['Block', ParentHashNotFound]
+    | ['Block', HashOfVersionedCommittedBlock]
     | ['Transaction', HashOfVersionedTransaction]
     | ['Context', Str]
     | ['Peer', PeerId]
@@ -1937,7 +2003,7 @@ const FindError: EnumCodecAndFactory<FindError> = createEnumCodec<FindError__act
     [2, 'Account', __dyn_AccountId],
     [3, 'Domain', __dyn_DomainId],
     [4, 'MetadataKey', __dyn_Name],
-    [5, 'Block', __dyn_ParentHashNotFound],
+    [5, 'Block', __dyn_HashOfVersionedCommittedBlock],
     [6, 'Transaction', __dyn_HashOfVersionedTransaction],
     [7, 'Context', Str],
     [8, 'Peer', __dyn_PeerId],
@@ -2189,6 +2255,7 @@ type IdentifiableBox__actual = Enum<
     | ['Peer', Peer]
     | ['NewDomain', NewDomain]
     | ['NewAccount', NewAccount]
+    | ['NewAssetDefinition', NewAssetDefinition]
     | ['Domain', Domain]
     | ['Account', Account]
     | ['AssetDefinition', AssetDefinition]
@@ -2203,12 +2270,13 @@ const IdentifiableBox: EnumCodecAndFactory<IdentifiableBox> = createEnumCodec<Id
     [0, 'Peer', __dyn_Peer],
     [1, 'NewDomain', __dyn_NewDomain],
     [2, 'NewAccount', __dyn_NewAccount],
-    [3, 'Domain', __dyn_Domain],
-    [4, 'Account', __dyn_Account],
-    [5, 'AssetDefinition', __dyn_AssetDefinition],
-    [6, 'Asset', __dyn_Asset],
-    [7, 'Trigger', __dyn_TriggerFilterBox],
-    [8, 'Role', __dyn_Role]
+    [3, 'NewAssetDefinition', __dyn_NewAssetDefinition],
+    [4, 'Domain', __dyn_Domain],
+    [5, 'Account', __dyn_Account],
+    [6, 'AssetDefinition', __dyn_AssetDefinition],
+    [7, 'Asset', __dyn_Asset],
+    [8, 'Trigger', __dyn_TriggerFilterBox],
+    [9, 'Role', __dyn_Role]
 ])
 
 // Type: IfExpression
@@ -2479,6 +2547,24 @@ const NewAccount: StructCodecAndFactory<NewAccount__actual, NewAccount> = create
     ['metadata', __dyn_Metadata]
 ])
 
+// Type: NewAssetDefinition
+
+interface NewAssetDefinition__actual {
+    id: AssetDefinitionId
+    value_type: AssetValueType
+    mintable: Mintable
+    metadata: Metadata
+}
+
+interface NewAssetDefinition extends Opaque<NewAssetDefinition__actual, NewAssetDefinition> {}
+
+const NewAssetDefinition: StructCodecAndFactory<NewAssetDefinition__actual, NewAssetDefinition> = createStructCodec<NewAssetDefinition__actual, NewAssetDefinition>('NewAssetDefinition', [
+    ['id', __dyn_AssetDefinitionId],
+    ['value_type', __dyn_AssetValueType],
+    ['mintable', __dyn_Mintable],
+    ['metadata', __dyn_Metadata]
+])
+
 // Type: NewDomain
 
 interface NewDomain__actual {
@@ -2670,12 +2756,6 @@ const Parameter: EnumCodecAndFactory<Parameter> = createEnumCodec<Parameter__act
     [2, 'CommitTime', U128],
     [3, 'TransactionReceiptTime', U128]
 ])
-
-// Type: ParentHashNotFound
-
-type ParentHashNotFound = HashOfVersionedCommittedBlock
-
-const ParentHashNotFound: Codec<ParentHashNotFound> = __dyn_HashOfVersionedCommittedBlock
 
 // Type: Peer
 
@@ -2905,6 +2985,7 @@ type QueryBox__actual = Enum<
     | ['FindAllAssets', FindAllAssets]
     | ['FindAllAssetsDefinitions', FindAllAssetsDefinitions]
     | ['FindAssetById', FindAssetById]
+    | ['FindAssetDefinitionById', FindAssetDefinitionById]
     | ['FindAssetsByName', FindAssetsByName]
     | ['FindAssetsByAccountId', FindAssetsByAccountId]
     | ['FindAssetsByAssetDefinitionId', FindAssetsByAssetDefinitionId]
@@ -2917,6 +2998,8 @@ type QueryBox__actual = Enum<
     | ['FindDomainById', FindDomainById]
     | ['FindDomainKeyValueByIdAndKey', FindDomainKeyValueByIdAndKey]
     | ['FindAllPeers', FindAllPeers]
+    | ['FindAllBlocks', FindAllBlocks]
+    | ['FindAllTransactions', FindAllTransactions]
     | ['FindTransactionsByAccountId', FindTransactionsByAccountId]
     | ['FindTransactionByHash', FindTransactionByHash]
     | ['FindPermissionTokensByAccountId', FindPermissionTokensByAccountId]
@@ -2941,28 +3024,31 @@ const QueryBox: EnumCodecAndFactory<QueryBox> = createEnumCodec<QueryBox__actual
     [6, 'FindAllAssets', __dyn_FindAllAssets],
     [7, 'FindAllAssetsDefinitions', __dyn_FindAllAssetsDefinitions],
     [8, 'FindAssetById', __dyn_FindAssetById],
-    [9, 'FindAssetsByName', __dyn_FindAssetsByName],
-    [10, 'FindAssetsByAccountId', __dyn_FindAssetsByAccountId],
-    [11, 'FindAssetsByAssetDefinitionId', __dyn_FindAssetsByAssetDefinitionId],
-    [12, 'FindAssetsByDomainId', __dyn_FindAssetsByDomainId],
-    [13, 'FindAssetsByDomainIdAndAssetDefinitionId', __dyn_FindAssetsByDomainIdAndAssetDefinitionId],
-    [14, 'FindAssetQuantityById', __dyn_FindAssetQuantityById],
-    [15, 'FindAssetKeyValueByIdAndKey', __dyn_FindAssetKeyValueByIdAndKey],
-    [16, 'FindAssetDefinitionKeyValueByIdAndKey', __dyn_FindAssetDefinitionKeyValueByIdAndKey],
-    [17, 'FindAllDomains', __dyn_FindAllDomains],
-    [18, 'FindDomainById', __dyn_FindDomainById],
-    [19, 'FindDomainKeyValueByIdAndKey', __dyn_FindDomainKeyValueByIdAndKey],
-    [20, 'FindAllPeers', __dyn_FindAllPeers],
-    [21, 'FindTransactionsByAccountId', __dyn_FindTransactionsByAccountId],
-    [22, 'FindTransactionByHash', __dyn_FindTransactionByHash],
-    [23, 'FindPermissionTokensByAccountId', __dyn_FindPermissionTokensByAccountId],
-    [24, 'FindAllActiveTriggerIds', __dyn_FindAllActiveTriggerIds],
-    [25, 'FindTriggerById', __dyn_FindTriggerById],
-    [26, 'FindTriggerKeyValueByIdAndKey', __dyn_FindTriggerKeyValueByIdAndKey],
-    [27, 'FindAllRoles', __dyn_FindAllRoles],
-    [28, 'FindAllRoleIds', __dyn_FindAllRoleIds],
-    [29, 'FindRoleByRoleId', __dyn_FindRoleByRoleId],
-    [30, 'FindRolesByAccountId', __dyn_FindRolesByAccountId]
+    [9, 'FindAssetDefinitionById', __dyn_FindAssetDefinitionById],
+    [10, 'FindAssetsByName', __dyn_FindAssetsByName],
+    [11, 'FindAssetsByAccountId', __dyn_FindAssetsByAccountId],
+    [12, 'FindAssetsByAssetDefinitionId', __dyn_FindAssetsByAssetDefinitionId],
+    [13, 'FindAssetsByDomainId', __dyn_FindAssetsByDomainId],
+    [14, 'FindAssetsByDomainIdAndAssetDefinitionId', __dyn_FindAssetsByDomainIdAndAssetDefinitionId],
+    [15, 'FindAssetQuantityById', __dyn_FindAssetQuantityById],
+    [16, 'FindAssetKeyValueByIdAndKey', __dyn_FindAssetKeyValueByIdAndKey],
+    [17, 'FindAssetDefinitionKeyValueByIdAndKey', __dyn_FindAssetDefinitionKeyValueByIdAndKey],
+    [18, 'FindAllDomains', __dyn_FindAllDomains],
+    [19, 'FindDomainById', __dyn_FindDomainById],
+    [20, 'FindDomainKeyValueByIdAndKey', __dyn_FindDomainKeyValueByIdAndKey],
+    [21, 'FindAllPeers', __dyn_FindAllPeers],
+    [22, 'FindAllBlocks', __dyn_FindAllBlocks],
+    [23, 'FindAllTransactions', __dyn_FindAllTransactions],
+    [24, 'FindTransactionsByAccountId', __dyn_FindTransactionsByAccountId],
+    [25, 'FindTransactionByHash', __dyn_FindTransactionByHash],
+    [26, 'FindPermissionTokensByAccountId', __dyn_FindPermissionTokensByAccountId],
+    [27, 'FindAllActiveTriggerIds', __dyn_FindAllActiveTriggerIds],
+    [28, 'FindTriggerById', __dyn_FindTriggerById],
+    [29, 'FindTriggerKeyValueByIdAndKey', __dyn_FindTriggerKeyValueByIdAndKey],
+    [30, 'FindAllRoles', __dyn_FindAllRoles],
+    [31, 'FindAllRoleIds', __dyn_FindAllRoleIds],
+    [32, 'FindRoleByRoleId', __dyn_FindRoleByRoleId],
+    [33, 'FindRolesByAccountId', __dyn_FindRolesByAccountId]
 ])
 
 // Type: QueryError
@@ -3097,7 +3183,7 @@ type RegistrableBox__actual = Enum<
     | ['Peer', Peer]
     | ['Domain', NewDomain]
     | ['Account', NewAccount]
-    | ['AssetDefinition', AssetDefinition]
+    | ['AssetDefinition', NewAssetDefinition]
     | ['Asset', Asset]
     | ['Trigger', TriggerFilterBox]
     | ['Role', Role]
@@ -3109,7 +3195,7 @@ const RegistrableBox: EnumCodecAndFactory<RegistrableBox> = createEnumCodec<Regi
     [0, 'Peer', __dyn_Peer],
     [1, 'Domain', __dyn_NewDomain],
     [2, 'Account', __dyn_NewAccount],
-    [3, 'AssetDefinition', __dyn_AssetDefinition],
+    [3, 'AssetDefinition', __dyn_NewAssetDefinition],
     [4, 'Asset', __dyn_Asset],
     [5, 'Trigger', __dyn_TriggerFilterBox],
     [6, 'Role', __dyn_Role]
@@ -3722,6 +3808,7 @@ type Value__actual = Enum<
     | ['TransactionValue', TransactionValue]
     | ['PermissionToken', PermissionToken]
     | ['Hash', Hash]
+    | ['Block', BlockValue]
 >
 
 interface Value extends Opaque<Value__actual, Value> {}
@@ -3742,7 +3829,8 @@ const Value: EnumCodecAndFactory<Value> = createEnumCodec<Value__actual, Value>(
     [12, 'SignatureCheckCondition', __dyn_SignatureCheckCondition],
     [13, 'TransactionValue', __dyn_TransactionValue],
     [14, 'PermissionToken', __dyn_PermissionToken],
-    [15, 'Hash', __dyn_Hash]
+    [15, 'Hash', __dyn_Hash],
+    [16, 'Block', __dyn_BlockValue]
 ])
 
 // Type: VecEvent
@@ -3760,6 +3848,14 @@ type VecGenesisTransaction__actual = GenesisTransaction[]
 interface VecGenesisTransaction extends Opaque<VecGenesisTransaction__actual, VecGenesisTransaction> {}
 
 const VecGenesisTransaction: ArrayCodecAndFactory<VecGenesisTransaction__actual, VecGenesisTransaction> = createVecCodec<VecGenesisTransaction__actual, VecGenesisTransaction>('VecGenesisTransaction', __dyn_GenesisTransaction)
+
+// Type: VecHash
+
+type VecHash__actual = Hash[]
+
+interface VecHash extends Opaque<VecHash__actual, VecHash> {}
+
+const VecHash: ArrayCodecAndFactory<VecHash__actual, VecHash> = createVecCodec<VecHash__actual, VecHash>('VecHash', __dyn_Hash)
 
 // Type: VecHashOfVersionedValidBlock
 
@@ -4055,4 +4151,4 @@ const Where: StructCodecAndFactory<Where__actual, Where> = createStructCodec<Whe
 
 // Exports
 
-export { Account, AccountEvent, AccountEventFilter, AccountFilter, AccountId, ActionFilterBox, Add, And, ArrayU8L32, Asset, AssetDefinition, AssetDefinitionEntry, AssetDefinitionEvent, AssetDefinitionEventFilter, AssetDefinitionFilter, AssetDefinitionId, AssetEvent, AssetEventFilter, AssetFilter, AssetId, AssetValue, AssetValueType, BlockCreationTimeout, BlockHeader, BlockPublisherMessage, BlockRejectionReason, BlockSubscriberMessage, BurnBox, CommitTimeout, CommittedBlock, Contains, ContainsAll, ContainsAny, ContextValue, DataEvent, Divide, Domain, DomainEvent, DomainEventFilter, DomainFilter, DomainId, Duration, EntityFilter, Equal, EvaluatesToAccountId, EvaluatesToAssetDefinitionId, EvaluatesToAssetId, EvaluatesToBool, EvaluatesToDomainId, EvaluatesToHash, EvaluatesToIdBox, EvaluatesToName, EvaluatesToRegistrableBox, EvaluatesToRoleId, EvaluatesToTriggerId, EvaluatesToU32, EvaluatesToValue, EvaluatesToVecValue, Event, EventPublisherMessage, EventSubscriberMessage, Executable, ExecuteTriggerBox, ExecuteTriggerEvent, ExecuteTriggerEventFilter, ExecutionTime, Expression, FailBox, FilterBox, FilterOptAccountEventFilter, FilterOptAccountFilter, FilterOptAssetDefinitionEventFilter, FilterOptAssetDefinitionFilter, FilterOptAssetEventFilter, FilterOptAssetFilter, FilterOptDomainEventFilter, FilterOptDomainFilter, FilterOptEntityFilter, FilterOptIdFilterAccountId, FilterOptIdFilterAssetDefinitionId, FilterOptIdFilterAssetId, FilterOptIdFilterDomainId, FilterOptIdFilterPeerId, FilterOptIdFilterRoleId, FilterOptIdFilterTriggerId, FilterOptPeerEventFilter, FilterOptPeerFilter, FilterOptRoleEventFilter, FilterOptRoleFilter, FilterOptTriggerEventFilter, FilterOptTriggerFilter, FindAccountById, FindAccountKeyValueByIdAndKey, FindAccountsByDomainId, FindAccountsByName, FindAccountsWithAsset, FindAllAccounts, FindAllActiveTriggerIds, FindAllAssets, FindAllAssetsDefinitions, FindAllDomains, FindAllPeers, FindAllRoleIds, FindAllRoles, FindAssetById, FindAssetDefinitionKeyValueByIdAndKey, FindAssetKeyValueByIdAndKey, FindAssetQuantityById, FindAssetsByAccountId, FindAssetsByAssetDefinitionId, FindAssetsByDomainId, FindAssetsByDomainIdAndAssetDefinitionId, FindAssetsByName, FindDomainById, FindDomainKeyValueByIdAndKey, FindError, FindPermissionTokensByAccountId, FindRoleByRoleId, FindRolesByAccountId, FindTransactionByHash, FindTransactionsByAccountId, FindTriggerById, FindTriggerKeyValueByIdAndKey, Fixed, FixedPointI64, GenesisTransaction, GrantBox, Greater, Hash, HashOfMerkleTreeVersionedTransaction, HashOfProof, HashOfVersionedCommittedBlock, HashOfVersionedTransaction, HashOfVersionedValidBlock, IdBox, IdFilterAccountId, IdFilterAssetDefinitionId, IdFilterAssetId, IdFilterDomainId, IdFilterPeerId, IdFilterRoleId, IdFilterTriggerId, IdentifiableBox, IfExpression, IfInstruction, Instruction, InstructionExecutionFail, IpfsPath, Less, MapAccountIdAccount, MapAssetDefinitionIdAssetDefinitionEntry, MapAssetIdAsset, MapNameValue, MapPublicKeySignatureOfCommittedBlock, MapPublicKeySignatureOfProof, MapPublicKeySignatureOfTransactionPayload, MapStringEvaluatesToValue, MerkleTreeVersionedTransaction, Metadata, MintBox, Mintable, Mod, Multiply, Name, NewAccount, NewDomain, NoTransactionReceiptReceived, Not, NotPermittedFail, OptionDuration, OptionHash, OptionInstruction, OptionIpfsPath, OptionPipelineEntityKind, OptionPipelineStatusKind, OptionTimeInterval, OptionTopology, OptionU32, Or, PaginatedQueryResult, Pagination, Pair, Parameter, ParentHashNotFound, Peer, PeerEvent, PeerEventFilter, PeerFilter, PeerId, PermissionToken, PipelineEntityKind, PipelineEvent, PipelineEventFilter, PipelineStatus, PipelineStatusKind, Proof, ProofChain, ProofPayload, PublicKey, QueryBox, QueryError, QueryPayload, QueryResult, QueryUnsupportedVersionError, RaiseTo, RawGenesisBlock, RawVersioned, Reason, RegisterBox, RegistrableBox, RejectedTransaction, RejectionReason, RemoveKeyValueBox, Repeats, RevokeBox, Role, RoleEvent, RoleEventFilter, RoleFilter, RoleId, SequenceBox, SetKeyValueBox, Signature, SignatureCheckCondition, SignatureOfCommittedBlock, SignatureOfProof, SignatureOfQueryPayload, SignatureOfTransactionPayload, SignatureOfValidBlock, SignaturesOfCommittedBlock, SignaturesOfProof, SignaturesOfTransactionPayload, SignedQueryRequest, Subtract, TimeEvent, TimeEventFilter, TimeInterval, TimeSchedule, Topology, Transaction, TransactionLimitError, TransactionPayload, TransactionRejectionReason, TransactionValue, TransferBox, TriggerEvent, TriggerEventFilter, TriggerFilter, TriggerFilterBox, TriggerId, UnregisterBox, UnsatisfiedSignatureConditionFail, UnsupportedVersion, ValidBlock, ValidTransaction, Value, VecEvent, VecGenesisTransaction, VecHashOfVersionedValidBlock, VecInstruction, VecPeerId, VecPermissionToken, VecProof, VecPublicKey, VecRoleId, VecSignatureOfTransactionPayload, VecSignatureOfValidBlock, VecValue, VecVersionedRejectedTransaction, VecVersionedValidTransaction, VersionError, VersionedBlockPublisherMessage, VersionedBlockSubscriberMessage, VersionedCommittedBlock, VersionedEventPublisherMessage, VersionedEventSubscriberMessage, VersionedPaginatedQueryResult, VersionedRejectedTransaction, VersionedSignedQueryRequest, VersionedTransaction, VersionedValidBlock, VersionedValidTransaction, WasmExecutionFail, WasmSmartContract, Where }
+export { Account, AccountEvent, AccountEventFilter, AccountFilter, AccountId, ActionFilterBox, Add, And, ArrayU8L32, Asset, AssetDefinition, AssetDefinitionEntry, AssetDefinitionEvent, AssetDefinitionEventFilter, AssetDefinitionFilter, AssetDefinitionId, AssetEvent, AssetEventFilter, AssetFilter, AssetId, AssetValue, AssetValueType, BlockCreationTimeout, BlockHeader, BlockHeaderValue, BlockPublisherMessage, BlockRejectionReason, BlockSubscriberMessage, BlockValue, BurnBox, CommitTimeout, CommittedBlock, Contains, ContainsAll, ContainsAny, ContextValue, DataEvent, Divide, Domain, DomainEvent, DomainEventFilter, DomainFilter, DomainId, Duration, EntityFilter, Equal, EvaluatesToAccountId, EvaluatesToAssetDefinitionId, EvaluatesToAssetId, EvaluatesToBool, EvaluatesToDomainId, EvaluatesToHash, EvaluatesToIdBox, EvaluatesToName, EvaluatesToRegistrableBox, EvaluatesToRoleId, EvaluatesToTriggerId, EvaluatesToU32, EvaluatesToValue, EvaluatesToVecValue, Event, EventPublisherMessage, EventSubscriberMessage, Executable, ExecuteTriggerBox, ExecuteTriggerEvent, ExecuteTriggerEventFilter, ExecutionTime, Expression, FailBox, FilterBox, FilterOptAccountEventFilter, FilterOptAccountFilter, FilterOptAssetDefinitionEventFilter, FilterOptAssetDefinitionFilter, FilterOptAssetEventFilter, FilterOptAssetFilter, FilterOptDomainEventFilter, FilterOptDomainFilter, FilterOptEntityFilter, FilterOptIdFilterAccountId, FilterOptIdFilterAssetDefinitionId, FilterOptIdFilterAssetId, FilterOptIdFilterDomainId, FilterOptIdFilterPeerId, FilterOptIdFilterRoleId, FilterOptIdFilterTriggerId, FilterOptPeerEventFilter, FilterOptPeerFilter, FilterOptRoleEventFilter, FilterOptRoleFilter, FilterOptTriggerEventFilter, FilterOptTriggerFilter, FindAccountById, FindAccountKeyValueByIdAndKey, FindAccountsByDomainId, FindAccountsByName, FindAccountsWithAsset, FindAllAccounts, FindAllActiveTriggerIds, FindAllAssets, FindAllAssetsDefinitions, FindAllBlocks, FindAllDomains, FindAllPeers, FindAllRoleIds, FindAllRoles, FindAllTransactions, FindAssetById, FindAssetDefinitionById, FindAssetDefinitionKeyValueByIdAndKey, FindAssetKeyValueByIdAndKey, FindAssetQuantityById, FindAssetsByAccountId, FindAssetsByAssetDefinitionId, FindAssetsByDomainId, FindAssetsByDomainIdAndAssetDefinitionId, FindAssetsByName, FindDomainById, FindDomainKeyValueByIdAndKey, FindError, FindPermissionTokensByAccountId, FindRoleByRoleId, FindRolesByAccountId, FindTransactionByHash, FindTransactionsByAccountId, FindTriggerById, FindTriggerKeyValueByIdAndKey, Fixed, FixedPointI64, GenesisTransaction, GrantBox, Greater, Hash, HashOfMerkleTreeVersionedTransaction, HashOfProof, HashOfVersionedCommittedBlock, HashOfVersionedTransaction, HashOfVersionedValidBlock, IdBox, IdFilterAccountId, IdFilterAssetDefinitionId, IdFilterAssetId, IdFilterDomainId, IdFilterPeerId, IdFilterRoleId, IdFilterTriggerId, IdentifiableBox, IfExpression, IfInstruction, Instruction, InstructionExecutionFail, IpfsPath, Less, MapAccountIdAccount, MapAssetDefinitionIdAssetDefinitionEntry, MapAssetIdAsset, MapNameValue, MapPublicKeySignatureOfCommittedBlock, MapPublicKeySignatureOfProof, MapPublicKeySignatureOfTransactionPayload, MapStringEvaluatesToValue, MerkleTreeVersionedTransaction, Metadata, MintBox, Mintable, Mod, Multiply, Name, NewAccount, NewAssetDefinition, NewDomain, NoTransactionReceiptReceived, Not, NotPermittedFail, OptionDuration, OptionHash, OptionInstruction, OptionIpfsPath, OptionPipelineEntityKind, OptionPipelineStatusKind, OptionTimeInterval, OptionTopology, OptionU32, Or, PaginatedQueryResult, Pagination, Pair, Parameter, Peer, PeerEvent, PeerEventFilter, PeerFilter, PeerId, PermissionToken, PipelineEntityKind, PipelineEvent, PipelineEventFilter, PipelineStatus, PipelineStatusKind, Proof, ProofChain, ProofPayload, PublicKey, QueryBox, QueryError, QueryPayload, QueryResult, QueryUnsupportedVersionError, RaiseTo, RawGenesisBlock, RawVersioned, Reason, RegisterBox, RegistrableBox, RejectedTransaction, RejectionReason, RemoveKeyValueBox, Repeats, RevokeBox, Role, RoleEvent, RoleEventFilter, RoleFilter, RoleId, SequenceBox, SetKeyValueBox, Signature, SignatureCheckCondition, SignatureOfCommittedBlock, SignatureOfProof, SignatureOfQueryPayload, SignatureOfTransactionPayload, SignatureOfValidBlock, SignaturesOfCommittedBlock, SignaturesOfProof, SignaturesOfTransactionPayload, SignedQueryRequest, Subtract, TimeEvent, TimeEventFilter, TimeInterval, TimeSchedule, Topology, Transaction, TransactionLimitError, TransactionPayload, TransactionRejectionReason, TransactionValue, TransferBox, TriggerEvent, TriggerEventFilter, TriggerFilter, TriggerFilterBox, TriggerId, UnregisterBox, UnsatisfiedSignatureConditionFail, UnsupportedVersion, ValidBlock, ValidTransaction, Value, VecEvent, VecGenesisTransaction, VecHash, VecHashOfVersionedValidBlock, VecInstruction, VecPeerId, VecPermissionToken, VecProof, VecPublicKey, VecRoleId, VecSignatureOfTransactionPayload, VecSignatureOfValidBlock, VecValue, VecVersionedRejectedTransaction, VecVersionedValidTransaction, VersionError, VersionedBlockPublisherMessage, VersionedBlockSubscriberMessage, VersionedCommittedBlock, VersionedEventPublisherMessage, VersionedEventSubscriberMessage, VersionedPaginatedQueryResult, VersionedRejectedTransaction, VersionedSignedQueryRequest, VersionedTransaction, VersionedValidBlock, VersionedValidTransaction, WasmExecutionFail, WasmSmartContract, Where }
