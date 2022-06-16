@@ -34,7 +34,10 @@ export async function run(port = 8765) {
       const queryGenesis = ctx.query.genesis
       const withGenesis = queryGenesis === 'false' ? false : true
 
-      peer = await lib.startPeer({ withGenesis })
+      const queryToriiApiURL = ctx.query.torii_api_url
+      if (!(typeof queryToriiApiURL === 'string')) throw new Error(`add a single 'torii_api_url' query param`)
+
+      peer = await lib.startPeer({ withGenesis, toriiApiURL: queryToriiApiURL })
 
       ctx.status = 204
     })

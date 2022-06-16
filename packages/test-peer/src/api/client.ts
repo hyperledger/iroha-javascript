@@ -19,8 +19,8 @@ export async function cleanSideEffects() {
   await axios.delete('/side-effects')
 }
 
-export async function startPeer(genesis = true) {
-  await axios.post('/peer/start', null, { params: { genesis } })
+export async function startPeer({ genesis, toriiApiURL }: { genesis?: boolean; toriiApiURL: string }) {
+  await axios.post('/peer/start', null, { params: { genesis: genesis ?? true, torii_api_url: toriiApiURL } })
 }
 
 export async function killPeer(cleanSideEffects = false) {
