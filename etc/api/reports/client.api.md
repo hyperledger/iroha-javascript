@@ -15,6 +15,7 @@ import { IrohaCryptoInterface } from '@iroha2/crypto-core';
 import { KeyPair } from '@iroha2/crypto-core';
 import { MapNameValue } from '@iroha2/data-model';
 import { PaginatedQueryResult } from '@iroha2/data-model';
+import { PredicateBox } from '@iroha2/data-model';
 import { QueryBox } from '@iroha2/data-model';
 import { QueryError } from '@iroha2/data-model';
 import { Result } from '@iroha2/data-model';
@@ -45,7 +46,7 @@ export class Client {
     listenForBlocksStream(params: ListenBlocksStreamParams): Promise<SetupBlocksStreamReturn>;
     // (undocumented)
     listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn>;
-    request(query: QueryBox): Promise<RequestResult>;
+    request(query: QueryBox, params?: RequestParams): Promise<RequestResult>;
     // (undocumented)
     setPeerConfig(params: SetPeerConfigParams): Promise<void>;
     // (undocumented)
@@ -100,6 +101,11 @@ export interface PeerStatus {
     };
     // (undocumented)
     view_changes: bigint | number;
+}
+
+// @public (undocumented)
+export interface RequestParams {
+    filter?: PredicateBox;
 }
 
 // @public (undocumented)

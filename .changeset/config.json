@@ -2,9 +2,8 @@
   "$schema": "https://unpkg.com/@changesets/config@1.6.1/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "linked": [["@iroha2/crypto-target-*"], ["@iroha2/client", "@iroha2/data-model"]],
+  "fixed": [["@iroha2/crypto-target-*"], ["@iroha2/client", "@iroha2/data-model"]],
   "access": "restricted",
   "baseBranch": "iroha2",
-  "updateInternalDependencies": "patch",
-  "ignore": ["@iroha2/crypto-test-*", "@iroha2/client-test-*"]
+  "updateInternalDependencies": "patch"
 }

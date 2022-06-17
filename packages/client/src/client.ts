@@ -112,6 +112,13 @@ export interface UserConfig {
   }
 }
 
+export interface RequestParams {
+  /**
+   * @default PredicateBox('Raw', Predicate('Pass'))
+   */
+  filter?: PredicateBox
+}
+
 function makeSignature(keyPair: KeyPair, payload: Uint8Array): Signature {
   const { createSignature } = useCryptoAssertive()
 
@@ -224,7 +231,7 @@ export class Client {
   /**
    * TODO support pagination
    */
-  public async request(query: QueryBox): Promise<RequestResult> {
+  public async request(query: QueryBox, params?: RequestParams): Promise<RequestResult> {
     const scope = createGarbageScope()
     const { createHash } = useCryptoAssertive()
     const url = this.forceGetApiURL()
@@ -235,7 +242,7 @@ export class Client {
       query,
       account_id: accountId,
       timestamp_ms: BigInt(Date.now()),
-      filter: PredicateBox('Raw', Predicate('Pass')),
+      filter: params?.filter ?? PredicateBox('Raw', Predicate('Pass')),
     })
 
     try {

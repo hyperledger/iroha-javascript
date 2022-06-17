@@ -20,7 +20,7 @@
     "format:fix": "prettier-eslint \"**/*.{ts,js,vue,json}\" --write"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.22.0",
+    "@changesets/cli": "^2.23.0",
     "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
     "@iroha2/test-peer": "workspace:^0.0.1",
     "@microsoft/api-extractor": "^7.24.0",

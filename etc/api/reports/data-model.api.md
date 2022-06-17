@@ -217,6 +217,15 @@ export interface AssetValueType extends Opaque<AssetValueType__actual, AssetValu
 // @public (undocumented)
 export const AssetValueType: EnumCodecAndFactory<AssetValueType>;
 
+// Warning: (ae-forgotten-export) The symbol "AtIndex__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface AtIndex extends Opaque<AtIndex__actual, AtIndex> {
+}
+
+// @public (undocumented)
+export const AtIndex: StructCodecAndFactory<AtIndex__actual, AtIndex>;
+
 // Warning: (ae-forgotten-export) The symbol "BlockHeader__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -225,6 +234,15 @@ export interface BlockHeader extends Opaque<BlockHeader__actual, BlockHeader> {
 
 // @public (undocumented)
 export const BlockHeader: StructCodecAndFactory<BlockHeader__actual, BlockHeader>;
+
+// Warning: (ae-forgotten-export) The symbol "BlockHeaderValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BlockHeaderValue extends Opaque<BlockHeaderValue__actual, BlockHeaderValue> {
+}
+
+// @public (undocumented)
+export const BlockHeaderValue: StructCodecAndFactory<BlockHeaderValue__actual, BlockHeaderValue>;
 
 // Warning: (ae-forgotten-export) The symbol "BlockPublisherMessage__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -253,6 +271,15 @@ export interface BlockSubscriberMessage extends Opaque<BlockSubscriberMessage__a
 // @public (undocumented)
 export const BlockSubscriberMessage: EnumCodecAndFactory<BlockSubscriberMessage>;
 
+// Warning: (ae-forgotten-export) The symbol "BlockValue__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface BlockValue extends Opaque<BlockValue__actual, BlockValue> {
+}
+
+// @public (undocumented)
+export const BlockValue: StructCodecAndFactory<BlockValue__actual, BlockValue>;
+
 // Warning: (ae-forgotten-export) The symbol "BurnBox__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -279,6 +306,15 @@ export interface CommitTimeout extends Opaque<CommitTimeout__actual, CommitTimeo
 
 // @public (undocumented)
 export const CommitTimeout: StructCodecAndFactory<CommitTimeout__actual, CommitTimeout>;
+
+// Warning: (ae-forgotten-export) The symbol "Container__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Container extends Opaque<Container__actual, Container> {
+}
+
+// @public (undocumented)
+export const Container: EnumCodecAndFactory<Container>;
 
 // Warning: (ae-forgotten-export) The symbol "Contains__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -324,6 +360,15 @@ export interface DataEvent extends Opaque<DataEvent__actual, DataEvent> {
 
 // @public (undocumented)
 export const DataEvent: EnumCodecAndFactory<DataEvent>;
+
+// Warning: (ae-forgotten-export) The symbol "DenialReason__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface DenialReason extends Opaque<DenialReason__actual, DenialReason> {
+}
+
+// @public (undocumented)
+export const DenialReason: EnumCodecAndFactory<DenialReason>;
 
 // Warning: (ae-forgotten-export) The symbol "Divide__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -884,6 +929,15 @@ export interface FindAssetById extends Opaque<FindAssetById__actual, FindAssetBy
 // @public (undocumented)
 export const FindAssetById: StructCodecAndFactory<FindAssetById__actual, FindAssetById>;
 
+// Warning: (ae-forgotten-export) The symbol "FindAssetDefinitionById__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindAssetDefinitionById extends Opaque<FindAssetDefinitionById__actual, FindAssetDefinitionById> {
+}
+
+// @public (undocumented)
+export const FindAssetDefinitionById: StructCodecAndFactory<FindAssetDefinitionById__actual, FindAssetDefinitionById>;
+
 // Warning: (ae-forgotten-export) The symbol "FindAssetDefinitionKeyValueByIdAndKey__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1045,6 +1099,15 @@ export interface FindTriggerKeyValueByIdAndKey extends Opaque<FindTriggerKeyValu
 
 // @public (undocumented)
 export const FindTriggerKeyValueByIdAndKey: StructCodecAndFactory<FindTriggerKeyValueByIdAndKey__actual, FindTriggerKeyValueByIdAndKey>;
+
+// Warning: (ae-forgotten-export) The symbol "FindTriggersByDomainId__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface FindTriggersByDomainId extends Opaque<FindTriggersByDomainId__actual, FindTriggersByDomainId> {
+}
+
+// @public (undocumented)
+export const FindTriggersByDomainId: StructCodecAndFactory<FindTriggersByDomainId__actual, FindTriggersByDomainId>;
 
 // @public (undocumented)
 export type Fixed = FixedPointI64;
@@ -1340,6 +1403,15 @@ export interface MintBox extends Opaque<MintBox__actual, MintBox> {
 // @public (undocumented)
 export const MintBox: StructCodecAndFactory<MintBox__actual, MintBox>;
 
+// Warning: (ae-forgotten-export) The symbol "MismatchValidatorType__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface MismatchValidatorType extends Opaque<MismatchValidatorType__actual, MismatchValidatorType> {
+}
+
+// @public (undocumented)
+export const MismatchValidatorType: StructCodecAndFactory<MismatchValidatorType__actual, MismatchValidatorType>;
+
 // Warning: (ae-forgotten-export) The symbol "Mod__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1372,6 +1444,15 @@ export interface NewAccount extends Opaque<NewAccount__actual, NewAccount> {
 
 // @public (undocumented)
 export const NewAccount: StructCodecAndFactory<NewAccount__actual, NewAccount>;
+
+// Warning: (ae-forgotten-export) The symbol "NewAssetDefinition__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface NewAssetDefinition extends Opaque<NewAssetDefinition__actual, NewAssetDefinition> {
+}
+
+// @public (undocumented)
+export const NewAssetDefinition: StructCodecAndFactory<NewAssetDefinition__actual, NewAssetDefinition>;
 
 // Warning: (ae-forgotten-export) The symbol "NewDomain__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1526,12 +1607,6 @@ export interface Parameter extends Opaque<Parameter__actual, Parameter> {
 // @public (undocumented)
 export const Parameter: EnumCodecAndFactory<Parameter>;
 
-// @public (undocumented)
-export type ParentHashNotFound = HashOfVersionedCommittedBlock;
-
-// @public (undocumented)
-export const ParentHashNotFound: Codec<ParentHashNotFound>;
-
 // Warning: (ae-forgotten-export) The symbol "Peer__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1631,6 +1706,24 @@ export interface PipelineStatusKind extends Opaque<PipelineStatusKind__actual, P
 // @public (undocumented)
 export const PipelineStatusKind: EnumCodecAndFactory<PipelineStatusKind>;
 
+// Warning: (ae-forgotten-export) The symbol "Predicate__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface Predicate extends Opaque<Predicate__actual, Predicate> {
+}
+
+// @public (undocumented)
+export const Predicate: EnumCodecAndFactory<Predicate>;
+
+// Warning: (ae-forgotten-export) The symbol "PredicateBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface PredicateBox extends Opaque<PredicateBox__actual, PredicateBox> {
+}
+
+// @public (undocumented)
+export const PredicateBox: EnumCodecAndFactory<PredicateBox>;
+
 // Warning: (ae-forgotten-export) The symbol "Proof__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1700,15 +1793,6 @@ export type QueryResult = Value;
 // @public (undocumented)
 export const QueryResult: Codec<QueryResult>;
 
-// Warning: (ae-forgotten-export) The symbol "QueryUnsupportedVersionError__actual" needs to be exported by the entry point lib.d.ts
-//
-// @public (undocumented)
-export interface QueryUnsupportedVersionError extends Opaque<QueryUnsupportedVersionError__actual, QueryUnsupportedVersionError> {
-}
-
-// @public (undocumented)
-export const QueryUnsupportedVersionError: StructCodecAndFactory<QueryUnsupportedVersionError__actual, QueryUnsupportedVersionError>;
-
 // Warning: (ae-forgotten-export) The symbol "RaiseTo__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -1717,6 +1801,16 @@ export interface RaiseTo extends Opaque<RaiseTo__actual, RaiseTo> {
 
 // @public (undocumented)
 export const RaiseTo: StructCodecAndFactory<RaiseTo__actual, RaiseTo>;
+
+// Warning: (ae-forgotten-export) The symbol "Range__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+interface Range_2 extends Opaque<Range__actual, Range_2> {
+}
+
+// @public (undocumented)
+const Range_2: EnumCodecAndFactory<Range_2>;
+export { Range_2 as Range }
 
 // Warning: (ae-forgotten-export) The symbol "RawGenesisBlock__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -1852,6 +1946,33 @@ export interface RoleId extends Opaque<RoleId__actual, RoleId> {
 
 // @public (undocumented)
 export const RoleId: StructCodecAndFactory<RoleId__actual, RoleId>;
+
+// Warning: (ae-forgotten-export) The symbol "SemiIntervalFixed__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SemiIntervalFixed extends Opaque<SemiIntervalFixed__actual, SemiIntervalFixed> {
+}
+
+// @public (undocumented)
+export const SemiIntervalFixed: StructCodecAndFactory<SemiIntervalFixed__actual, SemiIntervalFixed>;
+
+// Warning: (ae-forgotten-export) The symbol "SemiIntervalU128__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SemiIntervalU128 extends Opaque<SemiIntervalU128__actual, SemiIntervalU128> {
+}
+
+// @public (undocumented)
+export const SemiIntervalU128: StructCodecAndFactory<SemiIntervalU128__actual, SemiIntervalU128>;
+
+// Warning: (ae-forgotten-export) The symbol "SemiIntervalU32__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface SemiIntervalU32 extends Opaque<SemiIntervalU32__actual, SemiIntervalU32> {
+}
+
+// @public (undocumented)
+export const SemiIntervalU32: StructCodecAndFactory<SemiIntervalU32__actual, SemiIntervalU32>;
 
 // Warning: (ae-forgotten-export) The symbol "SequenceBox__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -2126,6 +2247,15 @@ export interface UnsupportedVersion extends Opaque<UnsupportedVersion__actual, U
 // @public (undocumented)
 export const UnsupportedVersion: StructCodecAndFactory<UnsupportedVersion__actual, UnsupportedVersion>;
 
+// Warning: (ae-forgotten-export) The symbol "ValidatorType__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ValidatorType extends Opaque<ValidatorType__actual, ValidatorType> {
+}
+
+// @public (undocumented)
+export const ValidatorType: EnumCodecAndFactory<ValidatorType>;
+
 // Warning: (ae-forgotten-export) The symbol "ValidBlock__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -2153,6 +2283,15 @@ export interface Value extends Opaque<Value__actual, Value> {
 // @public (undocumented)
 export const Value: EnumCodecAndFactory<Value>;
 
+// Warning: (ae-forgotten-export) The symbol "ValueOfKey__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface ValueOfKey extends Opaque<ValueOfKey__actual, ValueOfKey> {
+}
+
+// @public (undocumented)
+export const ValueOfKey: StructCodecAndFactory<ValueOfKey__actual, ValueOfKey>;
+
 // Warning: (ae-forgotten-export) The symbol "VecEvent__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
@@ -2170,6 +2309,15 @@ export interface VecGenesisTransaction extends Opaque<VecGenesisTransaction__act
 
 // @public (undocumented)
 export const VecGenesisTransaction: ArrayCodecAndFactory<VecGenesisTransaction__actual, VecGenesisTransaction>;
+
+// Warning: (ae-forgotten-export) The symbol "VecHash__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecHash extends Opaque<VecHash__actual, VecHash> {
+}
+
+// @public (undocumented)
+export const VecHash: ArrayCodecAndFactory<VecHash__actual, VecHash>;
 
 // Warning: (ae-forgotten-export) The symbol "VecHashOfVersionedValidBlock__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -2206,6 +2354,15 @@ export interface VecPermissionToken extends Opaque<VecPermissionToken__actual, V
 
 // @public (undocumented)
 export const VecPermissionToken: ArrayCodecAndFactory<VecPermissionToken__actual, VecPermissionToken>;
+
+// Warning: (ae-forgotten-export) The symbol "VecPredicateBox__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface VecPredicateBox extends Opaque<VecPredicateBox__actual, VecPredicateBox> {
+}
+
+// @public (undocumented)
+export const VecPredicateBox: ArrayCodecAndFactory<VecPredicateBox__actual, VecPredicateBox>;
 
 // Warning: (ae-forgotten-export) The symbol "VecProof__actual" needs to be exported by the entry point lib.d.ts
 //
@@ -2392,10 +2549,12 @@ export { Void as FindAllAccounts }
 export { Void as FindAllActiveTriggerIds }
 export { Void as FindAllAssets }
 export { Void as FindAllAssetsDefinitions }
+export { Void as FindAllBlocks }
 export { Void as FindAllDomains }
 export { Void as FindAllPeers }
 export { Void as FindAllRoleIds }
 export { Void as FindAllRoles }
+export { Void as FindAllTransactions }
 export { Void as NoTransactionReceiptReceived }
 
 // Warning: (ae-forgotten-export) The symbol "WasmExecutionFail__actual" needs to be exported by the entry point lib.d.ts

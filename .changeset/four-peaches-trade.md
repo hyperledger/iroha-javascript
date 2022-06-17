@@ -2,4 +2,4 @@
 '@iroha2/client': patch
 ---
 
-`getHealth()` catches fetch errors
+**feat**: `client.getHealth()` catches fetch errors and wraps them into `Result::Err` variant
