@@ -17,11 +17,11 @@ export async function waitUntilPeerIsHealthy(
 ): Promise<void> {
   const client = new Client({ torii: { apiURL } })
 
-  let now = performance.now()
+  let now = Date.now()
   const endAt = now + checkTimeout
 
   while (true) {
-    now = performance.now()
+    now = Date.now()
     if (now > endAt) throw new Error(`Peer is still not alive even after ${checkTimeout}ms`)
 
     const health = await client.getHealth()
