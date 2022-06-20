@@ -76,7 +76,7 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
 
   {
     const contents = await fs.readdir(TMP_DIR)
-    debug('TMP dir contents: %o', contents)
+    debug('Dir contents BEFORE start: %o', contents)
   }
 
   // starting peer
@@ -99,23 +99,20 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
 
   const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, HEALTH_CHECK_INTERVAL, HEALTH_CHECK_TIMEOUT)
   const exitPromise = new Promise<void>((resolve) => {
-    subprocess.once('exit', resolve)
-  })
-  exitPromise.then(() => {
-    isAlive = false
+    subprocess.once('exit', (...args) => {
+      isAlive = false
+      debug('Peer exited:', args)
+      resolve()
+    })
   })
 
   async function kill(params?: KillPeerParams) {
     if (!isAlive) throw new Error('Already dead')
-
+    debug('Killing peer...')
     subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 })
-
     await exitPromise
     params?.cleanSideEffects && (await cleanSideEffects())
-
     debug('Peer is killed')
-
-    return exitPromise
   }
 
   await new Promise<void>((resolve, reject) => {
@@ -163,5 +160,5 @@ export async function cleanConfiguration(): Promise<void> {
 export async function cleanSideEffects() {
   const rmTarget = path.resolve(TMP_DIR, 'blocks')
   await rmForce(rmTarget)
-  debug('blocks are cleaned')
+  debug('Blocks are cleaned')
 }
