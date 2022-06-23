@@ -221,6 +221,7 @@ const __dyn_DomainEvent = dynCodec(() => DomainEvent)
 const __dyn_GenesisTransaction = dynCodec(() => GenesisTransaction)
 const __dyn_Role = dynCodec(() => Role)
 const __dyn_FilterOptEntityFilter = dynCodec(() => FilterOptEntityFilter)
+const __dyn_NewRole = dynCodec(() => NewRole)
 const __dyn_FindAssetDefinitionKeyValueByIdAndKey = dynCodec(() => FindAssetDefinitionKeyValueByIdAndKey)
 const __dyn_PublicKey = dynCodec(() => PublicKey)
 const __dyn_VecPermissionToken = dynCodec(() => VecPermissionToken)
@@ -2340,6 +2341,7 @@ type IdentifiableBox__actual = Enum<
     | ['NewDomain', NewDomain]
     | ['NewAccount', NewAccount]
     | ['NewAssetDefinition', NewAssetDefinition]
+    | ['NewRole', NewRole]
     | ['Peer', Peer]
     | ['Domain', Domain]
     | ['Account', Account]
@@ -2355,13 +2357,14 @@ const IdentifiableBox: EnumCodecAndFactory<IdentifiableBox> = createEnumCodec<Id
     [0, 'NewDomain', __dyn_NewDomain],
     [1, 'NewAccount', __dyn_NewAccount],
     [2, 'NewAssetDefinition', __dyn_NewAssetDefinition],
-    [3, 'Peer', __dyn_Peer],
-    [4, 'Domain', __dyn_Domain],
-    [5, 'Account', __dyn_Account],
-    [6, 'AssetDefinition', __dyn_AssetDefinition],
-    [7, 'Asset', __dyn_Asset],
-    [8, 'Trigger', __dyn_TriggerFilterBox],
-    [9, 'Role', __dyn_Role]
+    [3, 'NewRole', __dyn_NewRole],
+    [4, 'Peer', __dyn_Peer],
+    [5, 'Domain', __dyn_Domain],
+    [6, 'Account', __dyn_Account],
+    [7, 'AssetDefinition', __dyn_AssetDefinition],
+    [8, 'Asset', __dyn_Asset],
+    [9, 'Trigger', __dyn_TriggerFilterBox],
+    [10, 'Role', __dyn_Role]
 ])
 
 // Type: IfExpression
@@ -2678,6 +2681,18 @@ const NewDomain: StructCodecAndFactory<NewDomain__actual, NewDomain> = createStr
     ['id', __dyn_DomainId],
     ['logo', __dyn_OptionIpfsPath],
     ['metadata', __dyn_Metadata]
+])
+
+// Type: NewRole
+
+interface NewRole__actual {
+    inner: Role
+}
+
+interface NewRole extends Opaque<NewRole__actual, NewRole> {}
+
+const NewRole: StructCodecAndFactory<NewRole__actual, NewRole> = createStructCodec<NewRole__actual, NewRole>('NewRole', [
+    ['inner', __dyn_Role]
 ])
 
 // Type: NoTransactionReceiptReceived
@@ -3333,7 +3348,7 @@ type RegistrableBox__actual = Enum<
     | ['AssetDefinition', NewAssetDefinition]
     | ['Asset', Asset]
     | ['Trigger', TriggerFilterBox]
-    | ['Role', Role]
+    | ['Role', NewRole]
 >
 
 interface RegistrableBox extends Opaque<RegistrableBox__actual, RegistrableBox> {}
@@ -3345,7 +3360,7 @@ const RegistrableBox: EnumCodecAndFactory<RegistrableBox> = createEnumCodec<Regi
     [3, 'AssetDefinition', __dyn_NewAssetDefinition],
     [4, 'Asset', __dyn_Asset],
     [5, 'Trigger', __dyn_TriggerFilterBox],
-    [6, 'Role', __dyn_Role]
+    [6, 'Role', __dyn_NewRole]
 ])
 
 // Type: RejectedTransaction
@@ -4378,4 +4393,4 @@ const Where: StructCodecAndFactory<Where__actual, Where> = createStructCodec<Whe
 
 // Exports
 
-export { Account, AccountEvent, AccountEventFilter, AccountFilter, AccountId, ActionFilterBox, Add, And, ArrayU8L32, Asset, AssetDefinition, AssetDefinitionEntry, AssetDefinitionEvent, AssetDefinitionEventFilter, AssetDefinitionFilter, AssetDefinitionId, AssetEvent, AssetEventFilter, AssetFilter, AssetId, AssetValue, AssetValueType, AtIndex, BlockCreationTimeout, BlockHeader, BlockHeaderValue, BlockPublisherMessage, BlockRejectionReason, BlockSubscriberMessage, BlockValue, BurnBox, CommitTimeout, CommittedBlock, Container, Contains, ContainsAll, ContainsAny, ContextValue, DataEvent, DenialReason, Divide, Domain, DomainEvent, DomainEventFilter, DomainFilter, DomainId, Duration, EntityFilter, Equal, EvaluatesToAccountId, EvaluatesToAssetDefinitionId, EvaluatesToAssetId, EvaluatesToBool, EvaluatesToDomainId, EvaluatesToHash, EvaluatesToIdBox, EvaluatesToName, EvaluatesToRegistrableBox, EvaluatesToRoleId, EvaluatesToTriggerId, EvaluatesToU32, EvaluatesToValue, EvaluatesToVecValue, Event, EventPublisherMessage, EventSubscriberMessage, Executable, ExecuteTriggerBox, ExecuteTriggerEvent, ExecuteTriggerEventFilter, ExecutionTime, Expression, FailBox, FilterBox, FilterOptAccountEventFilter, FilterOptAccountFilter, FilterOptAssetDefinitionEventFilter, FilterOptAssetDefinitionFilter, FilterOptAssetEventFilter, FilterOptAssetFilter, FilterOptDomainEventFilter, FilterOptDomainFilter, FilterOptEntityFilter, FilterOptIdFilterAccountId, FilterOptIdFilterAssetDefinitionId, FilterOptIdFilterAssetId, FilterOptIdFilterDomainId, FilterOptIdFilterPeerId, FilterOptIdFilterRoleId, FilterOptIdFilterTriggerId, FilterOptPeerEventFilter, FilterOptPeerFilter, FilterOptRoleEventFilter, FilterOptRoleFilter, FilterOptTriggerEventFilter, FilterOptTriggerFilter, FindAccountById, FindAccountKeyValueByIdAndKey, FindAccountsByDomainId, FindAccountsByName, FindAccountsWithAsset, FindAllAccounts, FindAllActiveTriggerIds, FindAllAssets, FindAllAssetsDefinitions, FindAllBlocks, FindAllDomains, FindAllPeers, FindAllRoleIds, FindAllRoles, FindAllTransactions, FindAssetById, FindAssetDefinitionById, FindAssetDefinitionKeyValueByIdAndKey, FindAssetKeyValueByIdAndKey, FindAssetQuantityById, FindAssetsByAccountId, FindAssetsByAssetDefinitionId, FindAssetsByDomainId, FindAssetsByDomainIdAndAssetDefinitionId, FindAssetsByName, FindDomainById, FindDomainKeyValueByIdAndKey, FindError, FindPermissionTokensByAccountId, FindRoleByRoleId, FindRolesByAccountId, FindTransactionByHash, FindTransactionsByAccountId, FindTriggerById, FindTriggerKeyValueByIdAndKey, FindTriggersByDomainId, Fixed, FixedPointI64, GenesisTransaction, GrantBox, Greater, Hash, HashOfMerkleTreeVersionedTransaction, HashOfProof, HashOfVersionedCommittedBlock, HashOfVersionedTransaction, HashOfVersionedValidBlock, IdBox, IdFilterAccountId, IdFilterAssetDefinitionId, IdFilterAssetId, IdFilterDomainId, IdFilterPeerId, IdFilterRoleId, IdFilterTriggerId, IdentifiableBox, IfExpression, IfInstruction, Instruction, InstructionExecutionFail, IpfsPath, Less, MapAccountIdAccount, MapAssetDefinitionIdAssetDefinitionEntry, MapAssetIdAsset, MapNameValue, MapPublicKeySignatureOfCommittedBlock, MapPublicKeySignatureOfProof, MapPublicKeySignatureOfTransactionPayload, MapStringEvaluatesToValue, MerkleTreeVersionedTransaction, Metadata, MintBox, Mintable, MismatchValidatorType, Mod, Multiply, Name, NewAccount, NewAssetDefinition, NewDomain, NoTransactionReceiptReceived, Not, NotPermittedFail, OptionDuration, OptionHash, OptionInstruction, OptionIpfsPath, OptionPipelineEntityKind, OptionPipelineStatusKind, OptionTimeInterval, OptionTopology, OptionU32, Or, PaginatedQueryResult, Pagination, Pair, Parameter, Peer, PeerEvent, PeerEventFilter, PeerFilter, PeerId, PermissionToken, PipelineEntityKind, PipelineEvent, PipelineEventFilter, PipelineStatus, PipelineStatusKind, Predicate, PredicateBox, Proof, ProofChain, ProofPayload, PublicKey, QueryBox, QueryError, QueryPayload, QueryResult, RaiseTo, Range, RawGenesisBlock, RawVersioned, Reason, RegisterBox, RegistrableBox, RejectedTransaction, RejectionReason, RemoveKeyValueBox, Repeats, RevokeBox, Role, RoleEvent, RoleEventFilter, RoleFilter, RoleId, SemiIntervalFixed, SemiIntervalU128, SemiIntervalU32, SequenceBox, SetKeyValueBox, Signature, SignatureCheckCondition, SignatureOfCommittedBlock, SignatureOfProof, SignatureOfQueryPayload, SignatureOfTransactionPayload, SignatureOfValidBlock, SignaturesOfCommittedBlock, SignaturesOfProof, SignaturesOfTransactionPayload, SignedQueryRequest, Subtract, TimeEvent, TimeEventFilter, TimeInterval, TimeSchedule, Topology, Transaction, TransactionLimitError, TransactionPayload, TransactionRejectionReason, TransactionValue, TransferBox, TriggerEvent, TriggerEventFilter, TriggerFilter, TriggerFilterBox, TriggerId, UnregisterBox, UnsatisfiedSignatureConditionFail, UnsupportedVersion, ValidBlock, ValidTransaction, ValidatorType, Value, ValueOfKey, VecEvent, VecGenesisTransaction, VecHash, VecHashOfVersionedValidBlock, VecInstruction, VecPeerId, VecPermissionToken, VecPredicateBox, VecProof, VecPublicKey, VecRoleId, VecSignatureOfTransactionPayload, VecSignatureOfValidBlock, VecValue, VecVersionedRejectedTransaction, VecVersionedValidTransaction, VersionError, VersionedBlockPublisherMessage, VersionedBlockSubscriberMessage, VersionedCommittedBlock, VersionedEventPublisherMessage, VersionedEventSubscriberMessage, VersionedPaginatedQueryResult, VersionedRejectedTransaction, VersionedSignedQueryRequest, VersionedTransaction, VersionedValidBlock, VersionedValidTransaction, WasmExecutionFail, WasmSmartContract, Where }
+export { Account, AccountEvent, AccountEventFilter, AccountFilter, AccountId, ActionFilterBox, Add, And, ArrayU8L32, Asset, AssetDefinition, AssetDefinitionEntry, AssetDefinitionEvent, AssetDefinitionEventFilter, AssetDefinitionFilter, AssetDefinitionId, AssetEvent, AssetEventFilter, AssetFilter, AssetId, AssetValue, AssetValueType, AtIndex, BlockCreationTimeout, BlockHeader, BlockHeaderValue, BlockPublisherMessage, BlockRejectionReason, BlockSubscriberMessage, BlockValue, BurnBox, CommitTimeout, CommittedBlock, Container, Contains, ContainsAll, ContainsAny, ContextValue, DataEvent, DenialReason, Divide, Domain, DomainEvent, DomainEventFilter, DomainFilter, DomainId, Duration, EntityFilter, Equal, EvaluatesToAccountId, EvaluatesToAssetDefinitionId, EvaluatesToAssetId, EvaluatesToBool, EvaluatesToDomainId, EvaluatesToHash, EvaluatesToIdBox, EvaluatesToName, EvaluatesToRegistrableBox, EvaluatesToRoleId, EvaluatesToTriggerId, EvaluatesToU32, EvaluatesToValue, EvaluatesToVecValue, Event, EventPublisherMessage, EventSubscriberMessage, Executable, ExecuteTriggerBox, ExecuteTriggerEvent, ExecuteTriggerEventFilter, ExecutionTime, Expression, FailBox, FilterBox, FilterOptAccountEventFilter, FilterOptAccountFilter, FilterOptAssetDefinitionEventFilter, FilterOptAssetDefinitionFilter, FilterOptAssetEventFilter, FilterOptAssetFilter, FilterOptDomainEventFilter, FilterOptDomainFilter, FilterOptEntityFilter, FilterOptIdFilterAccountId, FilterOptIdFilterAssetDefinitionId, FilterOptIdFilterAssetId, FilterOptIdFilterDomainId, FilterOptIdFilterPeerId, FilterOptIdFilterRoleId, FilterOptIdFilterTriggerId, FilterOptPeerEventFilter, FilterOptPeerFilter, FilterOptRoleEventFilter, FilterOptRoleFilter, FilterOptTriggerEventFilter, FilterOptTriggerFilter, FindAccountById, FindAccountKeyValueByIdAndKey, FindAccountsByDomainId, FindAccountsByName, FindAccountsWithAsset, FindAllAccounts, FindAllActiveTriggerIds, FindAllAssets, FindAllAssetsDefinitions, FindAllBlocks, FindAllDomains, FindAllPeers, FindAllRoleIds, FindAllRoles, FindAllTransactions, FindAssetById, FindAssetDefinitionById, FindAssetDefinitionKeyValueByIdAndKey, FindAssetKeyValueByIdAndKey, FindAssetQuantityById, FindAssetsByAccountId, FindAssetsByAssetDefinitionId, FindAssetsByDomainId, FindAssetsByDomainIdAndAssetDefinitionId, FindAssetsByName, FindDomainById, FindDomainKeyValueByIdAndKey, FindError, FindPermissionTokensByAccountId, FindRoleByRoleId, FindRolesByAccountId, FindTransactionByHash, FindTransactionsByAccountId, FindTriggerById, FindTriggerKeyValueByIdAndKey, FindTriggersByDomainId, Fixed, FixedPointI64, GenesisTransaction, GrantBox, Greater, Hash, HashOfMerkleTreeVersionedTransaction, HashOfProof, HashOfVersionedCommittedBlock, HashOfVersionedTransaction, HashOfVersionedValidBlock, IdBox, IdFilterAccountId, IdFilterAssetDefinitionId, IdFilterAssetId, IdFilterDomainId, IdFilterPeerId, IdFilterRoleId, IdFilterTriggerId, IdentifiableBox, IfExpression, IfInstruction, Instruction, InstructionExecutionFail, IpfsPath, Less, MapAccountIdAccount, MapAssetDefinitionIdAssetDefinitionEntry, MapAssetIdAsset, MapNameValue, MapPublicKeySignatureOfCommittedBlock, MapPublicKeySignatureOfProof, MapPublicKeySignatureOfTransactionPayload, MapStringEvaluatesToValue, MerkleTreeVersionedTransaction, Metadata, MintBox, Mintable, MismatchValidatorType, Mod, Multiply, Name, NewAccount, NewAssetDefinition, NewDomain, NewRole, NoTransactionReceiptReceived, Not, NotPermittedFail, OptionDuration, OptionHash, OptionInstruction, OptionIpfsPath, OptionPipelineEntityKind, OptionPipelineStatusKind, OptionTimeInterval, OptionTopology, OptionU32, Or, PaginatedQueryResult, Pagination, Pair, Parameter, Peer, PeerEvent, PeerEventFilter, PeerFilter, PeerId, PermissionToken, PipelineEntityKind, PipelineEvent, PipelineEventFilter, PipelineStatus, PipelineStatusKind, Predicate, PredicateBox, Proof, ProofChain, ProofPayload, PublicKey, QueryBox, QueryError, QueryPayload, QueryResult, RaiseTo, Range, RawGenesisBlock, RawVersioned, Reason, RegisterBox, RegistrableBox, RejectedTransaction, RejectionReason, RemoveKeyValueBox, Repeats, RevokeBox, Role, RoleEvent, RoleEventFilter, RoleFilter, RoleId, SemiIntervalFixed, SemiIntervalU128, SemiIntervalU32, SequenceBox, SetKeyValueBox, Signature, SignatureCheckCondition, SignatureOfCommittedBlock, SignatureOfProof, SignatureOfQueryPayload, SignatureOfTransactionPayload, SignatureOfValidBlock, SignaturesOfCommittedBlock, SignaturesOfProof, SignaturesOfTransactionPayload, SignedQueryRequest, Subtract, TimeEvent, TimeEventFilter, TimeInterval, TimeSchedule, Topology, Transaction, TransactionLimitError, TransactionPayload, TransactionRejectionReason, TransactionValue, TransferBox, TriggerEvent, TriggerEventFilter, TriggerFilter, TriggerFilterBox, TriggerId, UnregisterBox, UnsatisfiedSignatureConditionFail, UnsupportedVersion, ValidBlock, ValidTransaction, ValidatorType, Value, ValueOfKey, VecEvent, VecGenesisTransaction, VecHash, VecHashOfVersionedValidBlock, VecInstruction, VecPeerId, VecPermissionToken, VecPredicateBox, VecProof, VecPublicKey, VecRoleId, VecSignatureOfTransactionPayload, VecSignatureOfValidBlock, VecValue, VecVersionedRejectedTransaction, VecVersionedValidTransaction, VersionError, VersionedBlockPublisherMessage, VersionedBlockSubscriberMessage, VersionedCommittedBlock, VersionedEventPublisherMessage, VersionedEventSubscriberMessage, VersionedPaginatedQueryResult, VersionedRejectedTransaction, VersionedSignedQueryRequest, VersionedTransaction, VersionedValidBlock, VersionedValidTransaction, WasmExecutionFail, WasmSmartContract, Where }

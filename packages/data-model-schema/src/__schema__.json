@@ -861,38 +861,43 @@
           "ty": "iroha_data_model::asset::NewAssetDefinition"
         },
         {
-          "name": "Peer",
+          "name": "NewRole",
           "discriminant": 3,
+          "ty": "iroha_data_model::role::NewRole"
+        },
+        {
+          "name": "Peer",
+          "discriminant": 4,
           "ty": "iroha_data_model::peer::Peer"
         },
         {
           "name": "Domain",
-          "discriminant": 4,
+          "discriminant": 5,
           "ty": "iroha_data_model::domain::Domain"
         },
         {
           "name": "Account",
-          "discriminant": 5,
+          "discriminant": 6,
           "ty": "iroha_data_model::account::Account"
         },
         {
           "name": "AssetDefinition",
-          "discriminant": 6,
+          "discriminant": 7,
           "ty": "iroha_data_model::asset::AssetDefinition"
         },
         {
           "name": "Asset",
-          "discriminant": 7,
+          "discriminant": 8,
           "ty": "iroha_data_model::asset::Asset"
         },
         {
           "name": "Trigger",
-          "discriminant": 8,
+          "discriminant": 9,
           "ty": "iroha_data_model::trigger::Trigger<iroha_data_model::events::FilterBox>"
         },
         {
           "name": "Role",
-          "discriminant": 9,
+          "discriminant": 10,
           "ty": "iroha_data_model::role::Role"
         }
       ]
@@ -967,7 +972,7 @@
         {
           "name": "Role",
           "discriminant": 6,
-          "ty": "iroha_data_model::role::Role"
+          "ty": "iroha_data_model::role::NewRole"
         }
       ]
     }
@@ -4372,6 +4377,16 @@
         {
           "name": "name",
           "ty": "iroha_data_model::Name"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::role::NewRole": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "inner",
+          "ty": "iroha_data_model::role::Role"
         }
       ]
     }
