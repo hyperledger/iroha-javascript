@@ -9,7 +9,7 @@
   "license": "Apache 2.0",
   "scripts": {
     "test": "vitest run",
-    "compile": "esno etc/compile"
+    "compile": "tsx etc/compile"
   },
   "dependencies": {
     "@scale-codec/definition-runtime": "^2.0.0"
@@ -23,7 +23,6 @@
     "chalk": "4.1.2",
     "consola": "^2.15.3",
     "debug": "^4.3.4",
-    "esno": "^0.12.1",
     "execa": "5.1.1",
     "immutable": "^4.0.0",
     "type-fest": "^2.12.0",

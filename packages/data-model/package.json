@@ -15,7 +15,7 @@
   "scripts": {
     "test": "vitest run",
     "build:tsc": "tsc",
-    "codegen": "esno etc/codegen"
+    "codegen": "tsx etc/codegen"
   },
   "dependencies": {
     "@iroha2/i64-fixnum": "workspace:^0.3.1",
@@ -31,7 +31,6 @@
     "chalk": "4.1.2",
     "consola": "^2.15.3",
     "debug": "^4.3.4",
-    "esno": "^0.12.1",
     "execa": "5.1.1",
     "immutable": "^4.0.0",
     "typescript": "^4.6.4"

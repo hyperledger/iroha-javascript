@@ -3,11 +3,11 @@
   "version": "0.0.1",
   "scripts": {
     "dev:app": "vite",
-    "dev:peer-server": "DEBUG=@iroha2* esno etc/dev-peer-server",
+    "dev:peer-server": "DEBUG=@iroha2* tsx etc/dev-peer-server",
     "dev:cy": "cypress open",
     "test": "run-s test:app:build test:run",
     "test:app:build": "vite build",
-    "test:run": "DEBUG=@iroha2* esno etc/test-run"
+    "test:run": "DEBUG=@iroha2* tsx etc/test-run"
   },
   "devDependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "^2.1.2",
@@ -24,7 +24,6 @@
     "cross-env": "^7.0.3",
     "cypress": "^9.5.2",
     "esbuild": "^0.14.27",
-    "esno": "^0.12.1",
     "execa": "5.1.1",
     "hada": "^0.0.8",
     "npm-run-all": "^4.1.5",
