@@ -1463,6 +1463,15 @@ export interface NewDomain extends Opaque<NewDomain__actual, NewDomain> {
 // @public (undocumented)
 export const NewDomain: StructCodecAndFactory<NewDomain__actual, NewDomain>;
 
+// Warning: (ae-forgotten-export) The symbol "NewRole__actual" needs to be exported by the entry point lib.d.ts
+//
+// @public (undocumented)
+export interface NewRole extends Opaque<NewRole__actual, NewRole> {
+}
+
+// @public (undocumented)
+export const NewRole: StructCodecAndFactory<NewRole__actual, NewRole>;
+
 // Warning: (ae-forgotten-export) The symbol "Not__actual" needs to be exported by the entry point lib.d.ts
 //
 // @public (undocumented)
