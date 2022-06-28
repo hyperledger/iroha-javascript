@@ -121,6 +121,12 @@
       "sorted": true
     }
   },
+  "Vec<iroha_crypto::hash::Hash>": {
+    "Vec": {
+      "ty": "iroha_crypto::hash::Hash",
+      "sorted": false
+    }
+  },
   "Vec<iroha_crypto::hash::HashOf<iroha_core::block::VersionedValidBlock>>": {
     "Vec": {
       "ty": "iroha_crypto::hash::HashOf<iroha_core::block::VersionedValidBlock>",
@@ -167,6 +173,12 @@
     "Vec": {
       "ty": "iroha_data_model::permissions::PermissionToken",
       "sorted": true
+    }
+  },
+  "Vec<iroha_data_model::predicate::PredicateBox>": {
+    "Vec": {
+      "ty": "iroha_data_model::predicate::PredicateBox",
+      "sorted": false
     }
   },
   "Vec<iroha_data_model::role::Id>": {
@@ -425,7 +437,7 @@
         {
           "name": "Block",
           "discriminant": 5,
-          "ty": "iroha_core::smartcontracts::isi::error::ParentHashNotFound"
+          "ty": "iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"
         },
         {
           "name": "Transaction",
@@ -455,10 +467,59 @@
       ]
     }
   },
-  "iroha_core::smartcontracts::isi::error::ParentHashNotFound": {
-    "Tuple": {
-      "types": [
-        "iroha_crypto::hash::HashOf<iroha_core::block::VersionedCommittedBlock>"
+  "iroha_core::smartcontracts::isi::error::Mismatch<iroha_core::smartcontracts::isi::permissions::ValidatorType>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "expected",
+          "ty": "iroha_core::smartcontracts::isi::permissions::ValidatorType"
+        },
+        {
+          "name": "actual",
+          "ty": "iroha_core::smartcontracts::isi::permissions::ValidatorType"
+        }
+      ]
+    }
+  },
+  "iroha_core::smartcontracts::isi::permissions::ValidatorType": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Instruction",
+          "discriminant": 0,
+          "ty": null
+        },
+        {
+          "name": "Query",
+          "discriminant": 1,
+          "ty": null
+        },
+        {
+          "name": "Expression",
+          "discriminant": 2,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_core::smartcontracts::isi::permissions::error::DenialReason": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "ValidatorTypeMismatch",
+          "discriminant": 0,
+          "ty": "iroha_core::smartcontracts::isi::error::Mismatch<iroha_core::smartcontracts::isi::permissions::ValidatorType>"
+        },
+        {
+          "name": "Custom",
+          "discriminant": 1,
+          "ty": "String"
+        },
+        {
+          "name": "NoValidatorsProvided",
+          "discriminant": 2,
+          "ty": null
+        }
       ]
     }
   },
@@ -471,44 +532,29 @@
           "ty": "iroha_version::error::Error"
         },
         {
-          "name": "Version",
-          "discriminant": 1,
-          "ty": "iroha_core::smartcontracts::isi::query::UnsupportedVersionError"
-        },
-        {
           "name": "Signature",
-          "discriminant": 2,
+          "discriminant": 1,
           "ty": "String"
         },
         {
           "name": "Permission",
+          "discriminant": 2,
+          "ty": "iroha_core::smartcontracts::isi::permissions::error::DenialReason"
+        },
+        {
+          "name": "Evaluate",
           "discriminant": 3,
           "ty": "String"
         },
         {
-          "name": "Evaluate",
-          "discriminant": 4,
-          "ty": "String"
-        },
-        {
           "name": "Find",
-          "discriminant": 5,
+          "discriminant": 4,
           "ty": "iroha_core::smartcontracts::isi::error::FindError"
         },
         {
           "name": "Conversion",
-          "discriminant": 6,
+          "discriminant": 5,
           "ty": "String"
-        }
-      ]
-    }
-  },
-  "iroha_core::smartcontracts::isi::query::UnsupportedVersionError": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "version",
-          "ty": "u8"
         }
       ]
     }
@@ -800,48 +846,58 @@
     "Enum": {
       "variants": [
         {
-          "name": "Peer",
-          "discriminant": 0,
-          "ty": "iroha_data_model::peer::Peer"
-        },
-        {
           "name": "NewDomain",
-          "discriminant": 1,
+          "discriminant": 0,
           "ty": "iroha_data_model::domain::NewDomain"
         },
         {
           "name": "NewAccount",
-          "discriminant": 2,
+          "discriminant": 1,
           "ty": "iroha_data_model::account::NewAccount"
         },
         {
-          "name": "Domain",
+          "name": "NewAssetDefinition",
+          "discriminant": 2,
+          "ty": "iroha_data_model::asset::NewAssetDefinition"
+        },
+        {
+          "name": "NewRole",
           "discriminant": 3,
+          "ty": "iroha_data_model::role::NewRole"
+        },
+        {
+          "name": "Peer",
+          "discriminant": 4,
+          "ty": "iroha_data_model::peer::Peer"
+        },
+        {
+          "name": "Domain",
+          "discriminant": 5,
           "ty": "iroha_data_model::domain::Domain"
         },
         {
           "name": "Account",
-          "discriminant": 4,
+          "discriminant": 6,
           "ty": "iroha_data_model::account::Account"
         },
         {
           "name": "AssetDefinition",
-          "discriminant": 5,
+          "discriminant": 7,
           "ty": "iroha_data_model::asset::AssetDefinition"
         },
         {
           "name": "Asset",
-          "discriminant": 6,
+          "discriminant": 8,
           "ty": "iroha_data_model::asset::Asset"
         },
         {
           "name": "Trigger",
-          "discriminant": 7,
+          "discriminant": 9,
           "ty": "iroha_data_model::trigger::Trigger<iroha_data_model::events::FilterBox>"
         },
         {
           "name": "Role",
-          "discriminant": 8,
+          "discriminant": 10,
           "ty": "iroha_data_model::role::Role"
         }
       ]
@@ -901,7 +957,7 @@
         {
           "name": "AssetDefinition",
           "discriminant": 3,
-          "ty": "iroha_data_model::asset::AssetDefinition"
+          "ty": "iroha_data_model::asset::NewAssetDefinition"
         },
         {
           "name": "Asset",
@@ -916,7 +972,7 @@
         {
           "name": "Role",
           "discriminant": 6,
-          "ty": "iroha_data_model::role::Role"
+          "ty": "iroha_data_model::role::NewRole"
         }
       ]
     }
@@ -1003,6 +1059,11 @@
           "name": "Hash",
           "discriminant": 15,
           "ty": "iroha_crypto::hash::Hash"
+        },
+        {
+          "name": "Block",
+          "discriminant": 16,
+          "ty": "iroha_data_model::block_value::BlockValue"
         }
       ]
     }
@@ -1227,6 +1288,84 @@
           "name": "Not",
           "discriminant": 2,
           "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::asset::NewAssetDefinition": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "id",
+          "ty": "iroha_data_model::asset::DefinitionId"
+        },
+        {
+          "name": "value_type",
+          "ty": "iroha_data_model::asset::AssetValueType"
+        },
+        {
+          "name": "mintable",
+          "ty": "iroha_data_model::asset::Mintable"
+        },
+        {
+          "name": "metadata",
+          "ty": "iroha_data_model::metadata::Metadata"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::block_value::BlockHeaderValue": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "timestamp",
+          "ty": "u128"
+        },
+        {
+          "name": "height",
+          "ty": "u64"
+        },
+        {
+          "name": "previous_block_hash",
+          "ty": "iroha_crypto::hash::Hash"
+        },
+        {
+          "name": "transactions_hash",
+          "ty": "iroha_crypto::hash::HashOf<iroha_crypto::merkle::MerkleTree<iroha_data_model::transaction::VersionedTransaction>>"
+        },
+        {
+          "name": "rejected_transactions_hash",
+          "ty": "iroha_crypto::hash::HashOf<iroha_crypto::merkle::MerkleTree<iroha_data_model::transaction::VersionedTransaction>>"
+        },
+        {
+          "name": "invalidated_blocks_hashes",
+          "ty": "Vec<iroha_crypto::hash::Hash>"
+        },
+        {
+          "name": "current_block_hash",
+          "ty": "iroha_crypto::hash::Hash"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::block_value::BlockValue": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "header",
+          "ty": "iroha_data_model::block_value::BlockHeaderValue"
+        },
+        {
+          "name": "transactions",
+          "ty": "Vec<iroha_data_model::transaction::VersionedValidTransaction>"
+        },
+        {
+          "name": "rejected_transactions",
+          "ty": "Vec<iroha_data_model::transaction::VersionedRejectedTransaction>"
+        },
+        {
+          "name": "event_recommendations",
+          "ty": "Vec<iroha_data_model::events::Event>"
         }
       ]
     }
@@ -1478,13 +1617,23 @@
           "ty": "iroha_data_model::account::Id"
         },
         {
-          "name": "MetadataInserted",
+          "name": "RoleRevoked",
           "discriminant": 7,
           "ty": "iroha_data_model::account::Id"
         },
         {
-          "name": "MetadataRemoved",
+          "name": "RoleGranted",
           "discriminant": 8,
+          "ty": "iroha_data_model::account::Id"
+        },
+        {
+          "name": "MetadataInserted",
+          "discriminant": 9,
+          "ty": "iroha_data_model::account::Id"
+        },
+        {
+          "name": "MetadataRemoved",
+          "discriminant": 10,
           "ty": "iroha_data_model::account::Id"
         }
       ]
@@ -2132,13 +2281,23 @@
           "ty": null
         },
         {
-          "name": "ByMetadataInserted",
+          "name": "ByRoleRevoked",
           "discriminant": 7,
           "ty": null
         },
         {
-          "name": "ByMetadataRemoved",
+          "name": "ByRoleGranted",
           "discriminant": 8,
+          "ty": null
+        },
+        {
+          "name": "ByMetadataInserted",
+          "discriminant": 9,
+          "ty": null
+        },
+        {
+          "name": "ByMetadataRemoved",
+          "discriminant": 10,
           "ty": null
         }
       ]
@@ -3410,12 +3569,226 @@
       ]
     }
   },
+  "iroha_data_model::predicate::PredicateBox": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "And",
+          "discriminant": 0,
+          "ty": "Vec<iroha_data_model::predicate::PredicateBox>"
+        },
+        {
+          "name": "Or",
+          "discriminant": 1,
+          "ty": "Vec<iroha_data_model::predicate::PredicateBox>"
+        },
+        {
+          "name": "Not",
+          "discriminant": 2,
+          "ty": "iroha_data_model::predicate::PredicateBox"
+        },
+        {
+          "name": "Raw",
+          "discriminant": 3,
+          "ty": "iroha_data_model::predicate::value::Predicate"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::numerical::Range": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "U32",
+          "discriminant": 0,
+          "ty": "iroha_data_model::predicate::numerical::SemiInterval<u32>"
+        },
+        {
+          "name": "U128",
+          "discriminant": 1,
+          "ty": "iroha_data_model::predicate::numerical::SemiInterval<u128>"
+        },
+        {
+          "name": "Fixed",
+          "discriminant": 2,
+          "ty": "iroha_data_model::predicate::numerical::SemiInterval<iroha_data_primitives::fixed::Fixed>"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::numerical::SemiInterval<iroha_data_primitives::fixed::Fixed>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "start",
+          "ty": "iroha_data_primitives::fixed::Fixed"
+        },
+        {
+          "name": "limit",
+          "ty": "iroha_data_primitives::fixed::Fixed"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::numerical::SemiInterval<u128>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "start",
+          "ty": "u128"
+        },
+        {
+          "name": "limit",
+          "ty": "u128"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::numerical::SemiInterval<u32>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "start",
+          "ty": "u32"
+        },
+        {
+          "name": "limit",
+          "ty": "u32"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::string::Predicate": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Contains",
+          "discriminant": 0,
+          "ty": "String"
+        },
+        {
+          "name": "StartsWith",
+          "discriminant": 1,
+          "ty": "String"
+        },
+        {
+          "name": "EndsWith",
+          "discriminant": 2,
+          "ty": "String"
+        },
+        {
+          "name": "Is",
+          "discriminant": 3,
+          "ty": "String"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::value::AtIndex": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "index",
+          "ty": "u32"
+        },
+        {
+          "name": "predicate",
+          "ty": "iroha_data_model::predicate::value::Predicate"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::value::Container": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Any",
+          "discriminant": 0,
+          "ty": "iroha_data_model::predicate::value::Predicate"
+        },
+        {
+          "name": "All",
+          "discriminant": 1,
+          "ty": "iroha_data_model::predicate::value::Predicate"
+        },
+        {
+          "name": "AtIndex",
+          "discriminant": 2,
+          "ty": "iroha_data_model::predicate::value::AtIndex"
+        },
+        {
+          "name": "ValueOfKey",
+          "discriminant": 3,
+          "ty": "iroha_data_model::predicate::value::ValueOfKey"
+        },
+        {
+          "name": "HasKey",
+          "discriminant": 4,
+          "ty": "iroha_data_model::Name"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::value::Predicate": {
+    "Enum": {
+      "variants": [
+        {
+          "name": "Identifiable",
+          "discriminant": 0,
+          "ty": "iroha_data_model::predicate::string::Predicate"
+        },
+        {
+          "name": "Container",
+          "discriminant": 1,
+          "ty": "iroha_data_model::predicate::value::Container"
+        },
+        {
+          "name": "Display",
+          "discriminant": 2,
+          "ty": "iroha_data_model::predicate::string::Predicate"
+        },
+        {
+          "name": "Numerical",
+          "discriminant": 3,
+          "ty": "iroha_data_model::predicate::numerical::Range"
+        },
+        {
+          "name": "TimeStamp",
+          "discriminant": 4,
+          "ty": "iroha_data_model::predicate::numerical::SemiInterval<u128>"
+        },
+        {
+          "name": "Pass",
+          "discriminant": 5,
+          "ty": null
+        }
+      ]
+    }
+  },
+  "iroha_data_model::predicate::value::ValueOfKey": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "key",
+          "ty": "iroha_data_model::Name"
+        },
+        {
+          "name": "predicate",
+          "ty": "iroha_data_model::predicate::value::Predicate"
+        }
+      ]
+    }
+  },
   "iroha_data_model::query::PaginatedQueryResult": {
     "Struct": {
       "declarations": [
         {
           "name": "result",
           "ty": "iroha_data_model::query::QueryResult"
+        },
+        {
+          "name": "filter",
+          "ty": "iroha_data_model::predicate::PredicateBox"
         },
         {
           "name": "pagination",
@@ -3442,6 +3815,10 @@
         {
           "name": "account_id",
           "ty": "iroha_data_model::account::Id"
+        },
+        {
+          "name": "filter",
+          "ty": "iroha_data_model::predicate::PredicateBox"
         }
       ]
     }
@@ -3495,113 +3872,133 @@
           "ty": "iroha_data_model::query::asset::FindAssetById"
         },
         {
-          "name": "FindAssetsByName",
+          "name": "FindAssetDefinitionById",
           "discriminant": 9,
+          "ty": "iroha_data_model::query::asset::FindAssetDefinitionById"
+        },
+        {
+          "name": "FindAssetsByName",
+          "discriminant": 10,
           "ty": "iroha_data_model::query::asset::FindAssetsByName"
         },
         {
           "name": "FindAssetsByAccountId",
-          "discriminant": 10,
+          "discriminant": 11,
           "ty": "iroha_data_model::query::asset::FindAssetsByAccountId"
         },
         {
           "name": "FindAssetsByAssetDefinitionId",
-          "discriminant": 11,
+          "discriminant": 12,
           "ty": "iroha_data_model::query::asset::FindAssetsByAssetDefinitionId"
         },
         {
           "name": "FindAssetsByDomainId",
-          "discriminant": 12,
+          "discriminant": 13,
           "ty": "iroha_data_model::query::asset::FindAssetsByDomainId"
         },
         {
           "name": "FindAssetsByDomainIdAndAssetDefinitionId",
-          "discriminant": 13,
+          "discriminant": 14,
           "ty": "iroha_data_model::query::asset::FindAssetsByDomainIdAndAssetDefinitionId"
         },
         {
           "name": "FindAssetQuantityById",
-          "discriminant": 14,
+          "discriminant": 15,
           "ty": "iroha_data_model::query::asset::FindAssetQuantityById"
         },
         {
           "name": "FindAssetKeyValueByIdAndKey",
-          "discriminant": 15,
+          "discriminant": 16,
           "ty": "iroha_data_model::query::asset::FindAssetKeyValueByIdAndKey"
         },
         {
           "name": "FindAssetDefinitionKeyValueByIdAndKey",
-          "discriminant": 16,
+          "discriminant": 17,
           "ty": "iroha_data_model::query::asset::FindAssetDefinitionKeyValueByIdAndKey"
         },
         {
           "name": "FindAllDomains",
-          "discriminant": 17,
+          "discriminant": 18,
           "ty": "iroha_data_model::query::domain::FindAllDomains"
         },
         {
           "name": "FindDomainById",
-          "discriminant": 18,
+          "discriminant": 19,
           "ty": "iroha_data_model::query::domain::FindDomainById"
         },
         {
           "name": "FindDomainKeyValueByIdAndKey",
-          "discriminant": 19,
+          "discriminant": 20,
           "ty": "iroha_data_model::query::domain::FindDomainKeyValueByIdAndKey"
         },
         {
           "name": "FindAllPeers",
-          "discriminant": 20,
+          "discriminant": 21,
           "ty": "iroha_data_model::query::peer::FindAllPeers"
         },
         {
+          "name": "FindAllBlocks",
+          "discriminant": 22,
+          "ty": "iroha_data_model::query::block::FindAllBlocks"
+        },
+        {
+          "name": "FindAllTransactions",
+          "discriminant": 23,
+          "ty": "iroha_data_model::query::transaction::FindAllTransactions"
+        },
+        {
           "name": "FindTransactionsByAccountId",
-          "discriminant": 21,
+          "discriminant": 24,
           "ty": "iroha_data_model::query::transaction::FindTransactionsByAccountId"
         },
         {
           "name": "FindTransactionByHash",
-          "discriminant": 22,
+          "discriminant": 25,
           "ty": "iroha_data_model::query::transaction::FindTransactionByHash"
         },
         {
           "name": "FindPermissionTokensByAccountId",
-          "discriminant": 23,
+          "discriminant": 26,
           "ty": "iroha_data_model::query::permissions::FindPermissionTokensByAccountId"
         },
         {
           "name": "FindAllActiveTriggerIds",
-          "discriminant": 24,
+          "discriminant": 27,
           "ty": "iroha_data_model::query::trigger::FindAllActiveTriggerIds"
         },
         {
           "name": "FindTriggerById",
-          "discriminant": 25,
+          "discriminant": 28,
           "ty": "iroha_data_model::query::trigger::FindTriggerById"
         },
         {
           "name": "FindTriggerKeyValueByIdAndKey",
-          "discriminant": 26,
+          "discriminant": 29,
           "ty": "iroha_data_model::query::trigger::FindTriggerKeyValueByIdAndKey"
         },
         {
+          "name": "FindTriggersByDomainId",
+          "discriminant": 30,
+          "ty": "iroha_data_model::query::trigger::FindTriggersByDomainId"
+        },
+        {
           "name": "FindAllRoles",
-          "discriminant": 27,
+          "discriminant": 31,
           "ty": "iroha_data_model::query::role::FindAllRoles"
         },
         {
           "name": "FindAllRoleIds",
-          "discriminant": 28,
+          "discriminant": 32,
           "ty": "iroha_data_model::query::role::FindAllRoleIds"
         },
         {
           "name": "FindRoleByRoleId",
-          "discriminant": 29,
+          "discriminant": 33,
           "ty": "iroha_data_model::query::role::FindRoleByRoleId"
         },
         {
           "name": "FindRolesByAccountId",
-          "discriminant": 30,
+          "discriminant": 34,
           "ty": "iroha_data_model::query::role::FindRolesByAccountId"
         }
       ]
@@ -3729,6 +4126,16 @@
       ]
     }
   },
+  "iroha_data_model::query::asset::FindAssetDefinitionById": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::asset::DefinitionId>"
+        }
+      ]
+    }
+  },
   "iroha_data_model::query::asset::FindAssetDefinitionKeyValueByIdAndKey": {
     "Struct": {
       "declarations": [
@@ -3821,6 +4228,11 @@
       ]
     }
   },
+  "iroha_data_model::query::block::FindAllBlocks": {
+    "Tuple": {
+      "types": []
+    }
+  },
   "iroha_data_model::query::domain::FindAllDomains": {
     "Tuple": {
       "types": []
@@ -3895,6 +4307,11 @@
       ]
     }
   },
+  "iroha_data_model::query::transaction::FindAllTransactions": {
+    "Tuple": {
+      "types": []
+    }
+  },
   "iroha_data_model::query::transaction::FindTransactionByHash": {
     "Struct": {
       "declarations": [
@@ -3944,12 +4361,32 @@
       ]
     }
   },
+  "iroha_data_model::query::trigger::FindTriggersByDomainId": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "domain_id",
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>"
+        }
+      ]
+    }
+  },
   "iroha_data_model::role::Id": {
     "Struct": {
       "declarations": [
         {
           "name": "name",
           "ty": "iroha_data_model::Name"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::role::NewRole": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "inner",
+          "ty": "iroha_data_model::role::Role"
         }
       ]
     }

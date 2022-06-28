@@ -1,5 +1,5 @@
 import * as testPeerClient from '@iroha2/test-peer/src/api/client'
-import { peer_config, peer_genesis } from '../../../config'
+import { client_config, peer_config, peer_genesis } from '../../../config'
 
 testPeerClient.setBaseURL('/peer-server')
 
@@ -11,7 +11,7 @@ before(async () => {
 
 beforeEach(async () => {
   await testPeerClient.killPeer()
-  await testPeerClient.startPeer()
+  await testPeerClient.startPeer({ toriiApiURL: client_config.torii.apiURL })
 })
 
 it('Register new domain and wait until committment', () => {

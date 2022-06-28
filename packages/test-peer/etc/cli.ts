@@ -13,11 +13,14 @@ cli.command('clean:effects').action(async () => {
   await cleanSideEffects()
 })
 
-cli.command('start').action(async () => {
-  consola.info('Starting peer')
-  await startPeer()
-  consola.info('Started! Kill this process to kill the peer')
-})
+cli
+  .command('start')
+  .option('--api-url <url>', 'Torii API_URL, needed for health check')
+  .action(async (opts) => {
+    consola.info('Starting peer')
+    await startPeer({ toriiApiURL: opts.url })
+    consola.info('Started! Kill this process to kill the peer')
+  })
 
 cli.command('config:set-from-client-tests').action(async () => {
   await setConfiguration({ config: peer_config, genesis: peer_genesis })

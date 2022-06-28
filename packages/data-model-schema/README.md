@@ -24,4 +24,4 @@ Iroha Schema & related utilities.
 
 See other packages documentation.
 
-**Important note**: this package is a pure TypeScript package, i.e. it is not pre-bundled, but it exports source TypeScript files. It works fine out-of-the-box with tools like Vite or `esno`.
+**Important note**: this package is a pure TypeScript package, i.e. it is not pre-bundled, but it exports source TypeScript files. It works fine out-of-the-box with tools like Vite or `tsx`.

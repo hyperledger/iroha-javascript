@@ -5,6 +5,8 @@ import {
   MapNameValue,
   OptionU32,
   PaginatedQueryResult,
+  Predicate,
+  PredicateBox,
   PublicKey,
   QueryBox,
   QueryError,
@@ -110,6 +112,13 @@ export interface UserConfig {
   }
 }
 
+export interface RequestParams {
+  /**
+   * @default PredicateBox('Raw', Predicate('Pass'))
+   */
+  filter?: PredicateBox
+}
+
 function makeSignature(keyPair: KeyPair, payload: Uint8Array): Signature {
   const { createSignature } = useCryptoAssertive()
 
@@ -157,15 +166,19 @@ export class Client {
   public async getHealth(): Promise<HealthResult> {
     const url = this.forceGetApiURL()
 
-    const response = await fetch(url + ENDPOINT_HEALTH)
-    ResponseError.throwIfStatusIsNot(response, 200)
+    try {
+      const response = await fetch(url + ENDPOINT_HEALTH)
+      ResponseError.throwIfStatusIsNot(response, 200)
 
-    const text = await response.text()
-    if (text !== HEALTHY_RESPONSE) {
-      return Enum.variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`)
+      const text = await response.text()
+      if (text !== HEALTHY_RESPONSE) {
+        return Enum.variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`)
+      }
+
+      return Enum.variant('Ok', null)
+    } catch (err) {
+      return Enum.variant('Err', `Some error occured: ${String(err)}`)
     }
-
-    return Enum.variant('Ok', null)
   }
 
   public async submit(executable: Executable, params?: SubmitParams): Promise<void> {
@@ -218,7 +231,7 @@ export class Client {
   /**
    * TODO support pagination
    */
-  public async request(query: QueryBox): Promise<RequestResult> {
+  public async request(query: QueryBox, params?: RequestParams): Promise<RequestResult> {
     const scope = createGarbageScope()
     const { createHash } = useCryptoAssertive()
     const url = this.forceGetApiURL()
@@ -229,6 +242,7 @@ export class Client {
       query,
       account_id: accountId,
       timestamp_ms: BigInt(Date.now()),
+      filter: params?.filter ?? PredicateBox('Raw', Predicate('Pass')),
     })
 
     try {

@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/client",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "main": "src/lib.ts",
   "publishConfig": {
     "main": "dist/lib.cjs.js",
@@ -20,7 +20,7 @@
     "test:integration": "run-s test:prepare test:node test:web",
     "test:prepare": "run-p test:prepare:build-isomorphic test:prepare:peer",
     "test:prepare:build-isomorphic": "pnpm --parallel --filter \"@iroha2/client-isomorphic-*\" run build",
-    "test:prepare:peer": "esno test/integration/prepare-peer",
+    "test:prepare:peer": "tsx test/integration/prepare-peer",
     "test:node": "pnpm --filter client-test-node test",
     "test:web": "pnpm --filter client-test-web test",
     "build:tsc": "tsc"
@@ -29,7 +29,7 @@
     "@iroha2/client-isomorphic-fetch": "workspace:^0.2.0",
     "@iroha2/client-isomorphic-ws": "workspace:^0.2.0",
     "@iroha2/crypto-core": "workspace:^0.1.1",
-    "@iroha2/data-model": "workspace:^1.2.1",
+    "@iroha2/data-model": "workspace:^1.3.0",
     "debug": "^4.3.4",
     "emittery": "^0.10.1",
     "json-bigint": "^1.0.0"
@@ -37,7 +37,6 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "consola": "^2.15.3",
-    "esno": "^0.12.1",
     "npm-run-all": "^4.1.5",
     "type-fest": "^2.12.0"
   }

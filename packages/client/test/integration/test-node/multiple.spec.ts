@@ -4,7 +4,6 @@ import { Client, setCrypto } from '@iroha2/client'
 import {
   Account,
   AccountId,
-  AssetDefinition,
   AssetDefinitionId,
   AssetId,
   AssetValueType,
@@ -28,6 +27,7 @@ import {
   Metadata,
   MintBox,
   Mintable,
+  NewAssetDefinition,
   NewDomain,
   OptionHash,
   OptionIpfsPath,
@@ -91,8 +91,8 @@ async function addAsset(
                 Value(
                   'Identifiable',
                   IdentifiableBox(
-                    'AssetDefinition',
-                    AssetDefinition({
+                    'NewAssetDefinition',
+                    NewAssetDefinition({
                       id: definitionId,
                       value_type: assetType,
                       metadata: Metadata({ map: MapNameValue(new Map()) }),
@@ -180,7 +180,7 @@ beforeEach(async () => {
     genesis: peer_genesis,
   })
 
-  startedPeer = await startPeer()
+  startedPeer = await startPeer({ toriiApiURL: client_config.torii.apiURL })
 
   await waitForGenesisCommitted()
 })
@@ -190,6 +190,7 @@ afterAll(async () => {
   await cleanConfiguration()
 })
 
+// Actually it is already tested within `@iroha2/test-peer`
 test('Peer is healthy', async () => {
   expect(await client.getHealth()).toEqual(Enum.variant('Ok', null) as Result<null, any>)
 })

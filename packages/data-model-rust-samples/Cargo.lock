@@ -443,6 +443,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dashmap"
+version = "4.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e77a43b28d0668df09411cb0bc9a8c2adc40f9a048afe863e05fd43251e8e39c"
+dependencies = [
+ "cfg-if",
+ "num_cpus",
+]
+
+[[package]]
 name = "data-model-rust-samples"
 version = "0.1.0"
 dependencies = [
@@ -813,6 +823,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "heck"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2540771e65fc8cb83cd6e8a237f70c319bd5c29f78ed1084ba5d50eeac86f7f9"
+
+[[package]]
 name = "hermit-abi"
 version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -937,8 +953,8 @@ checksum = "b33c9a5c599d67d051c4dc25eb1b6b4ef715d1763c20c85c688717a1734f204e"
 
 [[package]]
 name = "iroha_crypto"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "derive_more",
  "getset",
@@ -951,9 +967,10 @@ dependencies = [
 
 [[package]]
 name = "iroha_data_model"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
+ "dashmap",
  "derive_more",
  "getset",
  "iroha_crypto",
@@ -964,13 +981,15 @@ dependencies = [
  "parity-scale-codec",
  "serde",
  "serde_json",
+ "strum",
  "thiserror",
+ "tokio",
 ]
 
 [[package]]
 name = "iroha_data_primitives"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "derive_more",
  "fixnum",
@@ -985,8 +1004,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_derive"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -995,16 +1014,16 @@ dependencies = [
 
 [[package]]
 name = "iroha_macro"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "iroha_derive",
 ]
 
 [[package]]
 name = "iroha_schema"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "fixnum",
  "iroha_schema_derive",
@@ -1013,8 +1032,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_schema_derive"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1023,8 +1042,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_version"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "iroha_macro",
  "iroha_schema",
@@ -1038,8 +1057,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_version_derive"
-version = "2.0.0-pre-rc.4"
-source = "git+https://github.com/hyperledger/iroha?rev=d00e0a9172d2a887a97f504796db5f2e05939c10#d00e0a9172d2a887a97f504796db5f2e05939c10"
+version = "2.0.0-pre-rc.5"
+source = "git+https://github.com/hyperledger/iroha?rev=43be45fc7fb7b0bd73f87b4fef167d61680c8e1e#43be45fc7fb7b0bd73f87b4fef167d61680c8e1e"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1588,6 +1607,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ef03e0a2b150c7a90d01faf6254c9c48a41e95fb2a8c2ac1c6f0d2b9aefc342"
 
 [[package]]
+name = "rustversion"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f2cc38e8fa666e2de3c4aba7edeb5ffc5246c1c2ed0e3d17e560aeeba736b23f"
+
+[[package]]
 name = "ryu"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1787,6 +1812,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
+name = "strum"
+version = "0.24.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "063e6045c0e62079840579a7e47a355ae92f60eb74daaf156fb1e84ba164e63f"
+dependencies = [
+ "strum_macros",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.24.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9550962e7cf70d9980392878dfaf1dcc3ece024f4cf3bf3c46b978d0bad61d6c"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "rustversion",
+ "syn",
+]
+
+[[package]]
 name = "subtle"
 version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1870,6 +1917,7 @@ dependencies = [
  "libc",
  "memchr",
  "mio",
+ "num_cpus",
  "pin-project-lite",
  "socket2",
  "winapi",

@@ -2,21 +2,32 @@ import { TMP_DIR, TMP_IROHA_BIN } from '../etc/meta'
 import path from 'path'
 import execa from 'execa'
 import { $, fs } from 'zx'
-import { rmForce, saveDataAsJSON } from './util'
+import { rmForce, saveDataAsJSON, waitUntilPeerIsHealthy } from './util'
 import readline from 'readline'
-import debugRoot from 'debug'
+import Debug from 'debug'
 import { KnownBinaries, install, resolveBinaryPath } from '@iroha2/dev-iroha-bins'
 import makeDir from 'make-dir'
 
-const debug = debugRoot('@iroha2/test-peer')
+const debug = Debug('@iroha2/test-peer')
+
+/**
+ * Time within to check if peer is up and running
+ */
+const HEALTH_CHECK_TIMEOUT = 500
+const HEALTH_CHECK_INTERVAL = 50
+
+// const MAGIC_PEER_READY_LOG_MESSAGE_REGEX = /Starting network actor/
 
 export interface StartPeerParams {
+  /**
+   * Required to check started peer's
+   */
+  toriiApiURL: string
+
   /**
    * @default true
    */
   withGenesis?: boolean
-
-  // outputPeerLogs?: boolean;
 }
 
 export interface KillPeerParams {
@@ -59,13 +70,13 @@ export async function preparePackage() {
 /**
  * Start network with single peer.
  */
-export async function startPeer(params?: StartPeerParams): Promise<StartPeerReturn> {
+export async function startPeer(params: StartPeerParams): Promise<StartPeerReturn> {
   // state
   let isAlive = true
 
   {
     const contents = await fs.readdir(TMP_DIR)
-    debug('contents: %o', contents)
+    debug('Dir contents BEFORE start: %o', contents)
   }
 
   // starting peer
@@ -86,35 +97,27 @@ export async function startPeer(params?: StartPeerParams): Promise<StartPeerRetu
     debug('Subprocess error:', err)
   })
 
-  const irohaIsReadyLogMessagePromise = new Promise<void>((resolve) => {
-    stdout.on('line', (line) => {
-      if (/listening on.+:8080/i.test(line)) {
-        resolve()
-      }
-    })
-  })
+  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, HEALTH_CHECK_INTERVAL, HEALTH_CHECK_TIMEOUT)
   const exitPromise = new Promise<void>((resolve) => {
-    subprocess.once('exit', resolve)
-  })
-  exitPromise.then(() => {
-    isAlive = false
+    subprocess.once('exit', (...args) => {
+      isAlive = false
+      debug('Peer exited:', args)
+      resolve()
+    })
   })
 
   async function kill(params?: KillPeerParams) {
     if (!isAlive) throw new Error('Already dead')
-
+    debug('Killing peer...')
     subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 })
-
     await exitPromise
     params?.cleanSideEffects && (await cleanSideEffects())
-
-    return exitPromise
+    debug('Peer is killed')
   }
 
   await new Promise<void>((resolve, reject) => {
     exitPromise.then(() => reject(new Error('Iroha has exited already, maybe something went wrong')))
-    setTimeout(() => reject(new Error('No key log message detected within timeout')), 300)
-    irohaIsReadyLogMessagePromise.then(() => resolve())
+    irohaIsHealthyPromise.then(() => resolve()).catch((err) => reject(err))
   })
 
   return {
@@ -157,5 +160,5 @@ export async function cleanConfiguration(): Promise<void> {
 export async function cleanSideEffects() {
   const rmTarget = path.resolve(TMP_DIR, 'blocks')
   await rmForce(rmTarget)
-  debug('blocks are cleaned')
+  debug('Blocks are cleaned')
 }

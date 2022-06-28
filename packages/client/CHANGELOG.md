@@ -1,5 +1,18 @@
 # @iroha2/client
 
+## 1.3.0
+
+### Minor Changes
+
+- bdddf78: **breaking**: update and data-model accordingly to Iroha 2 RC 5 (`43be45fc7fb7b0bd73f87b4fef167d61680c8e1e`)
+- bdddf78: **feat**: `client.request()` now accepts optional filter as `PredicateBox`
+
+### Patch Changes
+
+- 7ca19df: **feat**: `client.getHealth()` catches fetch errors and wraps them into `Result::Err` variant
+- Updated dependencies [bdddf78]
+  - @iroha2/data-model@1.3.0
+
 ## 1.2.1
 
 ### Patch Changes

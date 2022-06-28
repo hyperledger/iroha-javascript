@@ -20,7 +20,7 @@
     "format:fix": "prettier-eslint \"**/*.{ts,js,vue,json}\" --write"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.22.0",
+    "@changesets/cli": "^2.23.0",
     "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
     "@iroha2/test-peer": "workspace:^0.0.1",
     "@microsoft/api-extractor": "^7.24.0",
@@ -31,7 +31,6 @@
     "debug": "^4.3.4",
     "del": "^6.0.0",
     "esbuild": "^0.14.27",
-    "esbuild-register": "^3.3.2",
     "eslint": "^7.32.0",
     "eslint-config-alloy": "^4.5.1",
     "eslint-plugin-cypress": "^2.12.1",
@@ -42,6 +41,7 @@
     "prettier": "^2.5.1",
     "prettier-eslint": "^13.0.0",
     "prettier-eslint-cli": "^5.0.1",
+    "tsx": "^3.5.0",
     "type-fest": "^2.12.0",
     "typescript": "^4.6.4",
     "vitest": "^0.12.6",
