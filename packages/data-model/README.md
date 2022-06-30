@@ -1,6 +1,6 @@
-# @iroha2/data-model
+# `@iroha2/data-model`
 
-Generated SCALE-definitions for Iroha Data Model
+The `@iroha2/data-model` packages contains generated SCALE-definitions for Iroha 2 Data Model.
 
 ## Versioning
 
@@ -13,21 +13,24 @@ Generated SCALE-definitions for Iroha Data Model
 
 ## Installation
 
-Configure your package manager to fetch scoped packages from nexus. Example for `npm`/`pnpm` - file `.npmrc`:
+The packages are published under the `@iroha2` scope into Iroha Nexus Registry.
+To install `data-model` with `npm`/`pnpm`:
 
-```ini
-# .npmrc
-@iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
-```
+1. Configure your package manager to fetch scoped packages from Nexus Registry.
 
-Then, install packages:
+    ```ini
+    # FILE: .npmrc
+    @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+    ```
 
-```bash
-npm i @iroha2/data-model
-```
+2. Install the `data-model` package:
+
+    ```bash
+    npm i @iroha2/data-model
+    ```
 
 ## Known issues
 
 ### Entries ordering in `BTreeMap` and `BTreeSet`
 
-In Rust, these structs assume that items are `PartialOrd`-ordered while encoding to ensure consistency for signatures creation. This library doesn't provide this feature and you should put entries in the correct order by yourself.
+In Rust, these structs assume that items are `PartialOrd`-ordered while encoding to ensure consistency for signatures creation. The JS library doesn't provide this feature and you should put entries in the correct order by yourself.

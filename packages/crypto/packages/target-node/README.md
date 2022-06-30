@@ -1,6 +1,9 @@
-# @iroha2/crypto-target-node
+# `@iroha2/crypto-target-node`
 
-WASM compiled with `node` target.
+The `@iroha2/crypto-target-node` package contains a crypto WASM compiled with the `node` target.
+This package provides crypto interface for the Node.js environment.
+
+## Usage
 
 ```ts
 // commonjs style
@@ -10,4 +13,4 @@ const { crypto } = require('@iroha2/crypto-target-node');
 import { crypto } from '@iroha2/crypto-target-node';
 ```
 
-See `@iroha2/crypto-core` package for details.
+See [`@iroha2/crypto-core`](../core/) package for details.

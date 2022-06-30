@@ -1,28 +1,37 @@
-# @iroha2/crypto-core
+# `@iroha2/crypto-core`
 
-Core Iroha v2 JS Crypto package. Contains unified crypto interface. Compiled implementations for each target are in their own packages, accordingly:
+The `@iroha2/crypto-core` package contains the unified crypto interface for Iroha 2 Javascript.
+Compiled implementations for each target (`node`, `web`, `bundler`) are in their own packages:
 
--   `@iroha2/crypto-target-node`
--   `@iroha2/crypto-target-web`
--   `@iroha2/crypto-target-bundler`
+- [`@iroha2/crypto-target-node`](../target-node/)
+- [`@iroha2/crypto-target-web`](../target-web/)
+- [`@iroha2/crypto-target-bundler`](../target-bundler/)
 
-More about targets in [the `wasm-bindgen`'s docs](https://rustwasm.github.io/docs/wasm-bindgen/reference/deployment.html).
+You can learn more about targets in the [`wasm-bindgen` documentation](https://rustwasm.github.io/docs/wasm-bindgen/reference/deployment.html).
 
 ## Installation
 
-```ini
-# .npmrc
-@iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
-```
+The packages are published under the `@iroha2` scope into Iroha Nexus Registry.
+To install the necessary packages with `npm`/`pnpm`:
 
-```shell
-# install necessary packages
-pnpm add @iroha2/crypto-core @iroha2/crypto-target-node
-```
+1. Configure your package manager to fetch scoped packages from Nexus Registry.
 
-## How to develop libraries that would depend on Iroha Crypto?
+    ```ini
+    # FILE: .npmrc
+    @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+    ```
 
-There is the only way (as I see it) now to develop a library that will be environment-agnostic. You have to use dependency-inversion strategy - make your library depend on the interface `IrohaCryptoInterface` instead of a particular implementation. For example:
+2. Install the packages you need:
+
+    ```shell
+    pnpm add @iroha2/crypto-core @iroha2/crypto-target-node
+    ```
+
+## Development
+
+To develop environment-agnostic libraries that would depend on Iroha Crypto, you have to use dependency-inversion strategy. This means making your library depend on the `IrohaCryptoInterface` interface instead of a particular implementation of it.
+
+For example:
 
 ```ts
 import { IrohaCryptoInterface } from '@iroha2/crypto-core';
