@@ -5,8 +5,8 @@ const config: Config = {
     repo: 'https://github.com/hyperledger/iroha.git',
 
     // ! IMPORTANT ! should be similar with the ref at packages/data-model-rust-samples
-    // v2.0.0-pre-rc.5
-    revision: '43be45fc7fb7b0bd73f87b4fef167d61680c8e1e',
+    // v2.0.0-pre-rc.6
+    revision: '2c897f23f95e04d2a61077729b1ffef847acc199',
   },
   binaries: {
     [KnownBinaries.Kagami]: 'kagami',

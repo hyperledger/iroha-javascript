@@ -6,6 +6,8 @@ Generated SCALE-definitions for Iroha Data Model
 
 | Iroha                                                       | This package |
 | ----------------------------------------------------------- | ------------ |
+| 2.0.0-pre-rc.6 (TODO)                                       | TODO         |
+| 2.0.0-pre-rc.5 (`43be45fc7fb7b0bd73f87b4fef167d61680c8e1e`) | `1.3.0`      |
 | 2.0.0-pre-rc.4 (`d00e0a9172d2a887a97f504796db5f2e05939c10`) | `1.2.0`      |
 | 2.0.0-pre-rc.3 (`8d83a3eff33f29b49004a0a5efe643b10f0f256e`) | `1.1.0`      |
 | 2.0.0-pre-rc.2 (`920e4d12754b0f3bf08cbaa5221d91c27863fcdc`) | `1.0.0`      |
