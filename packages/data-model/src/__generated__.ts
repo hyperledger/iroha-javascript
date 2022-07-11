@@ -4206,6 +4206,7 @@ type VersionError__actual = Enum<
     | 'ParityScale'
     | 'ParseInt'
     | ['UnsupportedVersion', UnsupportedVersion]
+    | ['ExtraBytesLeft', U64]
 >
 
 interface VersionError extends Opaque<VersionError__actual, VersionError> {}
@@ -4218,7 +4219,8 @@ const VersionError: EnumCodecAndFactory<VersionError> = createEnumCodec<VersionE
     [4, 'Serde'],
     [5, 'ParityScale'],
     [6, 'ParseInt'],
-    [7, 'UnsupportedVersion', __dyn_UnsupportedVersion]
+    [7, 'UnsupportedVersion', __dyn_UnsupportedVersion],
+    [8, 'ExtraBytesLeft', U64]
 ])
 
 // Type: VersionedBlockPublisherMessage
