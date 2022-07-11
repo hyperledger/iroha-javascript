@@ -1,3 +1,3 @@
 # `@iroha2/client-isomorphic-fetch`
 
-In Node.js, `@iroha2/client-isomorphic-fetch` fallbacks to either `node-fetch` package or native `fetch()`.
+`@iroha2/client-isomorphic-fetch` uses `node-fetch` package in CJS mode (in Node.js) and native Fetch API in ESM mode (in a browser).
