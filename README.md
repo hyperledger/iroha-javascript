@@ -5,7 +5,7 @@ JavaScript SDK for [Iroha 2](https://github.com/hyperledger/iroha/tree/iroha2/).
 The Iroha 2 JavaScript library includes the following packages:
 
 - [`@iroha2/client`](./packages/client/) submits requests to the Iroha peer
-- [`@iroha2/monorepo-crypto`](./packages/crypto/):
+- [`@iroha2/crypto-*`](./packages/crypto/):
   - [`@iroha2/crypto-core`](./packages/crypto/packages/core/) provides unified crypto interface for Iroha 2
   - [`@iroha2/crypto-target-node`](./packages/crypto/packages/target-node/) provides compiled crypto WASM for the Node.js environment
   - [`@iroha2/crypto-target-web`](./packages/crypto/packages/target-web/) provides compiled crypto WASM for native Web (ESM)
