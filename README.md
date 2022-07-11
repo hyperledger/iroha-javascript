@@ -6,10 +6,10 @@ The Iroha 2 JavaScript library includes the following packages:
 
 - [`@iroha2/client`](./packages/client/) submits requests to the Iroha peer
 - [`@iroha2/monorepo-crypto`](./packages/crypto/):
-  - [`@iroha2/crypto-core`](./packages/crypto/core/) provides unified crypto interface for Iroha 2
-  - [`@iroha2/crypto-target-node`](./packages/crypto/target-node/) provides compiled crypto WASM for the Node.js environment
-  - [`@iroha2/crypto-target-web`](./packages/crypto/target-web/) provides compiled crypto WASM for native Web (ESM)
-  - [`@iroha2/crypto-target-bundler`](./packages/crypto/target-bundler/) provides compiled crypto WASM to use with bundlers such as Webpack
+  - [`@iroha2/crypto-core`](./packages/crypto/packages/core/) provides unified crypto interface for Iroha 2
+  - [`@iroha2/crypto-target-node`](./packages/crypto/packages/target-node/) provides compiled crypto WASM for the Node.js environment
+  - [`@iroha2/crypto-target-web`](./packages/crypto/packages/target-web/) provides compiled crypto WASM for native Web (ESM)
+  - [`@iroha2/crypto-target-bundler`](./packages/crypto/packages/target-bundler/) provides compiled crypto WASM to use with bundlers such as Webpack
 - [`@iroha2/data-model`](./packages/data-model/) provides SCALE codecs for Iroha 2 data model
   
 Other packages you can find in this repository:
