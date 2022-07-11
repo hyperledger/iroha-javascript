@@ -18,7 +18,6 @@ Other packages you can find in this repository:
 - [`@iroha2/docs-recipes`](./packages/docs-recipes/) contains code samples used in documentation
 - [`@iroha2/data-model-schema`](./packages/data-model-schema/) contains Iroha 2 Schema
 - [`@iroha2/i64-fixnum`](./packages/i64-fixnum/) handles operations with fixed-point numbers
-- [`@iroha2/test-peer`](./packages/test-peer/) provides a wrapper around the `iroha_cli` with an easy-to-use interface for working with the Iroha peer
 
  
 ## Installation
