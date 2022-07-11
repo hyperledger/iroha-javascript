@@ -47,13 +47,6 @@
       "sorted_by_key": true
     }
   },
-  "Map<iroha_data_model::Name, iroha_data_model::Value>": {
-    "Map": {
-      "key": "iroha_data_model::Name",
-      "value": "iroha_data_model::Value",
-      "sorted_by_key": true
-    }
-  },
   "Map<iroha_data_model::account::Id, iroha_data_model::account::Account>": {
     "Map": {
       "key": "iroha_data_model::account::Id",
@@ -72,6 +65,13 @@
     "Map": {
       "key": "iroha_data_model::asset::Id",
       "value": "iroha_data_model::asset::Asset",
+      "sorted_by_key": true
+    }
+  },
+  "Map<iroha_data_model::name::Name, iroha_data_model::Value>": {
+    "Map": {
+      "key": "iroha_data_model::name::Name",
+      "value": "iroha_data_model::Value",
       "sorted_by_key": true
     }
   },
@@ -432,7 +432,7 @@
         {
           "name": "MetadataKey",
           "discriminant": 4,
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         },
         {
           "name": "Block",
@@ -903,13 +903,6 @@
       ]
     }
   },
-  "iroha_data_model::Name": {
-    "Tuple": {
-      "types": [
-        "String"
-      ]
-    }
-  },
   "iroha_data_model::Parameter": {
     "Enum": {
       "variants": [
@@ -1003,7 +996,7 @@
         {
           "name": "Name",
           "discriminant": 4,
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         },
         {
           "name": "Fixed",
@@ -1107,7 +1100,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         },
         {
           "name": "domain_id",
@@ -1248,7 +1241,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         },
         {
           "name": "domain_id",
@@ -1401,7 +1394,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         }
       ]
     }
@@ -2897,16 +2890,6 @@
       ]
     }
   },
-  "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>": {
-    "Struct": {
-      "declarations": [
-        {
-          "name": "expression",
-          "ty": "iroha_data_model::expression::Expression"
-        }
-      ]
-    }
-  },
   "iroha_data_model::expression::EvaluatesTo<iroha_data_model::RegistrableBox>": {
     "Struct": {
       "declarations": [
@@ -2958,6 +2941,16 @@
     }
   },
   "iroha_data_model::expression::EvaluatesTo<iroha_data_model::domain::Id>": {
+    "Struct": {
+      "declarations": [
+        {
+          "name": "expression",
+          "ty": "iroha_data_model::expression::Expression"
+        }
+      ]
+    }
+  },
+  "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>": {
     "Struct": {
       "declarations": [
         {
@@ -3432,7 +3425,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -3470,7 +3463,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         },
         {
           "name": "value",
@@ -3512,8 +3505,15 @@
       "declarations": [
         {
           "name": "map",
-          "ty": "Map<iroha_data_model::Name, iroha_data_model::Value>"
+          "ty": "Map<iroha_data_model::name::Name, iroha_data_model::Value>"
         }
+      ]
+    }
+  },
+  "iroha_data_model::name::Name": {
+    "Tuple": {
+      "types": [
+        "String"
       ]
     }
   },
@@ -3560,11 +3560,11 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         },
         {
           "name": "params",
-          "ty": "Map<iroha_data_model::Name, iroha_data_model::Value>"
+          "ty": "Map<iroha_data_model::name::Name, iroha_data_model::Value>"
         }
       ]
     }
@@ -3724,7 +3724,7 @@
         {
           "name": "HasKey",
           "discriminant": 4,
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         }
       ]
     }
@@ -3770,7 +3770,7 @@
       "declarations": [
         {
           "name": "key",
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         },
         {
           "name": "predicate",
@@ -4066,7 +4066,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -4086,7 +4086,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -4145,7 +4145,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -4159,7 +4159,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -4223,7 +4223,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -4257,7 +4257,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -4356,7 +4356,7 @@
         },
         {
           "name": "key",
-          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::Name>"
+          "ty": "iroha_data_model::expression::EvaluatesTo<iroha_data_model::name::Name>"
         }
       ]
     }
@@ -4376,7 +4376,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         }
       ]
     }
@@ -4481,7 +4481,7 @@
         },
         {
           "name": "metadata",
-          "ty": "Map<iroha_data_model::Name, iroha_data_model::Value>"
+          "ty": "Map<iroha_data_model::name::Name, iroha_data_model::Value>"
         }
       ]
     }
@@ -4675,7 +4675,7 @@
       "declarations": [
         {
           "name": "name",
-          "ty": "iroha_data_model::Name"
+          "ty": "iroha_data_model::name::Name"
         }
       ]
     }
@@ -4815,6 +4815,11 @@
           "name": "UnsupportedVersion",
           "discriminant": 7,
           "ty": "iroha_version::UnsupportedVersion"
+        },
+        {
+          "name": "ExtraBytesLeft",
+          "discriminant": 8,
+          "ty": "u64"
         }
       ]
     }
