@@ -358,6 +358,7 @@ const AccountEvent: EnumCodecAndFactory<AccountEvent> = createEnumCodec<AccountE
 // Type: AccountEventFilter
 
 type AccountEventFilter__actual = Enum<
+    | ['ByAsset', FilterOptAssetFilter]
     | 'ByCreated'
     | 'ByDeleted'
     | 'ByAuthenticationAdded'
@@ -368,23 +369,22 @@ type AccountEventFilter__actual = Enum<
     | 'ByRoleGranted'
     | 'ByMetadataInserted'
     | 'ByMetadataRemoved'
-    | ['ByAsset', FilterOptAssetFilter]
 >
 
 interface AccountEventFilter extends Opaque<AccountEventFilter__actual, AccountEventFilter> {}
 
 const AccountEventFilter: EnumCodecAndFactory<AccountEventFilter> = createEnumCodec<AccountEventFilter__actual, AccountEventFilter>('AccountEventFilter', [
-    [0, 'ByCreated'],
-    [1, 'ByDeleted'],
-    [2, 'ByAuthenticationAdded'],
-    [3, 'ByAuthenticationRemoved'],
-    [4, 'ByPermissionAdded'],
-    [5, 'ByPermissionRemoved'],
-    [6, 'ByRoleRevoked'],
-    [7, 'ByRoleGranted'],
-    [8, 'ByMetadataInserted'],
-    [9, 'ByMetadataRemoved'],
-    [10, 'ByAsset', __dyn_FilterOptAssetFilter]
+    [0, 'ByAsset', __dyn_FilterOptAssetFilter],
+    [1, 'ByCreated'],
+    [2, 'ByDeleted'],
+    [3, 'ByAuthenticationAdded'],
+    [4, 'ByAuthenticationRemoved'],
+    [5, 'ByPermissionAdded'],
+    [6, 'ByPermissionRemoved'],
+    [7, 'ByRoleRevoked'],
+    [8, 'ByRoleGranted'],
+    [9, 'ByMetadataInserted'],
+    [10, 'ByMetadataRemoved']
 ])
 
 // Type: AccountFilter
@@ -539,8 +539,8 @@ const AssetDefinitionEvent: EnumCodecAndFactory<AssetDefinitionEvent> = createEn
 
 type AssetDefinitionEventFilter__actual = Enum<
     | 'ByCreated'
-    | 'ByMintabilityChanged'
     | 'ByDeleted'
+    | 'ByMintabilityChanged'
     | 'ByMetadataInserted'
     | 'ByMetadataRemoved'
 >
@@ -549,8 +549,8 @@ interface AssetDefinitionEventFilter extends Opaque<AssetDefinitionEventFilter__
 
 const AssetDefinitionEventFilter: EnumCodecAndFactory<AssetDefinitionEventFilter> = createEnumCodec<AssetDefinitionEventFilter__actual, AssetDefinitionEventFilter>('AssetDefinitionEventFilter', [
     [0, 'ByCreated'],
-    [1, 'ByMintabilityChanged'],
-    [2, 'ByDeleted'],
+    [1, 'ByDeleted'],
+    [2, 'ByMintabilityChanged'],
     [3, 'ByMetadataInserted'],
     [4, 'ByMetadataRemoved']
 ])
@@ -1038,23 +1038,23 @@ const DomainEvent: EnumCodecAndFactory<DomainEvent> = createEnumCodec<DomainEven
 // Type: DomainEventFilter
 
 type DomainEventFilter__actual = Enum<
+    | ['ByAccount', FilterOptAccountFilter]
+    | ['ByAssetDefinition', FilterOptAssetDefinitionFilter]
     | 'ByCreated'
     | 'ByDeleted'
     | 'ByMetadataInserted'
     | 'ByMetadataRemoved'
-    | ['ByAccount', FilterOptAccountFilter]
-    | ['ByAssetDefinition', FilterOptAssetDefinitionFilter]
 >
 
 interface DomainEventFilter extends Opaque<DomainEventFilter__actual, DomainEventFilter> {}
 
 const DomainEventFilter: EnumCodecAndFactory<DomainEventFilter> = createEnumCodec<DomainEventFilter__actual, DomainEventFilter>('DomainEventFilter', [
-    [0, 'ByCreated'],
-    [1, 'ByDeleted'],
-    [2, 'ByMetadataInserted'],
-    [3, 'ByMetadataRemoved'],
-    [4, 'ByAccount', __dyn_FilterOptAccountFilter],
-    [5, 'ByAssetDefinition', __dyn_FilterOptAssetDefinitionFilter]
+    [0, 'ByAccount', __dyn_FilterOptAccountFilter],
+    [1, 'ByAssetDefinition', __dyn_FilterOptAssetDefinitionFilter],
+    [2, 'ByCreated'],
+    [3, 'ByDeleted'],
+    [4, 'ByMetadataInserted'],
+    [5, 'ByMetadataRemoved']
 ])
 
 // Type: DomainFilter
@@ -3218,7 +3218,6 @@ type QueryError__actual = Enum<
     | ['Evaluate', Str]
     | ['Find', FindError]
     | ['Conversion', Str]
-    | 'Unauthorized'
 >
 
 interface QueryError extends Opaque<QueryError__actual, QueryError> {}
@@ -3229,8 +3228,7 @@ const QueryError: EnumCodecAndFactory<QueryError> = createEnumCodec<QueryError__
     [2, 'Permission', __dyn_DenialReason],
     [3, 'Evaluate', Str],
     [4, 'Find', __dyn_FindError],
-    [5, 'Conversion', Str],
-    [6, 'Unauthorized']
+    [5, 'Conversion', Str]
 ])
 
 // Type: QueryPayload
