@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/data-model",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "main": "src/lib.ts",
   "publishConfig": {
     "main": "dist/lib.cjs.js",
@@ -22,7 +22,7 @@
     "@scale-codec/definition-runtime": "^2.0.0"
   },
   "devDependencies": {
-    "@iroha2/data-model-schema": "workspace:^0.1.0",
+    "@iroha2/data-model-schema": "workspace:^1.4.0",
     "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
     "@scale-codec/definition-compiler": "^2.1.0",
     "@scale-codec/util": "^1.0.0",

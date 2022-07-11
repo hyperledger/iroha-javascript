@@ -1,5 +1,12 @@
 # @iroha2/client
 
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies [5439042]
+  - @iroha2/data-model@1.4.0
+
 ## 1.3.0
 
 ### Minor Changes
