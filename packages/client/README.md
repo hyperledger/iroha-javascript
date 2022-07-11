@@ -1,6 +1,6 @@
-# @iroha2/client
+# `@iroha2/client`
 
-Client for Iroha 2.
+Client for Iroha 2, which is used to submit requests to Iroha peer.
 
 ## Versioning
 
@@ -15,9 +15,22 @@ Client for Iroha 2.
 
 ## Installation
 
-Configure your package manager to fetch scoped packages from nexus. Example for `npm`/`pnpm` - file `.npmrc`:
+The packages are published under the `@iroha2` scope into Iroha Nexus Registry.
+To install `client` with `npm`/`pnpm`:
 
-```ini
-# .npmrc
-@iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
-```
+1. Configure your package manager to fetch scoped packages from Nexus Registry.
+
+    ```ini
+    # FILE: .npmrc
+    @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+    ```
+
+2. Install the `client` package:
+
+    ```shell
+    npm i @iroha2/client
+    ```
+
+## Client Configuration
+
+Refer to Iroha 2 tutorial for instructions on how to [configure the client](https://hyperledger.github.io/iroha-2-docs/guide/javascript.html#_2-client-configuration).

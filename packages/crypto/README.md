@@ -1,10 +1,14 @@
-# @iroha2/monorepo-crypto
+# `@iroha2/monorepo-crypto`
 
-It is a service package to handle all crypto-related stuff.
+The `@iroha2/monorepo-crypto` package is a service package to handle everything related to crypto.
 
-## Struct
+## Contents
 
-`packages` contains `core` package with unified `IrohaCryptoInterface` and `target-{node,web,bundler}` packages with compiled WASM's and implemented crypto interface.
+The package contains the following packages:
+- [crypto-core](./packages/crypto/core/)  provides unified crypto interface for Iroha 2 (`IrohaCryptoInterface`)
+- [crypto-target-node](./packages/crypto/target-node/) provides compiled crypto WASM for the Node.js environment
+- [crypto-target-web](./packages/crypto/target-web/) provides compiled crypto WASM for native Web (ESM)
+- [crypto-target-bundler](./packages/crypto/target-bundler/) provides compiled crypto WASM to use with bundlers such as Webpack
 
 ## Tasks
 
