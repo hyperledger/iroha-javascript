@@ -3,9 +3,9 @@
 The `@iroha2/crypto-core` package contains the unified crypto interface for Iroha 2 Javascript.
 Compiled implementations for each target (`node`, `web`, `bundler`) are in their own packages:
 
-- [`@iroha2/crypto-target-node`](../target-node/)
-- [`@iroha2/crypto-target-web`](../target-web/)
-- [`@iroha2/crypto-target-bundler`](../target-bundler/)
+- [`@iroha2/crypto-target-node`](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/target-node)
+- [`@iroha2/crypto-target-web`](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/target-web)
+- [`@iroha2/crypto-target-bundler`](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/target-bundler)
 
 You can learn more about targets in the [`wasm-bindgen` documentation](https://rustwasm.github.io/docs/wasm-bindgen/reference/deployment.html).
 
