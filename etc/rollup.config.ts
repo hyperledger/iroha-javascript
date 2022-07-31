@@ -27,8 +27,8 @@ function* generateRollups(): Generator<RollupOptions> {
         external,
         plugins: [replaceVitest()],
         output: [
-          { file: outputBase + '.mjs', format: 'esm', sourcemap: true },
-          { file: outputBase + '.cjs', format: 'cjs', sourcemap: true },
+          { file: outputBase + '.mjs', format: 'esm' },
+          { file: outputBase + '.cjs', format: 'cjs' },
         ],
       }
     }
