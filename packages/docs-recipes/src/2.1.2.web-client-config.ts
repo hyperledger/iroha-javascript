@@ -1,5 +1,5 @@
 import { Client } from '@iroha2/client'
-import WS from '@iroha2/client/web-socket/native'
+import { adapter as WS } from '@iroha2/client/web-socket/native'
 
 const client = new Client({
   torii: {

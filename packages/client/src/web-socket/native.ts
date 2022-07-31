@@ -1,4 +1,4 @@
-import { IncomingData, IsomorphicWebSocketAdapter } from './types'
+import { IncomingData, IsomorphicWebSocketAdapter } from '@iroha2/client'
 
 async function handleIncomingData(data: any): Promise<IncomingData> {
   if (data instanceof Blob) {
@@ -10,7 +10,7 @@ async function handleIncomingData(data: any): Promise<IncomingData> {
   throw new Error('Unable to parse incoming data')
 }
 
-const adapter: IsomorphicWebSocketAdapter = {
+export const adapter: IsomorphicWebSocketAdapter = {
   initWebSocket: (params) => {
     const socket = new WebSocket(params.url)
 
@@ -28,5 +28,3 @@ const adapter: IsomorphicWebSocketAdapter = {
     }
   },
 }
-
-export default adapter

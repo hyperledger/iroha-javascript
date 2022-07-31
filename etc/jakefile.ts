@@ -6,38 +6,7 @@
 import 'jake'
 import del from 'del'
 import { $ } from 'zx'
-import {
-  BUNDLE_PACKAGES,
-  BundlePackage,
-  PUBLIC_PACKAGES,
-  getBundlePackageExternals,
-  getBundlePackageInOut,
-  scopePackage,
-} from './meta'
-import * as esbuild from 'esbuild'
-
-async function bundleSinglePackage(name: BundlePackage) {
-  for (const { inputBase, outputBase } of getBundlePackageInOut(name)) {
-    for (const format of ['esm', 'cjs'] as const) {
-      const outfile = `${outputBase}.${format === 'esm' ? 'mjs' : 'cjs'}`
-
-      await esbuild.build({
-        entryPoints: [inputBase + `.js`],
-        bundle: true,
-        outfile,
-        external: getBundlePackageExternals(name).toArray(),
-        target: 'esnext',
-        platform: 'neutral',
-        format,
-        sourcemap: true,
-        logLevel: 'info',
-        define: {
-          'import.meta.vitest': 'undefined',
-        },
-      })
-    }
-  }
-}
+import { PUBLIC_PACKAGES, scopePackage } from './meta'
 
 desc('Clean all build artifacts')
 task('clean', async () => {
@@ -53,26 +22,12 @@ task('build-tsc', ['clean'], async () => {
   await $`pnpm build:tsc`
 })
 
-desc('Rollup `.d.ts` files')
-task('build-dts', ['build-tsc'], async () => {
-  await $`pnpm build:dts`
-})
-
-task('build-bundle', ['build-tsc'], async () => {
-  function* bundles(): Generator<Promise<void>> {
-    for (const name of BUNDLE_PACKAGES) {
-      yield bundleSinglePackage(name)
-    }
-  }
-
-  await Promise.all(bundles())
+task('rollup', ['build-tsc'], async () => {
+  await $`pnpm build:rollup`
 })
 
 desc('Build everything')
-task('build', ['clean', 'build-tsc', 'api-extract', 'build-bundle'])
-
-desc('Like `build`, but updates API reports')
-task('build-local', ['clean', 'build-tsc', 'build-dts', 'build-bundle'])
+task('build', ['clean', 'build-tsc', 'rollup'])
 
 desc('Publish all public packages')
 task('publish-all', async () => {

@@ -7,13 +7,13 @@ importers:
       '@changesets/cli': ^2.23.0
       '@iroha2/dev-iroha-bins': workspace:^0.0.0
       '@iroha2/test-peer': workspace:^0.0.1
+      '@rollup/plugin-replace': ^4.0.0
       '@types/jake': ^0.0.33
       '@typescript-eslint/eslint-plugin': ^5.23.0
       '@typescript-eslint/parser': ^5.23.0
       consola: ^2.15.3
       debug: ^4.3.4
       del: ^6.0.0
-      esbuild: ^0.14.27
       eslint: ^7.32.0
       eslint-config-alloy: ^4.5.1
       eslint-plugin-cypress: ^2.12.1
@@ -35,13 +35,13 @@ importers:
       '@changesets/cli': 2.24.1
       '@iroha2/dev-iroha-bins': link:packages/dev-iroha-bins
       '@iroha2/test-peer': link:packages/test-peer
+      '@rollup/plugin-replace': 4.0.0_rollup@2.77.2
       '@types/jake': 0.0.33
       '@typescript-eslint/eslint-plugin': 5.31.0_6ha3eecbwr5cxnj72rgwwy3opa
       '@typescript-eslint/parser': 5.31.0_hxadhbs2xogijvk7vq4t2azzbu
       consola: 2.15.3
       debug: 4.3.4
       del: 6.1.1
-      esbuild: 0.14.51
       eslint: 7.32.0
       eslint-config-alloy: 4.6.2_7au4wfbkaqdrw6s5aziwsariku
       eslint-plugin-cypress: 2.12.1_eslint@7.32.0
@@ -373,6 +373,28 @@ packages:
       fastq: 1.13.0
     dev: true
 
+  /@rollup/plugin-replace/4.0.0_rollup@2.77.2:
+    resolution: {integrity: sha512-+rumQFiaNac9y64OHtkHGmdjm7us9bo1PlbgQfdihQtuNxzjpaB064HbRnewUOggLQxVCCyINfStkgmBeQpv1g==}
+    peerDependencies:
+      rollup: ^1.20.0 || ^2.0.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.77.2
+      magic-string: 0.25.9
+      rollup: 2.77.2
+    dev: true
+
+  /@rollup/pluginutils/3.1.0_rollup@2.77.2:
+    resolution: {integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==}
+    engines: {node: '>= 8.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0
+    dependencies:
+      '@types/estree': 0.0.39
+      estree-walker: 1.0.1
+      picomatch: 2.3.1
+      rollup: 2.77.2
+    dev: true
+
   /@types/chai-subset/1.3.3:
     resolution: {integrity: sha512-frBecisrNGz+F4T6bcc+NLeolfiojh5FxW2klu669+8BARtyQv2C/GkNW6FUodVe4BroGMP/wER/YDGc7rEllw==}
     dependencies:
@@ -385,6 +407,10 @@ packages:
 
   /@types/eslint-visitor-keys/1.0.0:
     resolution: {integrity: sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==}
+    dev: true
+
+  /@types/estree/0.0.39:
+    resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
     dev: true
 
   /@types/fs-extra/9.0.13:
@@ -1836,6 +1862,10 @@ packages:
     engines: {node: '>=4.0'}
     dev: true
 
+  /estree-walker/1.0.1:
+    resolution: {integrity: sha512-1fMXF3YP4pZZVozF8j/ZLfvnR8NSIljt56UhbZ5PeeDmmGHpgpdwQt7ITlGvYaQukCvuBRMLEiKiYC+oeIg4cg==}
+    dev: true
+
   /esutils/2.0.3:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
@@ -2626,6 +2656,12 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+    dev: true
+
+  /magic-string/0.25.9:
+    resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
+    dependencies:
+      sourcemap-codec: 1.4.8
     dev: true
 
   /magic-string/0.26.2:

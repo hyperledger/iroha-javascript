@@ -44,51 +44,54 @@ export type BundlePackage = SetEntry<typeof BUNDLE_PACKAGES>
 export type AllPackages = SetEntry<typeof ALL_PACKAGES>
 
 const BUNDLE_PACKAGES_EXTERNAL: Record<BundlePackage, Set<string>> = {
-  client: getProdDeps(packageClient),
+  client: getProdDeps(packageClient).remove('json-bigint').add('json-bigint/lib/parse'),
   'data-model': getProdDeps(packageDataModel),
   'i64-fixnum': getProdDeps(packageFixnum),
-}
-
-export function getBundlePackageExternals(pkg: BundlePackage): Set<string> {
-  return BUNDLE_PACKAGES_EXTERNAL[pkg]
 }
 
 export function scopePackage(name: AllPackages): string {
   return `@iroha2/${name}`
 }
 
-interface PkgInputOutput {
+interface PackageRollupMeta {
   inputBase: string
   outputBase: string
+  external: (string | RegExp)[]
 }
 
-export function* getBundlePackageInOut(name: BundlePackage): Generator<PkgInputOutput> {
+export function* getPackageRollupMeta(name: BundlePackage): Generator<PackageRollupMeta> {
   const packageDist = resolve('packages', name, 'dist')
   const packageDistTsc = resolve('packages', name, 'dist-tsc')
   const defaultLibOutputBase = path.join(packageDist, 'lib')
+  const external = BUNDLE_PACKAGES_EXTERNAL[name].toArray()
 
   if (name === 'data-model') {
     yield {
       inputBase: path.join(packageDistTsc, 'data-model/src/lib'),
       outputBase: defaultLibOutputBase,
+      external,
     }
   } else if (name === 'client') {
     yield {
       inputBase: path.join(packageDistTsc, 'client/src/lib'),
       outputBase: defaultLibOutputBase,
+      external,
     }
     yield {
       inputBase: path.join(packageDistTsc, 'client/src/web-socket/node'),
       outputBase: path.join(packageDist, `web-socket/node`),
+      external: ['@iroha2/client', 'ws'],
     }
     yield {
       inputBase: path.join(packageDistTsc, 'client/src/web-socket/native'),
       outputBase: path.join(packageDist, `web-socket/native`),
+      external: ['@iroha2/client'],
     }
   } else {
     yield {
       inputBase: path.join(packageDistTsc, 'lib'),
       outputBase: defaultLibOutputBase,
+      external,
     }
   }
 }

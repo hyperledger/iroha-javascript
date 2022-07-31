@@ -1,7 +1,7 @@
 import { afterAll, beforeEach, describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
 import { Client, setCrypto } from '@iroha2/client'
-import WS from '@iroha2/client/web-socket/node'
+import { adapter as WS } from '@iroha2/client/web-socket/node'
 import { fetch as undiciFetch } from 'undici'
 import {
   Account,

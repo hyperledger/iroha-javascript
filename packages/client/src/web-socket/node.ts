@@ -1,4 +1,4 @@
-import { IncomingData, IsomorphicWebSocketAdapter } from './types'
+import { IncomingData, IsomorphicWebSocketAdapter } from '@iroha2/client'
 import WebSocket from 'ws'
 
 function handleIncomingData(data: string | Buffer | ArrayBuffer | Buffer[]): IncomingData {
@@ -10,7 +10,7 @@ function handleIncomingData(data: string | Buffer | ArrayBuffer | Buffer[]): Inc
   throw new Error('Unable to parse incoming data')
 }
 
-const adapter: IsomorphicWebSocketAdapter = {
+export const adapter: IsomorphicWebSocketAdapter = {
   initWebSocket: (params) => {
     const socket = new WebSocket(params.url)
 
@@ -30,5 +30,3 @@ const adapter: IsomorphicWebSocketAdapter = {
     }
   },
 }
-
-export default adapter
