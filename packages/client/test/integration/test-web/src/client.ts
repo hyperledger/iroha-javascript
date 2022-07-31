@@ -1,4 +1,5 @@
 import { Client } from '@iroha2/client'
+import WS from '@iroha2/client/web-socket/native'
 import { crypto } from './crypto'
 import { KeyPair } from '@iroha2/crypto-core'
 import { hexToBytes } from 'hada'
@@ -16,6 +17,7 @@ export const client = new Client({
     publicKeyMultihash: client_config.publicKey,
     privateKey: client_config.privateKey,
   }),
+  ws: WS,
 })
 
 function generateKeyPair(params: {

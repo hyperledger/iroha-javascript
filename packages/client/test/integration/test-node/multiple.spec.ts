@@ -1,6 +1,8 @@
 import { afterAll, beforeEach, describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
 import { Client, setCrypto } from '@iroha2/client'
+import WS from '@iroha2/client/web-socket/node'
+import { fetch as undiciFetch } from 'undici'
 import {
   Account,
   AccountId,
@@ -69,6 +71,8 @@ const client = new Client({
   torii: client_config.torii,
   keyPair,
   accountId: client_config.account as AccountId,
+  ws: WS,
+  fetch: undiciFetch as typeof fetch,
 })
 
 async function addAsset(

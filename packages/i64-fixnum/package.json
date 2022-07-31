@@ -1,11 +1,15 @@
 {
   "name": "@iroha2/i64-fixnum",
   "version": "0.3.1",
-  "main": "src/lib.ts",
-  "publishConfig": {
-    "main": "dist/lib.cjs.js",
-    "module": "dist/lib.esm.js",
-    "types": "dist/lib.d.ts"
+  "module": "dist/lib.mjs",
+  "main": "dist/lib.cjs",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/lib.mjs",
+      "require": "./dist/lib.cjs",
+      "types": "./dist/lib.d.ts"
+    }
   },
   "files": [
     "dist",

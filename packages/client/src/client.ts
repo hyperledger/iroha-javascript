@@ -22,7 +22,6 @@ import {
   VersionedTransaction,
 } from '@iroha2/data-model'
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core'
-import { fetch } from '@iroha2/client-isomorphic-fetch'
 import { collect as collectGarbage, createScope as createGarbageScope } from './collect-garbage'
 import { parseJsonWithBigInts, randomU32 } from './util'
 import { getCrypto } from './crypto-singleton'
@@ -37,6 +36,7 @@ import {
   ENDPOINT_TRANSACTION,
   HEALTHY_RESPONSE,
 } from './const'
+import { IsomorphicWebSocketAdapter } from './web-socket/types'
 
 function useCryptoAssertive(): IrohaCryptoInterface {
   const crypto = getCrypto()
@@ -110,6 +110,18 @@ export interface UserConfig {
      */
     addNonce?: boolean
   }
+  /**
+   * Implementation of the [fetch](https://fetch.spec.whatwg.org/#fetch-method) method.
+   * Must be provided in the environment where it is not available by default, i.e.
+   * in Node.js older than 17.5.
+   *
+   * See also:
+   *
+   * - [undici](https://www.npmjs.com/package/undici)
+   * - [node-fetch](https://www.npmjs.com/package/node-fetch)
+   */
+  fetch?: typeof fetch
+  ws?: IsomorphicWebSocketAdapter
 }
 
 export interface RequestParams {
@@ -149,6 +161,8 @@ export class Client {
   public accountId: null | AccountId
   public transactionDefaultTTL: bigint
   public transactionAddNonce: boolean
+  public fetch: typeof fetch
+  public ws: IsomorphicWebSocketAdapter | null
 
   public constructor(config: UserConfig) {
     this.toriiApiURL = config.torii.apiURL ?? null
@@ -157,6 +171,8 @@ export class Client {
     this.transactionDefaultTTL = config.transaction?.timeToLiveMs ?? 100_000n
     this.keyPair = config.keyPair ?? null
     this.accountId = config.accountId ?? null
+    this.fetch = fetch
+    this.ws = config.ws ?? null
   }
 
   // TODO nice to have
@@ -167,7 +183,7 @@ export class Client {
     const url = this.forceGetApiURL()
 
     try {
-      const response = await fetch(url + ENDPOINT_HEALTH)
+      const response = await this.fetch(url + ENDPOINT_HEALTH)
       ResponseError.throwIfStatusIsNot(response, 200)
 
       const text = await response.text()
@@ -217,7 +233,7 @@ export class Client {
         )
       })
 
-      const response = await fetch(url + ENDPOINT_TRANSACTION, {
+      const response = await this.fetch(url + ENDPOINT_TRANSACTION, {
         body: finalBytes!,
         method: 'POST',
       })
@@ -257,7 +273,7 @@ export class Client {
         )
       })
 
-      const response = await fetch(url + ENDPOINT_QUERY, {
+      const response = await this.fetch(url + ENDPOINT_QUERY, {
         method: 'POST',
         body: queryBytes!,
       }).then()
@@ -282,6 +298,7 @@ export class Client {
     return setupEvents({
       filter: params.filter,
       toriiApiURL: this.forceGetApiURL(),
+      adapter: this.forceGetWs(),
     })
   }
 
@@ -289,6 +306,7 @@ export class Client {
     return setupBlocksStream({
       height: params.height,
       toriiApiURL: this.forceGetApiURL(),
+      adapter: this.forceGetWs(),
     })
   }
 
@@ -298,7 +316,7 @@ export class Client {
   // }
 
   public async setPeerConfig(params: SetPeerConfigParams): Promise<void> {
-    const response = await fetch(this.forceGetApiURL() + ENDPOINT_CONFIGURATION, {
+    const response = await this.fetch(this.forceGetApiURL() + ENDPOINT_CONFIGURATION, {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
@@ -309,13 +327,13 @@ export class Client {
   }
 
   public async getStatus(): Promise<PeerStatus> {
-    const response = await fetch(this.forceGetTelemetryURL() + ENDPOINT_STATUS)
+    const response = await this.fetch(this.forceGetTelemetryURL() + ENDPOINT_STATUS)
     ResponseError.throwIfStatusIsNot(response, 200)
     return response.text().then(parseJsonWithBigInts)
   }
 
   public async getMetrics(): Promise<string> {
-    return fetch(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
+    return this.fetch(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
       ResponseError.throwIfStatusIsNot(response, 200)
       return response.text()
     })
@@ -339,5 +357,10 @@ export class Client {
   private forceGetKeyPair(): KeyPair {
     if (!this.keyPair) throw new ClientIncompleteConfigError('Key Pair')
     return this.keyPair
+  }
+
+  private forceGetWs(): IsomorphicWebSocketAdapter {
+    if (!this.ws) throw new ClientIncompleteConfigError('WebSocket Adapter')
+    return this.ws
   }
 }

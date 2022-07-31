@@ -20,16 +20,20 @@ To install `client` with `npm`/`pnpm`:
 
 1. Configure your package manager to fetch scoped packages from Nexus Registry.
 
-    ```ini
-    # FILE: .npmrc
-    @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
-    ```
+   ```ini
+   # FILE: .npmrc
+   @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+   ```
 
 2. Install the `client` package:
 
-    ```shell
-    npm i @iroha2/client
-    ```
+   ```shell
+   npm i @iroha2/client
+   ```
+
+## Isomorphic transports
+
+Client uses WebSocket and HTTP to communicate with Iroha Peer. Unfortunately, there is no way to do it in an environment-agnostic way. To solve this issue, Client exposes... TODO
 
 ## Client Configuration
 

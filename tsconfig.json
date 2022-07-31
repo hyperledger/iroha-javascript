@@ -17,7 +17,11 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "types": ["vitest/importMeta"]
+    "types": ["vitest/importMeta"],
+    "paths": {
+      "@iroha2/client/*": ["./packages/client/src/*"],
+      "@iroha2/*": ["./packages/*/src/lib.ts"]
+    }
   },
   "exclude": ["**/dist/**/*", "**/node_modules/**/*", "**/client/test/integration/test-web/cypress/integration/**/*"]
 }

@@ -10,15 +10,13 @@ function getProdDeps(pkg: PackageJson): Set<string> {
 }
 
 function resolve(...paths: string[]): string {
-  return path.resolve(__dirname, '../', ...paths)
+  return path.relative(process.cwd(), path.resolve(__dirname, '../', ...paths))
 }
 
 type SetEntry<T> = T extends Set<infer V> ? V : never
 
 export const PUBLIC_PACKAGES = Set([
   'client',
-  'client-isomorphic-ws',
-  'client-isomorphic-fetch',
   'data-model',
   'data-model-schema',
   'i64-fixnum',
@@ -28,7 +26,7 @@ export const PUBLIC_PACKAGES = Set([
   'crypto-target-bundler',
 ] as const)
 
-export const PUBLIC_PACKAGES_WITH_API_REPORT: Set<Exclude<PublicPackage, 'data-model-schema'>> = PUBLIC_PACKAGES.delete(
+export const PUBLIC_PACKAGES_WITH_DTS_ROLLUP: Set<Exclude<PublicPackage, 'data-model-schema'>> = PUBLIC_PACKAGES.delete(
   'data-model-schema',
 ) as Set<any>
 
@@ -39,7 +37,7 @@ export const ALL_PACKAGES = PUBLIC_PACKAGES.merge(BUNDLE_PACKAGES)
 
 export type PublicPackage = SetEntry<typeof PUBLIC_PACKAGES>
 
-export type PublicPackageWithApiReport = SetEntry<typeof PUBLIC_PACKAGES_WITH_API_REPORT>
+export type PublicPackageWithDtsRollup = SetEntry<typeof PUBLIC_PACKAGES_WITH_DTS_ROLLUP>
 
 export type BundlePackage = SetEntry<typeof BUNDLE_PACKAGES>
 
@@ -59,20 +57,38 @@ export function scopePackage(name: AllPackages): string {
   return `@iroha2/${name}`
 }
 
-export function getBundlePackageInput(name: BundlePackage): string {
-  if (name === 'data-model') return resolve('packages/data-model/dist-tsc/data-model/src/lib.js')
-
-  return resolve('packages', name, 'dist-tsc/lib.js')
+interface PkgInputOutput {
+  inputBase: string
+  outputBase: string
 }
 
-export function getBundlePackageOutput(name: BundlePackage, format: 'esm' | 'cjs'): string {
-  return resolve('packages', name, `dist/lib.${format}.js`)
-}
+export function* getBundlePackageInOut(name: BundlePackage): Generator<PkgInputOutput> {
+  const packageDist = resolve('packages', name, 'dist')
+  const packageDistTsc = resolve('packages', name, 'dist-tsc')
+  const defaultLibOutputBase = path.join(packageDist, 'lib')
 
-export function getPackageApiExtractorConfigFile(name: PublicPackageWithApiReport): string {
-  if (name.startsWith('crypto-')) {
-    const [, tail] = name.match(/^crypto-(.+)$/)!
-    return resolve(`packages/crypto/packages/${tail}/api-extractor.json`)
+  if (name === 'data-model') {
+    yield {
+      inputBase: path.join(packageDistTsc, 'data-model/src/lib'),
+      outputBase: defaultLibOutputBase,
+    }
+  } else if (name === 'client') {
+    yield {
+      inputBase: path.join(packageDistTsc, 'client/src/lib'),
+      outputBase: defaultLibOutputBase,
+    }
+    yield {
+      inputBase: path.join(packageDistTsc, 'client/src/web-socket/node'),
+      outputBase: path.join(packageDist, `web-socket/node`),
+    }
+    yield {
+      inputBase: path.join(packageDistTsc, 'client/src/web-socket/native'),
+      outputBase: path.join(packageDist, `web-socket/native`),
+    }
+  } else {
+    yield {
+      inputBase: path.join(packageDistTsc, 'lib'),
+      outputBase: defaultLibOutputBase,
+    }
   }
-  return resolve(`packages/${name}/api-extractor.json`)
 }

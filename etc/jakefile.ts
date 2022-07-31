@@ -10,50 +10,33 @@ import {
   BUNDLE_PACKAGES,
   BundlePackage,
   PUBLIC_PACKAGES,
-  PUBLIC_PACKAGES_WITH_API_REPORT,
   getBundlePackageExternals,
-  getBundlePackageInput,
-  getBundlePackageOutput,
-  getPackageApiExtractorConfigFile,
+  getBundlePackageInOut,
   scopePackage,
 } from './meta'
-import { Extractor, ExtractorConfig, ExtractorResult } from '@microsoft/api-extractor'
 import * as esbuild from 'esbuild'
 
-async function runApiExtractor(localBuild = false) {
-  for (const pkg of PUBLIC_PACKAGES_WITH_API_REPORT) {
-    const extractorConfig: ExtractorConfig = ExtractorConfig.loadFileAndPrepare(getPackageApiExtractorConfigFile(pkg))
+async function bundleSinglePackage(name: BundlePackage) {
+  for (const { inputBase, outputBase } of getBundlePackageInOut(name)) {
+    for (const format of ['esm', 'cjs'] as const) {
+      const outfile = `${outputBase}.${format === 'esm' ? 'mjs' : 'cjs'}`
 
-    // Invoke API Extractor
-    const extractorResult: ExtractorResult = Extractor.invoke(extractorConfig, {
-      localBuild,
-      showVerboseMessages: true,
-    })
-
-    if (!extractorResult.succeeded) {
-      throw new Error(
-        `API Extractor for package ${pkg} completed with ${extractorResult.errorCount} errors` +
-          ` and ${extractorResult.warningCount} warnings`,
-      )
+      await esbuild.build({
+        entryPoints: [inputBase + `.js`],
+        bundle: true,
+        outfile,
+        external: getBundlePackageExternals(name).toArray(),
+        target: 'esnext',
+        platform: 'neutral',
+        format,
+        sourcemap: true,
+        logLevel: 'info',
+        define: {
+          'import.meta.vitest': 'undefined',
+        },
+      })
     }
   }
-}
-
-async function bundleSinglePackage(name: BundlePackage, format: 'esm' | 'cjs') {
-  await esbuild.build({
-    entryPoints: [getBundlePackageInput(name)],
-    bundle: true,
-    outfile: getBundlePackageOutput(name, format),
-    external: getBundlePackageExternals(name).toArray(),
-    target: 'esnext',
-    platform: 'neutral',
-    format,
-    sourcemap: true,
-    logLevel: 'info',
-    define: {
-      'import.meta.vitest': 'undefined',
-    },
-  })
 }
 
 desc('Clean all build artifacts')
@@ -70,34 +53,26 @@ task('build-tsc', ['clean'], async () => {
   await $`pnpm build:tsc`
 })
 
-task('build-isomoprhic-ws-n-fetch', async () => {
-  await $`pnpm build:isomorphic-ws-and-fetch`
+desc('Rollup `.d.ts` files')
+task('build-dts', ['build-tsc'], async () => {
+  await $`pnpm build:dts`
 })
 
-task('build-bundle', async () => {
+task('build-bundle', ['build-tsc'], async () => {
   function* bundles(): Generator<Promise<void>> {
     for (const name of BUNDLE_PACKAGES) {
-      for (const format of ['esm', 'cjs'] as const) {
-        yield bundleSinglePackage(name, format)
-      }
+      yield bundleSinglePackage(name)
     }
   }
 
   await Promise.all(bundles())
 })
 
-desc('Extract APIs and verify (also rollup .d.ts)')
-task('api-extract', ['build-tsc'], async () => {
-  await runApiExtractor()
-})
-
-desc('Extract APIs and update them')
-task('api-extract-local', ['build-tsc'], async () => {
-  await runApiExtractor(true)
-})
-
 desc('Build everything')
-task('build', ['clean', 'build-tsc', 'build-isomoprhic-ws-n-fetch', 'api-extract', 'build-bundle'])
+task('build', ['clean', 'build-tsc', 'api-extract', 'build-bundle'])
+
+desc('Like `build`, but updates API reports')
+task('build-local', ['clean', 'build-tsc', 'build-dts', 'build-bundle'])
 
 desc('Publish all public packages')
 task('publish-all', async () => {

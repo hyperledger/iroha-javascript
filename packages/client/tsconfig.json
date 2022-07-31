@@ -4,7 +4,6 @@
   "compilerOptions": {
     "outDir": "dist-tsc",
     "declaration": true,
-    "declarationMap": true,
-    "types": ["vitest/importMeta"]
+    "declarationMap": true
   }
 }

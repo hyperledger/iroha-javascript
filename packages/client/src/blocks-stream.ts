@@ -8,12 +8,14 @@ import {
 } from '@iroha2/data-model'
 import { ENDPOINT_BLOCKS_STREAM } from './const'
 import { SocketEmitMapBase, setupWebSocket } from './util'
+import { IsomorphicWebSocketAdapter } from './web-socket/types'
 
 const debug = Debug('@iroha2/client:blocks-stream')
 
 export interface SetupBlocksStreamParams {
   toriiApiURL: string
   height: bigint
+  adapter: IsomorphicWebSocketAdapter
 }
 
 export interface BlocksStreamEmitteryMap extends SocketEmitMapBase {
@@ -37,6 +39,7 @@ export async function setupBlocksStream(params: SetupBlocksStreamParams): Promis
     baseURL: params.toriiApiURL,
     endpoint: ENDPOINT_BLOCKS_STREAM,
     parentDebugger: debug,
+    adapter: params.adapter,
   })
 
   function send(msg: BlockSubscriberMessage) {

@@ -72,12 +72,20 @@ task('entries-js-transform', async () => {
   for (const target of CRYPTO_TARGETS) {
     const dist = targetDirDist(target)
 
-    await build({
-      entryPoints: [path.join(dist, 'index.ts')],
-      outfile: path.join(dist, 'index.js'),
-      format: target === 'node' ? 'cjs' : 'esm',
-      logLevel: 'info',
-    })
+    const buildTarget = (format: 'cjs' | 'esm') =>
+      build({
+        entryPoints: [path.join(dist, 'index.ts')],
+        outfile: path.join(dist, 'index' + (format === 'cjs' ? '.cjs' : '.mjs')),
+        format,
+        logLevel: 'info',
+      })
+
+    if (target === 'node') {
+      await buildTarget('cjs')
+      await buildTarget('esm')
+    } else {
+      buildTarget('esm')
+    }
   }
 })
 
