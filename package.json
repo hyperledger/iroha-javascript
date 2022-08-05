@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "test": "run-s test:unit test:crypto test:client",
+    "test": "run-s test:unit test:crypto build test:client",
     "test:unit": "vitest run",
     "test:crypto": "pnpm --filter monorepo-crypto run test",
     "test:client": "pnpm --filter client run test:integration",
