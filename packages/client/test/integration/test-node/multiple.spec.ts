@@ -72,7 +72,7 @@ const client = new Client({
   keyPair,
   accountId: client_config.account as AccountId,
   ws: WS,
-  fetch: undiciFetch as typeof fetch,
+  fetch: undiciFetch as unknown as typeof fetch,
 })
 
 async function addAsset(

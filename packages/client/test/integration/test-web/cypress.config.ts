@@ -1,4 +1,6 @@
 import { defineConfig } from 'cypress'
+
+// @ts-ignore
 import createBundler from '@bahmutov/cypress-esbuild-preprocessor'
 
 export default defineConfig({
