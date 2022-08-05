@@ -11,7 +11,6 @@ export default defineConfig({
     baseUrl: 'http://127.0.0.1:3000',
     supportFile: false,
   },
-
   fixturesFolder: false,
   video: false,
   screenshotOnRunFailure: false,
