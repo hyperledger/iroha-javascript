@@ -28,6 +28,7 @@
     "koa-morgan": "^1.0.1",
     "make-dir": "^3.1.0",
     "typescript": "^4.6.4",
+    "undici": "^5.8.1",
     "zx": "^4.2.0"
   }
 }
