@@ -51,13 +51,13 @@ function useCryptoAssertive(): IrohaCryptoInterface {
 export class ClientIncompleteConfigError extends Error {
   public static missing(what: string) {
     return new ClientIncompleteConfigError(
-      `You are trying to use client with incomplete configuration. Missing: ${what}`,
+      `You are trying to use Iroha Client with an incomplete configuration. Missing: ${what}`,
     )
   }
 
   public static fetchIsNotProvided() {
     return new ClientIncompleteConfigError(
-      '"fetch" is not defined, but required for Iroha Client to function. ' +
+      'Incomplete configuration: "fetch" is not defined. It is required for Iroha Client to function.' +
         "If you are trying to use Client in the environment where Fetch API isn't available, " +
         'be sure to provide its implementation via `fetch` config field.',
     )
@@ -65,7 +65,7 @@ export class ClientIncompleteConfigError extends Error {
 
   public static cryptoIsNotSet() {
     return new ClientIncompleteConfigError(
-      '"crypto" is not defined, but required for Iroha Client to function. Have you set it with `setCrypto()`?',
+      'Incomplete configuration: "crypto" is not defined. It is required for Iroha Client to function. Use `setCrypto()` to configure "crypto".',
     )
   }
 
