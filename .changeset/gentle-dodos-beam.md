@@ -20,4 +20,4 @@ Note that `fetch` injection is optional in the environment where Fetch API is av
 
 ## How to migrate
 
-Provide `fetch`/`ws` by yourself. Follow the instruction in README.
+Provide `fetch`/`ws` by yourself. Follow the instruction in [`client` README](../packages/client/README.md#isomorphic-transports).

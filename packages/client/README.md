@@ -33,7 +33,51 @@ To install `client` with `npm`/`pnpm`:
 
 ## Isomorphic transports
 
-Client uses WebSocket and HTTP to communicate with Iroha Peer. Unfortunately, there is no way to do it in an environment-agnostic way. To solve this issue, Client exposes... TODO
+Iroha Client uses WebSocket and HTTP to communicate with an Iroha Peer. There is no way for Iroha Client to communicate with a peer in an environment-agnostic way.
+
+Previously, `@iroha2/client` used `@iroha2/client-isomorphic-ws` and `@iroha2/client-isomorphic-fetch` to seamlessly switch between environment-specific transports. Due to Node.js moving towards ESM, the way isomorphism used to be achieved is no longer applicable, and these packages are no longer in use.
+
+Now the client provides additional entrypoints for isomorphic adapters, the same way it is done in [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git/tree/main#getting-started). You need to provide `fetch`/`ws` yourself.
+
+### WebSocket
+
+For WebSocket, the client has two entrypoints: `@iroha2/client/web-socket/native` and `@iroha2/client/web-socket/node`.
+
+1. Import adapters:
+
+   Import `@iroha2/client/web-socket/native` for when the native `WebSocket` exists:
+   ```
+   import { adapter } from '@iroha2/client/web-socket/native'
+   ```
+
+   Import `@iroha2/client/web-socket/node` with the `ws` package for Node.js:
+
+   ```
+   import { adapter } from '@iroha2/client/web-socket/node'
+   ```
+
+2. Inject WebSocket adapter into Iroha Client:
+
+   ```
+   new Client({ ws: adapter })
+   ```
+
+### Fetch
+
+`fetch` could be provided in the same way. However, `@iroha2/client` does not provide it itself. There are `node-fetch` and `undici` packages that provide the `fetch` implementation that could be injected into Iroha Client.
+
+1. Import fetch from `node-fetch` and `undici` packages:
+
+   ```
+   import { fetch } from 'undici'
+   import fetch from 'node-fetch'
+   ```
+
+2. Inject WebSocket fetch into Iroha Client:
+
+   ```
+   new Client({ fetch })
+   ```
 
 ## Client Configuration
 
