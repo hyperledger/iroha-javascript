@@ -22,7 +22,7 @@ import {
   VersionedTransaction,
 } from '@iroha2/data-model'
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core'
-import { collect as collectGarbage, createScope as createGarbageScope } from './collect-garbage'
+import { CollectFn, garbageScope } from './collect-garbage'
 import { parseJsonWithBigInts, randomU32 } from './util'
 import { getCrypto } from './crypto-singleton'
 import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events'
@@ -151,10 +151,10 @@ export interface RequestParams {
   filter?: PredicateBox
 }
 
-function makeSignature(keyPair: KeyPair, payload: Uint8Array): Signature {
+function makeSignature(keyPair: KeyPair, payload: Uint8Array, collect: CollectFn): Signature {
   const { createSignature } = useCryptoAssertive()
 
-  const signature = collectGarbage(createSignature(keyPair, payload))
+  const signature = collect(createSignature(keyPair, payload))
 
   // Should it be collected?
   const pubKey = keyPair.publicKey()
@@ -201,9 +201,13 @@ export class Client {
     this.ws = config.ws ?? null
   }
 
-  // TODO nice to have
-  // public signQuery(payload: QueryPayload): SignedQueryRequest {}
-  // public signTransaction(tx: Transaction): Transaction {}
+  public signTransactionPayload(payload: TransactionPayload): Signature {
+    return this.makeSignatureWithHashing(TransactionPayload.toBuffer(payload))
+  }
+
+  public signQueryPayload(payload: QueryPayload): Signature {
+    return this.makeSignatureWithHashing(QueryPayload.toBuffer(payload))
+  }
 
   public async getHealth(): Promise<HealthResult> {
     const url = this.forceGetApiURL()
@@ -224,12 +228,7 @@ export class Client {
   }
 
   public async submit(executable: Executable, params?: SubmitParams): Promise<void> {
-    const scope = createGarbageScope()
-
-    const { createHash } = useCryptoAssertive()
     const accountId = this.forceGetAccountId()
-    const keyPair = this.forceGetKeyPair()
-    const url = this.forceGetApiURL()
 
     const payload = TransactionPayload({
       instructions: executable,
@@ -244,41 +243,32 @@ export class Client {
       account_id: accountId,
     })
 
-    try {
-      let finalBytes: Uint8Array
+    const signature = this.signTransactionPayload(payload)
+    const tx = VersionedTransaction(
+      'V1',
+      Transaction({ payload, signatures: VecSignatureOfTransactionPayload([signature]) }),
+    )
 
-      scope.run(() => {
-        const payloadHash = collectGarbage(createHash(TransactionPayload.toBuffer(payload)))
-        const signature = makeSignature(keyPair, payloadHash.bytes())
+    await this.submitVersionedTransaction(tx)
+  }
 
-        finalBytes = VersionedTransaction.toBuffer(
-          VersionedTransaction(
-            'V1',
-            Transaction({ payload, signatures: VecSignatureOfTransactionPayload([signature]) }),
-          ),
-        )
-      })
+  public async submitVersionedTransaction(tx: VersionedTransaction): Promise<void> {
+    const body = VersionedTransaction.toBuffer(tx)
 
-      const response = await this.forceGetFetch()(url + ENDPOINT_TRANSACTION, {
-        body: finalBytes!,
-        method: 'POST',
-      })
+    const response = await this.forceGetFetch()(this.forceGetApiURL() + ENDPOINT_TRANSACTION, {
+      body,
+      method: 'POST',
+    })
 
-      ResponseError.throwIfStatusIsNot(response, 200)
-    } finally {
-      scope.free()
-    }
+    ResponseError.throwIfStatusIsNot(response, 200)
   }
 
   /**
    * TODO support pagination
    */
   public async request(query: QueryBox, params?: RequestParams): Promise<RequestResult> {
-    const scope = createGarbageScope()
-    const { createHash } = useCryptoAssertive()
     const url = this.forceGetApiURL()
     const accountId = this.forceGetAccountId()
-    const keyPair = this.forceGetKeyPair()
 
     const payload = QueryPayload({
       query,
@@ -287,36 +277,26 @@ export class Client {
       filter: params?.filter ?? PredicateBox('Raw', Predicate('Pass')),
     })
 
-    try {
-      let queryBytes: Uint8Array
+    const signature = this.signQueryPayload(payload)
+    const queryBytes = VersionedSignedQueryRequest.toBuffer(
+      VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature })),
+    )
 
-      scope.run(() => {
-        const payloadHash = collectGarbage(createHash(QueryPayload.toBuffer(payload)))
-        const signature = makeSignature(keyPair, payloadHash.bytes())
+    const response = await this.forceGetFetch()(url + ENDPOINT_QUERY, {
+      method: 'POST',
+      body: queryBytes!,
+    }).then()
 
-        queryBytes = VersionedSignedQueryRequest.toBuffer(
-          VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature })),
-        )
-      })
+    const bytes = new Uint8Array(await response.arrayBuffer())
 
-      const response = await this.forceGetFetch()(url + ENDPOINT_QUERY, {
-        method: 'POST',
-        body: queryBytes!,
-      }).then()
-
-      const bytes = new Uint8Array(await response.arrayBuffer())
-
-      if (response.status === 200) {
-        // OK
-        const value = VersionedPaginatedQueryResult.fromBuffer(bytes).as('V1')
-        return Enum.variant<RequestResult>('Ok', value)
-      } else {
-        // ERROR
-        const error = QueryError.fromBuffer(bytes)
-        return Enum.variant<RequestResult>('Err', error)
-      }
-    } finally {
-      scope.free()
+    if (response.status === 200) {
+      // OK
+      const value = VersionedPaginatedQueryResult.fromBuffer(bytes).as('V1')
+      return Enum.variant<RequestResult>('Ok', value)
+    } else {
+      // ERROR
+      const error = QueryError.fromBuffer(bytes)
+      return Enum.variant<RequestResult>('Err', error)
     }
   }
 
@@ -362,6 +342,16 @@ export class Client {
     return this.forceGetFetch()(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
       ResponseError.throwIfStatusIsNot(response, 200)
       return response.text()
+    })
+  }
+
+  private makeSignatureWithHashing(unhashedPayload: Uint8Array): Signature {
+    const { createHash } = useCryptoAssertive()
+
+    return garbageScope((collect) => {
+      const hash = collect(createHash(unhashedPayload))
+      const signature = makeSignature(this.forceGetKeyPair(), hash.bytes(), collect)
+      return signature
     })
   }
 
