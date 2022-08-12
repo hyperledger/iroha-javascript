@@ -1,6 +1,5 @@
 {
   "name": "@iroha2/crypto-test-interfaces",
-  "version": "0.0.1",
   "private": true,
   "scripts": {
     "test": "tsc test.ts --noEmit"

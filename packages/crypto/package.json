@@ -1,7 +1,6 @@
 {
   "name": "@iroha2/monorepo-crypto",
   "private": true,
-  "version": "0.0.0",
   "scripts": {
     "build": "pnpm jake build",
     "build:wasm": "pnpm jake build-wasm",

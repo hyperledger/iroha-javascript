@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/client-test-web",
-  "version": "0.0.1",
+  "private": true,
   "scripts": {
     "dev:app": "vite",
     "dev:peer-server": "DEBUG=@iroha2* tsx etc/dev-peer-server",

@@ -1,6 +1,5 @@
 {
   "name": "@iroha2/monorepo",
-  "version": "0.0.0",
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
