@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/crypto-target-web",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "Apache 2.0",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

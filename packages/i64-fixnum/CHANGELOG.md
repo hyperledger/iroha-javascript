@@ -1,5 +1,11 @@
 # @iroha2/i64-fixnum
 
+## 0.4.0
+
+### Minor Changes
+
+- a99d219: **fix!**: define `exports` field; use `*.cjs` extension for `require()` imports and `*.mjs` for `import`
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @iroha2/crypto-target-bundler
 
+## 0.3.0
+
+### Minor Changes
+
+- a99d219: **fix!**: define `exports` field; use `*.cjs` extension for `require()` imports and `*.mjs` for `import`
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/i64-fixnum",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "module": "dist/lib.mjs",
   "main": "dist/lib.cjs",
   "types": "dist/lib.d.ts",

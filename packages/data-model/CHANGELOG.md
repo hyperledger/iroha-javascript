@@ -1,5 +1,16 @@
 # @iroha2/data-model
 
+## 2.0.0
+
+### Minor Changes
+
+- a99d219: **fix!**: define `exports` field; use `*.cjs` extension for `require()` imports and `*.mjs` for `import`
+
+### Patch Changes
+
+- Updated dependencies [a99d219]
+  - @iroha2/i64-fixnum@0.4.0
+
 ## 1.4.0
 
 ### Minor Changes

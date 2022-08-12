@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/data-model",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "module": "dist/lib.mjs",
   "main": "dist/lib.cjs",
   "types": "dist/lib.d.ts",
@@ -22,11 +22,11 @@
     "codegen": "tsx etc/codegen"
   },
   "dependencies": {
-    "@iroha2/i64-fixnum": "workspace:^0.3.1",
+    "@iroha2/i64-fixnum": "workspace:^0.4.0",
     "@scale-codec/definition-runtime": "^2.0.0"
   },
   "devDependencies": {
-    "@iroha2/data-model-schema": "workspace:1.4.0",
+    "@iroha2/data-model-schema": "workspace:2.0.0",
     "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
     "@scale-codec/definition-compiler": "^2.1.0",
     "@scale-codec/util": "^1.0.0",
