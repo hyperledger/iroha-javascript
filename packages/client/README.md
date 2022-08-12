@@ -66,14 +66,14 @@ For WebSocket, the client has two entrypoints: `@iroha2/client/web-socket/native
 
 `fetch` could be provided in the same way. However, `@iroha2/client` does not provide it itself. There are `node-fetch` and `undici` packages that provide the `fetch` implementation that could be injected into Iroha Client.
 
-1. Import fetch from `node-fetch` and `undici` packages:
+1. Import fetch from `node-fetch` **or** `undici` packages:
 
    ```
    import { fetch } from 'undici'
    import fetch from 'node-fetch'
    ```
 
-2. Inject WebSocket fetch into Iroha Client:
+2. Inject `fetch` into Iroha Client:
 
    ```
    new Client({ fetch })
