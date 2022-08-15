@@ -1,4 +1,4 @@
-import { CloseEvent, SendData, Event as WsEvent, initWebSocket } from '@iroha2/client-isomorphic-ws'
+import { CloseEvent, IsomorphicWebSocketAdapter, SendData, Event as WsEvent } from './web-socket/types'
 import { Debugger } from 'debug'
 import Emittery from 'emittery'
 import JsonBigIntParseFactory from 'json-bigint/lib/parse'
@@ -28,6 +28,7 @@ export function setupWebSocket<EmitMap extends SocketEmitMapBase>(params: {
   baseURL: string
   endpoint: string
   parentDebugger: Debugger
+  adapter: IsomorphicWebSocketAdapter
 }): {
   ee: Emittery<EmitMap>
   isClosed: () => boolean
@@ -41,7 +42,7 @@ export function setupWebSocket<EmitMap extends SocketEmitMapBase>(params: {
 
   debug('opening connection to %o', url)
 
-  const { isClosed, send, close } = initWebSocket({
+  const { isClosed, send, close } = params.adapter.initWebSocket({
     url,
     onopen: (e) => {
       debug('connection opened')
@@ -99,8 +100,8 @@ if (import.meta.vitest) {
   })
 
   test('When JSON with too big ints is passed, it parses numbers as BigInts', () => {
-    const raw = `{"num":123456789123456789}`
-    const parsed = { num: 123456789123456789n }
+    const raw = `{"num":123456789123456789123456789123456789}`
+    const parsed = { num: 123456789123456789123456789123456789n }
 
     const actual = parseJsonWithBigInts(raw)
 

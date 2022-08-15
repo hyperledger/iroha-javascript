@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/data-model-schema",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Data model schema related utilities",
   "main": "src/lib.ts",
   "files": [
@@ -25,7 +25,7 @@
     "debug": "^4.3.4",
     "execa": "5.1.1",
     "immutable": "^4.0.0",
-    "type-fest": "^2.12.0",
+    "type-fest": "^2.18.0",
     "typescript": "^4.6.4"
   }
 }

@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
 import del from 'del'
 import { Client } from '@iroha2/client'
+import { fetch } from 'undici'
 
 export async function saveDataAsJSON(data: unknown, destination: string): Promise<void> {
   await fs.writeFile(destination, JSON.stringify(data), { encoding: 'utf-8' })
@@ -15,7 +16,7 @@ export async function waitUntilPeerIsHealthy(
   checkInterval: number,
   checkTimeout: number,
 ): Promise<void> {
-  const client = new Client({ torii: { apiURL } })
+  const client = new Client({ torii: { apiURL }, fetch: fetch as any })
 
   let now = Date.now()
   const endAt = now + checkTimeout

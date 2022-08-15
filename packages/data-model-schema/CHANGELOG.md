@@ -1,5 +1,7 @@
 # @iroha2/data-model-schema
 
+## 2.0.0
+
 ## 1.4.0
 
 ### Minor Changes

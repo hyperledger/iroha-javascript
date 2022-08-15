@@ -22,7 +22,6 @@ import {
   VersionedTransaction,
 } from '@iroha2/data-model'
 import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core'
-import { fetch } from '@iroha2/client-isomorphic-fetch'
 import { collect as collectGarbage, createScope as createGarbageScope } from './collect-garbage'
 import { parseJsonWithBigInts, randomU32 } from './util'
 import { getCrypto } from './crypto-singleton'
@@ -37,6 +36,7 @@ import {
   ENDPOINT_TRANSACTION,
   HEALTHY_RESPONSE,
 } from './const'
+import { IsomorphicWebSocketAdapter } from './web-socket/types'
 
 function useCryptoAssertive(): IrohaCryptoInterface {
   const crypto = getCrypto()
@@ -49,8 +49,28 @@ function useCryptoAssertive(): IrohaCryptoInterface {
 }
 
 export class ClientIncompleteConfigError extends Error {
-  public constructor(missing: string) {
-    super(`You are trying to use client with incomplete configuration. Missing: ${missing}`)
+  public static missing(what: string) {
+    return new ClientIncompleteConfigError(
+      `You are trying to use Iroha Client with an incomplete configuration. Missing: ${what}`,
+    )
+  }
+
+  public static fetchIsNotProvided() {
+    return new ClientIncompleteConfigError(
+      'Incomplete configuration: "fetch" is not defined. It is required for Iroha Client to function.' +
+        "If you are trying to use Client in the environment where Fetch API isn't available, " +
+        'be sure to provide its implementation via `fetch` config field.',
+    )
+  }
+
+  public static cryptoIsNotSet() {
+    return new ClientIncompleteConfigError(
+      'Incomplete configuration: "crypto" is not defined. It is required for Iroha Client to function. Use `setCrypto()` to configure "crypto".',
+    )
+  }
+
+  private constructor(message: string) {
+    super(message)
   }
 }
 
@@ -110,6 +130,18 @@ export interface UserConfig {
      */
     addNonce?: boolean
   }
+  /**
+   * Implementation of the [fetch](https://fetch.spec.whatwg.org/#fetch-method) method.
+   * Must be provided in the environment where it is not available by default, i.e.
+   * in Node.js older than 17.5.
+   *
+   * See also:
+   *
+   * - [undici](https://www.npmjs.com/package/undici)
+   * - [node-fetch](https://www.npmjs.com/package/node-fetch)
+   */
+  fetch?: typeof fetch
+  ws?: IsomorphicWebSocketAdapter
 }
 
 export interface RequestParams {
@@ -149,6 +181,8 @@ export class Client {
   public accountId: null | AccountId
   public transactionDefaultTTL: bigint
   public transactionAddNonce: boolean
+  public fetch: typeof fetch | null
+  public ws: IsomorphicWebSocketAdapter | null
 
   public constructor(config: UserConfig) {
     this.toriiApiURL = config.torii.apiURL ?? null
@@ -157,6 +191,14 @@ export class Client {
     this.transactionDefaultTTL = config.transaction?.timeToLiveMs ?? 100_000n
     this.keyPair = config.keyPair ?? null
     this.accountId = config.accountId ?? null
+
+    if (config.fetch) {
+      this.fetch = config.fetch
+    } else if (typeof fetch !== 'undefined') {
+      this.fetch = fetch
+    }
+
+    this.ws = config.ws ?? null
   }
 
   // TODO nice to have
@@ -167,7 +209,7 @@ export class Client {
     const url = this.forceGetApiURL()
 
     try {
-      const response = await fetch(url + ENDPOINT_HEALTH)
+      const response = await this.forceGetFetch()(url + ENDPOINT_HEALTH)
       ResponseError.throwIfStatusIsNot(response, 200)
 
       const text = await response.text()
@@ -217,7 +259,7 @@ export class Client {
         )
       })
 
-      const response = await fetch(url + ENDPOINT_TRANSACTION, {
+      const response = await this.forceGetFetch()(url + ENDPOINT_TRANSACTION, {
         body: finalBytes!,
         method: 'POST',
       })
@@ -257,7 +299,7 @@ export class Client {
         )
       })
 
-      const response = await fetch(url + ENDPOINT_QUERY, {
+      const response = await this.forceGetFetch()(url + ENDPOINT_QUERY, {
         method: 'POST',
         body: queryBytes!,
       }).then()
@@ -282,6 +324,7 @@ export class Client {
     return setupEvents({
       filter: params.filter,
       toriiApiURL: this.forceGetApiURL(),
+      adapter: this.forceGetWs(),
     })
   }
 
@@ -289,6 +332,7 @@ export class Client {
     return setupBlocksStream({
       height: params.height,
       toriiApiURL: this.forceGetApiURL(),
+      adapter: this.forceGetWs(),
     })
   }
 
@@ -298,7 +342,7 @@ export class Client {
   // }
 
   public async setPeerConfig(params: SetPeerConfigParams): Promise<void> {
-    const response = await fetch(this.forceGetApiURL() + ENDPOINT_CONFIGURATION, {
+    const response = await this.forceGetFetch()(this.forceGetApiURL() + ENDPOINT_CONFIGURATION, {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
@@ -309,35 +353,45 @@ export class Client {
   }
 
   public async getStatus(): Promise<PeerStatus> {
-    const response = await fetch(this.forceGetTelemetryURL() + ENDPOINT_STATUS)
+    const response = await this.forceGetFetch()(this.forceGetTelemetryURL() + ENDPOINT_STATUS)
     ResponseError.throwIfStatusIsNot(response, 200)
     return response.text().then(parseJsonWithBigInts)
   }
 
   public async getMetrics(): Promise<string> {
-    return fetch(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
+    return this.forceGetFetch()(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
       ResponseError.throwIfStatusIsNot(response, 200)
       return response.text()
     })
   }
 
   private forceGetApiURL(): string {
-    if (!this.toriiApiURL) throw new ClientIncompleteConfigError('Torii API URL')
+    if (!this.toriiApiURL) throw ClientIncompleteConfigError.missing('Torii API URL')
     return this.toriiApiURL
   }
 
   private forceGetTelemetryURL(): string {
-    if (!this.toriiTelemetryURL) throw new ClientIncompleteConfigError('Torii Telemetry URL')
+    if (!this.toriiTelemetryURL) throw ClientIncompleteConfigError.missing('Torii Telemetry URL')
     return this.toriiTelemetryURL
   }
 
   private forceGetAccountId(): AccountId {
-    if (!this.accountId) throw new ClientIncompleteConfigError('Account ID')
+    if (!this.accountId) throw ClientIncompleteConfigError.missing('Account ID')
     return this.accountId
   }
 
   private forceGetKeyPair(): KeyPair {
-    if (!this.keyPair) throw new ClientIncompleteConfigError('Key Pair')
+    if (!this.keyPair) throw ClientIncompleteConfigError.missing('Key Pair')
     return this.keyPair
+  }
+
+  private forceGetWs(): IsomorphicWebSocketAdapter {
+    if (!this.ws) throw ClientIncompleteConfigError.missing('WebSocket Adapter')
+    return this.ws
+  }
+
+  private forceGetFetch(): typeof fetch {
+    if (!this.fetch) throw ClientIncompleteConfigError.fetchIsNotProvided()
+    return this.fetch
   }
 }

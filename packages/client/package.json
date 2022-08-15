@@ -1,11 +1,25 @@
 {
   "name": "@iroha2/client",
-  "version": "1.4.0",
-  "main": "src/lib.ts",
-  "publishConfig": {
-    "main": "dist/lib.cjs.js",
-    "module": "dist/lib.esm.js",
-    "types": "dist/lib.d.ts"
+  "version": "2.0.0",
+  "module": "dist/lib.mjs",
+  "main": "dist/lib.cjs",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/lib.mjs",
+      "require": "./dist/lib.cjs",
+      "types": "./dist/lib.d.ts"
+    },
+    "./web-socket/native": {
+      "import": "./dist/web-socket/native.mjs",
+      "require": "./dist/web-socket/native.cjs",
+      "types": "./dist/web-socket/native.d.ts"
+    },
+    "./web-socket/node": {
+      "import": "./dist/web-socket/node.mjs",
+      "require": "./dist/web-socket/node.cjs",
+      "types": "./dist/web-socket/node.d.ts"
+    }
   },
   "files": [
     "dist",
@@ -16,28 +30,25 @@
     "node": ">=14.0.0"
   },
   "scripts": {
-    "test": "vitest run",
     "test:integration": "run-s test:prepare test:node test:web",
-    "test:prepare": "run-p test:prepare:build-isomorphic test:prepare:peer",
-    "test:prepare:build-isomorphic": "pnpm --parallel --filter \"@iroha2/client-isomorphic-*\" run build",
-    "test:prepare:peer": "tsx test/integration/prepare-peer",
+    "test:prepare": "tsx test/integration/prepare-peer",
     "test:node": "pnpm --filter client-test-node test",
     "test:web": "pnpm --filter client-test-web test",
     "build:tsc": "tsc"
   },
   "dependencies": {
-    "@iroha2/client-isomorphic-fetch": "workspace:^0.2.0",
-    "@iroha2/client-isomorphic-ws": "workspace:^0.2.0",
     "@iroha2/crypto-core": "workspace:^0.1.1",
-    "@iroha2/data-model": "workspace:1.4.0",
+    "@iroha2/data-model": "workspace:2.0.0",
+    "@types/ws": "^8.2.2",
     "debug": "^4.3.4",
     "emittery": "^0.10.1",
-    "json-bigint": "^1.0.0"
+    "json-bigint": "^1.0.0",
+    "ws": "^8.4.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "consola": "^2.15.3",
     "npm-run-all": "^4.1.5",
-    "type-fest": "^2.12.0"
+    "type-fest": "^2.18.0"
   }
 }

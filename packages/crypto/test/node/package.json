@@ -2,7 +2,7 @@
   "name": "@iroha2/crypto-test-node",
   "private": true,
   "devDependencies": {
-    "@iroha2/crypto-target-node": "workspace:^0.2.0",
+    "@iroha2/crypto-target-node": "workspace:^0.3.0",
     "hada": "^0.0.8"
   }
 }

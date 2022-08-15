@@ -9,6 +9,7 @@ import Emittery from 'emittery'
 import Debug from 'debug'
 import { SocketEmitMapBase, setupWebSocket } from './util'
 import { ENDPOINT_EVENTS } from './const'
+import { IsomorphicWebSocketAdapter } from './web-socket/types'
 
 const debug = Debug('@iroha2/client:events')
 
@@ -19,6 +20,7 @@ export interface EventsEmitteryMap extends SocketEmitMapBase {
 export interface SetupEventsParams {
   toriiApiURL: string
   filter: FilterBox
+  adapter: IsomorphicWebSocketAdapter
 }
 
 export interface SetupEventsReturn {
@@ -41,6 +43,7 @@ export async function setupEvents(params: SetupEventsParams): Promise<SetupEvent
     baseURL: params.toriiApiURL,
     endpoint: ENDPOINT_EVENTS,
     parentDebugger: debug,
+    adapter: params.adapter,
   })
 
   function send(msg: EventSubscriberMessage) {

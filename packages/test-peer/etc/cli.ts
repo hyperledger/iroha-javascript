@@ -17,8 +17,8 @@ cli
   .command('start')
   .option('--api-url <url>', 'Torii API_URL, needed for health check')
   .action(async (opts) => {
-    consola.info('Starting peer')
-    await startPeer({ toriiApiURL: opts.url })
+    consola.info('Starting peer. Opts: %o', opts)
+    await startPeer({ toriiApiURL: opts.apiUrl })
     consola.info('Started! Kill this process to kill the peer')
   })
 
