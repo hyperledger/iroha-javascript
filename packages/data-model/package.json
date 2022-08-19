@@ -23,13 +23,13 @@
   },
   "dependencies": {
     "@iroha2/i64-fixnum": "workspace:^0.4.0",
-    "@scale-codec/definition-runtime": "^2.0.0"
+    "@scale-codec/definition-runtime": "^2.2.0"
   },
   "devDependencies": {
     "@iroha2/data-model-schema": "workspace:2.0.0",
     "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
-    "@scale-codec/definition-compiler": "^2.1.0",
-    "@scale-codec/util": "^1.0.0",
+    "@scale-codec/definition-compiler": "^2.2.0",
+    "@scale-codec/util": "^1.1.0",
     "@types/debug": "^4.1.7",
     "case": "^1.6.3",
     "chalk": "4.1.2",

@@ -20,6 +20,6 @@
     "build:tsc": "tsc"
   },
   "dependencies": {
-    "@scale-codec/util": "^1.0.0"
+    "@scale-codec/util": "^1.1.0"
   }
 }
