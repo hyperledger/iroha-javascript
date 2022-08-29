@@ -1,5 +1,11 @@
 # @iroha2/data-model
 
+## 2.0.2
+
+### Patch Changes
+
+- fbe19e9: **docs**: update versions table in README, chores
+
 ## 2.0.1
 
 ### Patch Changes

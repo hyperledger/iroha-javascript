@@ -57,7 +57,7 @@ export class ClientIncompleteConfigError extends Error {
 
   public static fetchIsNotProvided() {
     return new ClientIncompleteConfigError(
-      'Incomplete configuration: "fetch" is not defined. It is required for Iroha Client to function.' +
+      'Incomplete configuration: "fetch" is not defined. It is required for Iroha Client to function. ' +
         "If you are trying to use Client in the environment where Fetch API isn't available, " +
         'be sure to provide its implementation via `fetch` config field.',
     )
