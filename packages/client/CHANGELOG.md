@@ -1,5 +1,14 @@
 # @iroha2/client
 
+## 2.0.1
+
+### Patch Changes
+
+- ff266d3: Import `json-bigint/lib/parse.js` directly - thus Node.js in ESM mode doesn't fail
+- ff266d3: Update `@scale-codec/*` version that uses correct `.mjs` ext for ESM bundles
+- Updated dependencies [ff266d3]
+  - @iroha2/data-model@2.0.1
+
 ## 2.0.0
 
 ### Major Changes
