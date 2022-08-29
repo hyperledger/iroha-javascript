@@ -1,5 +1,11 @@
 # @iroha2/crypto-target-node
 
+## 0.4.0
+
+### Minor Changes
+
+- bd03fc0: **fix!**: use `createRequire()` in ESM entry, and plain `require()` in CJS
+
 ## 0.3.0
 
 ### Minor Changes

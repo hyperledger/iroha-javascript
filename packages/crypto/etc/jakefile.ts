@@ -7,6 +7,7 @@ import { $, cd, glob, path } from 'zx'
 import {
   CRYPTO_MONOREPO_ROOT,
   CRYPTO_TARGETS,
+  JS_TRANSFORM_TARGETS,
   WASM_PACK_CRATE_DIR,
   WASM_PACK_OUT_DIR,
   WASM_PACK_OUT_NAME,
@@ -32,8 +33,8 @@ task('clean-wasm', async () => {
 
 task('clean-entries', async () => {
   function* cleanTargets() {
-    for (const target of CRYPTO_TARGETS) {
-      yield path.join(targetDirDist(target), 'index.{d.ts,js}')
+    for (const target of JS_TRANSFORM_TARGETS) {
+      yield path.join(targetDirDist(target), 'index.{d.ts,cjs,mjs}')
     }
   }
 
@@ -69,7 +70,7 @@ task('build-wasm', ['clean-wasm'], async () => {
 })
 
 task('entries-js-transform', async () => {
-  for (const target of CRYPTO_TARGETS) {
+  for (const target of JS_TRANSFORM_TARGETS) {
     const dist = targetDirDist(target)
 
     const buildTarget = (format: 'cjs' | 'esm') =>
@@ -80,12 +81,14 @@ task('entries-js-transform', async () => {
         logLevel: 'info',
       })
 
-    if (target === 'node') {
-      await buildTarget('cjs')
-      await buildTarget('esm')
-    } else {
-      buildTarget('esm')
-    }
+    // if (target === 'node') {
+    //   await buildTarget('cjs')
+    //   await buildTarget('esm')
+    // } else {
+    //   buildTarget('esm')
+    // }
+
+    buildTarget('esm')
   }
 })
 
