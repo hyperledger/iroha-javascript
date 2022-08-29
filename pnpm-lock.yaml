@@ -227,12 +227,10 @@ importers:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@types/node': ^18.6.4
-      typescript: ^4.6.4
     dependencies:
       '@iroha2/crypto-core': link:../core
     devDependencies:
       '@types/node': 18.6.4
-      typescript: 4.7.4
 
   packages/crypto/packages/target-web:
     specifiers:
