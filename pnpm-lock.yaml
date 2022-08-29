@@ -114,7 +114,7 @@ importers:
   packages/client/test/integration/test-node:
     specifiers:
       '@iroha2/client': workspace:^2.0.0
-      '@iroha2/crypto-target-node': workspace:^0.3.0
+      '@iroha2/crypto-target-node': workspace:^0.4.0
       '@iroha2/test-peer': workspace:^0.0.1
       consola: ^2.15.3
       cross-env: ^7.0.3
@@ -140,7 +140,7 @@ importers:
       '@bahmutov/cypress-esbuild-preprocessor': ^2.1.3
       '@iroha2/client': workspace:^2.0.0
       '@iroha2/crypto-core': workspace:^0.1.1
-      '@iroha2/crypto-target-web': workspace:^0.3.0
+      '@iroha2/crypto-target-web': workspace:^0.4.0
       '@iroha2/data-model': workspace:^2.0.0
       '@iroha2/test-peer': workspace:^0.0.1
       '@scale-codec/util': ^1.1.0
@@ -183,7 +183,7 @@ importers:
 
   packages/crypto:
     specifiers:
-      '@iroha2/crypto-target-web': workspace:^0.3.0
+      '@iroha2/crypto-target-web': workspace:^0.4.0
       '@types/jake': ^0.0.33
       chalk: 4.1.2
       consola: ^2.15.3
@@ -246,9 +246,9 @@ importers:
   packages/crypto/test/interfaces:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
-      '@iroha2/crypto-target-bundler': workspace:^0.3.0
-      '@iroha2/crypto-target-node': workspace:^0.3.0
-      '@iroha2/crypto-target-web': workspace:^0.3.0
+      '@iroha2/crypto-target-bundler': workspace:^0.4.0
+      '@iroha2/crypto-target-node': workspace:^0.4.0
+      '@iroha2/crypto-target-web': workspace:^0.4.0
       '@types/node': ^18.6.4
       typescript: ^4.6.4
     devDependencies:
@@ -261,7 +261,7 @@ importers:
 
   packages/crypto/test/node:
     specifiers:
-      '@iroha2/crypto-target-node': workspace:^0.3.0
+      '@iroha2/crypto-target-node': workspace:^0.4.0
       hada: ^0.0.8
     devDependencies:
       '@iroha2/crypto-target-node': link:../../packages/target-node
@@ -269,7 +269,7 @@ importers:
 
   packages/crypto/test/web:
     specifiers:
-      '@iroha2/crypto-target-web': workspace:^0.3.0
+      '@iroha2/crypto-target-web': workspace:^0.4.0
       cypress: ^10.4.0
       hada: ^0.0.8
       npm-run-all: ^4.1.5
@@ -361,9 +361,9 @@ importers:
     specifiers:
       '@iroha2/client': workspace:^2.0.0
       '@iroha2/crypto-core': workspace:^0.1.1
-      '@iroha2/crypto-target-bundler': workspace:^0.3.0
-      '@iroha2/crypto-target-node': workspace:^0.3.0
-      '@iroha2/crypto-target-web': workspace:^0.3.0
+      '@iroha2/crypto-target-bundler': workspace:^0.4.0
+      '@iroha2/crypto-target-node': workspace:^0.4.0
+      '@iroha2/crypto-target-web': workspace:^0.4.0
       '@iroha2/data-model': workspace:^2.0.0
       hada: ^0.0.8
       node-fetch: ^3.2.4
