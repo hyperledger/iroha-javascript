@@ -1,5 +1,11 @@
 # @iroha2/i64-fixnum
 
+## 0.4.1
+
+### Patch Changes
+
+- ff266d3: Update `@scale-codec/*` version that uses correct `.mjs` ext for ESM bundles
+
 ## 0.4.0
 
 ### Minor Changes
