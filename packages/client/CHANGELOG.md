@@ -1,5 +1,14 @@
 # @iroha2/client
 
+## 2.0.2
+
+### Patch Changes
+
+- fbe19e9: **chore**: fix typo
+- fbe19e9: **docs**: update versions table in README, chores
+- Updated dependencies [fbe19e9]
+  - @iroha2/data-model@2.0.2
+
 ## 2.0.1
 
 ### Patch Changes
