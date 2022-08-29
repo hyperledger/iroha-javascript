@@ -4,14 +4,14 @@ Client for Iroha 2, which is used to submit requests to Iroha peer.
 
 ## Versioning
 
-| Iroha                                                           | This package |
-| --------------------------------------------------------------- | ------------ |
-| 2.0.0-pre-rc.6-lts (`75da907f66d5270f407a50e06bc76cec41d3d409`) | `1.4.0`      |
-| 2.0.0-pre-rc.5 (`43be45fc7fb7b0bd73f87b4fef167d61680c8e1e`)     | `1.3.0`      |
-| 2.0.0-pre-rc.4 (`d00e0a9172d2a887a97f504796db5f2e05939c10`)     | `1.2.0`      |
-| 2.0.0-pre-rc.3 (`8d83a3eff33f29b49004a0a5efe643b10f0f256e`)     | `1.1.0`      |
-| 2.0.0-pre-rc.2 (`920e4d12754b0f3bf08cbaa5221d91c27863fcdc`)     | `1.0.0`      |
-| 2.0.0-pre-rc.1                                                  | `0.4.1`      |
+| Iroha                                                           | This package       |
+| --------------------------------------------------------------- | ------------------ |
+| 2.0.0-pre-rc.6-lts (`75da907f66d5270f407a50e06bc76cec41d3d409`) | `~1.4.0`, `~2.0.0` |
+| 2.0.0-pre-rc.5 (`43be45fc7fb7b0bd73f87b4fef167d61680c8e1e`)     | `1.3.0`            |
+| 2.0.0-pre-rc.4 (`d00e0a9172d2a887a97f504796db5f2e05939c10`)     | `1.2.0`            |
+| 2.0.0-pre-rc.3 (`8d83a3eff33f29b49004a0a5efe643b10f0f256e`)     | `1.1.0`            |
+| 2.0.0-pre-rc.2 (`920e4d12754b0f3bf08cbaa5221d91c27863fcdc`)     | `1.0.0`            |
+| 2.0.0-pre-rc.1                                                  | `0.4.1`            |
 
 ## Installation
 
@@ -46,19 +46,20 @@ For WebSocket, the client has two entrypoints: `@iroha2/client/web-socket/native
 1. Import adapters:
 
    Import `@iroha2/client/web-socket/native` for when the native `WebSocket` exists:
-   ```
+
+   ```ts
    import { adapter } from '@iroha2/client/web-socket/native'
    ```
 
    Import `@iroha2/client/web-socket/node` with the `ws` package for Node.js:
 
-   ```
+   ```ts
    import { adapter } from '@iroha2/client/web-socket/node'
    ```
 
 2. Inject WebSocket adapter into Iroha Client:
 
-   ```
+   ```ts
    new Client({ ws: adapter })
    ```
 
@@ -68,14 +69,14 @@ For WebSocket, the client has two entrypoints: `@iroha2/client/web-socket/native
 
 1. Import fetch from `node-fetch` **or** `undici` packages:
 
-   ```
+   ```ts
    import { fetch } from 'undici'
    import fetch from 'node-fetch'
    ```
 
 2. Inject `fetch` into Iroha Client:
 
-   ```
+   ```ts
    new Client({ fetch })
    ```
 
