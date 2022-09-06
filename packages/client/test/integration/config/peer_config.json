@@ -18,7 +18,7 @@
   },
   "KURA": {
     "INIT_MODE": "strict",
-    "BLOCK_STORE_PATH": "./blocks"
+    "BLOCK_STORE_PATH": "./storage"
   },
   "LOGGER": {
     "MAX_LOG_LEVEL": "INFO"
