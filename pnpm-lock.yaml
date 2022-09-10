@@ -71,6 +71,7 @@ importers:
       emittery: ^0.10.1
       json-bigint: ^1.0.0
       npm-run-all: ^4.1.5
+      tiny-invariant: ^1.2.0
       type-fest: ^2.18.0
       ws: ^8.4.0
     dependencies:
@@ -80,6 +81,7 @@ importers:
       debug: 4.3.4
       emittery: 0.10.2
       json-bigint: 1.0.0
+      tiny-invariant: 1.2.0
       ws: 8.8.1
     devDependencies:
       '@types/debug': 4.1.7
@@ -143,7 +145,7 @@ importers:
       '@iroha2/crypto-target-web': workspace:^0.3.0
       '@iroha2/data-model': workspace:^2.0.0
       '@iroha2/test-peer': workspace:^0.0.1
-      '@scale-codec/util': ^1.0.0
+      '@scale-codec/util': ^1.1.1
       '@vitejs/plugin-vue': ^3.0.1
       '@vueuse/core': ^8.0.1
       consola: ^2.15.3
@@ -165,7 +167,7 @@ importers:
       '@iroha2/crypto-target-web': link:../../../../crypto/packages/target-web
       '@iroha2/data-model': link:../../../../data-model
       '@iroha2/test-peer': link:../../../../test-peer
-      '@scale-codec/util': 1.0.0
+      '@scale-codec/util': 1.1.1
       '@vitejs/plugin-vue': 3.0.1_vite@3.0.4+vue@3.2.37
       '@vueuse/core': 8.9.4_vue@3.2.37
       consola: 2.15.3
@@ -290,9 +292,9 @@ importers:
       '@iroha2/data-model-schema': workspace:2.0.0
       '@iroha2/dev-iroha-bins': workspace:^0.0.0
       '@iroha2/i64-fixnum': workspace:^0.4.0
-      '@scale-codec/definition-compiler': ^2.1.0
-      '@scale-codec/definition-runtime': ^2.0.0
-      '@scale-codec/util': ^1.0.0
+      '@scale-codec/definition-compiler': ^2.2.2
+      '@scale-codec/definition-runtime': ^2.2.2
+      '@scale-codec/util': ^1.1.1
       '@types/debug': ^4.1.7
       case: ^1.6.3
       chalk: 4.1.2
@@ -303,12 +305,12 @@ importers:
       typescript: ^4.6.4
     dependencies:
       '@iroha2/i64-fixnum': link:../i64-fixnum
-      '@scale-codec/definition-runtime': 2.0.0
+      '@scale-codec/definition-runtime': 2.2.2
     devDependencies:
       '@iroha2/data-model-schema': link:../data-model-schema
       '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
-      '@scale-codec/definition-compiler': 2.1.0
-      '@scale-codec/util': 1.0.0
+      '@scale-codec/definition-compiler': 2.2.2
+      '@scale-codec/util': 1.1.1
       '@types/debug': 4.1.7
       case: 1.6.3
       chalk: 4.1.2
@@ -321,9 +323,9 @@ importers:
   packages/data-model-schema:
     specifiers:
       '@iroha2/dev-iroha-bins': workspace:^0.0.0
-      '@scale-codec/definition-compiler': ^2.1.0
-      '@scale-codec/definition-runtime': ^2.0.0
-      '@scale-codec/util': ^1.0.0
+      '@scale-codec/definition-compiler': ^2.2.2
+      '@scale-codec/definition-runtime': ^2.2.2
+      '@scale-codec/util': ^1.1.1
       '@types/debug': ^4.1.7
       case: ^1.6.3
       chalk: 4.1.2
@@ -334,11 +336,11 @@ importers:
       type-fest: ^2.18.0
       typescript: ^4.6.4
     dependencies:
-      '@scale-codec/definition-runtime': 2.0.0
+      '@scale-codec/definition-runtime': 2.2.2
     devDependencies:
       '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
-      '@scale-codec/definition-compiler': 2.1.0
-      '@scale-codec/util': 1.0.0
+      '@scale-codec/definition-compiler': 2.2.2
+      '@scale-codec/util': 1.1.1
       '@types/debug': 4.1.7
       case: 1.6.3
       chalk: 4.1.2
@@ -383,9 +385,9 @@ importers:
 
   packages/i64-fixnum:
     specifiers:
-      '@scale-codec/util': ^1.0.0
+      '@scale-codec/util': ^1.1.1
     dependencies:
-      '@scale-codec/util': 1.0.0
+      '@scale-codec/util': 1.1.1
 
   packages/test-peer:
     specifiers:
@@ -394,9 +396,9 @@ importers:
       '@koa/router': ^10.1.1
       '@types/debug': ^4.1.7
       '@types/koa': ^2.13.4
-      '@types/koa__router': ^8.0.11
       '@types/koa-bodyparser': ^4.3.5
       '@types/koa-morgan': ^1.0.5
+      '@types/koa__router': ^8.0.11
       axios: ^0.24.0
       cac: ^6.7.12
       chalk: 4.1.2
@@ -417,9 +419,9 @@ importers:
       '@koa/router': 10.1.1
       '@types/debug': 4.1.7
       '@types/koa': 2.13.5
-      '@types/koa__router': 8.0.11
       '@types/koa-bodyparser': 4.3.7
       '@types/koa-morgan': 1.0.5
+      '@types/koa__router': 8.0.11
       axios: 0.24.0_debug@4.3.4
       cac: 6.7.12
       chalk: 4.1.2
@@ -867,39 +869,39 @@ packages:
       rollup: 2.77.2
     dev: true
 
-  /@scale-codec/core/1.0.1:
-    resolution: {integrity: sha512-HqrIIw1NwJXEoDAKRMxuKXoSJQ5HU9X8DuMdOLvkIaN/4Jl/vOvkcWTpfrPKOGgj7qgmxbZc4RjJoQZs6L9o+g==}
+  /@scale-codec/core/1.1.1:
+    resolution: {integrity: sha512-feiLqQYopj3VXOCFa7xvRexFB8Ik7NJd8L9wGoPzeux+83cnwMjBPQu2TdcKDcchOMtXZ6RyFfF3MNuun75Shg==}
     engines: {node: '>=14.5.0'}
     dependencies:
-      '@scale-codec/enum': 1.0.2
-      '@scale-codec/util': 1.0.0
+      '@scale-codec/enum': 1.1.1
+      '@scale-codec/util': 1.1.1
     dev: false
 
-  /@scale-codec/definition-compiler/2.1.0:
-    resolution: {integrity: sha512-NQSrbiTMcHG2GiVnhzkT4W67XVG8mrNJjnhBfvksuhVpt1sV6BRiQ9Pz7BshwsdZkACOkjgR8PKu6bdAlZM1IQ==}
+  /@scale-codec/definition-compiler/2.2.2:
+    resolution: {integrity: sha512-YuFYMxVbTecAjZCxTI2ioBmGjirNs0T8phGf4dbw9QqCBHisprbIfTRiuUkszOzvxqEbH74dJh6Mi/bpX3Nyaw==}
     engines: {node: '>16.8'}
     dependencies:
-      '@scale-codec/enum': 1.0.2
-      '@scale-codec/util': 1.0.0
+      '@scale-codec/enum': 1.1.1
+      '@scale-codec/util': 1.1.1
       immutable: 4.1.0
       sort-es: 1.5.1
       tarjan-graph: 3.0.0
     dev: true
 
-  /@scale-codec/definition-runtime/2.0.0:
-    resolution: {integrity: sha512-GCd2PMbJc/kby5ZHR4sLm5NNgfdLDWBSoe4/hsHzKL0pZpVlF2Xokgat8IkwDthKDAB4lKaUgeFRH5UrNDMOtQ==}
+  /@scale-codec/definition-runtime/2.2.2:
+    resolution: {integrity: sha512-dZ/0T5LynQRqGMU+XMmM68Hom+mvvI3xMxz09ZBgJEmTQrXkdnvpu5l8mFVWrzBNqjNCi+d6qZ2UMQFAk1NfVg==}
     dependencies:
-      '@scale-codec/core': 1.0.1
-      '@scale-codec/util': 1.0.0
-      fmt-subs: 1.0.2
-      type-fest: 2.18.0
+      '@scale-codec/core': 1.1.1
+      '@scale-codec/util': 1.1.1
+      fmt-subs: 1.1.1
+      type-fest: 2.19.0
     dev: false
 
-  /@scale-codec/enum/1.0.2:
-    resolution: {integrity: sha512-+3DkXIyMRMq0EYfJpmxeGWUDWIupyjlXqCID5iHTCqnsTyU0Zysfqv3TqGCuBQW+MK325U72usuBQ2WhiEO5ZA==}
+  /@scale-codec/enum/1.1.1:
+    resolution: {integrity: sha512-GTB5LPcqjZOoWSPn90q97yMUZP6PD1Y3Lk+WnvvqkW1nOgz9vXEqTchm+eYtV23tTeh594Dg5plElA/mVHEUfQ==}
 
-  /@scale-codec/util/1.0.0:
-    resolution: {integrity: sha512-Y19tdkyHtFNJDX5cztqUTYzTp4xyiOaG79vcQdyD0GB4q+lGFdeqUCNSYrcuxrzZirXnOfATy/rdLK2ZZyRT6w==}
+  /@scale-codec/util/1.1.1:
+    resolution: {integrity: sha512-MXKLSZHjoMOyJvHZo+AnOo6URY2cK77KS9gnEMRJRVFE9IW2Gv3lj+H+BBN5hY57dbboeNGZGfUEcQqFUKAxTw==}
 
   /@sideway/address/4.1.4:
     resolution: {integrity: sha512-7vwq+rOHVWjyXxVlR76Agnvhy8I9rpzjosTESvmhNeXOXdZZB15Fl+TI9x1SiHZH5Jv2wTGduSxFDIaq0m3DUw==}
@@ -1606,7 +1608,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.1_debug@4.3.4
+      follow-redirects: 1.15.1_debug@4.3.2
     transitivePeerDependencies:
       - debug
     dev: true
@@ -3226,9 +3228,21 @@ packages:
     resolution: {integrity: sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==}
     dev: true
 
-  /fmt-subs/1.0.2:
-    resolution: {integrity: sha512-s2Ku+7r58SLCA4io44DaYPHvJi6b9D2Qs3a7fpGAhaZ9vA6t4d+WgMhp9ueq2elcHmU1JwstzmOX+2dB7JqoKg==}
+  /fmt-subs/1.1.1:
+    resolution: {integrity: sha512-11qUMl76/5d/gYAtvoBZacQ94DPRKtip989wKVbSb0JD1LWzNg16u47+hLVxmzDqPH74ljlxIyQlbPCAP4XEGQ==}
     dev: false
+
+  /follow-redirects/1.15.1_debug@4.3.2:
+    resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.2
+    dev: true
 
   /follow-redirects/1.15.1_debug@4.3.4:
     resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
@@ -5467,6 +5481,10 @@ packages:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
     dev: true
 
+  /tiny-invariant/1.2.0:
+    resolution: {integrity: sha512-1Uhn/aqw5C6RI4KejVeTg6mIS7IqxnLJ8Mv2tV5rTc0qWobay7pDUz6Wi392Cnc8ak1H0F2cjoRzb2/AW4+Fvg==}
+    dev: false
+
   /tinypool/0.2.4:
     resolution: {integrity: sha512-Vs3rhkUH6Qq1t5bqtb816oT+HeJTXfwt2cbPH17sWHIYKTotQIFPk3tf2fgqRrVyMDVOc1EnPgzIxfIulXVzwQ==}
     engines: {node: '>=14.0.0'}
@@ -5623,6 +5641,12 @@ packages:
   /type-fest/2.18.0:
     resolution: {integrity: sha512-pRS+/yrW5TjPPHNOvxhbNZexr2bS63WjrMU8a+VzEBhUi9Tz1pZeD+vQz3ut0svZ46P+SRqMEPnJmk2XnvNzTw==}
     engines: {node: '>=12.20'}
+    dev: true
+
+  /type-fest/2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
+    dev: false
 
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}

@@ -2,11 +2,15 @@ import { CloseEvent, IsomorphicWebSocketAdapter, SendData, Event as WsEvent } fr
 import { Debugger } from 'debug'
 import Emittery from 'emittery'
 import JsonBigIntParseFactory from 'json-bigint/lib/parse'
+import { getCryptoAnyway } from './crypto-singleton'
+import { garbageScope } from './collect-garbage'
 
-const MAX_SAFE_U32 = 0xffff_ffff
-
-export function randomU32(): number {
-  return ~~(Math.random() * MAX_SAFE_U32)
+export function cryptoHash(input: Uint8Array): Uint8Array {
+  const { createHash } = getCryptoAnyway()
+  return garbageScope((c) => {
+    const hash = c(createHash(input))
+    return hash.bytes()
+  })
 }
 
 export function transformProtocolInUrlFromHttpToWs(url: string): string {

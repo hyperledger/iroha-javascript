@@ -1,3 +1,4 @@
+import { KeyPair } from '@iroha2/crypto-core'
 import {
   AccountId,
   Enum,
@@ -21,12 +22,8 @@ import {
   VersionedSignedQueryRequest,
   VersionedTransaction,
 } from '@iroha2/data-model'
-import { IrohaCryptoInterface, KeyPair } from '@iroha2/crypto-core'
-import { CollectFn, garbageScope } from './collect-garbage'
-import { parseJsonWithBigInts, randomU32 } from './util'
-import { getCrypto } from './crypto-singleton'
-import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
+import { garbageScope } from './collect-garbage'
 import {
   ENDPOINT_CONFIGURATION,
   ENDPOINT_HEALTH,
@@ -36,66 +33,16 @@ import {
   ENDPOINT_TRANSACTION,
   HEALTHY_RESPONSE,
 } from './const'
+import { getCryptoAnyway } from './crypto-singleton'
+import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events'
+import { cryptoHash, parseJsonWithBigInts } from './util'
 import { IsomorphicWebSocketAdapter } from './web-socket/types'
 
-function useCryptoAssertive(): IrohaCryptoInterface {
-  const crypto = getCrypto()
-  if (!crypto) {
-    throw new Error(
-      '"crypto" is not defined, but required for Iroha Client to function. Have you set it with `setCrypto()`?',
-    )
-  }
-  return crypto
+type Fetch = typeof fetch
+
+export interface SetPeerConfigParams {
+  LogLevel?: 'WARN' | 'ERROR' | 'INFO' | 'DEBUG' | 'TRACE'
 }
-
-export class ClientIncompleteConfigError extends Error {
-  public static missing(what: string) {
-    return new ClientIncompleteConfigError(
-      `You are trying to use Iroha Client with an incomplete configuration. Missing: ${what}`,
-    )
-  }
-
-  public static fetchIsNotProvided() {
-    return new ClientIncompleteConfigError(
-      'Incomplete configuration: "fetch" is not defined. It is required for Iroha Client to function.' +
-        "If you are trying to use Client in the environment where Fetch API isn't available, " +
-        'be sure to provide its implementation via `fetch` config field.',
-    )
-  }
-
-  public static cryptoIsNotSet() {
-    return new ClientIncompleteConfigError(
-      'Incomplete configuration: "crypto" is not defined. It is required for Iroha Client to function. Use `setCrypto()` to configure "crypto".',
-    )
-  }
-
-  private constructor(message: string) {
-    super(message)
-  }
-}
-
-export class ResponseError extends Error {
-  public static throwIfStatusIsNot(response: Response, status: number) {
-    if (response.status !== status) throw new ResponseError(response)
-  }
-
-  public constructor(response: Response) {
-    super(`${response.status}: ${response.statusText}`)
-  }
-}
-
-export interface SubmitParams {
-  nonce?: number
-  metadata?: MapNameValue
-}
-
-export type HealthResult = Result<null, string>
-
-export type RequestResult = Result<PaginatedQueryResult, QueryError>
-
-export type ListenEventsParams = Pick<SetupEventsParams, 'filter'>
-
-export type ListenBlocksStreamParams = Pick<SetupBlocksStreamParams, 'height'>
 
 export interface PeerStatus {
   peers: bigint | number
@@ -109,153 +56,174 @@ export interface PeerStatus {
   }
 }
 
-export interface SetPeerConfigParams {
-  LogLevel?: 'WARN' | 'ERROR' | 'INFO' | 'DEBUG' | 'TRACE'
+class Signer {
+  #kp: KeyPair
+  #accountId: AccountId
+
+  public constructor(accountId: AccountId, keyPair: KeyPair) {
+    this.#accountId = accountId
+    this.#kp = keyPair
+  }
+
+  public get accountId(): AccountId {
+    return this.#accountId
+  }
+
+  public sign(payload: Uint8Array): Signature {
+    const { createSignature } = getCryptoAnyway()
+
+    return garbageScope((collect) => {
+      const signature = collect(createSignature(this.#kp, payload))
+
+      // Should it be collected?
+      const pubKey = this.#kp.publicKey()
+
+      return Signature({
+        public_key: PublicKey({
+          digest_function: pubKey.digestFunction(),
+          payload: pubKey.payload(),
+        }),
+        payload: signature.signatureBytes(),
+      })
+    })
+  }
 }
 
-export interface UserConfig {
-  torii: {
-    apiURL?: string | null
-    telemetryURL?: string | null
-  }
-  keyPair?: KeyPair
-  accountId?: AccountId
-  transaction?: {
-    /**
-     * @default 100_000n
-     */
-    timeToLiveMs?: bigint
-    /**
-     * @default false
-     */
-    addNonce?: boolean
-  }
+// #region Transaction helpers
+
+export interface MakeTransactionPayloadParams {
+  accountId: AccountId
+  executable: Executable
   /**
-   * Implementation of the [fetch](https://fetch.spec.whatwg.org/#fetch-method) method.
-   * Must be provided in the environment where it is not available by default, i.e.
-   * in Node.js older than 17.5.
-   *
-   * See also:
-   *
-   * - [undici](https://www.npmjs.com/package/undici)
-   * - [node-fetch](https://www.npmjs.com/package/node-fetch)
+   * @default 100_000n
    */
-  fetch?: typeof fetch
-  ws?: IsomorphicWebSocketAdapter
+  ttl?: bigint
+  /**
+   * @default Date.now()
+   */
+  creationTime?: bigint
+  /**
+   * @default // none
+   */
+  nonce?: number
+  metadata?: MapNameValue
 }
 
-export interface RequestParams {
+const DEFAULT_TRANSACTION_TTL = 100_000n
+
+export function makeTransactionPayload(params: MakeTransactionPayloadParams): TransactionPayload {
+  return TransactionPayload({
+    account_id: params.accountId,
+    instructions: params.executable,
+    time_to_live_ms: params.ttl ?? DEFAULT_TRANSACTION_TTL,
+    nonce: params?.nonce ? OptionU32('Some', params.nonce) : OptionU32('None'),
+    metadata: params?.metadata ?? MapNameValue(new Map()),
+    creation_time: params.creationTime ?? BigInt(Date.now()),
+  })
+}
+
+export function computeTransactionHash(payload: TransactionPayload): Uint8Array {
+  return cryptoHash(TransactionPayload.toBuffer(payload))
+}
+
+export function signTransaction(payload: TransactionPayload, signer: Signer): Signature {
+  const hash = computeTransactionHash(payload)
+  return signer.sign(hash)
+}
+
+export function makeSignedTransaction(payload: TransactionPayload, signer: Signer): VersionedTransaction {
+  const signature = signTransaction(payload, signer)
+  return VersionedTransaction(
+    'V1',
+    Transaction({
+      payload,
+      signatures: VecSignatureOfTransactionPayload([signature]),
+    }),
+  )
+}
+
+// #endregion
+
+// #region Query helpers
+
+interface MakeQueryPayloadParams {
+  accountId: AccountId
+  query: QueryBox
   /**
    * @default PredicateBox('Raw', Predicate('Pass'))
    */
   filter?: PredicateBox
+  timestampMs?: bigint
 }
 
-function makeSignature(keyPair: KeyPair, payload: Uint8Array, collect: CollectFn): Signature {
-  const { createSignature } = useCryptoAssertive()
-
-  const signature = collect(createSignature(keyPair, payload))
-
-  // Should it be collected?
-  const pubKey = keyPair.publicKey()
-
-  return Signature({
-    public_key: PublicKey({
-      digest_function: pubKey.digestFunction(),
-      payload: pubKey.payload(),
-    }),
-    payload: signature.signatureBytes(),
+export function makeQueryPayload(params: MakeQueryPayloadParams): QueryPayload {
+  return QueryPayload({
+    account_id: params.accountId,
+    query: params.query,
+    timestamp_ms: params.timestampMs ?? BigInt(Date.now()),
+    filter: params?.filter ?? PredicateBox('Raw', Predicate('Pass')),
   })
 }
 
-/**
- *
- * @remarks
- *
- * TODO: `submitBlocking` method, i.e. `submit` + listening for submit
- */
-export class Client {
-  public toriiApiURL: string | null
-  public toriiTelemetryURL: string | null
-  public keyPair: null | KeyPair
-  public accountId: null | AccountId
-  public transactionDefaultTTL: bigint
-  public transactionAddNonce: boolean
-  public fetch: typeof fetch | null
-  public ws: IsomorphicWebSocketAdapter | null
+export function computeQueryHash(payload: QueryPayload): Uint8Array {
+  return cryptoHash(QueryPayload.toBuffer(payload))
+}
 
-  public constructor(config: UserConfig) {
-    this.toriiApiURL = config.torii.apiURL ?? null
-    this.toriiTelemetryURL = config.torii.telemetryURL ?? null
-    this.transactionAddNonce = config.transaction?.addNonce ?? false
-    this.transactionDefaultTTL = config.transaction?.timeToLiveMs ?? 100_000n
-    this.keyPair = config.keyPair ?? null
-    this.accountId = config.accountId ?? null
+export function signQuery(payload: QueryPayload, signer: Signer): Signature {
+  const hash = computeQueryHash(payload)
+  return signer.sign(hash)
+}
 
-    if (config.fetch) {
-      this.fetch = config.fetch
-    } else if (typeof fetch !== 'undefined') {
-      this.fetch = fetch
-    }
+export function makeSignedQuery(payload: QueryPayload, signer: Signer): VersionedSignedQueryRequest {
+  const signature = signQuery(payload, signer)
+  return VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature }))
+}
 
-    this.ws = config.ws ?? null
+// #endregion
+
+export interface ToriiApiHttp {
+  transaction: (tx: VersionedTransaction) => Promise<void>
+  query: (query: VersionedSignedQueryRequest) => Promise<Result<PaginatedQueryResult, QueryError>>
+  getHealth: () => Promise<Result<null, string>>
+  setPeerConfig: (params: SetPeerConfigParams) => Promise<void>
+}
+
+export interface ToriiApiWebSocket {
+  listenForEvents: (params: Pick<SetupEventsParams, 'filter'>) => Promise<SetupEventsReturn>
+  listenForBlocksStream: (params: Pick<SetupBlocksStreamParams, 'height'>) => Promise<SetupBlocksStreamReturn>
+}
+
+export interface ToriiTelemetry {
+  getStatus: () => Promise<PeerStatus>
+  getMetrics: () => Promise<string>
+}
+
+export interface CreateToriiProps {
+  apiURL: string
+  telemetryURL: string
+  fetch: Fetch
+  ws: IsomorphicWebSocketAdapter
+}
+
+export type ToriiQueryResult = Result<PaginatedQueryResult, QueryError>
+
+export class Torii implements ToriiApiHttp, ToriiApiWebSocket, ToriiTelemetry {
+  #api: string
+  #telemetry: string
+  #fetch: Fetch
+  #ws: IsomorphicWebSocketAdapter
+
+  public constructor(props: CreateToriiProps) {
+    this.#api = props.apiURL
+    this.#telemetry = props.telemetryURL
+    this.#fetch = props.fetch
+    this.#ws = props.ws
   }
 
-  public signTransactionPayload(payload: TransactionPayload): Signature {
-    return this.makeSignatureWithHashing(TransactionPayload.toBuffer(payload))
-  }
-
-  public signQueryPayload(payload: QueryPayload): Signature {
-    return this.makeSignatureWithHashing(QueryPayload.toBuffer(payload))
-  }
-
-  public async getHealth(): Promise<HealthResult> {
-    const url = this.forceGetApiURL()
-
-    try {
-      const response = await this.forceGetFetch()(url + ENDPOINT_HEALTH)
-      ResponseError.throwIfStatusIsNot(response, 200)
-
-      const text = await response.text()
-      if (text !== HEALTHY_RESPONSE) {
-        return Enum.variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`)
-      }
-
-      return Enum.variant('Ok', null)
-    } catch (err) {
-      return Enum.variant('Err', `Some error occured: ${String(err)}`)
-    }
-  }
-
-  public async submit(executable: Executable, params?: SubmitParams): Promise<void> {
-    const accountId = this.forceGetAccountId()
-
-    const payload = TransactionPayload({
-      instructions: executable,
-      time_to_live_ms: this.transactionDefaultTTL,
-      nonce: params?.nonce
-        ? OptionU32('Some', params.nonce)
-        : this.transactionAddNonce
-        ? OptionU32('Some', randomU32())
-        : OptionU32('None'),
-      metadata: params?.metadata ?? MapNameValue(new Map()),
-      creation_time: BigInt(Date.now()),
-      account_id: accountId,
-    })
-
-    const signature = this.signTransactionPayload(payload)
-    const tx = VersionedTransaction(
-      'V1',
-      Transaction({ payload, signatures: VecSignatureOfTransactionPayload([signature]) }),
-    )
-
-    await this.submitVersionedTransaction(tx)
-  }
-
-  public async submitVersionedTransaction(tx: VersionedTransaction): Promise<void> {
+  public async transaction(tx: VersionedTransaction): Promise<void> {
     const body = VersionedTransaction.toBuffer(tx)
 
-    const response = await this.forceGetFetch()(this.forceGetApiURL() + ENDPOINT_TRANSACTION, {
+    const response = await this.#fetch(this.#api + ENDPOINT_TRANSACTION, {
       body,
       method: 'POST',
     })
@@ -263,26 +231,9 @@ export class Client {
     ResponseError.throwIfStatusIsNot(response, 200)
   }
 
-  /**
-   * TODO support pagination
-   */
-  public async request(query: QueryBox, params?: RequestParams): Promise<RequestResult> {
-    const url = this.forceGetApiURL()
-    const accountId = this.forceGetAccountId()
-
-    const payload = QueryPayload({
-      query,
-      account_id: accountId,
-      timestamp_ms: BigInt(Date.now()),
-      filter: params?.filter ?? PredicateBox('Raw', Predicate('Pass')),
-    })
-
-    const signature = this.signQueryPayload(payload)
-    const queryBytes = VersionedSignedQueryRequest.toBuffer(
-      VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature })),
-    )
-
-    const response = await this.forceGetFetch()(url + ENDPOINT_QUERY, {
+  public async query(query: VersionedSignedQueryRequest): Promise<ToriiQueryResult> {
+    const queryBytes = VersionedSignedQueryRequest.toBuffer(query)
+    const response = await this.#fetch(this.#api + ENDPOINT_QUERY, {
       method: 'POST',
       body: queryBytes!,
     }).then()
@@ -292,37 +243,58 @@ export class Client {
     if (response.status === 200) {
       // OK
       const value = VersionedPaginatedQueryResult.fromBuffer(bytes).as('V1')
-      return Enum.variant<RequestResult>('Ok', value)
+      return Enum.variant<ToriiQueryResult>('Ok', value)
     } else {
       // ERROR
       const error = QueryError.fromBuffer(bytes)
-      return Enum.variant<RequestResult>('Err', error)
+      return Enum.variant<ToriiQueryResult>('Err', error)
     }
   }
 
-  public async listenForEvents(params: ListenEventsParams): Promise<SetupEventsReturn> {
+  public async getHealth(): Promise<Result<null, string>> {
+    const response = await this.#fetch(this.#api + ENDPOINT_HEALTH)
+    ResponseError.throwIfStatusIsNot(response, 200)
+
+    const text = await response.text()
+    if (text !== HEALTHY_RESPONSE) {
+      return Enum.variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`)
+    }
+
+    return Enum.variant('Ok', null)
+  }
+
+  public async listenForEvents(params: Pick<SetupEventsParams, 'filter'>): Promise<SetupEventsReturn> {
     return setupEvents({
       filter: params.filter,
-      toriiApiURL: this.forceGetApiURL(),
-      adapter: this.forceGetWs(),
+      toriiApiURL: this.#api,
+      adapter: this.#ws,
     })
   }
 
-  public async listenForBlocksStream(params: ListenBlocksStreamParams): Promise<SetupBlocksStreamReturn> {
+  public async listenForBlocksStream(
+    params: Pick<SetupBlocksStreamParams, 'height'>,
+  ): Promise<SetupBlocksStreamReturn> {
     return setupBlocksStream({
       height: params.height,
-      toriiApiURL: this.forceGetApiURL(),
-      adapter: this.forceGetWs(),
+      toriiApiURL: this.#api,
+      adapter: this.#ws,
+    })
+  }
+  public async getStatus(): Promise<PeerStatus> {
+    const response = await this.#fetch(this.#telemetry + ENDPOINT_STATUS)
+    ResponseError.throwIfStatusIsNot(response, 200)
+    return response.text().then(parseJsonWithBigInts)
+  }
+
+  public async getMetrics(): Promise<string> {
+    return this.#fetch(this.#telemetry + ENDPOINT_METRICS).then((response) => {
+      ResponseError.throwIfStatusIsNot(response, 200)
+      return response.text()
     })
   }
 
-  // TODO Iroha WIP
-  // public async getPeerConfig() {
-  //     await fetch(this.forceGetToriiApiURL() + '/configuration');
-  // }
-
   public async setPeerConfig(params: SetPeerConfigParams): Promise<void> {
-    const response = await this.forceGetFetch()(this.forceGetApiURL() + ENDPOINT_CONFIGURATION, {
+    const response = await this.#fetch(this.#api + ENDPOINT_CONFIGURATION, {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
@@ -331,57 +303,14 @@ export class Client {
     })
     ResponseError.throwIfStatusIsNot(response, 200)
   }
+}
 
-  public async getStatus(): Promise<PeerStatus> {
-    const response = await this.forceGetFetch()(this.forceGetTelemetryURL() + ENDPOINT_STATUS)
-    ResponseError.throwIfStatusIsNot(response, 200)
-    return response.text().then(parseJsonWithBigInts)
+export class ResponseError extends Error {
+  public static throwIfStatusIsNot(response: Response, status: number) {
+    if (response.status !== status) throw new ResponseError(response)
   }
 
-  public async getMetrics(): Promise<string> {
-    return this.forceGetFetch()(this.forceGetTelemetryURL() + ENDPOINT_METRICS).then((response) => {
-      ResponseError.throwIfStatusIsNot(response, 200)
-      return response.text()
-    })
-  }
-
-  private makeSignatureWithHashing(unhashedPayload: Uint8Array): Signature {
-    const { createHash } = useCryptoAssertive()
-
-    return garbageScope((collect) => {
-      const hash = collect(createHash(unhashedPayload))
-      const signature = makeSignature(this.forceGetKeyPair(), hash.bytes(), collect)
-      return signature
-    })
-  }
-
-  private forceGetApiURL(): string {
-    if (!this.toriiApiURL) throw ClientIncompleteConfigError.missing('Torii API URL')
-    return this.toriiApiURL
-  }
-
-  private forceGetTelemetryURL(): string {
-    if (!this.toriiTelemetryURL) throw ClientIncompleteConfigError.missing('Torii Telemetry URL')
-    return this.toriiTelemetryURL
-  }
-
-  private forceGetAccountId(): AccountId {
-    if (!this.accountId) throw ClientIncompleteConfigError.missing('Account ID')
-    return this.accountId
-  }
-
-  private forceGetKeyPair(): KeyPair {
-    if (!this.keyPair) throw ClientIncompleteConfigError.missing('Key Pair')
-    return this.keyPair
-  }
-
-  private forceGetWs(): IsomorphicWebSocketAdapter {
-    if (!this.ws) throw ClientIncompleteConfigError.missing('WebSocket Adapter')
-    return this.ws
-  }
-
-  private forceGetFetch(): typeof fetch {
-    if (!this.fetch) throw ClientIncompleteConfigError.fetchIsNotProvided()
-    return this.fetch
+  public constructor(response: Response) {
+    super(`${response.status}: ${response.statusText}`)
   }
 }
