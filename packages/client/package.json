@@ -43,7 +43,6 @@
     "debug": "^4.3.4",
     "emittery": "^0.10.1",
     "json-bigint": "^1.0.0",
-    "tiny-invariant": "^1.2.0",
     "ws": "^8.4.0"
   },
   "devDependencies": {

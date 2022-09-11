@@ -1,5 +1,4 @@
 import { IrohaCryptoInterface } from '@iroha2/crypto-core'
-import invariant from 'tiny-invariant'
 
 let __crypto: IrohaCryptoInterface | null = null
 
@@ -13,9 +12,9 @@ export function getCrypto(): null | IrohaCryptoInterface {
 
 export function getCryptoAnyway(): IrohaCryptoInterface {
   const crypto = getCrypto()
-  invariant(
-    crypto,
-    '"crypto" is not defined, but required for Iroha Client to function. Have you set it with `setCrypto()`?',
-  )
+  if (!crypto)
+    throw new Error(
+      '"crypto" is not defined, but required for `@iroha2/client` to function. Have you set it with `setCrypto()`?',
+    )
   return crypto
 }

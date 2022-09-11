@@ -71,7 +71,6 @@ importers:
       emittery: ^0.10.1
       json-bigint: ^1.0.0
       npm-run-all: ^4.1.5
-      tiny-invariant: ^1.2.0
       type-fest: ^2.18.0
       ws: ^8.4.0
     dependencies:
@@ -81,7 +80,6 @@ importers:
       debug: 4.3.4
       emittery: 0.10.2
       json-bigint: 1.0.0
-      tiny-invariant: 1.2.0
       ws: 8.8.1
     devDependencies:
       '@types/debug': 4.1.7
@@ -5480,10 +5478,6 @@ packages:
   /through/2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
     dev: true
-
-  /tiny-invariant/1.2.0:
-    resolution: {integrity: sha512-1Uhn/aqw5C6RI4KejVeTg6mIS7IqxnLJ8Mv2tV5rTc0qWobay7pDUz6Wi392Cnc8ak1H0F2cjoRzb2/AW4+Fvg==}
-    dev: false
 
   /tinypool/0.2.4:
     resolution: {integrity: sha512-Vs3rhkUH6Qq1t5bqtb816oT+HeJTXfwt2cbPH17sWHIYKTotQIFPk3tf2fgqRrVyMDVOc1EnPgzIxfIulXVzwQ==}
