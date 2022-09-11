@@ -26,7 +26,7 @@ function generateKeyPair(params: {
   return keyPair
 }
 
-const kp = generateKeyPair({
+const keyPair = generateKeyPair({
   publicKeyMultihash:
     'ed0120e555d194e8822da35ac541ce9eec8b45058f4d294d9426ef97ba92698766f7d3',
   privateKey: {

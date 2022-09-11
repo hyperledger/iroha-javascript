@@ -145,6 +145,7 @@ importers:
       '@iroha2/test-peer': workspace:^0.0.1
       '@scale-codec/util': ^1.1.1
       '@vitejs/plugin-vue': ^3.0.1
+      '@vue-kakuyaku/core': ^0.3.0
       '@vueuse/core': ^8.0.1
       consola: ^2.15.3
       cross-env: ^7.0.3
@@ -167,6 +168,7 @@ importers:
       '@iroha2/test-peer': link:../../../../test-peer
       '@scale-codec/util': 1.1.1
       '@vitejs/plugin-vue': 3.0.1_vite@3.0.4+vue@3.2.37
+      '@vue-kakuyaku/core': 0.3.0
       '@vueuse/core': 8.9.4_vue@3.2.37
       consola: 2.15.3
       cross-env: 7.0.3
@@ -1298,6 +1300,16 @@ packages:
     dependencies:
       vite: 3.0.4_sass@1.54.0
       vue: 3.2.37
+    dev: true
+
+  /@vue-kakuyaku/core/0.3.0:
+    resolution: {integrity: sha512-VjtNRZa1E7gG6+RmWpYmMCPGJuWsNBmVMLh1a2dJ8O6B3B+d01sy1HyovDfS6/W2UxBflzUyU0ffswnvWXJqUw==}
+    dependencies:
+      '@vueuse/core': 8.9.4_vue@3.2.37
+      type-fest: 2.19.0
+      vue: 3.2.37
+    transitivePeerDependencies:
+      - '@vue/composition-api'
     dev: true
 
   /@vue/compiler-core/3.2.37:
@@ -5640,7 +5652,6 @@ packages:
   /type-fest/2.19.0:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
     engines: {node: '>=12.20'}
-    dev: false
 
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}

@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { useAsyncState, useIntervalFn } from '@vueuse/core'
+import { useIntervalFn } from '@vueuse/core'
+import { useTask } from '@vue-kakuyaku/core'
 import { client } from '../client'
 
-const { state: status, execute: updateStatus } = useAsyncState(() => client.getStatus(), null, {
-  resetOnExecute: false,
-})
-
-useIntervalFn(() => updateStatus(), 1000)
+const { state, run } = useTask(() => client.torii.getStatus(), { immediate: true })
+useIntervalFn(run, 1000)
 </script>
 
 <template>
   <div>
     <h3>Status</h3>
 
-    <ul v-if="status">
-      <li>Blocks: {{ status.blocks }}</li>
-      <li>Uptime (sec): {{ status.uptime.secs }}</li>
+    <ul v-if="state.fulfilled">
+      <li>Blocks: {{ state.fulfilled.value.blocks }}</li>
+      <li>Uptime (sec): {{ state.fulfilled.value.uptime.secs }}</li>
     </ul>
   </div>
 </template>

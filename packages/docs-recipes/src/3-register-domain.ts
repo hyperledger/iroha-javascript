@@ -43,7 +43,7 @@ async function registerDomain(domainName: string) {
     }),
   })
 
-  await client.submit(
+  await client.submitExecutable(
     Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
   )
 }
@@ -55,7 +55,7 @@ await registerDomain('test')
 // 3.
 
 async function ensureDomainExistence(domainName: string) {
-  const result = await client.request(QueryBox('FindAllDomains', null))
+  const result = await client.requestWithQueryBox(QueryBox('FindAllDomains', null))
 
   const domain = result
     .as('Ok')

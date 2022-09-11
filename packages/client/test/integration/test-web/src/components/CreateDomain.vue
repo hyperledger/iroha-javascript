@@ -24,7 +24,7 @@ async function register() {
   try {
     isPending.value = true
 
-    await client.submit(
+    await client.submitExecutable(
       Executable(
         'Instructions',
         VecInstruction([
