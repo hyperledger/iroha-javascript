@@ -37,6 +37,6 @@
     "debug": "^4.3.4",
     "execa": "5.1.1",
     "immutable": "^4.0.0",
-    "typescript": "^4.6.4"
+    "typescript": "^4.8.3"
   }
 }

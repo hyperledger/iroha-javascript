@@ -1,7 +1,8 @@
 import fs from 'fs/promises'
 import del from 'del'
 import { Torii } from '@iroha2/client'
-import { fetch } from 'undici'
+import nodeFetch from 'node-fetch'
+import debug from './dbg'
 
 export async function saveDataAsJSON(data: unknown, destination: string): Promise<void> {
   await fs.writeFile(destination, JSON.stringify(data), { encoding: 'utf-8' })
@@ -18,7 +19,7 @@ export async function waitUntilPeerIsHealthy(
 ): Promise<void> {
   const torii = new Torii({
     apiURL,
-    fetch: fetch as any,
+    fetch: nodeFetch as typeof fetch,
     // FIXME
     telemetryURL: null as any,
     ws: null as any,
@@ -33,6 +34,7 @@ export async function waitUntilPeerIsHealthy(
 
     const health = await torii.getHealth()
     if (health.is('Ok')) return
+    debug('not yet healthy')
 
     await new Promise((r) => setTimeout(r, checkInterval))
   }

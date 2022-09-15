@@ -1,9 +1,9 @@
 /* eslint-disable max-params */
-import { afterAll, beforeEach, describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
 import { Client, Signer, Torii, setCrypto } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
-import { fetch as undiciFetch } from 'undici'
+import nodeFetch from 'node-fetch'
 import {
   Account,
   AccountId,
@@ -78,7 +78,7 @@ function clientFactory() {
   const torii = new Torii({
     ...client_config.torii,
     ws: WS,
-    fetch: undiciFetch as unknown as typeof fetch,
+    fetch: nodeFetch as typeof fetch,
   })
 
   const client = new Client({ torii, signer })
@@ -168,10 +168,6 @@ function mintIntoExecutable(mint: MintBox) {
   return Executable('Instructions', VecInstruction([Instruction('Mint', mint)]))
 }
 
-async function submitMint(client: Client, mint: MintBox) {
-  await client.submitExecutable(Executable('Instructions', VecInstruction([Instruction('Mint', mint)])))
-}
-
 async function pipelineStepDelay() {
   await delay(PIPELINE_MS * 2)
 }
@@ -180,6 +176,7 @@ let startedPeer: StartPeerReturn | null = null
 
 async function killStartedPeer() {
   await startedPeer?.kill({ cleanSideEffects: true })
+  startedPeer = null
 }
 
 async function waitForGenesisCommitted(torii: Torii) {
@@ -193,7 +190,6 @@ async function waitForGenesisCommitted(torii: Torii) {
 // and now tests...
 
 beforeEach(async () => {
-  await killStartedPeer()
   await cleanConfiguration()
 
   // setup configs for test peer
@@ -207,8 +203,11 @@ beforeEach(async () => {
   await waitForGenesisCommitted(clientFactory().torii)
 })
 
-afterAll(async () => {
+afterEach(async () => {
   await killStartedPeer()
+})
+
+afterAll(async () => {
   await cleanConfiguration()
 })
 

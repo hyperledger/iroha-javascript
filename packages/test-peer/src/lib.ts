@@ -4,11 +4,9 @@ import execa from 'execa'
 import { $, fs } from 'zx'
 import { rmForce, saveDataAsJSON, waitUntilPeerIsHealthy } from './util'
 import readline from 'readline'
-import Debug from 'debug'
+import debug from './dbg'
 import { KnownBinaries, install, resolveBinaryPath } from '@iroha2/dev-iroha-bins'
 import makeDir from 'make-dir'
-
-const debug = Debug('@iroha2/test-peer')
 
 /**
  * Time within to check if peer is up and running
