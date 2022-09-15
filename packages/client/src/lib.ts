@@ -292,7 +292,13 @@ export class Torii implements ToriiApiHttp, ToriiApiWebSocket, ToriiTelemetry {
   }
 
   public async getHealth(): Promise<Result<null, string>> {
-    const response = await this.#fetch(this.#api + ENDPOINT_HEALTH)
+    let response: Response
+    try {
+      response = await this.#fetch(this.#api + ENDPOINT_HEALTH)
+    } catch (err) {
+      return Enum.variant('Err', `Network error: ${String(err)}`)
+    }
+
     ResponseError.throwIfStatusIsNot(response, 200)
 
     const text = await response.text()
