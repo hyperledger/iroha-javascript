@@ -1,4 +1,4 @@
-declare module 'json-bigint/lib/parse' {
+declare module 'json-bigint/lib/parse.js' {
   interface Options {
     useNativeBigInt?: boolean
   }

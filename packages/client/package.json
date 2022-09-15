@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/client",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "module": "dist/lib.mjs",
   "main": "dist/lib.cjs",
   "types": "dist/lib.d.ts",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@iroha2/crypto-core": "workspace:^0.1.1",
-    "@iroha2/data-model": "workspace:2.0.0",
+    "@iroha2/data-model": "workspace:2.0.2",
     "@types/ws": "^8.2.2",
     "debug": "^4.3.4",
     "emittery": "^0.10.1",

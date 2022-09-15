@@ -38,5 +38,5 @@ task('publish-all', async () => {
       .toList(),
   ].flat()
 
-  await $`pnpm ${filters} publish --no-git-checks`
+  await $`pnpm ${filters} publish`
 })

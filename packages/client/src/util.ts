@@ -1,7 +1,7 @@
 import { CloseEvent, IsomorphicWebSocketAdapter, SendData, Event as WsEvent } from './web-socket/types'
 import { Debugger } from 'debug'
 import Emittery from 'emittery'
-import JsonBigIntParseFactory from 'json-bigint/lib/parse'
+import JsonBigIntParseFactory from 'json-bigint/lib/parse.js'
 import { getCryptoAnyway } from './crypto-singleton'
 import { garbageScope } from './collect-garbage'
 

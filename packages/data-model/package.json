@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/data-model",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "module": "dist/lib.mjs",
   "main": "dist/lib.cjs",
   "types": "dist/lib.d.ts",
@@ -26,7 +26,7 @@
     "@scale-codec/definition-runtime": "^2.2.2"
   },
   "devDependencies": {
-    "@iroha2/data-model-schema": "workspace:2.0.0",
+    "@iroha2/data-model-schema": "workspace:2.0.2",
     "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
     "@scale-codec/definition-compiler": "^2.2.2",
     "@scale-codec/util": "^1.1.1",

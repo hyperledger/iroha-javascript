@@ -5,12 +5,12 @@
     "build": "pnpm jake build",
     "build:wasm": "pnpm jake build-wasm",
     "build:entries": "pnpm jake build-entries",
-    "build:entries:dts": "pnpm --parallel --filter \"@iroha2/crypto-target-*\" run dts",
+    "build:entries:dts": "pnpm --parallel --filter crypto-target-web --filter crypto-target-bundler run dts",
     "rollup-types": "rollup -c rollup.dts.config.js",
     "test": "pnpm --parallel --filter \"@iroha2/crypto-test-*\" run test"
   },
   "devDependencies": {
-    "@iroha2/crypto-target-web": "workspace:^0.3.0",
+    "@iroha2/crypto-target-web": "workspace:^0.4.0",
     "@types/jake": "^0.0.33",
     "chalk": "4.1.2",
     "consola": "^2.15.3",

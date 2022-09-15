@@ -8,6 +8,10 @@ export const CRYPTO_TARGETS = ['web', 'node', 'bundler'] as const
 
 export type CryptoTarget = typeof CRYPTO_TARGETS[number]
 
+export const JS_TRANSFORM_TARGETS = ['web', 'bundler'] as const
+
+export type JsTransformTarget = typeof CRYPTO_TARGETS[number]
+
 export const WASM_PACK_TARGETS = ['web', 'nodejs', 'bundler'] as const
 
 export type WasmPackTarget = typeof WASM_PACK_TARGETS[number]

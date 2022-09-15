@@ -1,5 +1,19 @@
 # @iroha2/data-model
 
+## 2.0.2
+
+### Patch Changes
+
+- fbe19e9: **docs**: update versions table in README, chores
+
+## 2.0.1
+
+### Patch Changes
+
+- ff266d3: Update `@scale-codec/*` version that uses correct `.mjs` ext for ESM bundles
+- Updated dependencies [ff266d3]
+  - @iroha2/i64-fixnum@0.4.1
+
 ## 2.0.0
 
 ### Minor Changes
