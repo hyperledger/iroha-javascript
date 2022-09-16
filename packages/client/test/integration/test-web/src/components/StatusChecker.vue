@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useIntervalFn } from '@vueuse/core'
-import { useTask } from '@vue-kakuyaku/core'
+import { useStaleState, useTask } from '@vue-kakuyaku/core'
 import { client } from '../client'
 
 const { state, run } = useTask(() => client.torii.getStatus(), { immediate: true })
+const stale = useStaleState(state)
 useIntervalFn(run, 1000)
 </script>
 
@@ -11,9 +12,9 @@ useIntervalFn(run, 1000)
   <div>
     <h3>Status</h3>
 
-    <ul v-if="state.fulfilled">
-      <li>Blocks: {{ state.fulfilled.value.blocks }}</li>
-      <li>Uptime (sec): {{ state.fulfilled.value.uptime.secs }}</li>
+    <ul v-if="stale.fulfilled">
+      <li>Blocks: {{ stale.fulfilled.value.blocks }}</li>
+      <li>Uptime (sec): {{ stale.fulfilled.value.uptime.secs }}</li>
     </ul>
   </div>
 </template>

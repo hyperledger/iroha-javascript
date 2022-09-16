@@ -11,9 +11,9 @@ const HOST = window.location.host
 const torii = new Torii({
   // proxified with vite
   apiURL: `http://${HOST}/torii/api`,
-  telemetryURL: `http://${window.location.host}/torii/telemetry`,
+  telemetryURL: `http://${HOST}/torii/telemetry`,
   ws: WS,
-  fetch,
+  fetch: fetch.bind(window),
 })
 
 const signer = new Signer(

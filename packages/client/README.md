@@ -63,15 +63,23 @@ For WebSocket, the client has two entrypoints: `@iroha2/client/web-socket/native
 1. Import fetch from `node-fetch` **or** `undici` packages:
 
    ```ts
-   import { fetch } from 'undici'
-   import fetch from 'node-fetch'
+   import nodeFetch from 'node-fetch'
+   import { fetch as undiciFetch } from 'undici'
    ```
 
 2. Inject `fetch` into Iroha Client:
 
    ```ts
-   new Client({ fetch })
+   new Torii({ fetch: nodeFetch as typeof fetch, ...rest })
    ```
+
+   In Browser:
+
+   ```ts
+   new Torii({ fetch: fetch.bind(window) })
+   ```
+
+   > **Note**: we make `fetch.bind(window)` to avoid `TypeError: "'fetch' called on an object that does not implement interface Window."`.
 
 ## Client Configuration
 
