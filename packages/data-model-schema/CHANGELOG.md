@@ -1,5 +1,11 @@
 # @iroha2/data-model-schema
 
+## 3.0.0
+
+### Patch Changes
+
+- 3b0db98: **chore**: bump `@scale-codec/*` version
+
 ## 2.0.2
 
 ## 2.0.1

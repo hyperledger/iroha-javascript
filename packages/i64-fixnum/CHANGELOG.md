@@ -1,5 +1,11 @@
 # @iroha2/i64-fixnum
 
+## 0.4.2
+
+### Patch Changes
+
+- 3b0db98: **chore**: bump `@scale-codec/*` version
+
 ## 0.4.1
 
 ### Patch Changes
