@@ -1,7 +1,7 @@
 import { crypto } from '@iroha2/crypto-target-node'
 import { KeyPair } from '@iroha2/crypto-core'
 
-// just some package for hex-bytes transform
+// the package for hex-bytes transform
 import { hexToBytes } from 'hada'
 
 function generateKeyPair(params: {
