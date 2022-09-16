@@ -7,18 +7,64 @@
 - 3b0db98: **refactor!**: split the library functionality into `Torii`, `Signer` and `Client` entities.
 
   ##### What is the change
-  
+
   Previously, the `Client` class did everything: constructed transaction payloads, signed and submitted them, submitted queries, and so on. Now some of this functionality is handled by other classes.
 
   `Torii` does everything related to HTTP/WebSocket communication with Iroha Peer. `Signer` makes signatures. `Client` only wraps `Torii` and `Signer` and combines them together to create convenient methods. Utilities (e.g. making payloads, signing them, wrapping into final containers) are exported from the library as separate functions.
 
   ##### Why the change
-  
+
   This change is based on a request to extend library functionality and make codebase more scalable. Separating crypto and transport functionality is a common practice for blockchain SDKs (e.g. take a look at [`ethers` project](https://docs.ethers.io/v5/)).
 
   ##### How to update your code
-  
+
   Look at `Torii`, `Signer` and `Client` type definitions. They are not very complex and you should adopt very quickly.
+
+  Example changes:
+
+  ```ts
+  import { Client } from '@iroha2/client'
+
+  const client = new Client({
+    torii: {
+      apiURL: 'http://127.0.0.1:8080',
+      telemetryURL: 'http://127.0.0.1:8081',
+    },
+    accountId,
+    keyPair,
+    fetch,
+    ws,
+  })
+
+  // replace with
+
+  import { Client, Torii, Signer } from '@iroha2/client'
+
+  const signer = new Signer(accountId, keyPair)
+
+  const torii = new Torii({
+    apiURL: 'http://127.0.0.1:8080',
+    telemetryURL: 'http://127.0.0.1:8081',
+    fetch,
+    ws,
+  })
+
+  const client = new Client({ torii, signer })
+  ```
+
+  ```ts
+  await client.submit(executable)
+  await client.request(queryBox)
+  await client.getHealth()
+  await client.listenForEvents({ filter })
+
+  // replace with
+
+  await client.submitExecutable(executable)
+  await client.requestWithQueryBox(queryBox)
+  await client.torii.getHealth()
+  await client.torii.listenForEvents({ filter })
+  ```
 
 ### Minor Changes
 
