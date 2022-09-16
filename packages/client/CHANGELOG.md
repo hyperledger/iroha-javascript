@@ -6,13 +6,19 @@
 
 - 3b0db98: **refactor!**: split the library functionality into `Torii`, `Signer` and `Client` entities.
 
-  **What the breaking change is**: previously, `Client` class did everything - constructed transactions payloads, signed them, submitted them and queries, etc. Now some functionality moved out from it.
+  ##### What is the change
+  
+  Previously, the `Client` class did everything: constructed transaction payloads, signed and submitted them, submitted queries, and so on. Now some of this functionality is handled by other classes.
 
-  `Torii` does everything related to HTTP/WebSocket communication with Iroha Peer. `Signer` makes signatures. `Client` just wraps them together for tiny convenient methods. Utilities, related to making payloads, signing them, wrapping into final containers etc are exported from the library as separate functions.
+  `Torii` does everything related to HTTP/WebSocket communication with Iroha Peer. `Signer` makes signatures. `Client` only wraps `Torii` and `Signer` and combines them together to create convenient methods. Utilities (e.g. making payloads, signing them, wrapping into final containers) are exported from the library as separate functions.
 
-  **Why the change was made**: there are request to extend library functionality, and this change was made to make codebase more scalable. Also, separating crypto functionality from transport stuff is a common practice for blockchain SDKs, e.g. take a look at [`ethers` project](https://docs.ethers.io/v5/).
+  ##### Why the change
+  
+  This change is based on a request to extend library functionality and make codebase more scalable. Separating crypto and transport functionality is a common practice for blockchain SDKs (e.g. take a look at [`ethers` project](https://docs.ethers.io/v5/)).
 
-  **How a consumer should update their code**: look at `Torii`, `Signer` and `Client` type definitions. They are not very complex and you should adopt very quickly.
+  ##### How to update your code
+  
+  Look at `Torii`, `Signer` and `Client` type definitions. They are not very complex and you should adopt very quickly.
 
 ### Minor Changes
 
