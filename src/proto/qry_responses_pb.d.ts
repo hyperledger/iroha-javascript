@@ -704,3 +704,79 @@ export namespace BlockQueryResponse {
   }
 }
 
+export class HealthcheckData extends jspb.Message {
+  hasMemoryConsumption(): boolean;
+  clearMemoryConsumption(): void;
+  getMemoryConsumption(): number;
+  setMemoryConsumption(value: number): void;
+
+  hasIsHealthy(): boolean;
+  clearIsHealthy(): void;
+  getIsHealthy(): boolean;
+  setIsHealthy(value: boolean): void;
+
+  hasIsSyncing(): boolean;
+  clearIsSyncing(): void;
+  getIsSyncing(): boolean;
+  setIsSyncing(value: boolean): void;
+
+  hasLastBlockHeight(): boolean;
+  clearLastBlockHeight(): void;
+  getLastBlockHeight(): number;
+  setLastBlockHeight(value: number): void;
+
+  hasLastBlockReject(): boolean;
+  clearLastBlockReject(): void;
+  getLastBlockReject(): number;
+  setLastBlockReject(value: number): void;
+
+  getOptMemoryConsumptionCase(): HealthcheckData.OptMemoryConsumptionCase;
+  getOptIsHealthyCase(): HealthcheckData.OptIsHealthyCase;
+  getOptIsSyncingCase(): HealthcheckData.OptIsSyncingCase;
+  getOptLastBlockHeightCase(): HealthcheckData.OptLastBlockHeightCase;
+  getOptLastBlockRejectCase(): HealthcheckData.OptLastBlockRejectCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): HealthcheckData.AsObject;
+  static toObject(includeInstance: boolean, msg: HealthcheckData): HealthcheckData.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: HealthcheckData, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): HealthcheckData;
+  static deserializeBinaryFromReader(message: HealthcheckData, reader: jspb.BinaryReader): HealthcheckData;
+}
+
+export namespace HealthcheckData {
+  export type AsObject = {
+    memoryConsumption: number,
+    isHealthy: boolean,
+    isSyncing: boolean,
+    lastBlockHeight: number,
+    lastBlockReject: number,
+  }
+
+  export enum OptMemoryConsumptionCase {
+    OPT_MEMORY_CONSUMPTION_NOT_SET = 0,
+    MEMORY_CONSUMPTION = 1,
+  }
+
+  export enum OptIsHealthyCase {
+    OPT_IS_HEALTHY_NOT_SET = 0,
+    IS_HEALTHY = 2,
+  }
+
+  export enum OptIsSyncingCase {
+    OPT_IS_SYNCING_NOT_SET = 0,
+    IS_SYNCING = 3,
+  }
+
+  export enum OptLastBlockHeightCase {
+    OPT_LAST_BLOCK_HEIGHT_NOT_SET = 0,
+    LAST_BLOCK_HEIGHT = 4,
+  }
+
+  export enum OptLastBlockRejectCase {
+    OPT_LAST_BLOCK_REJECT_NOT_SET = 0,
+    LAST_BLOCK_REJECT = 5,
+  }
+}
+

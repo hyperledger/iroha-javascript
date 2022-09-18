@@ -63,6 +63,7 @@ function addAssetQuantity (commandOptions, params) {
  * @param {Object} params
  * @property {String} params.address
  * @property {String} params.peerKey
+ * @property {boolean} params.syncingPeer
  * @link https://iroha.readthedocs.io/en/master/develop/api/commands.html#add-peer
  */
 function addPeer (commandOptions, params) {
@@ -72,7 +73,7 @@ function addPeer (commandOptions, params) {
       txHelper.emptyTransaction(),
       'addPeer',
       {
-        peer: validate(params, ['address', 'peerKey'])
+        peer: validate(params, ['address', 'peerKey', 'syncingPeer'])
       }
     )
   )

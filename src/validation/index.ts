@@ -41,7 +41,8 @@ const schema = {
   address: checks.toImplement,
   pageSize: checks.toImplement,
   firstTxHash: checks.toImplement,
-  height: checks.toImplement
+  height: checks.toImplement,
+  syncingPeer: checks.toImplement
 }
 
 const compare = (a, b) => a - b
