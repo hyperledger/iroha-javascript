@@ -39,6 +39,9 @@ export class Peer extends jspb.Message {
   getTlsCertificate(): string;
   setTlsCertificate(value: string): void;
 
+  getSyncingPeer(): boolean;
+  setSyncingPeer(value: boolean): void;
+
   getCertificateCase(): Peer.CertificateCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Peer.AsObject;
@@ -55,6 +58,7 @@ export namespace Peer {
     address: string,
     peerKey: string,
     tlsCertificate: string,
+    syncingPeer: boolean,
   }
 
   export enum CertificateCase {
