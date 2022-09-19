@@ -54,18 +54,22 @@
   const client = new Client({ torii, signer })
   ```
 
+  As for `Client` methods, they used to be called like this:
+
   ```ts
-  await client.submit(executable)
-  await client.request(queryBox)
-  await client.getHealth()
-  await client.listenForEvents({ filter })
+  client.submit(executable)
+  client.request(queryBox)
+  client.getHealth()
+  client.listenForEvents({ filter })
+  ```
 
-  // replace with
+  Now some methods are called directly via `Client` instance, while others are called via nested `Torii` instance:
 
-  await client.submitExecutable(executable)
-  await client.requestWithQueryBox(queryBox)
-  await client.torii.getHealth()
-  await client.torii.listenForEvents({ filter })
+  ```ts
+  client.submitExecutable(executable)
+  client.requestWithQueryBox(queryBox)
+  client.torii.getHealth()
+  client.torii.listenForEvents({ filter })
   ```
 
 ### Minor Changes
