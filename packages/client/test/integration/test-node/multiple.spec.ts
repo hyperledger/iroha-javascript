@@ -1,8 +1,9 @@
-import { afterAll, beforeEach, describe, expect, test } from 'vitest'
+/* eslint-disable max-params */
+import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
-import { Client, setCrypto } from '@iroha2/client'
+import { Client, Signer, Torii, setCrypto } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
-import { fetch as undiciFetch } from 'undici'
+import nodeFetch from 'node-fetch'
 import {
   Account,
   AccountId,
@@ -57,32 +58,45 @@ import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../config
 // for debugging convenience
 new ScaleLogger().mount()
 
-// preparing keys
+// #region Keys
+
 const multihash = crypto.createMultihashFromBytes(Uint8Array.from(hexToBytes(client_config.publicKey)))
 const publicKey = crypto.createPublicKeyFromMultihash(multihash)
 const privateKey = crypto.createPrivateKeyFromJsKey(client_config.privateKey)
 const keyPair = crypto.createKeyPairFromKeys(publicKey, privateKey)
 ;[publicKey, privateKey, multihash].forEach((x) => x.free())
 
-// preparing client
+// #endregion
+
+// #region Client
 
 setCrypto(crypto)
-const client = new Client({
-  torii: client_config.torii,
-  keyPair,
-  accountId: client_config.account as AccountId,
-  ws: WS,
-  fetch: undiciFetch as unknown as typeof fetch,
-})
+
+function clientFactory() {
+  const signer = new Signer(client_config.account as AccountId, keyPair)
+
+  const torii = new Torii({
+    ...client_config.torii,
+    ws: WS,
+    fetch: nodeFetch as typeof fetch,
+  })
+
+  const client = new Client({ torii, signer })
+
+  return { signer, torii, client }
+}
+
+// #endregion
 
 async function addAsset(
+  client: Client,
   definitionId: AssetDefinitionId,
   assetType: AssetValueType = Enum.variant('BigQuantity'),
   opts?: {
     mintable?: Mintable
   },
 ) {
-  await client.submit(
+  await client.submitExecutable(
     Executable(
       'Instructions',
       VecInstruction([
@@ -113,8 +127,8 @@ async function addAsset(
   )
 }
 
-async function addAccount(accountId: AccountId) {
-  await client.submit(
+async function addAccount(client: Client, accountId: AccountId) {
+  await client.submitExecutable(
     Executable(
       'Instructions',
       VecInstruction([
@@ -150,8 +164,8 @@ async function addAccount(accountId: AccountId) {
   )
 }
 
-async function submitMint(mint: MintBox) {
-  await client.submit(Executable('Instructions', VecInstruction([Instruction('Mint', mint)])))
+function mintIntoExecutable(mint: MintBox) {
+  return Executable('Instructions', VecInstruction([Instruction('Mint', mint)]))
 }
 
 async function pipelineStepDelay() {
@@ -162,11 +176,12 @@ let startedPeer: StartPeerReturn | null = null
 
 async function killStartedPeer() {
   await startedPeer?.kill({ cleanSideEffects: true })
+  startedPeer = null
 }
 
-async function waitForGenesisCommitted() {
+async function waitForGenesisCommitted(torii: Torii) {
   while (true) {
-    const { blocks } = await client.getStatus()
+    const { blocks } = await torii.getStatus()
     if (blocks >= 1) return
     await delay(250)
   }
@@ -175,7 +190,6 @@ async function waitForGenesisCommitted() {
 // and now tests...
 
 beforeEach(async () => {
-  await killStartedPeer()
   await cleanConfiguration()
 
   // setup configs for test peer
@@ -186,27 +200,34 @@ beforeEach(async () => {
 
   startedPeer = await startPeer({ toriiApiURL: client_config.torii.apiURL })
 
-  await waitForGenesisCommitted()
+  await waitForGenesisCommitted(clientFactory().torii)
+})
+
+afterEach(async () => {
+  await killStartedPeer()
 })
 
 afterAll(async () => {
-  await killStartedPeer()
   await cleanConfiguration()
 })
 
 // Actually it is already tested within `@iroha2/test-peer`
 test('Peer is healthy', async () => {
-  expect(await client.getHealth()).toEqual(Enum.variant('Ok', null) as Result<null, any>)
+  const { torii } = clientFactory()
+
+  expect(await torii.getHealth()).toEqual(Enum.variant('Ok', null) as Result<null, any>)
 })
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
+  const { client } = clientFactory()
+
   const normalAssetDefinitionId = AssetDefinitionId({
     name: 'xor',
     domain_id: DomainId({
       name: 'wonderland',
     }),
   })
-  await addAsset(normalAssetDefinitionId)
+  await addAsset(client, normalAssetDefinitionId)
 
   const tooLongAssetName = '0'.repeat(2 ** 14)
   const invalidAssetDefinitionId = AssetDefinitionId({
@@ -215,11 +236,11 @@ test('AddAsset instruction with name length more than limit is not committed', a
       name: 'wonderland',
     }),
   })
-  await addAsset(invalidAssetDefinitionId)
+  await addAsset(client, invalidAssetDefinitionId)
 
   await delay(PIPELINE_MS * 2)
 
-  const queryResult = await client.request(QueryBox('FindAllAssetsDefinitions', null))
+  const queryResult = await client.requestWithQueryBox(QueryBox('FindAllAssetsDefinitions', null))
 
   const existingDefinitions: AssetDefinitionId[] = queryResult
     .as('Ok')
@@ -231,6 +252,8 @@ test('AddAsset instruction with name length more than limit is not committed', a
 })
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
+  const { client } = clientFactory()
+
   const normal = AccountId({
     name: 'bob',
     domain_id: DomainId({
@@ -244,10 +267,10 @@ test('AddAccount instruction with name length more than limit is not committed',
     }),
   })
 
-  await Promise.all([normal, incorrect].map((x) => addAccount(x)))
+  await Promise.all([normal, incorrect].map((x) => addAccount(client, x)))
   await delay(PIPELINE_MS * 2)
 
-  const queryResult = await client.request(QueryBox('FindAllAccounts', null))
+  const queryResult = await client.requestWithQueryBox(QueryBox('FindAllAccounts', null))
 
   const existingAccounts: AccountId[] = queryResult
     .as('Ok')
@@ -259,6 +282,8 @@ test('AddAccount instruction with name length more than limit is not committed',
 })
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and quering for it later', async () => {
+  const { client } = clientFactory()
+
   // Creating asset by definition
   const ASSET_DEFINITION_ID = AssetDefinitionId({
     name: 'xor',
@@ -266,37 +291,39 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
       name: 'wonderland',
     }),
   })
-  await addAsset(ASSET_DEFINITION_ID, AssetValueType('Fixed'), { mintable: Mintable('Infinitely') })
+  await addAsset(client, ASSET_DEFINITION_ID, AssetValueType('Fixed'), { mintable: Mintable('Infinitely') })
   await pipelineStepDelay()
 
   // Adding mint
   const DECIMAL = '512.5881'
-  await submitMint(
-    MintBox({
-      object: EvaluatesToValue({
-        expression: Expression('Raw', Value('Fixed', DECIMAL)),
-      }),
-      destination_id: EvaluatesToRegistrableBox({
-        expression: Expression(
-          'Raw',
-          Value(
-            'Id',
-            IdBox(
-              'AssetId',
-              AssetId({
-                account_id: client_config.account as AccountId,
-                definition_id: ASSET_DEFINITION_ID,
-              }),
+  await client.submitExecutable(
+    mintIntoExecutable(
+      MintBox({
+        object: EvaluatesToValue({
+          expression: Expression('Raw', Value('Fixed', DECIMAL)),
+        }),
+        destination_id: EvaluatesToRegistrableBox({
+          expression: Expression(
+            'Raw',
+            Value(
+              'Id',
+              IdBox(
+                'AssetId',
+                AssetId({
+                  account_id: client_config.account as AccountId,
+                  definition_id: ASSET_DEFINITION_ID,
+                }),
+              ),
             ),
           ),
-        ),
+        }),
       }),
-    }),
+    ),
   )
   await pipelineStepDelay()
 
   // Checking added asset via query
-  const result = await client.request(
+  const result = await client.requestWithQueryBox(
     QueryBox(
       'FindAssetsByAccountId',
       FindAssetsByAccountId({
@@ -318,6 +345,8 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and quering fo
 })
 
 test('Registering domain', async () => {
+  const { client } = clientFactory()
+
   async function registerDomain(domainName: string) {
     const registerBox = RegisterBox({
       object: EvaluatesToRegistrableBox({
@@ -340,11 +369,11 @@ test('Registering domain', async () => {
       }),
     })
 
-    await client.submit(Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])))
+    await client.submitExecutable(Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])))
   }
 
   async function ensureDomainExistence(domainName: string) {
-    const result = await client.request(QueryBox('FindAllDomains', null))
+    const result = await client.requestWithQueryBox(QueryBox('FindAllDomains', null))
 
     const domain = result
       .as('Ok')
@@ -361,7 +390,9 @@ test('Registering domain', async () => {
 })
 
 test('When querying for unexisting domain, returns FindError', async () => {
-  const result = await client.request(
+  const { client } = clientFactory()
+
+  const result = await client.requestWithQueryBox(
     QueryBox(
       'FindAssetById',
       FindAssetById({
@@ -375,15 +406,11 @@ test('When querying for unexisting domain, returns FindError', async () => {
                 AssetId({
                   account_id: AccountId({
                     name: 'alice',
-                    domain_id: DomainId({
-                      name: 'wonderland',
-                    }),
+                    domain_id: DomainId({ name: 'wonderland' }),
                   }),
                   definition_id: AccountId({
                     name: 'XOR',
-                    domain_id: DomainId({
-                      name: 'wonderland',
-                    }),
+                    domain_id: DomainId({ name: 'wonderland' }),
                   }),
                 }),
               ),
@@ -400,6 +427,8 @@ test('When querying for unexisting domain, returns FindError', async () => {
 
 describe('Events API', () => {
   test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
+    const { torii, client } = clientFactory()
+
     const filter = FilterBox(
       'Pipeline',
       PipelineEventFilter({
@@ -411,7 +440,7 @@ describe('Events API', () => {
 
     // Listening
 
-    const { ee, stop } = await client.listenForEvents({ filter })
+    const { ee, stop } = await torii.listenForEvents({ filter })
 
     const committedPromise = new Promise<void>((resolve, reject) => {
       ee.on('event', (event) => {
@@ -429,6 +458,7 @@ describe('Events API', () => {
 
     // Triggering transaction
     await addAsset(
+      client,
       AssetDefinitionId({
         name: 'xor',
         domain_id: DomainId({
@@ -444,23 +474,29 @@ describe('Events API', () => {
     })
 
     // unnecessary teardown
-    stop()
+    await stop()
   })
 })
 
 describe('Setting configuration', () => {
   test('When setting correct peer configuration, there is no error', async () => {
-    await client.setPeerConfig({ LogLevel: 'TRACE' })
+    const { torii } = clientFactory()
+
+    await torii.setPeerConfig({ LogLevel: 'TRACE' })
   })
 
   test('When setting incorrect peer log level, there is an error', async () => {
-    await expect(client.setPeerConfig({ LogLevel: 'TR' as any })).rejects.toThrow()
+    const { torii } = clientFactory()
+
+    await expect(torii.setPeerConfig({ LogLevel: 'TR' as any })).rejects.toThrow()
   })
 })
 
 describe('Blocks Stream API', () => {
   test('When commiting 3 blocks sequentially, nothing fails', async () => {
-    const stream = await client.listenForBlocksStream({ height: 0n })
+    const { torii, client } = clientFactory()
+
+    const stream = await torii.listenForBlocksStream({ height: 0n })
 
     for (const assetName of ['xor', 'val', 'vat']) {
       // listening for some block
@@ -468,6 +504,7 @@ describe('Blocks Stream API', () => {
 
       // triggering block creation
       await addAsset(
+        client,
         AssetDefinitionId({
           name: assetName,
           domain_id: DomainId({
@@ -480,13 +517,15 @@ describe('Blocks Stream API', () => {
       await blockPromise
     }
 
-    stream.stop()
+    await stream.stop()
   })
 })
 
 describe('Metrics', () => {
   test('When getting metrics, everything is OK', async () => {
-    const data = await client.getMetrics()
+    const { torii } = clientFactory()
+
+    const data = await torii.getMetrics()
 
     // just some line from Prometheus metrics
     expect(data).toMatch('block_height 1')
@@ -494,7 +533,9 @@ describe('Metrics', () => {
 })
 
 test('status - peer uptime content check, not only type', async () => {
-  const status = await client.getStatus()
+  const { torii } = clientFactory()
+
+  const status = await torii.getStatus()
 
   expect(status).toEqual(
     expect.objectContaining({

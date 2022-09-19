@@ -1,5 +1,102 @@
 # @iroha2/client
 
+## 3.0.0
+
+### Major Changes
+
+- 3b0db98: **refactor!**: split the library functionality into `Torii`, `Signer` and `Client` entities.
+
+  ##### What is the change
+
+  Previously, the `Client` class did everything: constructed transaction payloads, signed and submitted them, submitted queries, and so on. Now some of this functionality is handled by other classes.
+
+  `Torii` does everything related to HTTP/WebSocket communication with Iroha Peer. `Signer` makes signatures. `Client` only wraps `Torii` and `Signer` and combines them together to create convenient methods. Utilities (e.g. making payloads, signing them, wrapping into final containers) are exported from the library as separate functions.
+
+  ##### Why the change
+
+  This change is based on a request to extend library functionality and make codebase more scalable. Separating crypto and transport functionality is a common practice for blockchain SDKs (e.g. take a look at [`ethers` project](https://docs.ethers.io/v5/)).
+
+  ##### How to update your code
+
+  The changes you need to make to the code are rather straightforward. Here we provide a couple of examples for you to compare the code before and after this breaking change. You can refer to `Torii`, `Signer` and `Client` type definitions for details. 
+
+  `Client` used to be initialized like this:
+
+  ```ts
+  import { Client } from '@iroha2/client'
+
+  const client = new Client({
+    torii: {
+      apiURL: 'http://127.0.0.1:8080',
+      telemetryURL: 'http://127.0.0.1:8081',
+    },
+    accountId,
+    keyPair,
+    fetch,
+    ws,
+  })
+  ```
+
+  Now you need to initialize `Signer` and `Torii` separately before `Client` initialization:
+
+  ```ts
+  import { Client, Torii, Signer } from '@iroha2/client'
+
+  const signer = new Signer(accountId, keyPair)
+
+  const torii = new Torii({
+    apiURL: 'http://127.0.0.1:8080',
+    telemetryURL: 'http://127.0.0.1:8081',
+    fetch,
+    ws,
+  })
+
+  const client = new Client({ torii, signer })
+  ```
+
+  As for `Client` methods, they used to be called like this:
+
+  ```ts
+  client.submit(executable)
+  client.request(queryBox)
+  client.getHealth()
+  client.listenForEvents({ filter })
+  ```
+
+  Now some methods are called directly via `Client` instance, while others are called via nested `Torii` instance:
+
+  ```ts
+  client.submitExecutable(executable)
+  client.requestWithQueryBox(queryBox)
+  client.torii.getHealth()
+  client.torii.listenForEvents({ filter })
+  ```
+
+### Minor Changes
+
+- 3b0db98: **feat**: export utility functions to deal with Transaction/Query payload building, hashing and signing.
+
+  For transactions:
+
+  - `makeTransactionPayload()`
+  - `computeTransactionHash()`
+  - `signTransaction()`
+  - `makeSignedTransaction()`
+  - `executableIntoSignedTransaction()`
+
+  For queries:
+
+  - `makeQueryPayload()`
+  - `computeQueryHash()`
+  - `signQuery()`
+  - `makeSignedQuery()`
+  - `queryBoxIntoSignedQuery()`
+
+### Patch Changes
+
+- Updated dependencies [3b0db98]
+  - @iroha2/data-model@3.0.0
+
 ## 2.0.2
 
 ### Patch Changes

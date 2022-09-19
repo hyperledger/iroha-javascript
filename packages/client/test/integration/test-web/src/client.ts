@@ -1,4 +1,4 @@
-import { Client } from '@iroha2/client'
+import { Client, Signer, Torii } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/native'
 import { crypto } from './crypto'
 import { KeyPair } from '@iroha2/crypto-core'
@@ -6,19 +6,25 @@ import { hexToBytes } from 'hada'
 import { client_config } from '../../config'
 import { AccountId } from '@iroha2/data-model'
 
-export const client = new Client({
-  torii: {
-    // proxified with vite
-    apiURL: `http://${window.location.host}/torii/api`,
-    telemetryURL: `http://${window.location.host}/torii/telemetry`,
-  },
-  accountId: client_config.account as AccountId,
-  keyPair: generateKeyPair({
+const HOST = window.location.host
+
+const torii = new Torii({
+  // proxified with vite
+  apiURL: `http://${HOST}/torii/api`,
+  telemetryURL: `http://${HOST}/torii/telemetry`,
+  ws: WS,
+  fetch: fetch.bind(window),
+})
+
+const signer = new Signer(
+  client_config.account as AccountId,
+  generateKeyPair({
     publicKeyMultihash: client_config.publicKey,
     privateKey: client_config.privateKey,
   }),
-  ws: WS,
-})
+)
+
+export const client = new Client({ torii, signer })
 
 function generateKeyPair(params: {
   publicKeyMultihash: string

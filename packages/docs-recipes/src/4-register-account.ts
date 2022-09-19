@@ -21,7 +21,7 @@ const accountId = AccountId({
   }),
 })
 
-const key = PublicKey({
+const pubKey = PublicKey({
   payload: new Uint8Array([
     /* put bytes here */
   ]),
@@ -40,7 +40,7 @@ const registerAccountInstruction = Instruction(
             'NewAccount',
             NewAccount({
               id: accountId,
-              signatories: VecPublicKey([key]),
+              signatories: VecPublicKey([pubKey]),
               metadata: Metadata({ map: MapNameValue(new Map()) }),
             }),
           ),

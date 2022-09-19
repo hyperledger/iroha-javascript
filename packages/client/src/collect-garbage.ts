@@ -2,46 +2,19 @@ export interface Freeable {
   free: () => void
 }
 
-export interface GarbageCollectorScope {
-  run: (cb: () => void) => void
-  free: () => void
-}
+export type CollectFn = <T extends Freeable>(whatever: T) => T
 
-interface State {
-  garbage: Freeable[]
-}
+export function garbageScope<T>(fn: (collect: CollectFn) => T): T {
+  const garbage: Freeable[] = []
 
-let currentScope: null | State = null
-
-export function createScope(): GarbageCollectorScope {
-  const state: State = {
-    garbage: [],
+  try {
+    return fn((x) => {
+      garbage.push(x)
+      return x
+    })
+  } finally {
+    for (const x of garbage) {
+      x.free()
+    }
   }
-
-  return {
-    run(cb) {
-      if (currentScope) throw new Error('Already in the scope')
-
-      try {
-        currentScope = state
-        cb()
-      } finally {
-        currentScope = null
-      }
-    },
-    free() {
-      for (const x of state.garbage) {
-        x.free()
-      }
-      state.garbage = []
-    },
-  }
-}
-
-export function collect<T extends Freeable>(some: T): T {
-  if (!currentScope) throw new Error('Used out of a scope')
-
-  currentScope.garbage.push(some)
-
-  return some
 }

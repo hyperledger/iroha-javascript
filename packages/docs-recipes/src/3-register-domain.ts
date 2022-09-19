@@ -43,7 +43,7 @@ async function registerDomain(domainName: string) {
     }),
   })
 
-  await client.submit(
+  await client.submitExecutable(
     Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
   )
 }
@@ -55,14 +55,20 @@ await registerDomain('test')
 // 3.
 
 async function ensureDomainExistence(domainName: string) {
-  const result = await client.request(QueryBox('FindAllDomains', null))
+  // Query all domains
+  const result = await client.requestWithQueryBox(QueryBox('FindAllDomains', null))
 
+  // Display the request status
+  console.log('%o', result)
+
+  // Obtain the domain
   const domain = result
     .as('Ok')
     .result.as('Vec')
     .map((x) => x.as('Identifiable').as('Domain'))
     .find((x) => x.id.name === domainName)
 
+  // Throw an error if the domain is unavailable
   if (!domain) throw new Error('Not found')
 }
 

@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     include: ['*.spec.ts'],
     watch: false,
-    reporters: 'dot',
+    reporters: 'tap-flat',
+    threads: false,
   },
 })

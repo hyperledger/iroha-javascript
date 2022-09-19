@@ -25,7 +25,7 @@ const currentListener = shallowRef<null | SetupEventsReturn>(null)
 const isListening = computed(() => !!currentListener.value)
 
 async function startListening() {
-  currentListener.value = await client.listenForEvents({
+  currentListener.value = await client.torii.listenForEvents({
     filter: FilterBox(
       'Pipeline',
       PipelineEventFilter({

@@ -16,48 +16,42 @@ import {
 } from '@iroha2/data-model'
 import { ref } from 'vue'
 import { client } from '../client'
+import { useTask } from '@vue-kakuyaku/core'
 
 const domainName = ref('')
-const isPending = ref(false)
 
-async function register() {
-  try {
-    isPending.value = true
-
-    await client.submit(
-      Executable(
-        'Instructions',
-        VecInstruction([
-          Instruction(
-            'Register',
-            RegisterBox({
-              object: EvaluatesToRegistrableBox({
-                expression: Expression(
-                  'Raw',
-                  Value(
-                    'Identifiable',
-                    IdentifiableBox(
-                      'NewDomain',
-                      NewDomain({
-                        id: DomainId({
-                          name: domainName.value,
-                        }),
-                        metadata: Metadata({ map: MapNameValue(new Map()) }),
-                        logo: OptionIpfsPath('None'),
+const { state, run: registerDomain } = useTask(async () => {
+  await client.submitExecutable(
+    Executable(
+      'Instructions',
+      VecInstruction([
+        Instruction(
+          'Register',
+          RegisterBox({
+            object: EvaluatesToRegistrableBox({
+              expression: Expression(
+                'Raw',
+                Value(
+                  'Identifiable',
+                  IdentifiableBox(
+                    'NewDomain',
+                    NewDomain({
+                      id: DomainId({
+                        name: domainName.value,
                       }),
-                    ),
+                      metadata: Metadata({ map: MapNameValue(new Map()) }),
+                      logo: OptionIpfsPath('None'),
+                    }),
                   ),
                 ),
-              }),
+              ),
             }),
-          ),
-        ]),
-      ),
-    )
-  } finally {
-    isPending.value = false
-  }
-}
+          }),
+        ),
+      ]),
+    ),
+  )
+})
 </script>
 
 <template>
@@ -70,8 +64,8 @@ async function register() {
       >
     </p>
     <p>
-      <button @click="register">
-        Register domain{{ isPending ? '...' : '' }}
+      <button @click="registerDomain()">
+        Register domain{{ state.pending ? '...' : '' }}
       </button>
     </p>
   </div>

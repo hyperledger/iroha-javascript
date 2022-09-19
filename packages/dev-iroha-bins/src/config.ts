@@ -6,7 +6,7 @@ const config: Config = {
 
     // ! IMPORTANT ! should be similar with the ref at packages/data-model-rust-samples
     // v2.0.0-pre-rc.6
-    revision: '75da907f66d5270f407a50e06bc76cec41d3d409',
+    revision: '9bfdb39aaaa2490a82a17ebc255d3557d3ad38da',
   },
   binaries: {
     [KnownBinaries.Kagami]: 'kagami',

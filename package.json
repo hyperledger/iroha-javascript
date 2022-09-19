@@ -10,7 +10,6 @@
     "clean": "pnpm jake clean",
     "build": "pnpm jake build",
     "build:tsc": "pnpm --parallel --filter !monorepo --filter data-model --filter client --filter i64-fixnum run build:tsc",
-    "build:isomorphic-ws-and-fetch": "pnpm --filter \"@iroha2/client-isomorphic-*\" run build",
     "build:bundle": "pnpm jake build-bundle",
     "build:rollup": "rollup -c",
     "publish-all": "pnpm jake publish-all",
@@ -23,8 +22,8 @@
     "@iroha2/test-peer": "workspace:^0.0.1",
     "@rollup/plugin-replace": "^4.0.0",
     "@types/jake": "^0.0.33",
-    "@typescript-eslint/eslint-plugin": "^5.32.0",
-    "@typescript-eslint/parser": "^5.32.0",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
     "consola": "^2.15.3",
     "debug": "^4.3.4",
     "del": "^6.0.0",
@@ -40,10 +39,10 @@
     "prettier-eslint-cli": "^6.0.1",
     "rollup": "^2.70.1",
     "rollup-plugin-dts": "^4.2.0",
-    "tsx": "^3.5.0",
-    "type-fest": "^2.18.0",
-    "typescript": "^4.6.4",
-    "vitest": "^0.20.3",
+    "tsx": "^3.9.0",
+    "type-fest": "^2.19.0",
+    "typescript": "^4.8.3",
+    "vitest": "^0.23.2",
     "zx": "^4.3.0"
   }
 }
