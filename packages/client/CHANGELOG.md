@@ -20,7 +20,7 @@
 
   Look at `Torii`, `Signer` and `Client` type definitions. They are not very complex and you should adopt very quickly.
 
-  Example changes:
+  `Client` used to be initialized like this:
 
   ```ts
   import { Client } from '@iroha2/client'
@@ -35,9 +35,11 @@
     fetch,
     ws,
   })
+  ```
 
-  // replace with
+  Now you need to initialize `Signer` and `Torii` separately before `Client` initialization:
 
+  ```ts
   import { Client, Torii, Signer } from '@iroha2/client'
 
   const signer = new Signer(accountId, keyPair)
