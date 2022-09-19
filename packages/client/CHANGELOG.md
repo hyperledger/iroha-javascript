@@ -18,7 +18,7 @@
 
   ##### How to update your code
 
-  Look at `Torii`, `Signer` and `Client` type definitions. They are not very complex and you should adopt very quickly.
+  The changes you need to make to the code are rather straightforward. Here we provide a couple of examples for you to compare the code before and after this breaking change. You can refer to `Torii`, `Signer` and `Client` type definitions for details. 
 
   `Client` used to be initialized like this:
 
