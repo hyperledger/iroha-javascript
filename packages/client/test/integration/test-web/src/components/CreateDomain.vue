@@ -15,13 +15,14 @@ import {
   VecInstruction,
 } from '@iroha2/data-model'
 import { ref } from 'vue'
-import { client } from '../client'
+import { client, toriiPre } from '../client'
 import { useTask } from '@vue-kakuyaku/core'
 
 const domainName = ref('')
 
 const { state, run: registerDomain } = useTask(async () => {
   await client.submitExecutable(
+    toriiPre,
     Executable(
       'Instructions',
       VecInstruction([

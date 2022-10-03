@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SetupEventsReturn } from '@iroha2/client'
+import { SetupEventsReturn, Torii } from '@iroha2/client'
 import {
   FilterBox,
   OptionHash,
@@ -11,7 +11,7 @@ import {
 } from '@iroha2/data-model'
 import { computed, onBeforeUnmount, shallowReactive, shallowRef } from 'vue'
 import { bytesToHex } from 'hada'
-import { client } from '../client'
+import { toriiPre } from '../client'
 
 interface EventData {
   hash: string
@@ -25,7 +25,7 @@ const currentListener = shallowRef<null | SetupEventsReturn>(null)
 const isListening = computed(() => !!currentListener.value)
 
 async function startListening() {
-  currentListener.value = await client.torii.listenForEvents({
+  currentListener.value = await Torii.listenForEvents(toriiPre, {
     filter: FilterBox(
       'Pipeline',
       PipelineEventFilter({

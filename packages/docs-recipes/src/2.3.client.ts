@@ -1,7 +1,6 @@
-import { Client, Signer, Torii } from '@iroha2/client'
+import { Client, Signer } from '@iroha2/client'
 
 // --snip--
-declare const torii: Torii
 declare const signer: Signer
 
-const client = new Client({ torii, signer })
+const client = new Client({ signer })

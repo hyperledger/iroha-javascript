@@ -17,13 +17,7 @@ export async function waitUntilPeerIsHealthy(
   checkInterval: number,
   checkTimeout: number,
 ): Promise<void> {
-  const torii = new Torii({
-    apiURL,
-    fetch: nodeFetch as typeof fetch,
-    // FIXME
-    telemetryURL: null as any,
-    ws: null as any,
-  })
+  const toriiPre = { apiURL, fetch: nodeFetch as typeof fetch }
 
   let now = Date.now()
   const endAt = now + checkTimeout
@@ -32,7 +26,7 @@ export async function waitUntilPeerIsHealthy(
     now = Date.now()
     if (now > endAt) throw new Error(`Peer is still not alive even after ${checkTimeout}ms`)
 
-    const health = await torii.getHealth()
+    const health = await Torii.getHealth(toriiPre)
     if (health.is('Ok')) return
     debug('not yet healthy')
 

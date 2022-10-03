@@ -65,26 +65,22 @@ export interface PeerStatus {
 }
 
 export class Signer {
-  #kp: KeyPair
-  #accountId: AccountId
+  public readonly keyPair: KeyPair
+  public readonly accountId: AccountId
 
   public constructor(accountId: AccountId, keyPair: KeyPair) {
-    this.#accountId = accountId
-    this.#kp = keyPair
-  }
-
-  public get accountId(): AccountId {
-    return this.#accountId
+    this.accountId = accountId
+    this.keyPair = keyPair
   }
 
   public sign(payload: Uint8Array): Signature {
     const { createSignature } = getCryptoAnyway()
 
     return garbageScope((collect) => {
-      const signature = collect(createSignature(this.#kp, payload))
+      const signature = collect(createSignature(this.keyPair, payload))
 
       // Should it be collected?
-      const pubKey = this.#kp.publicKey()
+      const pubKey = this.keyPair.publicKey()
 
       return Signature({
         public_key: PublicKey({
@@ -234,62 +230,78 @@ export function queryBoxIntoSignedQuery(params: {
 
 // #region TORII
 
-export interface ToriiApiHttp {
-  submit: (tx: VersionedSignedTransaction) => Promise<void>
-  request: (query: VersionedSignedQueryRequest) => Promise<Result<PaginatedQueryResult, QueryError>>
-  getHealth: () => Promise<Result<null, string>>
-  setPeerConfig: (params: SetPeerConfigParams) => Promise<void>
-}
-
-export interface ToriiApiWebSocket {
-  listenForEvents: (params: Pick<SetupEventsParams, 'filter'>) => Promise<SetupEventsReturn>
-  listenForBlocksStream: (params: Pick<SetupBlocksStreamParams, 'height'>) => Promise<SetupBlocksStreamReturn>
-}
-
-export interface ToriiTelemetry {
-  getStatus: () => Promise<PeerStatus>
-  getMetrics: () => Promise<string>
-}
-
-export interface CreateToriiProps {
+export interface ToriiRequirementsPartUrlApi {
   apiURL: string
+}
+
+export interface ToriiRequirementsPartUrlTelemetry {
   telemetryURL: string
+}
+
+export interface ToriiRequirementsPartHttp {
   fetch: Fetch
+}
+
+export interface ToriiRequirementsPartWebSocket {
   ws: IsomorphicWebSocketAdapter
 }
 
+export type ToriiRequirementsForApiHttp = ToriiRequirementsPartUrlApi & ToriiRequirementsPartHttp
+
+export type ToriiRequirementsForApiWebSocket = ToriiRequirementsPartUrlApi & ToriiRequirementsPartWebSocket
+
+export type ToriiRequirementsForTelemetry = ToriiRequirementsPartUrlTelemetry & ToriiRequirementsPartHttp
+
 export type ToriiQueryResult = Result<PaginatedQueryResult, QueryError>
 
-export class Torii implements ToriiApiHttp, ToriiApiWebSocket, ToriiTelemetry {
-  #api: string
-  #telemetry: string
-  #fetch: Fetch
-  #ws: IsomorphicWebSocketAdapter
+export interface ToriiApiHttp {
+  submit: (prerequisites: ToriiRequirementsForApiHttp, tx: VersionedSignedTransaction) => Promise<void>
+  request: (
+    prerequisites: ToriiRequirementsForApiHttp,
+    query: VersionedSignedQueryRequest,
+  ) => Promise<Result<PaginatedQueryResult, QueryError>>
+  getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<Result<null, string>>
+  setPeerConfig: (prerequisites: ToriiRequirementsForApiHttp, params: SetPeerConfigParams) => Promise<void>
+}
 
-  public constructor(props: CreateToriiProps) {
-    this.#api = props.apiURL
-    this.#telemetry = props.telemetryURL
-    this.#fetch = props.fetch
-    this.#ws = props.ws
-  }
+export interface ToriiApiWebSocket {
+  listenForEvents: (
+    prerequisites: ToriiRequirementsForApiWebSocket,
+    params: Pick<SetupEventsParams, 'filter'>,
+  ) => Promise<SetupEventsReturn>
+  listenForBlocksStream: (
+    prerequisites: ToriiRequirementsForApiWebSocket,
+    params: Pick<SetupBlocksStreamParams, 'height'>,
+  ) => Promise<SetupBlocksStreamReturn>
+}
 
-  public async submit(tx: VersionedSignedTransaction): Promise<void> {
+export interface ToriiTelemetry {
+  getStatus: (prerequisites: ToriiRequirementsForTelemetry) => Promise<PeerStatus>
+  getMetrics: (prerequisites: ToriiRequirementsForTelemetry) => Promise<string>
+}
+
+export type ToriiOmnibus = ToriiApiHttp & ToriiApiWebSocket & ToriiTelemetry
+
+export const Torii: ToriiOmnibus = {
+  async submit(pre, tx) {
     const body = VersionedSignedTransaction.toBuffer(tx)
 
-    const response = await this.#fetch(this.#api + ENDPOINT_TRANSACTION, {
+    const response = await pre.fetch(pre.apiURL + ENDPOINT_TRANSACTION, {
       body,
       method: 'POST',
     })
 
     ResponseError.throwIfStatusIsNot(response, 200)
-  }
+  },
 
-  public async request(query: VersionedSignedQueryRequest): Promise<ToriiQueryResult> {
+  async request(pre, query) {
     const queryBytes = VersionedSignedQueryRequest.toBuffer(query)
-    const response = await this.#fetch(this.#api + ENDPOINT_QUERY, {
-      method: 'POST',
-      body: queryBytes!,
-    }).then()
+    const response = await pre
+      .fetch(pre.apiURL + ENDPOINT_QUERY, {
+        method: 'POST',
+        body: queryBytes!,
+      })
+      .then()
 
     const bytes = new Uint8Array(await response.arrayBuffer())
 
@@ -302,12 +314,12 @@ export class Torii implements ToriiApiHttp, ToriiApiWebSocket, ToriiTelemetry {
       const error = QueryError.fromBuffer(bytes)
       return Enum.variant<ToriiQueryResult>('Err', error)
     }
-  }
+  },
 
-  public async getHealth(): Promise<Result<null, string>> {
+  async getHealth(pre) {
     let response: Response
     try {
-      response = await this.#fetch(this.#api + ENDPOINT_HEALTH)
+      response = await pre.fetch(pre.apiURL + ENDPOINT_HEALTH)
     } catch (err) {
       return Enum.variant('Err', `Network error: ${String(err)}`)
     }
@@ -320,40 +332,39 @@ export class Torii implements ToriiApiHttp, ToriiApiWebSocket, ToriiTelemetry {
     }
 
     return Enum.variant('Ok', null)
-  }
+  },
 
-  public async listenForEvents(params: Pick<SetupEventsParams, 'filter'>): Promise<SetupEventsReturn> {
+  async listenForEvents(pre, params: Pick<SetupEventsParams, 'filter'>) {
     return setupEvents({
       filter: params.filter,
-      toriiApiURL: this.#api,
-      adapter: this.#ws,
+      toriiApiURL: pre.apiURL,
+      adapter: pre.ws,
     })
-  }
+  },
 
-  public async listenForBlocksStream(
-    params: Pick<SetupBlocksStreamParams, 'height'>,
-  ): Promise<SetupBlocksStreamReturn> {
+  async listenForBlocksStream(pre, params: Pick<SetupBlocksStreamParams, 'height'>) {
     return setupBlocksStream({
       height: params.height,
-      toriiApiURL: this.#api,
-      adapter: this.#ws,
+      toriiApiURL: pre.apiURL,
+      adapter: pre.ws,
     })
-  }
-  public async getStatus(): Promise<PeerStatus> {
-    const response = await this.#fetch(this.#telemetry + ENDPOINT_STATUS)
+  },
+
+  async getStatus(pre): Promise<PeerStatus> {
+    const response = await pre.fetch(pre.telemetryURL + ENDPOINT_STATUS)
     ResponseError.throwIfStatusIsNot(response, 200)
     return response.text().then(parseJsonWithBigInts)
-  }
+  },
 
-  public async getMetrics(): Promise<string> {
-    return this.#fetch(this.#telemetry + ENDPOINT_METRICS).then((response) => {
+  async getMetrics(pre) {
+    return pre.fetch(pre.telemetryURL + ENDPOINT_METRICS).then((response) => {
       ResponseError.throwIfStatusIsNot(response, 200)
       return response.text()
     })
-  }
+  },
 
-  public async setPeerConfig(params: SetPeerConfigParams): Promise<void> {
-    const response = await this.#fetch(this.#api + ENDPOINT_CONFIGURATION, {
+  async setPeerConfig(pre, params: SetPeerConfigParams) {
+    const response = await pre.fetch(pre.apiURL + ENDPOINT_CONFIGURATION, {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
@@ -361,7 +372,7 @@ export class Torii implements ToriiApiHttp, ToriiApiWebSocket, ToriiTelemetry {
       },
     })
     ResponseError.throwIfStatusIsNot(response, 200)
-  }
+  },
 }
 
 export class ResponseError extends Error {
@@ -379,21 +390,18 @@ export class ResponseError extends Error {
 // #region Client
 
 export class Client {
-  public readonly torii: Torii
-
   public readonly signer: Signer
 
-  public constructor(params: { torii: Torii; signer: Signer }) {
+  public constructor(params: { signer: Signer }) {
     this.signer = params.signer
-    this.torii = params.torii
   }
 
-  public async submitExecutable(executable: Executable) {
-    return this.torii.submit(executableIntoSignedTransaction({ executable, signer: this.signer }))
+  public async submitExecutable(pre: ToriiRequirementsForApiHttp, executable: Executable) {
+    return Torii.submit(pre, executableIntoSignedTransaction({ executable, signer: this.signer }))
   }
 
-  public async requestWithQueryBox(query: QueryBox) {
-    return this.torii.request(queryBoxIntoSignedQuery({ query, signer: this.signer }))
+  public async requestWithQueryBox(pre: ToriiRequirementsForApiHttp, query: QueryBox) {
+    return Torii.request(pre, queryBoxIntoSignedQuery({ query, signer: this.signer }))
   }
 }
 

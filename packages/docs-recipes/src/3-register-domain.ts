@@ -1,4 +1,4 @@
-import { Client } from '@iroha2/client'
+import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
 import {
   DomainId,
   EvaluatesToRegistrableBox,
@@ -18,6 +18,7 @@ import {
 
 // --snip--
 declare const client: Client
+declare const toriiRequirements: ToriiRequirementsForApiHttp
 
 // 1.
 
@@ -44,6 +45,7 @@ async function registerDomain(domainName: string) {
   })
 
   await client.submitExecutable(
+    toriiRequirements,
     Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
   )
 }
@@ -56,7 +58,10 @@ await registerDomain('test')
 
 async function ensureDomainExistence(domainName: string) {
   // Query all domains
-  const result = await client.requestWithQueryBox(QueryBox('FindAllDomains', null))
+  const result = await client.requestWithQueryBox(
+    toriiRequirements,
+    QueryBox('FindAllDomains', null),
+  )
 
   // Display the request status
   console.log('%o', result)

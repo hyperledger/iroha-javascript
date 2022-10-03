@@ -3,7 +3,6 @@ import consola from 'consola'
 import { cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '../src/lib'
 import { peer_config, peer_genesis } from '../../client/test/integration/config'
 import invariant from 'tiny-invariant'
-import CacRequiredOption from '@cac/required-option'
 
 const cli = cac()
 
