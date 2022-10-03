@@ -83,7 +83,7 @@ fn create_some_time_based_trigger_isi() -> RegisterBox {
         AccountId::from_str("alice@wonderland").unwrap(),
     );
 
-    RegisterBox::new(IdentifiableBox::from(Trigger::new(
+    RegisterBox::new(Trigger::new(
         TriggerId::from_str("mint_rose").unwrap(),
         Action::new(
             Executable::from(vec![MintBox::new(1_u32, asset_id.clone()).into()]),
@@ -94,7 +94,7 @@ fn create_some_time_based_trigger_isi() -> RegisterBox {
                     .with_period(Duration::from_millis(3_000)),
             ))),
         ),
-    )))
+    ))
 }
 
 fn create_some_event_based_trigger_isi() -> RegisterBox {
@@ -103,7 +103,7 @@ fn create_some_event_based_trigger_isi() -> RegisterBox {
     let asset_id = AssetId::new(asset_definition_id, account_id.clone());
     let instruction = MintBox::new(1_u32, asset_id.clone());
 
-    RegisterBox::new(IdentifiableBox::from(Trigger::new(
+    RegisterBox::new(Trigger::new(
         TriggerId::from_str("mint_rose").unwrap(),
         Action::new(
             Executable::from(vec![instruction.into()]),
@@ -116,5 +116,5 @@ fn create_some_event_based_trigger_isi() -> RegisterBox {
                 ),
             )))),
         ),
-    )))
+    ))
 }

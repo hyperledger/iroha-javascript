@@ -41,7 +41,7 @@ export interface StartPeerReturn {
   /**
    * Kill peer's process
    */
-  kill: (params?: KillPeerParams) => Promise<void>
+  kill: () => Promise<void>
 
   /**
    * Check for alive status
@@ -52,6 +52,10 @@ export interface StartPeerReturn {
 export interface IrohaConfiguration {
   genesis: unknown
   config: unknown
+}
+
+function resolveTempJsonConfigFile(key: keyof IrohaConfiguration): string {
+  return path.resolve(TMP_DIR, `${key}.json`)
 }
 
 /**
@@ -81,6 +85,10 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
   const withGenesis: boolean = params?.withGenesis ?? true
   const subprocess = execa(TMP_IROHA_BIN, withGenesis ? ['--submit-genesis'] : [], {
     cwd: TMP_DIR,
+    env: {
+      IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
+      IROHA2_GENESIS_PATH: resolveTempJsonConfigFile('genesis'),
+    },
   })
   debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs)
   const stdout = readline.createInterface(subprocess.stdout!)
@@ -104,12 +112,11 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
     })
   })
 
-  async function kill(params?: KillPeerParams) {
+  async function kill() {
     if (!isAlive) throw new Error('Already dead')
     debug('Killing peer...')
     subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 })
     await exitPromise
-    params?.cleanSideEffects && (await cleanSideEffects())
     debug('Peer is killed')
   }
 
@@ -128,17 +135,13 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
  * Set config files
  */
 export async function setConfiguration(configs: IrohaConfiguration): Promise<void> {
-  debug('setting configuration: %o', configs)
+  for (const key of ['genesis', 'config'] as const) {
+    const data = configs[key]
+    const path = resolveTempJsonConfigFile(key)
+    await saveDataAsJSON(data, path)
+  }
 
-  const asKeyValue = Object.entries(configs)
-
-  await Promise.all(
-    asKeyValue.map(async ([configName, data]: [unknown, string]) => {
-      await saveDataAsJSON(data, path.resolve(TMP_DIR, `${configName}.json`))
-    }),
-  )
-
-  debug('configuration is set')
+  debug('configuration is set: %o', configs)
 }
 
 /**
@@ -152,11 +155,9 @@ export async function cleanConfiguration(): Promise<void> {
 
 /**
  * Clear all side-effects from last peer startup. Use it before each peer startup if you want to isolate states.
- *
- * (Remove `blocks` dir)
  */
-export async function cleanSideEffects() {
-  const rmTarget = path.resolve(TMP_DIR, 'blocks')
+export async function cleanSideEffects(kuraBlockStorePath: string) {
+  const rmTarget = path.resolve(TMP_DIR, kuraBlockStorePath)
   await rmForce(rmTarget)
-  debug('Blocks are cleaned')
+  debug('Blocks are cleaned at %o', kuraBlockStorePath)
 }

@@ -22,12 +22,12 @@ import {
   Result,
   Signature,
   SignedQueryRequest,
-  Transaction,
+  SignedTransaction,
   TransactionPayload,
   VecSignatureOfTransactionPayload,
   VersionedPaginatedQueryResult,
   VersionedSignedQueryRequest,
-  VersionedTransaction,
+  VersionedSignedTransaction,
 } from '@iroha2/data-model'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
 import { garbageScope } from './collect-garbage'
@@ -139,23 +139,31 @@ export function signTransaction(payload: TransactionPayload, signer: Signer): Si
   return signer.sign(hash)
 }
 
-export function makeSignedTransaction(payload: TransactionPayload, signer: Signer): VersionedTransaction {
+export function makeVersionedSignedTransaction(
+  payload: TransactionPayload,
+  signer: Signer,
+): VersionedSignedTransaction {
   const signature = signTransaction(payload, signer)
-  return VersionedTransaction(
+  return VersionedSignedTransaction(
     'V1',
-    Transaction({
+    SignedTransaction({
       payload,
       signatures: VecSignatureOfTransactionPayload([signature]),
     }),
   )
 }
 
+/**
+ * @deprecated use {@link makeVersionedSignedTransaction}
+ */
+export const makeSignedTransaction = makeVersionedSignedTransaction
+
 export function executableIntoSignedTransaction(params: {
   signer: Signer
   executable: Executable
   payloadParams?: Except<MakeTransactionPayloadParams, 'accountId' | 'executable'>
-}): VersionedTransaction {
-  return makeSignedTransaction(
+}): VersionedSignedTransaction {
+  return makeVersionedSignedTransaction(
     makeTransactionPayload({
       executable: params.executable,
       accountId: params.signer.accountId,
@@ -197,17 +205,22 @@ export function signQuery(payload: QueryPayload, signer: Signer): Signature {
   return signer.sign(hash)
 }
 
-export function makeSignedQuery(payload: QueryPayload, signer: Signer): VersionedSignedQueryRequest {
+export function makeVersionedSignedQuery(payload: QueryPayload, signer: Signer): VersionedSignedQueryRequest {
   const signature = signQuery(payload, signer)
   return VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature }))
 }
+
+/**
+ * @deprecated use {@link makeVersionedSignedQuery}
+ */
+export const makeSignedQuery = makeVersionedSignedQuery
 
 export function queryBoxIntoSignedQuery(params: {
   query: QueryBox
   signer: Signer
   payloadParams?: Except<MakeQueryPayloadParams, 'accountId' | 'query'>
 }): VersionedSignedQueryRequest {
-  return makeSignedQuery(
+  return makeVersionedSignedQuery(
     makeQueryPayload({
       query: params.query,
       accountId: params.signer.accountId,
@@ -222,7 +235,7 @@ export function queryBoxIntoSignedQuery(params: {
 // #region TORII
 
 export interface ToriiApiHttp {
-  submit: (tx: VersionedTransaction) => Promise<void>
+  submit: (tx: VersionedSignedTransaction) => Promise<void>
   request: (query: VersionedSignedQueryRequest) => Promise<Result<PaginatedQueryResult, QueryError>>
   getHealth: () => Promise<Result<null, string>>
   setPeerConfig: (params: SetPeerConfigParams) => Promise<void>
@@ -260,8 +273,8 @@ export class Torii implements ToriiApiHttp, ToriiApiWebSocket, ToriiTelemetry {
     this.#ws = props.ws
   }
 
-  public async submit(tx: VersionedTransaction): Promise<void> {
-    const body = VersionedTransaction.toBuffer(tx)
+  public async submit(tx: VersionedSignedTransaction): Promise<void> {
+    const body = VersionedSignedTransaction.toBuffer(tx)
 
     const response = await this.#fetch(this.#api + ENDPOINT_TRANSACTION, {
       body,

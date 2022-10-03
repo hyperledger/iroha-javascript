@@ -4,16 +4,45 @@
       "isi": [
         {
           "Register": {
-            "object": {
-              "Raw": {
-                "Identifiable": {
-                  "NewDomain": {
-                    "id": {
-                      "name": "wonderland"
-                    },
-                    "logo": null,
-                    "metadata": {}
-                  }
+            "Identifiable": {
+              "NewDomain": {
+                "id": "wonderland",
+                "logo": null,
+                "metadata": {}
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "NewAccount": {
+                "id": "alice@wonderland",
+                "signatories": ["ed01207233bfc89dcbd68c19fde6ce6158225298ec1131b6a130d1aeb454c1ab5183c0"],
+                "metadata": {}
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "NewAssetDefinition": {
+                "id": "rose#wonderland",
+                "value_type": "Quantity",
+                "mintable": "Infinitely",
+                "metadata": {}
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_unregister_asset_with_definition",
+                "params": {
+                  "asset_definition_id": "Id"
                 }
               }
             }
@@ -21,19 +50,11 @@
         },
         {
           "Register": {
-            "object": {
-              "Raw": {
-                "Identifiable": {
-                  "NewAccount": {
-                    "id": {
-                      "name": "alice",
-                      "domain_id": {
-                        "name": "wonderland"
-                      }
-                    },
-                    "signatories": ["ed01207233bfc89dcbd68c19fde6ce6158225298ec1131b6a130d1aeb454c1ab5183c0"],
-                    "metadata": {}
-                  }
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_burn_asset_with_definition",
+                "params": {
+                  "asset_definition_id": "Id"
                 }
               }
             }
@@ -41,20 +62,120 @@
         },
         {
           "Register": {
-            "object": {
-              "Raw": {
-                "Identifiable": {
-                  "NewAssetDefinition": {
-                    "id": {
-                      "name": "rose",
-                      "domain_id": {
-                        "name": "wonderland"
-                      }
-                    },
-                    "value_type": "Quantity",
-                    "mintable": "Infinitely",
-                    "metadata": {}
-                  }
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_burn_user_assets",
+                "params": {
+                  "asset_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_set_key_value_in_user_assets",
+                "params": {
+                  "asset_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_remove_key_value_in_user_assets",
+                "params": {
+                  "asset_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_set_key_value_in_user_metadata",
+                "params": {
+                  "account_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_remove_key_value_in_user_metadata",
+                "params": {
+                  "account_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_set_key_value_in_asset_definition",
+                "params": {
+                  "asset_definition_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_remove_key_value_in_asset_definition",
+                "params": {
+                  "asset_definition_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_mint_user_asset_definitions",
+                "params": {
+                  "asset_definition_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_transfer_user_assets",
+                "params": {
+                  "asset_id": "Id"
+                }
+              }
+            }
+          }
+        },
+        {
+          "Register": {
+            "Identifiable": {
+              "PermissionTokenDefinition": {
+                "id": "can_transfer_only_fixed_number_of_times_per_period",
+                "params": {
+                  "count": "U32",
+                  "period": "U128"
                 }
               }
             }
@@ -63,28 +184,11 @@
         {
           "Mint": {
             "object": {
-              "Raw": {
-                "U32": 13
-              }
+              "U32": 13
             },
             "destination_id": {
-              "Raw": {
-                "Id": {
-                  "AssetId": {
-                    "definition_id": {
-                      "name": "rose",
-                      "domain_id": {
-                        "name": "wonderland"
-                      }
-                    },
-                    "account_id": {
-                      "name": "alice",
-                      "domain_id": {
-                        "name": "wonderland"
-                      }
-                    }
-                  }
-                }
+              "Id": {
+                "AssetId": "rose#alice@wonderland"
               }
             }
           }

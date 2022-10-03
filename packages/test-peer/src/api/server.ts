@@ -4,6 +4,7 @@ import Morgan from 'koa-morgan'
 import BodyParser from 'koa-bodyparser'
 import consola from 'consola'
 import chalk from 'chalk'
+import invariant from 'tiny-invariant'
 
 import * as lib from '../lib'
 
@@ -23,7 +24,10 @@ export async function run(port = 8765) {
       ctx.status = 204
     })
     .delete('/side-effects', async (ctx) => {
-      await lib.cleanSideEffects()
+      const store = ctx.query.kura_block_store_path
+      invariant(typeof store === 'string', `add 'kura_block_store_path' param`)
+
+      await lib.cleanSideEffects(store)
       ctx.status = 204
     })
     .post('/peer/start', async (ctx) => {
@@ -48,9 +52,7 @@ export async function run(port = 8765) {
         return
       }
 
-      const clean = ctx.query.clean === 'true' ?? false
-
-      await peer!.kill({ cleanSideEffects: clean })
+      await peer.kill()
       peer = null
 
       ctx.status = 204
