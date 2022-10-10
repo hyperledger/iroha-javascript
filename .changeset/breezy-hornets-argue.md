@@ -3,7 +3,7 @@
 '@iroha2/data-model-schema': major
 ---
 
-Update data model according to next Iroha 2 LTS.
+Update data model to align it with the updated model in the upcoming Iroha 2 LTS.
 
 Notable changes:
 

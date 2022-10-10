@@ -7,4 +7,4 @@ Some functions were renamed:
 - `makeSignedTransaction` → `makeVersionedSignedTransaction`
 - `makeSignedQuery` → `makeVersionedSignedQuery`
 
-Old names are still accessible, but marked as deprecated and will be removed with future major releases.
+Old names are still accessible. They are marked as `deprecated` and will be removed in future major releases.
