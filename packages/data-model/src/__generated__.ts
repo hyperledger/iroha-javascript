@@ -6,6 +6,7 @@ import type { ArrayCodecAndFactory, Codec, EnumCodecAndFactory, MapCodecAndFacto
 
 const __dyn_FilterOptAssetDefinitionFilter = dynCodec(() => FilterOptAssetDefinitionFilter)
 const __dyn_FindAccountKeyValueByIdAndKey = dynCodec(() => FindAccountKeyValueByIdAndKey)
+const __dyn_OptionName = dynCodec(() => OptionName)
 const __dyn_SignatureOfCommittedBlock = dynCodec(() => SignatureOfCommittedBlock)
 const __dyn_OriginFilterTriggerEvent = dynCodec(() => OriginFilterTriggerEvent)
 const __dyn_FilterOptAccountEventFilter = dynCodec(() => FilterOptAccountEventFilter)
@@ -54,6 +55,7 @@ const __dyn_TimeSchedule = dynCodec(() => TimeSchedule)
 const __dyn_ArrayU8L4 = dynCodec(() => ArrayU8L4)
 const __dyn_Domain = dynCodec(() => Domain)
 const __dyn_BlockValue = dynCodec(() => BlockValue)
+const __dyn_Sorting = dynCodec(() => Sorting)
 const __dyn_OptionTopology = dynCodec(() => OptionTopology)
 const __dyn_Multiply = dynCodec(() => Multiply)
 const __dyn_NewDomain = dynCodec(() => NewDomain)
@@ -2804,6 +2806,14 @@ interface OptionIpfsPath extends Opaque<OptionIpfsPath__actual, OptionIpfsPath> 
 
 const OptionIpfsPath: EnumCodecAndFactory<OptionIpfsPath> = createOptionCodec<OptionIpfsPath__actual, OptionIpfsPath>('OptionIpfsPath', __dyn_IpfsPath)
 
+// Type: OptionName
+
+interface OptionName__actual extends Option<Name> {}
+
+interface OptionName extends Opaque<OptionName__actual, OptionName> {}
+
+const OptionName: EnumCodecAndFactory<OptionName> = createOptionCodec<OptionName__actual, OptionName>('OptionName', __dyn_Name)
+
 // Type: OptionPipelineEntityKind
 
 interface OptionPipelineEntityKind__actual extends Option<PipelineEntityKind> {}
@@ -2906,6 +2916,7 @@ interface PaginatedQueryResult__actual {
     result: QueryResult
     filter: PredicateBox
     pagination: Pagination
+    sorting: Sorting
     total: U64
 }
 
@@ -2915,6 +2926,7 @@ const PaginatedQueryResult: StructCodecAndFactory<PaginatedQueryResult__actual, 
     ['result', __dyn_QueryResult],
     ['filter', __dyn_PredicateBox],
     ['pagination', __dyn_Pagination],
+    ['sorting', __dyn_Sorting],
     ['total', U64]
 ])
 
@@ -3750,6 +3762,18 @@ const SignedTransaction: StructCodecAndFactory<SignedTransaction__actual, Signed
     ['signatures', __dyn_VecSignatureOfTransactionPayload]
 ])
 
+// Type: Sorting
+
+interface Sorting__actual {
+    sort_by_metadata_key: OptionName
+}
+
+interface Sorting extends Opaque<Sorting__actual, Sorting> {}
+
+const Sorting: StructCodecAndFactory<Sorting__actual, Sorting> = createStructCodec<Sorting__actual, Sorting>('Sorting', [
+    ['sort_by_metadata_key', __dyn_OptionName]
+])
+
 // Type: Subtract
 
 interface Subtract__actual {
@@ -4548,4 +4572,4 @@ const Where: StructCodecAndFactory<Where__actual, Where> = createStructCodec<Whe
 
 // Exports
 
-export { Account, AccountEvent, AccountEventFilter, AccountFilter, AccountId, ActionFilterBox, Add, And, ArrayU16L8, ArrayU8L32, ArrayU8L4, Asset, AssetDefinition, AssetDefinitionEntry, AssetDefinitionEvent, AssetDefinitionEventFilter, AssetDefinitionFilter, AssetDefinitionId, AssetEvent, AssetEventFilter, AssetFilter, AssetId, AssetValue, AssetValueType, AtIndex, BlockHeader, BlockHeaderValue, BlockPublisherMessage, BlockRejectionReason, BlockSubscriberMessage, BlockValue, BurnBox, CommittedBlock, Container, Contains, ContainsAll, ContainsAny, ContextValue, DataEvent, Definition, Divide, Domain, DomainEvent, DomainEventFilter, DomainFilter, DomainId, Duration, EntityFilter, Equal, EvaluatesToAccountId, EvaluatesToAssetDefinitionId, EvaluatesToAssetId, EvaluatesToBool, EvaluatesToDomainId, EvaluatesToHash, EvaluatesToIdBox, EvaluatesToName, EvaluatesToRegistrableBox, EvaluatesToRoleId, EvaluatesToTriggerId, EvaluatesToU32, EvaluatesToValue, EvaluatesToVecValue, Event, EventPublisherMessage, EventSubscriberMessage, Executable, ExecuteTriggerBox, ExecuteTriggerEvent, ExecuteTriggerEventFilter, ExecutionTime, Expression, FailBox, FilterBox, FilterOptAccountEventFilter, FilterOptAccountFilter, FilterOptAssetDefinitionEventFilter, FilterOptAssetDefinitionFilter, FilterOptAssetEventFilter, FilterOptAssetFilter, FilterOptDomainEventFilter, FilterOptDomainFilter, FilterOptEntityFilter, FilterOptOriginFilterAccountEvent, FilterOptOriginFilterAssetDefinitionEvent, FilterOptOriginFilterAssetEvent, FilterOptOriginFilterDomainEvent, FilterOptOriginFilterPeerEvent, FilterOptOriginFilterRoleEvent, FilterOptOriginFilterTriggerEvent, FilterOptPeerEventFilter, FilterOptPeerFilter, FilterOptRoleEventFilter, FilterOptRoleFilter, FilterOptTriggerEventFilter, FilterOptTriggerFilter, FindAccountById, FindAccountKeyValueByIdAndKey, FindAccountsByDomainId, FindAccountsByName, FindAccountsWithAsset, FindAllAccounts, FindAllActiveTriggerIds, FindAllAssets, FindAllAssetsDefinitions, FindAllBlockHeaders, FindAllBlocks, FindAllDomains, FindAllPeers, FindAllPermissionTokenDefinitions, FindAllRoleIds, FindAllRoles, FindAllTransactions, FindAssetById, FindAssetDefinitionById, FindAssetDefinitionKeyValueByIdAndKey, FindAssetKeyValueByIdAndKey, FindAssetQuantityById, FindAssetsByAccountId, FindAssetsByAssetDefinitionId, FindAssetsByDomainId, FindAssetsByDomainIdAndAssetDefinitionId, FindAssetsByName, FindBlockHeaderByHash, FindDomainById, FindDomainKeyValueByIdAndKey, FindError, FindPermissionTokensByAccountId, FindRoleByRoleId, FindRolesByAccountId, FindTransactionByHash, FindTransactionsByAccountId, FindTriggerById, FindTriggerKeyValueByIdAndKey, FindTriggersByDomainId, Fixed, FixedPointI64, GenesisTransaction, GrantBox, Greater, Hash, HashOfMerkleTreeVersionedSignedTransaction, HashOfVersionedCommittedBlock, HashOfVersionedSignedTransaction, Id, IdBox, IdentifiableBox, IfExpression, IfInstruction, Instruction, InstructionExecutionFail, IntervalU16, IntervalU16L8, IntervalU8, IntervalU8L4, IpfsPath, Ipv4Addr, Ipv4Predicate, Ipv6Addr, Ipv6Predicate, Less, MapAccountIdAccount, MapAssetDefinitionIdAssetDefinitionEntry, MapAssetIdAsset, MapNameValue, MapNameValueKind, MapPublicKeySignatureOfCommittedBlock, MapPublicKeySignatureOfTransactionPayload, MapStringEvaluatesToValue, MerkleTreeVersionedSignedTransaction, Metadata, MintBox, Mintable, Mod, Multiply, Name, NewAccount, NewAssetDefinition, NewDomain, NewRole, Not, NotPermittedFail, OptionDomainId, OptionDuration, OptionHash, OptionInstruction, OptionIpfsPath, OptionPipelineEntityKind, OptionPipelineStatusKind, OptionTimeInterval, OptionTopology, OptionU32, Or, OriginFilterAccountEvent, OriginFilterAssetDefinitionEvent, OriginFilterAssetEvent, OriginFilterDomainEvent, OriginFilterPeerEvent, OriginFilterRoleEvent, OriginFilterTriggerEvent, PaginatedQueryResult, Pagination, Pair, Parameter, Peer, PeerEvent, PeerEventFilter, PeerFilter, PeerId, PermissionRemoved, PermissionTokenEvent, PermissionValidatorEvent, PipelineEntityKind, PipelineEvent, PipelineEventFilter, PipelineStatus, PipelineStatusKind, Predicate, PredicateBox, PublicKey, QueryBox, QueryError, QueryPayload, QueryResult, RaiseTo, RawGenesisBlock, RawVersioned, RegisterBox, RegistrableBox, RejectedTransaction, RejectionReason, RemoveKeyValueBox, Repeats, RevokeBox, Role, RoleEvent, RoleEventFilter, RoleFilter, RoleId, SemiIntervalFixed, SemiIntervalU128, SemiIntervalU32, SemiRange, SequenceBox, SetKeyValueBox, Signature, SignatureCheckCondition, SignatureOfCommittedBlock, SignatureOfQueryPayload, SignatureOfTransactionPayload, SignatureOfValidBlock, SignaturesOfCommittedBlock, SignaturesOfTransactionPayload, SignedQueryRequest, SignedTransaction, Subtract, TimeEvent, TimeEventFilter, TimeInterval, TimeSchedule, Token, Topology, TransactionLimitError, TransactionPayload, TransactionQueryResult, TransactionRejectionReason, TransactionValue, TransferBox, TriggerEvent, TriggerEventFilter, TriggerFilter, TriggerFilterBox, TriggerId, Type, UnregisterBox, UnsatisfiedSignatureConditionFail, UnsupportedVersion, ValidBlock, ValidTransaction, Validator, Value, ValueKind, ValueOfKey, VecEvent, VecGenesisTransaction, VecHash, VecInstruction, VecPeerId, VecPredicateBox, VecPublicKey, VecRoleId, VecSignatureOfTransactionPayload, VecSignatureOfValidBlock, VecToken, VecValue, VecVersionedRejectedTransaction, VecVersionedValidTransaction, VersionError, VersionedBlockPublisherMessage, VersionedBlockSubscriberMessage, VersionedCommittedBlock, VersionedEventPublisherMessage, VersionedEventSubscriberMessage, VersionedPaginatedQueryResult, VersionedRejectedTransaction, VersionedSignedQueryRequest, VersionedSignedTransaction, VersionedValidBlock, VersionedValidTransaction, WasmExecutionFail, WasmSmartContract, Where }
+export { Account, AccountEvent, AccountEventFilter, AccountFilter, AccountId, ActionFilterBox, Add, And, ArrayU16L8, ArrayU8L32, ArrayU8L4, Asset, AssetDefinition, AssetDefinitionEntry, AssetDefinitionEvent, AssetDefinitionEventFilter, AssetDefinitionFilter, AssetDefinitionId, AssetEvent, AssetEventFilter, AssetFilter, AssetId, AssetValue, AssetValueType, AtIndex, BlockHeader, BlockHeaderValue, BlockPublisherMessage, BlockRejectionReason, BlockSubscriberMessage, BlockValue, BurnBox, CommittedBlock, Container, Contains, ContainsAll, ContainsAny, ContextValue, DataEvent, Definition, Divide, Domain, DomainEvent, DomainEventFilter, DomainFilter, DomainId, Duration, EntityFilter, Equal, EvaluatesToAccountId, EvaluatesToAssetDefinitionId, EvaluatesToAssetId, EvaluatesToBool, EvaluatesToDomainId, EvaluatesToHash, EvaluatesToIdBox, EvaluatesToName, EvaluatesToRegistrableBox, EvaluatesToRoleId, EvaluatesToTriggerId, EvaluatesToU32, EvaluatesToValue, EvaluatesToVecValue, Event, EventPublisherMessage, EventSubscriberMessage, Executable, ExecuteTriggerBox, ExecuteTriggerEvent, ExecuteTriggerEventFilter, ExecutionTime, Expression, FailBox, FilterBox, FilterOptAccountEventFilter, FilterOptAccountFilter, FilterOptAssetDefinitionEventFilter, FilterOptAssetDefinitionFilter, FilterOptAssetEventFilter, FilterOptAssetFilter, FilterOptDomainEventFilter, FilterOptDomainFilter, FilterOptEntityFilter, FilterOptOriginFilterAccountEvent, FilterOptOriginFilterAssetDefinitionEvent, FilterOptOriginFilterAssetEvent, FilterOptOriginFilterDomainEvent, FilterOptOriginFilterPeerEvent, FilterOptOriginFilterRoleEvent, FilterOptOriginFilterTriggerEvent, FilterOptPeerEventFilter, FilterOptPeerFilter, FilterOptRoleEventFilter, FilterOptRoleFilter, FilterOptTriggerEventFilter, FilterOptTriggerFilter, FindAccountById, FindAccountKeyValueByIdAndKey, FindAccountsByDomainId, FindAccountsByName, FindAccountsWithAsset, FindAllAccounts, FindAllActiveTriggerIds, FindAllAssets, FindAllAssetsDefinitions, FindAllBlockHeaders, FindAllBlocks, FindAllDomains, FindAllPeers, FindAllPermissionTokenDefinitions, FindAllRoleIds, FindAllRoles, FindAllTransactions, FindAssetById, FindAssetDefinitionById, FindAssetDefinitionKeyValueByIdAndKey, FindAssetKeyValueByIdAndKey, FindAssetQuantityById, FindAssetsByAccountId, FindAssetsByAssetDefinitionId, FindAssetsByDomainId, FindAssetsByDomainIdAndAssetDefinitionId, FindAssetsByName, FindBlockHeaderByHash, FindDomainById, FindDomainKeyValueByIdAndKey, FindError, FindPermissionTokensByAccountId, FindRoleByRoleId, FindRolesByAccountId, FindTransactionByHash, FindTransactionsByAccountId, FindTriggerById, FindTriggerKeyValueByIdAndKey, FindTriggersByDomainId, Fixed, FixedPointI64, GenesisTransaction, GrantBox, Greater, Hash, HashOfMerkleTreeVersionedSignedTransaction, HashOfVersionedCommittedBlock, HashOfVersionedSignedTransaction, Id, IdBox, IdentifiableBox, IfExpression, IfInstruction, Instruction, InstructionExecutionFail, IntervalU16, IntervalU16L8, IntervalU8, IntervalU8L4, IpfsPath, Ipv4Addr, Ipv4Predicate, Ipv6Addr, Ipv6Predicate, Less, MapAccountIdAccount, MapAssetDefinitionIdAssetDefinitionEntry, MapAssetIdAsset, MapNameValue, MapNameValueKind, MapPublicKeySignatureOfCommittedBlock, MapPublicKeySignatureOfTransactionPayload, MapStringEvaluatesToValue, MerkleTreeVersionedSignedTransaction, Metadata, MintBox, Mintable, Mod, Multiply, Name, NewAccount, NewAssetDefinition, NewDomain, NewRole, Not, NotPermittedFail, OptionDomainId, OptionDuration, OptionHash, OptionInstruction, OptionIpfsPath, OptionName, OptionPipelineEntityKind, OptionPipelineStatusKind, OptionTimeInterval, OptionTopology, OptionU32, Or, OriginFilterAccountEvent, OriginFilterAssetDefinitionEvent, OriginFilterAssetEvent, OriginFilterDomainEvent, OriginFilterPeerEvent, OriginFilterRoleEvent, OriginFilterTriggerEvent, PaginatedQueryResult, Pagination, Pair, Parameter, Peer, PeerEvent, PeerEventFilter, PeerFilter, PeerId, PermissionRemoved, PermissionTokenEvent, PermissionValidatorEvent, PipelineEntityKind, PipelineEvent, PipelineEventFilter, PipelineStatus, PipelineStatusKind, Predicate, PredicateBox, PublicKey, QueryBox, QueryError, QueryPayload, QueryResult, RaiseTo, RawGenesisBlock, RawVersioned, RegisterBox, RegistrableBox, RejectedTransaction, RejectionReason, RemoveKeyValueBox, Repeats, RevokeBox, Role, RoleEvent, RoleEventFilter, RoleFilter, RoleId, SemiIntervalFixed, SemiIntervalU128, SemiIntervalU32, SemiRange, SequenceBox, SetKeyValueBox, Signature, SignatureCheckCondition, SignatureOfCommittedBlock, SignatureOfQueryPayload, SignatureOfTransactionPayload, SignatureOfValidBlock, SignaturesOfCommittedBlock, SignaturesOfTransactionPayload, SignedQueryRequest, SignedTransaction, Sorting, Subtract, TimeEvent, TimeEventFilter, TimeInterval, TimeSchedule, Token, Topology, TransactionLimitError, TransactionPayload, TransactionQueryResult, TransactionRejectionReason, TransactionValue, TransferBox, TriggerEvent, TriggerEventFilter, TriggerFilter, TriggerFilterBox, TriggerId, Type, UnregisterBox, UnsatisfiedSignatureConditionFail, UnsupportedVersion, ValidBlock, ValidTransaction, Validator, Value, ValueKind, ValueOfKey, VecEvent, VecGenesisTransaction, VecHash, VecInstruction, VecPeerId, VecPredicateBox, VecPublicKey, VecRoleId, VecSignatureOfTransactionPayload, VecSignatureOfValidBlock, VecToken, VecValue, VecVersionedRejectedTransaction, VecVersionedValidTransaction, VersionError, VersionedBlockPublisherMessage, VersionedBlockSubscriberMessage, VersionedCommittedBlock, VersionedEventPublisherMessage, VersionedEventSubscriberMessage, VersionedPaginatedQueryResult, VersionedRejectedTransaction, VersionedSignedQueryRequest, VersionedSignedTransaction, VersionedValidBlock, VersionedValidTransaction, WasmExecutionFail, WasmSmartContract, Where }

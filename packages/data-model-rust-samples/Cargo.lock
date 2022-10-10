@@ -1014,8 +1014,8 @@ checksum = "b33c9a5c599d67d051c4dc25eb1b6b4ef715d1763c20c85c688717a1734f204e"
 
 [[package]]
 name = "iroha_crypto"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "derive_more",
  "getset",
@@ -1030,8 +1030,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_data_model"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "base64",
  "dashmap",
@@ -1056,9 +1056,10 @@ dependencies = [
 
 [[package]]
 name = "iroha_data_model_derive"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
+ "proc-macro-error",
  "proc-macro2",
  "quote",
  "syn",
@@ -1066,8 +1067,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_derive"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1076,16 +1077,16 @@ dependencies = [
 
 [[package]]
 name = "iroha_ffi"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "iroha_ffi_derive",
 ]
 
 [[package]]
 name = "iroha_ffi_derive"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "derive_more",
  "proc-macro-error",
@@ -1096,16 +1097,16 @@ dependencies = [
 
 [[package]]
 name = "iroha_macro"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "iroha_derive",
 ]
 
 [[package]]
 name = "iroha_primitives"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "derive_more",
  "fixnum",
@@ -1121,8 +1122,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_schema"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "fixnum",
  "iroha_schema_derive",
@@ -1131,8 +1132,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_schema_derive"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1141,8 +1142,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_version"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "iroha_macro",
  "iroha_schema",
@@ -1156,8 +1157,8 @@ dependencies = [
 
 [[package]]
 name = "iroha_version_derive"
-version = "2.0.0-pre-rc.8"
-source = "git+https://github.com/appetrosyan/iroha.git?branch=iroha2-staging#b362d9c4aa8c663f652f0f1839f966bf38ac4196"
+version = "2.0.0-pre-rc.9"
+source = "git+https://github.com/hyperledger/iroha.git?rev=6d9912d89f515acfc7de02ae55ec0b5ae7da73ab#6d9912d89f515acfc7de02ae55ec0b5ae7da73ab"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1167,9 +1168,9 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6c8af84674fe1f223a982c933a0ee1086ac4d4052aa0fb8060c12c6ad838e754"
+checksum = "4217ad341ebadf8d8e724e264f13e593e0648f5b3e94b3896a5df283be015ecc"
 
 [[package]]
 name = "js-sys"
@@ -1821,9 +1822,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.85"
+version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e55a28e3aaef9d5ce0506d0a14dbba8054ddc7e499ef522dd8b26859ec9d4a44"
+checksum = "41feea4228a6f1cd09ec7a3593a682276702cd67b5273544757dae23c096f074"
 dependencies = [
  "itoa",
  "ryu",
@@ -1944,9 +1945,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.9.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fd0db749597d91ff862fd1d55ea87f7855a744a8425a64695b6fca237d1dad1"
+checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 dependencies = [
  "serde",
 ]
@@ -2021,9 +2022,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.101"
+version = "1.0.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e90cde112c4b9690b8cbe810cba9ddd8bc1d7472e2cae317b69e9438c1cba7d2"
+checksum = "3fcd952facd492f9be3ef0d0b7032a6e442ee9b361d4acc2b1d0c4aaa5f613a1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2138,9 +2139,9 @@ checksum = "b6bc1c9ce2b5135ac7f93c72918fc37feb872bdc6a5533a8b85eb4b86bfdae52"
 
 [[package]]
 name = "tracing"
-version = "0.1.36"
+version = "0.1.37"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fce9567bd60a67d08a16488756721ba392f24f29006402881e43b19aac64307"
+checksum = "8ce8c33a8d48bd45d624a6e523445fd21ec13d3653cd51f681abf67418f54eb8"
 dependencies = [
  "cfg-if",
  "log",
@@ -2150,9 +2151,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-core"
-version = "0.1.29"
+version = "0.1.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5aeea4303076558a00714b823f9ad67d58a3bbda1df83d8827d21193156e22f7"
+checksum = "24eb03ba0eab1fd845050058ce5e616558e8f8d8fca633e6b163fe25c797213a"
 dependencies = [
  "once_cell",
 ]
@@ -2180,9 +2181,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.4"
+version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcc811dc4066ac62f84f11307873c4850cb653bfa9b1719cee2bd2204a4bc5dd"
+checksum = "6ceab39d59e4c9499d4e5a8ee0e2735b891bb7308ac83dfb4e80cad195c9f6f3"
 
 [[package]]
 name = "unicode-xid"

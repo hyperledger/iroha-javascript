@@ -5,7 +5,7 @@ import nodeFetch from 'node-fetch'
 import debug from './dbg'
 
 export async function saveDataAsJSON(data: unknown, destination: string): Promise<void> {
-  await fs.writeFile(destination, JSON.stringify(data), { encoding: 'utf-8' })
+  await fs.writeFile(destination, JSON.stringify(data, null, 2), { encoding: 'utf-8' })
 }
 
 export async function rmForce(target: string | string[]): Promise<void> {
