@@ -31,11 +31,11 @@
 
   ##### Why the change was made
 
-  This change was introduced to allow you only provide the prerequisites each method actually needs. For example, you no longer need to provide `ws` when all you want to do is submit a transaction. Only `fetch` and `apiURL` are needed for transaction to be submitted.
+  This change was introduced to allow you to only provide the prerequisites each method actually needs. For example, you no longer need to provide `ws` when all you want to do is submit a transaction. Only `fetch` and `apiURL` are needed for transaction to be submitted.
 
   ##### How to update your code
 
-  You should pass your prerequisites for each `Torii` method invocation.
+  You should pass the necessary prerequisites for each `Torii` method invocation.
 
   Previously, you had to create a single `Torii` instance:
 
