@@ -1,5 +1,16 @@
 # @iroha2/data-model-schema
 
+## 4.0.0
+
+### Major Changes
+
+- e27467e: Update data model to align it with the updated model in the upcoming Iroha 2 LTS.
+
+  Notable changes:
+
+  - `Transaction` → `SignedTransaction`
+  - `VersionedTransaction` → `VersionedSignedTransaction`
+
 ## 3.0.0
 
 ### Patch Changes
