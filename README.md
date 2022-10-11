@@ -93,7 +93,7 @@ pnpm jake -t
    pnpm --filter data-model codegen
    ```
 
-6. Use tests and TypeScript hints and update the rest of SDK:
+6. Use tests and TypeScript hints and update the rest of the SDK:
 
    ```bash
    pnpm -w type-check
