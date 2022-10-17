@@ -76,7 +76,7 @@ defineCase(
             lib.IdentifiableBox(
               'Trigger',
               lib.TriggerFilterBox({
-                id: lib.DomainId({ name: 'mint_rose' }),
+                id: lib.TriggerId({ name: 'mint_rose', domain_id: lib.OptionDomainId('None') }),
                 action: lib.ActionFilterBox({
                   executable: lib.Executable(
                     'Instructions',
@@ -143,7 +143,7 @@ defineCase(
             lib.IdentifiableBox(
               'Trigger',
               lib.TriggerFilterBox({
-                id: lib.DomainId({ name: 'mint_rose' }),
+                id: lib.TriggerId({ name: 'mint_rose', domain_id: lib.OptionDomainId('None') }),
                 action: lib.ActionFilterBox({
                   executable: lib.Executable(
                     'Instructions',
@@ -169,7 +169,7 @@ defineCase(
                         lib.FilterOptAssetDefinitionFilter(
                           'BySome',
                           lib.AssetDefinitionFilter({
-                            id_filter: lib.FilterOptIdFilterAssetDefinitionId('AcceptAll'),
+                            origin_filter: lib.FilterOptOriginFilterAssetDefinitionEvent('AcceptAll'),
                             event_filter: lib.FilterOptAssetDefinitionEventFilter(
                               'BySome',
                               lib.AssetDefinitionEventFilter('ByCreated'),

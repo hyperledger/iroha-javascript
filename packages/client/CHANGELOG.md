@@ -1,5 +1,76 @@
 # @iroha2/client
 
+## 4.0.0
+
+### Major Changes
+
+- e27467e: Update client library after data-model update in Iroha 2.
+- bd757cf: **refactor!**: make `Torii` stateless; force prerequisites to be passed for each method.
+
+  ##### What is the change
+
+  Previously, `Torii` was a class, and its constructor accepted all prerequisites at once:
+
+  ```ts
+  const torii = new Torii({ apiURL, telemetryURL, fetch, ws })
+
+  torii.submit(transaction)
+  torii.getStatus()
+  torii.listenForEvents({ filter })
+  ```
+
+  Now, `Torii` is a compendium of different methods. Each method has its own prerequisites:
+
+  ```ts
+  Torii.submit({ apiURL, fetch }, transaction)
+
+  Torii.getStatus({ telemetryURL, fetch })
+
+  Torii.listenForEvents({ apiURL, ws }, { filter })
+  ```
+
+  ##### Why the change was made
+
+  This change was introduced to allow you to only provide the prerequisites each method actually needs. For example, you no longer need to provide `ws` when all you want to do is submit a transaction. Only `fetch` and `apiURL` are needed for transaction to be submitted.
+
+  ##### How to update your code
+
+  You should pass the necessary prerequisites for each `Torii` method invocation.
+
+  Previously, you had to create a single `Torii` instance:
+
+  ```ts
+  const torii = new Torii({ apiURL, telemetryURL, fetch, ws })
+  ```
+
+  You no longer need a single `Torii` instance. Instead, you create an object with necessary prerequisites:
+
+  ```ts
+  const pre = { apiURL, fetch }
+  ```
+
+  Then pass the prerequisites when you need to call this method:
+
+  ```ts
+  Torii.submit(pre, transaction)
+  ```
+
+### Minor Changes
+
+- e27467e: Some functions were renamed:
+
+  - `makeSignedTransaction` → `makeVersionedSignedTransaction`
+  - `makeSignedQuery` → `makeVersionedSignedQuery`
+
+  Old names are still accessible. They are marked as `deprecated` and will be removed in future major releases.
+
+- bd757cf: **feat**: expose `keyPair` as a `public readonly` field from `Signer`
+
+### Patch Changes
+
+- Updated dependencies [e27467e]
+  - @iroha2/data-model@4.0.0
+
 ## 3.0.0
 
 ### Major Changes
@@ -18,7 +89,7 @@
 
   ##### How to update your code
 
-  The changes you need to make to the code are rather straightforward. Here we provide a couple of examples for you to compare the code before and after this breaking change. You can refer to `Torii`, `Signer` and `Client` type definitions for details. 
+  The changes you need to make to the code are rather straightforward. Here we provide a couple of examples for you to compare the code before and after this breaking change. You can refer to `Torii`, `Signer` and `Client` type definitions for details.
 
   `Client` used to be initialized like this:
 

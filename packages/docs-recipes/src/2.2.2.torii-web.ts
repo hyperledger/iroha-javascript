@@ -1,7 +1,13 @@
-import { Torii } from '@iroha2/client'
+import {
+  ToriiRequirementsForApiHttp,
+  ToriiRequirementsForApiWebSocket,
+  ToriiRequirementsForTelemetry,
+} from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/native'
 
-const torii = new Torii({
+const toriiRequirements: ToriiRequirementsForApiHttp &
+  ToriiRequirementsForApiWebSocket &
+  ToriiRequirementsForTelemetry = {
   apiURL: 'http://127.0.0.1:8080',
   telemetryURL: 'http://127.0.0.1:8081',
   ws: WS,
@@ -10,4 +16,4 @@ const torii = new Torii({
     // to avoid `TypeError: "'fetch' called on an
     //           object that does not implement interface Window."`
     fetch.bind(window),
-})
+}

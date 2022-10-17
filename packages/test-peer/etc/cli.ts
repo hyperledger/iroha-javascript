@@ -2,6 +2,7 @@ import { cac } from 'cac'
 import consola from 'consola'
 import { cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '../src/lib'
 import { peer_config, peer_genesis } from '../../client/test/integration/config'
+import invariant from 'tiny-invariant'
 
 const cli = cac()
 
@@ -9,15 +10,16 @@ cli.command('clean:configs').action(async () => {
   await cleanConfiguration()
 })
 
-cli.command('clean:effects').action(async () => {
-  await cleanSideEffects()
+cli.command('clean:effects <kura-block-store-path>').action(async (kuraBlockStorePath: string) => {
+  await cleanSideEffects(kuraBlockStorePath)
 })
 
 cli
   .command('start')
   .option('--api-url <url>', 'Torii API_URL, needed for health check')
-  .action(async (opts) => {
-    consola.info('Starting peer. Opts: %o', opts)
+  .action(async (opts: { apiUrl?: string }) => {
+    invariant(opts.apiUrl, '`api-url` option is required')
+    consola.info('Starting peer')
     await startPeer({ toriiApiURL: opts.apiUrl })
     consola.info('Started! Kill this process to kill the peer')
   })
