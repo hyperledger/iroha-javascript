@@ -99,3 +99,9 @@ pnpm jake -t
    pnpm -w type-check
    pnpm -w test
    ```
+
+7. Update `packages/client/README.md` and `packages/data-model/README.md`. In the beginning they have the following note:
+
+   > This package targets `hyperledger/iroha` at current `iroha2-lts` branch, which has a hash `b783f10fa7de26ed1fdd4c526bd162f8636f1a65`.
+
+   Put here a new Iroha 2 reference commit information.
