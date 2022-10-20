@@ -88,15 +88,20 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
     env: {
       IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
       IROHA2_GENESIS_PATH: resolveTempJsonConfigFile('genesis'),
+      /**
+       * Enable JSON logging into STDOUT
+       *
+       * https://github.com/hyperledger/iroha/issues/2894
+       */
+      LOG_FILE_PATH: '"/dev/stderr"',
     },
+    stdout: 'ignore',
   })
   debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs)
-  const stdout = readline.createInterface(subprocess.stdout!)
+
   const stderr = readline.createInterface(subprocess.stderr!)
 
-  const debugStdout = debug.extend('stdout')
   const debugStderr = debug.extend('stderr')
-  stdout.on('line', (line) => debugStdout(line))
   stderr.on('line', (line) => debugStderr(line))
 
   subprocess.on('error', (err) => {
