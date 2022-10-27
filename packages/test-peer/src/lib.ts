@@ -93,7 +93,7 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
        *
        * https://github.com/hyperledger/iroha/issues/2894
        */
-      LOG_FILE_PATH: '"/dev/stderr"',
+      // LOG_FILE_PATH: '"/dev/stderr"',
     },
     stdout: 'ignore',
   })
@@ -108,7 +108,13 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
     debug('Subprocess error:', err)
   })
 
-  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, HEALTH_CHECK_INTERVAL, HEALTH_CHECK_TIMEOUT)
+  const healthCheckAbort = new AbortController()
+  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, {
+    checkInterval: HEALTH_CHECK_INTERVAL,
+    checkTimeout: HEALTH_CHECK_TIMEOUT,
+    abort: healthCheckAbort.signal,
+  })
+
   const exitPromise = new Promise<void>((resolve) => {
     subprocess.once('exit', (...args) => {
       isAlive = false
@@ -126,7 +132,10 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
   }
 
   await new Promise<void>((resolve, reject) => {
-    exitPromise.then(() => reject(new Error('Iroha has exited already, maybe something went wrong')))
+    exitPromise.then(() => {
+      reject(new Error('Iroha has exited already, maybe something went wrong'))
+      healthCheckAbort.abort()
+    })
     irohaIsHealthyPromise.then(() => resolve()).catch((err) => reject(err))
   })
 

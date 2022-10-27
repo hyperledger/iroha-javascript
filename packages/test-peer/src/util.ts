@@ -14,22 +14,32 @@ export async function rmForce(target: string | string[]): Promise<void> {
 
 export async function waitUntilPeerIsHealthy(
   apiURL: string,
-  checkInterval: number,
-  checkTimeout: number,
+  options: {
+    checkInterval: number
+    checkTimeout: number
+    abort: AbortSignal
+  },
 ): Promise<void> {
   const toriiPre = { apiURL, fetch: nodeFetch as typeof fetch }
 
   let now = Date.now()
-  const endAt = now + checkTimeout
+  const endAt = now + options.checkTimeout
+
+  let aborted = false
+  options.abort.addEventListener('abort', () => {
+    aborted = true
+  })
 
   while (true) {
+    if (aborted) throw new Error('Aborted')
+
     now = Date.now()
-    if (now > endAt) throw new Error(`Peer is still not alive even after ${checkTimeout}ms`)
+    if (now > endAt) throw new Error(`Peer is still not alive even after ${options.checkTimeout}ms`)
 
     const health = await Torii.getHealth(toriiPre)
     if (health.is('Ok')) return
     debug('not yet healthy')
 
-    await new Promise((r) => setTimeout(r, checkInterval))
+    await new Promise((r) => setTimeout(r, options.checkInterval))
   }
 }
