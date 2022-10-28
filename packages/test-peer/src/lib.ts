@@ -88,22 +88,35 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
     env: {
       IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
       IROHA2_GENESIS_PATH: resolveTempJsonConfigFile('genesis'),
+      /**
+       * Enable JSON logging into STDOUT
+       *
+       * It works fine locally, but fails in CI
+       * https://github.com/hyperledger/iroha/issues/2894
+       */
+      // LOG_FILE_PATH: '"/dev/stderr"',
     },
+    // stdout: 'ignore',
   })
   debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs)
-  const stdout = readline.createInterface(subprocess.stdout!)
-  const stderr = readline.createInterface(subprocess.stderr!)
 
   const debugStdout = debug.extend('stdout')
+  readline.createInterface(subprocess.stdout!).on('line', (line) => debugStdout(line))
+
   const debugStderr = debug.extend('stderr')
-  stdout.on('line', (line) => debugStdout(line))
-  stderr.on('line', (line) => debugStderr(line))
+  readline.createInterface(subprocess.stderr!).on('line', (line) => debugStderr(line))
 
   subprocess.on('error', (err) => {
     debug('Subprocess error:', err)
   })
 
-  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, HEALTH_CHECK_INTERVAL, HEALTH_CHECK_TIMEOUT)
+  const healthCheckAbort = new AbortController()
+  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, {
+    checkInterval: HEALTH_CHECK_INTERVAL,
+    checkTimeout: HEALTH_CHECK_TIMEOUT,
+    abort: healthCheckAbort.signal,
+  })
+
   const exitPromise = new Promise<void>((resolve) => {
     subprocess.once('exit', (...args) => {
       isAlive = false
@@ -121,7 +134,10 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
   }
 
   await new Promise<void>((resolve, reject) => {
-    exitPromise.then(() => reject(new Error('Iroha has exited already, maybe something went wrong')))
+    exitPromise.then(() => {
+      reject(new Error('Iroha has exited already, maybe something went wrong'))
+      healthCheckAbort.abort()
+    })
     irohaIsHealthyPromise.then(() => resolve()).catch((err) => reject(err))
   })
 

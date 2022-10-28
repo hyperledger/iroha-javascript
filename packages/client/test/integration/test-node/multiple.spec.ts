@@ -525,8 +525,8 @@ describe('Setting configuration', () => {
 
 describe('Blocks Stream API', () => {
   // FIXME: currently Iroha has a bug related to blocks stream, so this test fails
-  // TODO: link issue here
-  test.skip('When committing 3 blocks sequentially, nothing fails', async () => {
+  // https://github.com/hyperledger/iroha/issues/2880
+  test('When committing 3 blocks sequentially, nothing fails', async () => {
     const { pre, client } = clientFactory()
 
     const stream = await Torii.listenForBlocksStream(pre, { height: 0n })
