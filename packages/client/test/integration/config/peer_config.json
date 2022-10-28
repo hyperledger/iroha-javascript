@@ -41,7 +41,7 @@
     "MAX_LOG_LEVEL": "INFO",
     "TELEMETRY_CAPACITY": 1000,
     "COMPACT_MODE": false,
-    "LOG_FILE_PATH": "/dev/stderr",
+    "LOG_FILE_PATH": null,
     "TERMINAL_COLORS": true
   },
   "BLOCK_SYNC": {

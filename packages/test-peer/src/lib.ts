@@ -91,18 +91,20 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
       /**
        * Enable JSON logging into STDOUT
        *
+       * It works fine locally, but fails in CI
        * https://github.com/hyperledger/iroha/issues/2894
        */
       // LOG_FILE_PATH: '"/dev/stderr"',
     },
-    stdout: 'ignore',
+    // stdout: 'ignore',
   })
   debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs)
 
-  const stderr = readline.createInterface(subprocess.stderr!)
+  const debugStdout = debug.extend('stdout')
+  readline.createInterface(subprocess.stdout!).on('line', (line) => debugStdout(line))
 
   const debugStderr = debug.extend('stderr')
-  stderr.on('line', (line) => debugStderr(line))
+  readline.createInterface(subprocess.stderr!).on('line', (line) => debugStderr(line))
 
   subprocess.on('error', (err) => {
     debug('Subprocess error:', err)
