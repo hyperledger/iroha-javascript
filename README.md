@@ -47,7 +47,7 @@ Check out [Hyperledger Iroha 2 Tutorial](https://hyperledger.github.io/iroha-2-d
 
 Make sure you have installed Node.js v16.17 or v18. As for a package manager, this project uses [PNPM](https://pnpm.io/).
 
-Before working with the repo, install packages:
+Before working with the repository, install the necessary packages:
 
 ```bash
 pnpm install
@@ -78,7 +78,7 @@ pnpm lint --fix
 pnpm format:fix
 ```
 
-Each monorepo package might have its own scripts and tasks. Please refer to a specific package's README for details.
+Each monorepo package might have its own scripts and tasks. You can find the package details in a README for that package.
 
 ### Manually update reference Iroha version
 
