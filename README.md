@@ -45,11 +45,40 @@ Check out [Hyperledger Iroha 2 Tutorial](https://hyperledger.github.io/iroha-2-d
 
 ## Maintenance
 
-### Explore Jake tasks
+Make sure you have installed Node.js v16.17 or v18. As for a package manager, this project uses [PNPM](https://pnpm.io/).
+
+Before working with the repo, install packages:
+
+```bash
+pnpm install
+```
+
+### Scripts
+
+Most tasks are defined via [Jake](https://github.com/jakejs/jake), a JavaScript build tool. To explore available tasks, run:
 
 ```bash
 pnpm jake -t
 ```
+
+However, some tasks are defined directly in `package.json` and could be run with `pnpm run`:
+
+```bash
+# Run all project tests
+pnpm test
+
+# Perform type-checking
+pnpm type-check
+
+# Check/fix lint errors
+pnpm lint
+pnpm lint --fix
+
+# Fix formatting
+pnpm format:fix
+```
+
+Each monorepo package might have its own scripts and tasks. Please refer to a specific package's README for details.
 
 ### Manually update reference Iroha version
 
