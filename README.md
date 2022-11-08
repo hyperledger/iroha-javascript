@@ -63,20 +63,30 @@ pnpm jake -t
 
 However, some tasks are defined directly in `package.json` and could be run with `pnpm run`:
 
-```bash
-# Run all project tests
-pnpm test
+- Run all project tests:
 
-# Perform type-checking
-pnpm type-check
+  ```bash
+  pnpm test
+  ```
 
-# Check/fix lint errors
-pnpm lint
-pnpm lint --fix
+- Perform type-checking:
 
-# Fix formatting
-pnpm format:fix
-```
+  ```bash
+  pnpm type-check
+  ```
+
+- Check or fix lint errors:
+
+  ```bash
+  pnpm lint
+  pnpm lint --fix
+  ```
+
+- Fix formatting:
+
+  ```bash
+  pnpm format:fix
+  ```
 
 Each monorepo package might have its own scripts and tasks. You can find the package details in a README for that package.
 
