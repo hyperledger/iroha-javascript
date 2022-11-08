@@ -1,4 +1,5 @@
 dist
-**/crypto/**/wasm_pack_output*
-**/crypto/packages/target-*/index.js
-**/data-model/src/__generated__.ts
+dist-tsc
+/packages/crypto/crypto-rs/iroha_crypto_wasm
+/packages/crypto/packages/target-*/index.js
+/packages/data-model/src/__generated__.ts
