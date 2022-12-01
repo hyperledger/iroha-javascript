@@ -17,7 +17,6 @@
   ],
   "license": "Apache 2.0",
   "scripts": {
-    "test": "vitest run",
     "build:tsc": "tsc",
     "codegen": "tsx etc/codegen"
   },
@@ -27,7 +26,6 @@
   },
   "devDependencies": {
     "@iroha2/data-model-schema": "workspace:4.0.0",
-    "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
     "@scale-codec/definition-compiler": "^2.2.2",
     "@scale-codec/util": "^1.1.1",
     "@types/debug": "^4.1.7",

@@ -5,7 +5,6 @@ importers:
   .:
     specifiers:
       '@changesets/cli': ^2.23.0
-      '@iroha2/dev-iroha-bins': workspace:^0.0.0
       '@iroha2/test-peer': workspace:^0.0.1
       '@rollup/plugin-replace': ^4.0.0
       '@types/jake': ^0.0.33
@@ -33,7 +32,6 @@ importers:
       zx: ^4.3.0
     devDependencies:
       '@changesets/cli': 2.24.1
-      '@iroha2/dev-iroha-bins': link:packages/dev-iroha-bins
       '@iroha2/test-peer': link:packages/test-peer
       '@rollup/plugin-replace': 4.0.0_rollup@2.77.2
       '@types/jake': 0.0.33
@@ -288,7 +286,6 @@ importers:
   packages/data-model:
     specifiers:
       '@iroha2/data-model-schema': workspace:4.0.0
-      '@iroha2/dev-iroha-bins': workspace:^0.0.0
       '@iroha2/i64-fixnum': workspace:^0.4.2
       '@scale-codec/definition-compiler': ^2.2.2
       '@scale-codec/definition-runtime': ^2.2.2
@@ -306,7 +303,6 @@ importers:
       '@scale-codec/definition-runtime': 2.2.2
     devDependencies:
       '@iroha2/data-model-schema': link:../data-model-schema
-      '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
       '@scale-codec/definition-compiler': 2.2.2
       '@scale-codec/util': 1.1.1
       '@types/debug': 4.1.7
@@ -318,9 +314,12 @@ importers:
       immutable: 4.1.0
       typescript: 4.8.3
 
+  packages/data-model-rust-samples:
+    specifiers: {}
+
   packages/data-model-schema:
     specifiers:
-      '@iroha2/dev-iroha-bins': workspace:^0.0.0
+      '@iroha2/iroha-source': workspace:^0.0.0
       '@scale-codec/definition-compiler': ^2.2.2
       '@scale-codec/definition-runtime': ^2.2.2
       '@scale-codec/util': ^1.1.1
@@ -336,7 +335,7 @@ importers:
     dependencies:
       '@scale-codec/definition-runtime': 2.2.2
     devDependencies:
-      '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
+      '@iroha2/iroha-source': link:../iroha-source
       '@scale-codec/definition-compiler': 2.2.2
       '@scale-codec/util': 1.1.1
       '@types/debug': 4.1.7
@@ -348,16 +347,6 @@ importers:
       immutable: 4.1.0
       type-fest: 2.19.0
       typescript: 4.8.3
-
-  packages/dev-iroha-bins:
-    specifiers:
-      del: ^6.0.0
-      make-dir: ^3.1.0
-      zx: ^4.2.0
-    devDependencies:
-      del: 6.1.1
-      make-dir: 3.1.0
-      zx: 4.3.0
 
   packages/docs-recipes:
     specifiers:
@@ -387,10 +376,30 @@ importers:
     dependencies:
       '@scale-codec/util': 1.1.1
 
+  packages/iroha-source:
+    specifiers:
+      '@types/yargs': ^17.0.15
+      chalk: 4.1.2
+      consola: ^2.15.3
+      del: ^6.0.0
+      execa: 5.1.1
+      make-dir: ^3.1.0
+      tsx: ^3.9.0
+      yargs: ^17.6.2
+    devDependencies:
+      '@types/yargs': 17.0.15
+      chalk: 4.1.2
+      consola: 2.15.3
+      del: 6.1.1
+      execa: 5.1.1
+      make-dir: 3.1.0
+      tsx: 3.9.0
+      yargs: 17.6.2
+
   packages/test-peer:
     specifiers:
       '@iroha2/client': workspace:^4.0.0
-      '@iroha2/dev-iroha-bins': workspace:^0.0.0
+      '@iroha2/iroha-source': workspace:^0.0.0
       '@koa/router': ^10.1.1
       '@types/debug': ^4.1.7
       '@types/koa': ^2.13.4
@@ -414,7 +423,7 @@ importers:
       zx: ^4.2.0
     devDependencies:
       '@iroha2/client': link:../client
-      '@iroha2/dev-iroha-bins': link:../dev-iroha-bins
+      '@iroha2/iroha-source': link:../iroha-source
       '@koa/router': 10.1.1
       '@types/debug': 4.1.7
       '@types/koa': 2.13.5
@@ -1160,6 +1169,16 @@ packages:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
     dependencies:
       '@types/node': 18.0.0
+
+  /@types/yargs-parser/21.0.0:
+    resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
+    dev: true
+
+  /@types/yargs/17.0.15:
+    resolution: {integrity: sha512-ZHc4W2dnEQPfhn06TBEdWaiUHEZAocYaiVMfwOipY5jcJt/251wVrKCBWBetGZWO5CF8tdb7L3DmdxVlZ2BOIg==}
+    dependencies:
+      '@types/yargs-parser': 21.0.0
+    dev: true
 
   /@types/yauzl/2.10.0:
     resolution: {integrity: sha512-Cn6WYCm0tXv8p6k+A8PvbDG763EDpBoTzHdA+Q/MF6H3sapGjCm9NzoaJncJS9tUKSuCoDs9XHxYYsQDgxR6kw==}
@@ -1914,6 +1933,15 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
+  /cliui/8.0.1:
+    resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      wrap-ansi: 7.0.0
+    dev: true
+
   /clone/1.0.4:
     resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
@@ -1976,7 +2004,7 @@ packages:
     dev: true
 
   /concat-map/0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
   /consola/2.15.3:
@@ -6080,6 +6108,11 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
+  /yargs-parser/21.1.1:
+    resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
+    engines: {node: '>=12'}
+    dev: true
+
   /yargs/13.3.2:
     resolution: {integrity: sha512-AX3Zw5iPruN5ie6xGRIDgqkT+ZhnRlZMLMHAs8tg7nRruy2Nb+i5o9bwghAogtM08q1dpr2LVoS8KSTMYpWXUw==}
     dependencies:
@@ -6123,6 +6156,19 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.0.1
+    dev: true
+
+  /yargs/17.6.2:
+    resolution: {integrity: sha512-1/9UrdHjDZc0eOU0HxOHoS78C69UD3JRMvzlJ7S79S2nTaWRA/whGCTV8o9e/N/1Va9YIV7Q4sOxD8VV4pCWOw==}
+    engines: {node: '>=12'}
+    dependencies:
+      cliui: 8.0.1
+      escalade: 3.1.1
+      get-caller-file: 2.0.5
+      require-directory: 2.1.1
+      string-width: 4.2.3
+      y18n: 5.0.8
+      yargs-parser: 21.1.1
     dev: true
 
   /yauzl/2.10.0:

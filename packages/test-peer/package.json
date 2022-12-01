@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@iroha2/client": "workspace:^4.0.0",
-    "@iroha2/dev-iroha-bins": "workspace:^0.0.0",
+    "@iroha2/iroha-source": "workspace:^0.0.0",
     "@koa/router": "^10.1.1",
     "@types/debug": "^4.1.7",
     "@types/koa": "^2.13.4",

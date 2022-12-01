@@ -30,8 +30,8 @@
     "node": ">=14.0.0"
   },
   "scripts": {
-    "test:integration": "run-s test:prepare test:node test:web",
-    "test:prepare": "tsx test/integration/prepare-peer",
+    "test:integration": "run-s test:build-iroha test:node test:web",
+    "test:build-iroha": "pnpm --filter iroha-source build:iroha",
     "test:node": "pnpm --filter client-test-node test",
     "test:web": "pnpm --filter client-test-web test",
     "build:tsc": "tsc"
