@@ -406,8 +406,8 @@ importers:
       '@types/koa-bodyparser': ^4.3.5
       '@types/koa-morgan': ^1.0.5
       '@types/koa__router': ^8.0.11
+      '@types/yargs': ^17.0.15
       axios: ^0.24.0
-      cac: ^6.7.12
       chalk: 4.1.2
       consola: ^2.15.3
       debug: ^4.3.4
@@ -420,6 +420,7 @@ importers:
       node-fetch: ^3.2.4
       tiny-invariant: ^1.3.1
       typescript: ^4.8.3
+      yargs: ^17.6.2
       zx: ^4.2.0
     devDependencies:
       '@iroha2/client': link:../client
@@ -430,8 +431,8 @@ importers:
       '@types/koa-bodyparser': 4.3.7
       '@types/koa-morgan': 1.0.5
       '@types/koa__router': 8.0.11
+      '@types/yargs': 17.0.15
       axios: 0.24.0_debug@4.3.4
-      cac: 6.7.12
       chalk: 4.1.2
       consola: 2.15.3
       debug: 4.3.4
@@ -444,6 +445,7 @@ importers:
       node-fetch: 3.2.10
       tiny-invariant: 1.3.1
       typescript: 4.8.3
+      yargs: 17.6.2
       zx: 4.3.0
 
 packages:
@@ -1752,11 +1754,6 @@ packages:
   /bytes/3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
-    dev: true
-
-  /cac/6.7.12:
-    resolution: {integrity: sha512-rM7E2ygtMkJqD9c7WnFU6fruFcN3xe4FM5yUmgxhZzIKJk4uHl9U/fhwdajGFQbQuv43FAUo1Fe8gX/oIKDeSA==}
-    engines: {node: '>=8'}
     dev: true
 
   /cache-content-type/1.0.1:

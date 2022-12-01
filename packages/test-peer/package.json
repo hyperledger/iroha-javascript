@@ -4,8 +4,8 @@
   "private": true,
   "main": "src/lib.ts",
   "scripts": {
-    "cli": "DEBUG=* tsx etc/cli.ts",
-    "cli:config": "pnpm cli -- config:set-from-client-tests"
+    "cli": "DEBUG=* tsx etc/cli",
+    "cli:config": "pnpm cli config:set-from-client-tests"
   },
   "devDependencies": {
     "@iroha2/client": "workspace:^4.0.0",
@@ -16,8 +16,8 @@
     "@types/koa-bodyparser": "^4.3.5",
     "@types/koa-morgan": "^1.0.5",
     "@types/koa__router": "^8.0.11",
+    "@types/yargs": "^17.0.15",
     "axios": "^0.24.0",
-    "cac": "^6.7.12",
     "chalk": "4.1.2",
     "consola": "^2.15.3",
     "debug": "^4.3.4",
@@ -30,6 +30,7 @@
     "node-fetch": "^3.2.4",
     "tiny-invariant": "^1.3.1",
     "typescript": "^4.8.3",
+    "yargs": "^17.6.2",
     "zx": "^4.2.0"
   }
 }

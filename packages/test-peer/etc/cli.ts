@@ -1,42 +1,44 @@
-import { cac } from 'cac'
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 import consola from 'consola'
 import { cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '../src/lib'
 import { peer_config, peer_genesis } from '../../client/test/integration/config'
-import invariant from 'tiny-invariant'
 
-const cli = cac()
-
-cli.command('clean:configs').action(async () => {
-  await cleanConfiguration()
-})
-
-cli.command('clean:effects <kura-block-store-path>').action(async (kuraBlockStorePath: string) => {
-  await cleanSideEffects(kuraBlockStorePath)
-})
-
-cli
-  .command('start')
-  .option('--api-url <url>', 'Torii API_URL, needed for health check')
-  .action(async (opts: { apiUrl?: string }) => {
-    invariant(opts.apiUrl, '`api-url` option is required')
-    consola.info('Starting peer')
-    await startPeer({ toriiApiURL: opts.apiUrl })
-    consola.info('Started! Kill this process to kill the peer')
+yargs(hideBin(process.argv))
+  .command('clean:configs', 'Clean configuration', {}, async () => {
+    await cleanConfiguration()
   })
-
-cli.command('config:set-from-client-tests').action(async () => {
-  await setConfiguration({ config: peer_config, genesis: peer_genesis })
-  consola.success('Config is set')
-})
-
-cli.help()
-
-async function main() {
-  cli.parse(process.argv, { run: false })
-  await cli.runMatchedCommand()
-}
-
-main().catch((err) => {
-  consola.fatal(err)
-  process.exit(1)
-})
+  .command(
+    'clean:effects',
+    'Clean peer side-effects',
+    (y) => y.positional('kura-block-store-path', { type: 'string', demandOption: true }),
+    async (args) => {
+      await cleanSideEffects(args.kuraBlockStorePath)
+    },
+  )
+  .command(
+    'start',
+    'Start peer',
+    (y) =>
+      y.option('api-url', {
+        type: 'string',
+        desc: 'Torii API URL, used to check whether the peer is up and running',
+        demandOption: true,
+      }),
+    async (args) => {
+      consola.info('Starting peer')
+      await startPeer({ toriiApiURL: args.apiUrl })
+      consola.info('Started! Kill this process to kill the peer')
+    },
+  )
+  .command(
+    'config:set-from-client-tests',
+    'Set configuration from `@iroha2/client` configuration tests',
+    {},
+    async () => {
+      await setConfiguration({ config: peer_config, genesis: peer_genesis })
+      consola.success('Config is set')
+    },
+  )
+  .help()
+  .parse()
