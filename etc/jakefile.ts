@@ -6,7 +6,7 @@
 import 'jake'
 import del from 'del'
 import { $ } from 'zx'
-import { artifactsToClean, PUBLIC_PACKAGES, scopePackage } from './meta'
+import { PUBLIC_PACKAGES, artifactsToClean, scopePackage } from './meta'
 
 desc('Clean all build artifacts')
 task('clean', async () => {
@@ -66,8 +66,20 @@ namespace('test', () => {
   task('all', ['test:unit', 'test:crypto', 'test:client-integration'])
 })
 
+desc('Perform type checking in the whole repo')
+task('type-check', ['compile-artifacts:all'], async () => {
+  await $`pnpm tsc --noEmit`
+})
+
+task('lint', async () => {
+  await $`pnpm lint`
+})
+
+desc('Performs all kinds of checks from artifacts compilation and linting to end-2-end tests')
+task('run-all-checks', ['type-check', 'lint', 'build:all', 'test:all'])
+
 desc('Publish all public packages')
-task('publish-all', ['build:all', 'test:all'], async () => {
+task('publish-all', ['run-all-checks', 'build:all'], async () => {
   const filters = [
     ...PUBLIC_PACKAGES.toSeq()
       .map(scopePackage)

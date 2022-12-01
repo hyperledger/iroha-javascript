@@ -47,6 +47,7 @@ module.exports = {
       globals: {
         desc: true,
         task: true,
+        namespace: true,
       },
     },
   ],
