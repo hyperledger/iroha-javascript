@@ -6,7 +6,8 @@ def pipeline = new org.js.LibPipeline( steps: this,
     libPushBranches: ['iroha2'],
     npmRegistries: ['https://nexus.iroha.tech/repository/npm-soramitsu/': 'bot-soramitsu-rw'],
     preBuildCmds: ['rm -rf ~/.cargo', 'npm install -g n','n 16.17.0', 'n prune', 'pnpm install --unsafe-perm'],
-    testCmds: ['pnpm type-check','pnpm lint','pnpm test'],
+    buildCmds: ['pnpm jake run-all-checks'],
+    testCmds: [],
     pushCmds: ['npm config set registry "https://nexus.iroha.tech/repository/npm-soramitsu/"', 'pnpm jake publish-all'],
     secretScannerExclusion: '.*Cargo.toml\$|.*README.md\$'
    )
