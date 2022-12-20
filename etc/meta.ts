@@ -95,3 +95,16 @@ export function* getPackageRollupMeta(name: BundlePackage): Generator<PackageRol
     }
   }
 }
+
+export function artifactsToClean(): string[] {
+  return [
+    '**/dist',
+    // their dists are static
+    '!./packages/crypto/packages/*/dist',
+    '**/dist-tsc',
+    // compilation artifacts
+    'packages/data-model-schema/src/__schema__.json',
+    'packages/data-model-rust-samples/samples.json',
+    'packages/data-model/src/__generated__.ts',
+  ]
+}

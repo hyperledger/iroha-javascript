@@ -5,7 +5,7 @@ import { $, fs } from 'zx'
 import { rmForce, saveDataAsJSON, waitUntilPeerIsHealthy } from './util'
 import readline from 'readline'
 import debug from './dbg'
-import { KnownBinaries, install, resolveBinaryPath } from '@iroha2/dev-iroha-bins'
+import { resolveBinary } from '@iroha2/iroha-source'
 import makeDir from 'make-dir'
 
 /**
@@ -58,21 +58,18 @@ function resolveTempJsonConfigFile(key: keyof IrohaConfiguration): string {
   return path.resolve(TMP_DIR, `${key}.json`)
 }
 
-/**
- * Installs binary (if not installed) and copies it from `@iroha2/dev-iroha-bins`
- */
-export async function preparePackage() {
-  await install(KnownBinaries.Iroha)
-  await rmForce(TMP_DIR)
+async function prepareTempDir(): Promise<void> {
   await makeDir(TMP_DIR)
-  await $`cp ${await resolveBinaryPath(KnownBinaries.Iroha)} ${TMP_IROHA_BIN}`
-  debug('package is prepared')
 }
 
 /**
- * Start network with single peer.
+ * Start network with a single peer.
+ *
+ * **Note:** Iroha binary must be pre-built.
  */
 export async function startPeer(params: StartPeerParams): Promise<StartPeerReturn> {
+  const iroha = (await resolveBinary('iroha', { skipUpdate: true })).path
+
   // state
   let isAlive = true
 
@@ -83,7 +80,7 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
 
   // starting peer
   const withGenesis: boolean = params?.withGenesis ?? true
-  const subprocess = execa(TMP_IROHA_BIN, withGenesis ? ['--submit-genesis'] : [], {
+  const subprocess = execa(iroha, withGenesis ? ['--submit-genesis'] : [], {
     cwd: TMP_DIR,
     env: {
       IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
@@ -151,6 +148,8 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
  * Set config files
  */
 export async function setConfiguration(configs: IrohaConfiguration): Promise<void> {
+  await prepareTempDir()
+
   for (const key of ['genesis', 'config'] as const) {
     const data = configs[key]
     const path = resolveTempJsonConfigFile(key)

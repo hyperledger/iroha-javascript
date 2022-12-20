@@ -7,7 +7,7 @@
     "vite:preview": "vite preview --port 3030",
     "cy:run": "cypress run",
     "test": "run-s vite:build test:start",
-    "test:start": "start-server-and-test vite:preview http://127.0.0.1:3030 cy:run"
+    "test:start": "start-server-and-test vite:preview http://localhost:3030 cy:run"
   },
   "devDependencies": {
     "@iroha2/crypto-target-web": "workspace:^0.4.0",

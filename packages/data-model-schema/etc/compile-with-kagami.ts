@@ -3,17 +3,17 @@ import execa from 'execa'
 import consola from 'consola'
 import chalk from 'chalk'
 import fs from 'fs'
-import { KnownBinaries, install, resolveBinaryPath } from '@iroha2/dev-iroha-bins'
+import { resolveBinary } from '@iroha2/iroha-source'
 import { COMPILED_SCHEMA_FILE } from './meta'
 
 async function main() {
-  consola.info('Installing binary')
-  await install(KnownBinaries.Kagami)
+  consola.info('Resolving Kagami binary')
+  const kagami = (await resolveBinary('kagami')).path
 
   consola.info('Compiling schema')
   const stream = fs.createWriteStream(COMPILED_SCHEMA_FILE, { encoding: 'utf-8' })
   try {
-    const sub = execa(await resolveBinaryPath(KnownBinaries.Kagami), ['schema'])
+    const sub = execa(kagami, ['schema'])
     sub.stdout!.pipe(stream)
     await sub
   } finally {

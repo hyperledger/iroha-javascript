@@ -45,7 +45,9 @@ Check out [Hyperledger Iroha 2 Tutorial](https://hyperledger.github.io/iroha-2-d
 
 ## Maintenance
 
-Make sure you have installed Node.js v16.17 or v18. As for a package manager, this project uses [PNPM](https://pnpm.io/).
+Make sure you have installed **Node.js v16.17 or v18**. As for a package manager, this project uses [PNPM](https://pnpm.io/).
+
+Also make sure you have installed the **latest stable Rust toolchain**.
 
 Before working with the repository, install the necessary packages:
 
@@ -62,18 +64,6 @@ pnpm jake -t
 ```
 
 However, some tasks are defined directly in `package.json` and could be run with `pnpm run`:
-
-- Run all project tests:
-
-  ```bash
-  pnpm test
-  ```
-
-- Perform type-checking:
-
-  ```bash
-  pnpm type-check
-  ```
 
 - Check or fix lint errors:
 
@@ -92,54 +82,24 @@ Each monorepo package might have its own scripts and tasks. You can find the pac
 
 ### Manually update reference Iroha version
 
-1. Update `packages/dev-iroha-bins/src/config.ts`:
+1. Update `packages/iroha-source/config.json`:
 
-   ```ts
-   const config: Config = {
-     // ...
-
-     // update git repo reference here
-     git: {
-       repo: 'https://github.com/hyperledger/iroha.git',
-       revision: 'b783f10fa7de26ed1fdd4c526bd162f8636f1a65',
-     },
-
-     // ...
+   ```json
+   {
+     "origin": "https://github.com/hyperledger/iroha.git",
+     "rev": "52dc18cd81bdc1d1906ffeecb666dd9b2eb27955"
    }
    ```
 
-2. Set the same Iroha version in `packages/data-model-rust-samples/Cargo.toml`:
-
-   ```toml
-   iroha_data_model = { git = 'https://github.com/hyperledger/iroha.git', rev = "b783f10fa7de26ed1fdd4c526bd162f8636f1a65" }
-   ```
-
-3. Update JSON data-model samples used for tests. In `packages/data-model-rust-samples`, run:
+2. Perform full-featured repo check, running:
 
    ```bash
-   cargo run > output.json
+   pnpm jake run-all-checks
    ```
 
-4. Re-compile data-model schema:
+3. If something is broken, fix it!
 
-   ```bash
-   pnpm --filter data-model-schema compile
-   ```
-
-5. Run codegen for data-model:
-
-   ```bash
-   pnpm --filter data-model codegen
-   ```
-
-6. Use tests and TypeScript hints and update the rest of the SDK:
-
-   ```bash
-   pnpm -w type-check
-   pnpm -w test
-   ```
-
-7. Update `packages/client/README.md` and `packages/data-model/README.md`. In the beginning they have the following note:
+4. If you are going to publish updated SDK, update `packages/client/README.md` and `packages/data-model/README.md`. In the beginning they have the following note:
 
    > This package targets `hyperledger/iroha` at current `iroha2-lts` branch, which has a hash `b783f10fa7de26ed1fdd4c526bd162f8636f1a65`.
 

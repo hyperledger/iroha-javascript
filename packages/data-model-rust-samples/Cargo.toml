@@ -3,12 +3,8 @@ name = "data-model-rust-samples"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-# git source should be in sync with the ref used for data-model compilation
-iroha_data_model = { git = 'https://github.com/hyperledger/iroha.git', rev = "e3cd89bd2b6bef0d822900eb71a1854c7b86e2aa" }
-
+iroha_data_model = { path = "../iroha-source/cloned/data_model" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 parity-scale-codec = "3.2.1"

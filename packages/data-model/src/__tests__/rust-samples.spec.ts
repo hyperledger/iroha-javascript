@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import SAMPLES from '../../../data-model-rust-samples/output.json'
+import SAMPLES from '../../../data-model-rust-samples/samples.json'
 import * as lib from '../lib'
 import { fromHex, toHex } from '@scale-codec/util'
 
