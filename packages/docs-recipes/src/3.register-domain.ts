@@ -1,3 +1,4 @@
+// #region pre
 import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
 import {
   DomainId,
@@ -19,9 +20,9 @@ import {
 // --snip--
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
+// #endregion pre
 
-// 1.
-
+// #region reg-domain-fn
 async function registerDomain(domainName: string) {
   const registerBox = RegisterBox({
     object: EvaluatesToRegistrableBox({
@@ -33,7 +34,7 @@ async function registerDomain(domainName: string) {
             'NewDomain',
             NewDomain({
               id: DomainId({
-                name: domainName,
+                name: domainName, // [!code hl]
               }),
               metadata: Metadata({ map: MapNameValue(new Map()) }),
               logo: OptionIpfsPath('None'),
@@ -49,13 +50,13 @@ async function registerDomain(domainName: string) {
     Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
   )
 }
+// #endregion reg-domain-fn
 
-// 2.
+// #region do-reg
+await registerDomain('looking_glass')
+// #endregion do-reg
 
-await registerDomain('test')
-
-// 3.
-
+// #region ensure-fn
 async function ensureDomainExistence(domainName: string) {
   // Query all domains
   const result = await client.requestWithQueryBox(
@@ -71,12 +72,13 @@ async function ensureDomainExistence(domainName: string) {
     .as('Ok')
     .result.as('Vec')
     .map((x) => x.as('Identifiable').as('Domain'))
-    .find((x) => x.id.name === domainName)
+    .find((x) => x.id.name === domainName) // [!code hl]
 
   // Throw an error if the domain is unavailable
   if (!domain) throw new Error('Not found')
 }
+// #endregion ensure-fn
 
-// 4.
-
-await ensureDomainExistence('test')
+// #region do-ensure
+await ensureDomainExistence('looking_glass')
+// #endregion do-ensure

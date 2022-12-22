@@ -30,7 +30,7 @@ const register = Instruction(
     object: EvaluatesToRegistrableBox({
       expression: Expression(
         'Raw',
-        Value('Identifiable', IdentifiableBox('AssetDefinition', time)),
+        Value('Identifiable', IdentifiableBox('AssetDefinition', time)), // [!code hl]
       ),
     }),
   }),

@@ -1,3 +1,4 @@
+// #region imports
 import {
   AccountId,
   DomainId,
@@ -13,21 +14,27 @@ import {
   Value,
   VecPublicKey,
 } from '@iroha2/data-model'
+// #endregion imports
 
+// #region account
 const accountId = AccountId({
   name: 'white_rabbit',
   domain_id: DomainId({
     name: 'looking_glass',
   }),
 })
+// #endregion account
 
+// #region pubkey
 const pubKey = PublicKey({
   payload: new Uint8Array([
     /* put bytes here */
   ]),
   digest_function: 'some_digest',
 })
+// #endregion pubkey
 
+// #region isi
 const registerAccountInstruction = Instruction(
   'Register',
   RegisterBox({
@@ -39,7 +46,7 @@ const registerAccountInstruction = Instruction(
           IdentifiableBox(
             'NewAccount',
             NewAccount({
-              id: accountId,
+              id: accountId, // [!code hl:2]
               signatories: VecPublicKey([pubKey]),
               metadata: Metadata({ map: MapNameValue(new Map()) }),
             }),
@@ -49,3 +56,4 @@ const registerAccountInstruction = Instruction(
     }),
   }),
 )
+// #endregion isi
