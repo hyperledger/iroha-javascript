@@ -1,40 +1,49 @@
-// use iroha_error::{error, Error, Result};
+#[cfg(not(feature = "std"))]
+use alloc::{format, string::String, vec::Vec};
 
-use alloc::{borrow::ToOwned, vec::Vec};
+use derive_more::Display;
 
 /// Variable length unsigned int. [ref](https://github.com/multiformats/unsigned-varint)
-#[derive(Clone, Eq, PartialEq, Ord, PartialOrd, Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct VarUint {
     /// Contains validated varuint number
     payload: Vec<u8>,
 }
 
-use super::error::{Error, Result};
+/// Error which occurs when converting to/from `VarUint`
+#[derive(Debug, Clone, Display)]
+pub struct ConvertError {
+    reason: String,
+}
 
-// type Error = &'static str;
-// type Result<T> = core::result::Result<T, Error>;
+impl ConvertError {
+    const fn new(reason: String) -> Self {
+        Self { reason }
+    }
+}
 
-//XXX: impl<T: AsRef<[u8]>> std::convert::TryFrom<T> for VarUint
-// does not compile
+#[cfg(feature = "std")]
+impl std::error::Error for ConvertError {}
 
-macro_rules! try_into_uint(
+macro_rules! try_from_var_uint(
     { $( $ty:ty ),* } => {
         $(
             #[allow(trivial_numeric_casts)]
-            impl core::convert::TryInto<$ty> for VarUint {
-                type Error = Error;
-                fn try_into(self) -> Result<$ty> {
-                    let VarUint { payload } = self;
-                    if core::mem::size_of::<$ty>() * 8 < payload.len() * 7 {
-                        return Err((
-                            alloc::string::String::from(concat!("Number is too large for type ", stringify!($ty))).into()
-                        ));
+            impl TryFrom<VarUint> for $ty {
+                type Error = ConvertError;
+
+                fn try_from(source: VarUint) -> Result<Self, Self::Error> {
+                    let VarUint { payload } = source;
+                    if core::mem::size_of::<Self>() * 8 < payload.len() * 7 {
+                        return Err(Self::Error::new(String::from(
+                            concat!("Number too large for ", stringify!($ty))
+                        )));
                     }
                     let offsets = (0..payload.len()).map(|i| i * 7);
                     let bytes = payload.into_iter().map(|byte| byte & 0b0111_1111);
                     let number = bytes
                         .zip(offsets)
-                        .map(|(byte, offset)| (byte as $ty) << offset)
+                        .map(|(byte, offset)| (byte as Self) << offset)
                         .fold(0, |number, part| number + part);
                     Ok(number)
                 }
@@ -43,15 +52,15 @@ macro_rules! try_into_uint(
     }
 );
 
-try_into_uint!(u8, u16, u32, u64, u128);
+try_from_var_uint!(u8, u16, u32, u64, u128);
 
-impl core::convert::From<VarUint> for Vec<u8> {
+impl From<VarUint> for Vec<u8> {
     fn from(int: VarUint) -> Self {
         int.payload
     }
 }
 
-impl core::convert::AsRef<[u8]> for VarUint {
+impl AsRef<[u8]> for VarUint {
     fn as_ref(&self) -> &[u8] {
         self.payload.as_ref()
     }
@@ -61,8 +70,8 @@ macro_rules! from_uint(
     { $( $ty:ty ),* } => {
         $(
             #[allow(trivial_numeric_casts)]
-            impl core::convert::From<$ty> for VarUint {
-                fn from(n: $ty) -> VarUint {
+            impl From<$ty> for VarUint {
+                fn from(n: $ty) -> Self {
                     let zeros = n.leading_zeros();
                     let end = core::mem::size_of::<$ty>() * 8 - zeros as usize;
 
@@ -82,23 +91,30 @@ macro_rules! from_uint(
 from_uint!(u8, u16, u32, u64, u128);
 
 impl VarUint {
-    /// Default constructor for [`VarUint`] number
-    pub fn new(bytes: impl AsRef<[u8]>) -> Result<Self> {
+    /// Construct `VarUint`.
+    pub fn new(bytes: impl AsRef<[u8]>) -> Result<Self, ConvertError> {
         let idx = bytes
             .as_ref()
             .iter()
             .enumerate()
             .find(|&(_, &byte)| (byte & 0b1000_0000) == 0)
-            .ok_or_else(|| ("Last byte should be less than 128".to_owned()))?
+            .ok_or_else(|| {
+                ConvertError::new(String::from(
+                    "Failed to find last byte(byte smaller than 128)",
+                ))
+            })?
             .0;
         let (payload, empty) = bytes.as_ref().split_at(idx + 1);
         let payload = payload.to_vec();
 
         if empty.is_empty() {
-            Ok(Self { payload })
-        } else {
-            Err(format!("Last byte shouldn't be followed by anything").into())
+            return Ok(Self { payload });
         }
+
+        Err(ConvertError::new(format!(
+            "{:?}: found these bytes following last byte",
+            empty
+        )))
     }
 }
 
@@ -106,7 +122,8 @@ impl VarUint {
 mod tests {
     #![allow(clippy::restriction)]
 
-    use core::convert::TryInto;
+    #[cfg(not(feature = "std"))]
+    use alloc::vec;
 
     use super::*;
 
@@ -121,7 +138,7 @@ mod tests {
 
     #[test]
     fn test_basic_from() {
-        let n_should: u64 = VarUint::new([0b1000_0000, 0b1000_0000, 0b0000_0001])
+        let n_should: u64 = VarUint::new(&[0b1000_0000, 0b1000_0000, 0b0000_0001])
             .unwrap()
             .try_into()
             .unwrap();

@@ -2,7 +2,12 @@
 #[macro_use]
 extern crate alloc;
 
+mod hash;
+mod lib_tmp;
+mod multihash;
+mod signature;
 mod utils;
+mod varint;
 
 use alloc::string::{String, ToString};
 use core::{convert::TryFrom, str::FromStr};
@@ -15,12 +20,12 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-use iroha_crypto_core::{
-    multihash::{DigestFunction as CoreMultihashDigestFunction, Multihash as CoreMultihash},
-    Algorithm as CoreAlgorithm, Hash as CoreHash, KeyGenConfiguration as CoreKeyGenConfiguration,
-    KeyPair as CoreKeyPair, PrivateKey as CorePrivateKey, PublicKey as CorePublicKey,
-    Signature as CoreSignature,
-};
+// use iroha_crypto_core::{
+//     multihash::{DigestFunction as CoreMultihashDigestFunction, Multihash as CoreMultihash},
+//     Algorithm as CoreAlgorithm, Hash as CoreHash, KeyGenConfiguration as CoreKeyGenConfiguration,
+//     KeyPair as CoreKeyPair, PrivateKey as CorePrivateKey, PublicKey as CorePublicKey,
+//     Signature as CoreSignature,
+// };
 
 use alloc::vec::Vec;
 
