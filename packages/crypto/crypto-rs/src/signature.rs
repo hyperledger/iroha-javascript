@@ -21,18 +21,21 @@ use ursa::{
         SignatureScheme,
     },
 };
+use crate::utils::BytesInputJs;
 
 use super::*;
+
 pub type Payload = Vec<u8>;
 
 /// Represents signature of the data (`Block` or `Transaction` for example).
 #[derive(
-    DebugCustom, Clone, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, Serialize, Deserialize,
+DebugCustom, Clone, PartialEq, Eq, PartialOrd, Ord, Encode, Decode, Serialize, Deserialize,
 )]
 #[debug(
-    fmt = "{{ pub_key: {public_key}, payload: {} }}",
-    "hex::encode_upper(payload.as_slice())"
+fmt = "{{ pub_key: {public_key}, payload: {} }}",
+"hex::encode_upper(payload.as_slice())"
 )]
+#[wasm_bindgen]
 pub struct Signature {
     /// Public key that is used for verification. Payload is verified by algorithm
     /// that corresponds with the public key's digest function.
@@ -96,13 +99,63 @@ impl Signature {
     }
 }
 
-// #[wasm_bindgen]
-// impl Signature {
-//     pub fn create(key_pair: &KeyPair, payload: &[u8]) -> Result<Signature, JsError> {
-//         let value = Signature::new(key_pair.clone(), payload).map_err(JsErrorWrap)?;
-//         Ok(value)
-//     }
-// }
+#[wasm_bindgen]
+impl Signature {
+    pub fn create_from_key_pair(key_pair: &KeyPair, payload: BytesInputJs) -> Result<Signature, JsError> {
+        let payload: Vec<_> = payload.try_into()?;
+        let value = Signature::new(key_pair.clone(), &payload).map_err(JsErrorWrap::from)?;
+        Ok(value)
+    }
+
+    pub fn create_from_public_key(pub_key: &PublicKey, payload: BytesInputJs) -> Result<Signature, JsError> {
+        Ok(Signature { public_key: pub_key.clone(), payload: payload.try_into()? })
+    }
+
+    pub fn verify_wasm(&self, payload: BytesInputJs) -> Result<VerifyResultJs, JsError> {
+        let payload: Vec<_> = payload.try_into()?;
+        let res = self.verify(&payload).try_into()?;
+        Ok(res)
+    }
+}
+
+#[wasm_bindgen(typescript_custom_section)]
+const TS_VERIFY_RESULT: &str = r#"
+export type VerifyResult =
+    | { t: 'ok' }
+    | { t: 'err', error: string }
+"#;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "VerifyResult")]
+    pub type VerifyResultJs;
+}
+
+impl TryFrom<Result<(), Error>> for VerifyResultJs {
+    type Error = serde_wasm_bindgen::Error;
+
+    fn try_from(value: Result<(), Error>) -> Result<Self, Self::Error> {
+        #[derive(Serialize)]
+        #[serde(tag = "t")]
+        enum VerifyResultSer {
+            #[serde(rename(serialize = "ok"))]
+            Ok,
+            #[serde(rename(serialize = "err"))]
+            Err { error: String },
+        }
+
+        let serializable = match value {
+            Ok(()) => VerifyResultSer::Ok,
+            Err(error) => VerifyResultSer::Err { error: error.to_string() }
+        };
+
+        let js_value = serde_wasm_bindgen::to_value(&serializable)?;
+
+        Ok(Self { obj: js_value })
+    }
+}
+
+// enum VerifyResult
 
 impl From<Signature> for (PublicKey, Payload) {
     fn from(
@@ -155,6 +208,7 @@ impl<T> PartialEq for SignatureOf<T> {
         self.0.eq(&other.0)
     }
 }
+
 impl<T> Eq for SignatureOf<T> {}
 
 impl<T> PartialOrd for SignatureOf<T> {
@@ -162,6 +216,7 @@ impl<T> PartialOrd for SignatureOf<T> {
         self.0.partial_cmp(&other.0)
     }
 }
+
 impl<T> Ord for SignatureOf<T> {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.0.cmp(&other.0)
@@ -263,17 +318,19 @@ impl<T> Clone for SignaturesOf<T> {
         Self { signatures }
     }
 }
+
 impl<T> PartialEq for SignaturesOf<T> {
     fn eq(&self, other: &Self) -> bool {
         self.signatures.eq(&other.signatures)
     }
 }
+
 impl<T> Eq for SignaturesOf<T> {}
 
 impl<'de, T> Deserialize<'de> for SignaturesOf<T> {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
+        where
+            D: serde::Deserializer<'de>,
     {
         use serde::de::Error as _;
 
@@ -289,6 +346,7 @@ impl<'de, T> Deserialize<'de> for SignaturesOf<T> {
         Ok(Self { signatures })
     }
 }
+
 impl<T> Decode for SignaturesOf<T> {
     fn decode<I: Input>(input: &mut I) -> Result<Self, parity_scale_codec::Error> {
         let signatures = <btree_map::BTreeMap<PublicKey, SignatureOf<T>>>::decode(input)?;
@@ -319,8 +377,8 @@ impl<'itm, T> IntoIterator for &'itm SignaturesOf<T> {
 
 impl<A> Extend<SignatureOf<A>> for SignaturesOf<A> {
     fn extend<T>(&mut self, iter: T)
-    where
-        T: IntoIterator<Item = SignatureOf<A>>,
+        where
+            T: IntoIterator<Item=SignatureOf<A>>,
     {
         for signature in iter {
             self.insert(signature);
@@ -355,7 +413,7 @@ impl<T> TryFrom<btree_set::BTreeSet<SignatureOf<T>>> for SignaturesOf<T> {
 }
 
 impl<A> FromIterator<SignatureOf<A>> for Result<SignaturesOf<A>, Error> {
-    fn from_iter<T: IntoIterator<Item = SignatureOf<A>>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item=SignatureOf<A>>>(iter: T) -> Self {
         let signatures: btree_set::BTreeSet<_> = iter.into_iter().collect();
         signatures.try_into()
     }
@@ -382,7 +440,7 @@ impl<T> SignaturesOf<T> {
     }
 
     /// Returns signatures that have passed verification.
-    pub fn verified_by_hash(&self, hash: HashOf<T>) -> impl Iterator<Item = &SignatureOf<T>> {
+    pub fn verified_by_hash(&self, hash: HashOf<T>) -> impl Iterator<Item=&SignatureOf<T>> {
         self.signatures
             .values()
             .filter(move |sign| sign.verify_hash(&hash).is_ok())
@@ -392,7 +450,7 @@ impl<T> SignaturesOf<T> {
     pub fn into_verified_by_hash(
         self,
         hash: &HashOf<T>,
-    ) -> impl Iterator<Item = SignatureOf<T>> + '_ {
+    ) -> impl Iterator<Item=SignatureOf<T>> + '_ {
         self.signatures
             .into_values()
             .filter(move |sign| sign.verify_hash(hash).is_ok())
@@ -400,7 +458,7 @@ impl<T> SignaturesOf<T> {
 
     /// Returns all signatures.
     #[inline]
-    pub fn iter(&self) -> impl ExactSizeIterator<Item = &SignatureOf<T>> {
+    pub fn iter(&self) -> impl ExactSizeIterator<Item=&SignatureOf<T>> {
         self.into_iter()
     }
 
@@ -442,7 +500,7 @@ impl<T: Encode> SignaturesOf<T> {
     }
 
     /// Returns signatures that have passed verification.
-    pub fn verified(&self, value: &T) -> impl Iterator<Item = &SignatureOf<T>> {
+    pub fn verified(&self, value: &T) -> impl Iterator<Item=&SignatureOf<T>> {
         self.verified_by_hash(HashOf::new(value))
     }
 }
@@ -498,7 +556,7 @@ mod tests {
         let key_pair = KeyPair::generate_with_configuration(
             KeyGenConfiguration::default().with_algorithm(Algorithm::Ed25519),
         )
-        .expect("Failed to generate key pair.");
+            .expect("Failed to generate key pair.");
         let message = b"Test message to sign.";
         let signature =
             Signature::new(key_pair.clone(), message).expect("Failed to create signature.");
@@ -511,7 +569,7 @@ mod tests {
         let key_pair = KeyPair::generate_with_configuration(
             KeyGenConfiguration::default().with_algorithm(Algorithm::Secp256k1),
         )
-        .expect("Failed to generate key pair.");
+            .expect("Failed to generate key pair.");
         let message = b"Test message to sign.";
         let signature =
             Signature::new(key_pair.clone(), message).expect("Failed to create signature.");
@@ -524,7 +582,7 @@ mod tests {
         let key_pair = KeyPair::generate_with_configuration(
             KeyGenConfiguration::default().with_algorithm(Algorithm::BlsNormal),
         )
-        .expect("Failed to generate key pair.");
+            .expect("Failed to generate key pair.");
         let message = b"Test message to sign.";
         let signature =
             Signature::new(key_pair.clone(), message).expect("Failed to create signature.");
@@ -537,7 +595,7 @@ mod tests {
         let key_pair = KeyPair::generate_with_configuration(
             KeyGenConfiguration::default().with_algorithm(Algorithm::BlsSmall),
         )
-        .expect("Failed to generate key pair.");
+            .expect("Failed to generate key pair.");
         let message = b"Test message to sign.";
         let signature =
             Signature::new(key_pair.clone(), message).expect("Failed to create signature.");
@@ -568,4 +626,10 @@ mod tests {
 
         Ok(())
     }
+
+    // #[test]
+    // fn serialize_verify_result() {
+    //     let VerifyResultJs { obj: js } = Ok(()).try_into().unwrap();
+    //     // assert_eq!(, "");
+    // }
 }

@@ -25,8 +25,8 @@ pub struct JsErrorWrap(String);
 // }
 
 impl<T> From<T> for JsErrorWrap
-where
-    T: ToString,
+    where
+        T: ToString,
 {
     fn from(value: T) -> Self {
         Self(value.to_string())
@@ -43,6 +43,41 @@ pub fn decode_hex(hex: String) -> Result<Vec<u8>, JsError> {
     let hex = hex::decode(hex).map_err(JsErrorWrap::from)?;
     Ok(hex)
 }
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "BytesInput")]
+    pub type BytesInputJs;
+}
+
+#[wasm_bindgen(typescript_custom_section)]
+const TS_BYTES_INPUT: &str = r#"
+export type BytesInput =
+    | { t: 'Array', c: Uint8Array }
+    | { t: 'Hex', c: string }
+"#;
+
+impl TryFrom<BytesInputJs> for Vec<u8> {
+    type Error = JsError;
+
+    fn try_from(value: BytesInputJs) -> Result<Self, Self::Error> {
+        #[derive(serde::Deserialize)]
+        #[serde(tag = "t", content = "c")]
+        enum BytesInputEnum {
+            Array(Vec<u8>),
+            Hex(String),
+        }
+
+        let structured: BytesInputEnum = serde_wasm_bindgen::from_value(value.obj)?;
+        let vec = match structured {
+            BytesInputEnum::Array(vec) => vec,
+            BytesInputEnum::Hex(hexstr) => hex::decode(hexstr).map_err(JsErrorWrap::from)?
+        };
+
+        Ok(vec)
+    }
+}
+
 
 // impl<T> JsErrorWrap<T> where T: ToString {
 //     pub fn

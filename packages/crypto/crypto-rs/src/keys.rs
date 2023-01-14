@@ -5,7 +5,7 @@ pub use priv_key::PrivateKey;
 pub use pub_key::PublicKey;
 
 mod pub_key {
-    use crate::utils::decode_hex;
+    use crate::utils::{BytesInputJs, decode_hex};
     use super::*;
 
     /// Public Key used in signatures.
@@ -171,31 +171,37 @@ mod pub_key {
             key.clone().into()
         }
 
-        pub fn from_bytes(bytes: Vec<u8>) -> Result<PublicKey, JsError> {
+        pub fn from_bytes(bytes: BytesInputJs) -> Result<PublicKey, JsError> {
+            let bytes: Vec<_> = bytes.try_into()?;
             let pk = PublicKey::decode(&mut (&bytes[..])).map_err(JsErrorWrap::from)?;
             Ok(pk)
-        }
-
-        pub fn from_bytes_hex(hex: String) -> Result<PublicKey, JsError> {
-            Self::from_bytes(decode_hex(hex)?)
         }
 
         pub fn to_format(&self) -> String {
             format!("{self:?}")
         }
 
+        pub fn to_multihash(&self) -> Multihash {
+            self.clone().into()
+        }
+
         pub fn to_multihash_hex(&self) -> String {
             self.to_string()
         }
 
-        // #[wasm_bindgen(js_name = "digest_function", getter)]
+        #[wasm_bindgen(js_name = "digest_function", getter)]
         pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
             self.digest_function().into()
         }
 
-        // #[wasm_bindgen(js_name = "payload", getter)]
+        #[wasm_bindgen(js_name = "payload")]
         pub fn payload_wasm(&self) -> Vec<u8> {
             self.payload.clone()
+        }
+
+        #[wasm_bindgen(js_name = "payload_hex")]
+        pub fn payload_hex_wasm(&self) -> String {
+            hex::encode(&self.payload)
         }
     }
 }
@@ -310,13 +316,20 @@ export interface PrivateKeyJson {
             self.digest_function().into()
         }
 
+        #[wasm_bindgen(js_name = "payload")]
         pub fn payload_wasm(&self) -> Vec<u8> {
             self.payload.clone()
+        }
+
+        #[wasm_bindgen(js_name = "payload_hex")]
+        pub fn payload_hex_wasm(&self) -> String {
+            hex::encode(&self.payload)
         }
     }
 }
 
 mod pair {
+    use crate::utils::BytesInputJs;
     use super::*;
 
     /// Options for key generation
@@ -348,19 +361,6 @@ mod pair {
                 }
             }
         }
-    }
-
-    #[wasm_bindgen(typescript_custom_section)]
-    const TS_KEY_GEN_OPTION: &str = r#"
-export type KeyGenOption =
-    | { t: 'UseSeed', c: Uint8Array }
-    | { t: 'FromPrivateKey', c: PrivateKeyJson }
-"#;
-
-    #[wasm_bindgen]
-    extern "C" {
-        #[wasm_bindgen(typescript_type = "KeyGenOption")]
-        pub type KeyGenOptionJsRepr;
     }
 
     /// Configuration of key generation
@@ -402,28 +402,34 @@ export type KeyGenOption =
             Self::default()
         }
 
+        #[wasm_bindgen(js_name = "create_with_algorithm")]
         pub fn with_algorithm_wasm_static(algorithm: AlgorithmJsStr) -> Result<KeyGenConfiguration, JsError> {
             Ok(Self {
                 algorithm: algorithm.try_into()?,
-                key_gen_option: None
+                key_gen_option: None,
             })
         }
 
+        #[wasm_bindgen(js_name = "with_algorithm")]
         pub fn with_algorithm_wasm(self, algorithm: AlgorithmJsStr) -> Result<KeyGenConfiguration, JsError> {
             Ok(self.with_algorithm(algorithm.try_into()?))
         }
 
+        #[wasm_bindgen(js_name = "use_private_key")]
         pub fn use_private_key_wasm(self, key: &PrivateKey) -> Self {
             self.use_private_key(key.clone())
         }
 
-        pub fn use_seed_wasm(self, seed: Vec<u8>) -> Self {
-            self.use_seed(seed)
+        #[wasm_bindgen(js_name = "use_seed")]
+        pub fn use_seed_wasm(self, seed: BytesInputJs) -> Result<KeyGenConfiguration, JsError> {
+            let seed: Vec<_> = seed.try_into()?;
+            Ok(self.use_seed(seed))
         }
     }
 
     /// Pair of Public and Private keys.
     #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+    #[wasm_bindgen]
     pub struct KeyPair {
         /// Public Key.
         pub(crate) public_key: PublicKey,
@@ -553,6 +559,51 @@ export type KeyGenOption =
     impl From<KeyPair> for (PublicKey, PrivateKey) {
         fn from(key_pair: KeyPair) -> Self {
             (key_pair.public_key, key_pair.private_key)
+        }
+    }
+
+    #[wasm_bindgen(typescript_custom_section)]
+    const TS_KEYPAIR_JSON: &str = r#"
+export interface KeyPairJson {
+    public_key: string
+    private_key: PrivateKeyJson
+}
+"#;
+
+    #[wasm_bindgen]
+    extern "C" {
+        #[wasm_bindgen(typescript_type = "KeyPairJson")]
+        pub type KeyPairJson;
+    }
+
+    #[wasm_bindgen]
+    impl KeyPair {
+        pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
+            self.digest_function().into()
+        }
+
+        pub fn private_key_wasm(&self) -> PrivateKey {
+            self.private_key.clone()
+        }
+
+        pub fn public_key_wasm(&self) -> PublicKey {
+            self.public_key.clone()
+        }
+
+        pub fn from_json(value: KeyPairJson) -> Result<KeyPair, JsError> {
+            let kp: KeyPair = serde_wasm_bindgen::from_value(value.obj).map_err(JsErrorWrap::from)?;
+            Ok(kp)
+        }
+
+        pub fn generate_with_configuration_wasm(key_gen_configuration: &KeyGenConfiguration) -> Result<KeyPair, JsError> {
+            let kp = Self::generate_with_configuration(key_gen_configuration.clone()).map_err(JsErrorWrap::from)?;
+            Ok(kp)
+        }
+
+        /// Generate with default configuration
+        pub fn generate_wasm() -> Result<KeyPair, JsError> {
+            let kp = Self::generate().map_err(JsErrorWrap::from)?;
+            Ok(kp)
         }
     }
 }

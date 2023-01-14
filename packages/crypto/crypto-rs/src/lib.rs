@@ -41,10 +41,10 @@ use ursa::{
 };
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(start)]
-pub fn main() {
-    utils::set_panic_hook()
-}
+// #[wasm_bindgen(start)]
+// pub fn main() {
+//     utils::set_panic_hook()
+// }
 
 /// Error when dealing with cryptographic functions
 #[derive(Debug, Display)]
