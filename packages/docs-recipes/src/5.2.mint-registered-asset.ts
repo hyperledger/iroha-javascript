@@ -1,7 +1,9 @@
 import {
+  AccountId,
   AssetDefinitionId,
+  AssetId,
   DomainId,
-  EvaluatesToRegistrableBox,
+  EvaluatesToIdBox,
   EvaluatesToValue,
   Expression,
   IdBox,
@@ -16,16 +18,24 @@ const mint = Instruction(
     object: EvaluatesToValue({
       expression: Expression('Raw', Value('U32', 42)),
     }),
-    destination_id: EvaluatesToRegistrableBox({
+    destination_id: EvaluatesToIdBox({
       expression: Expression(
         'Raw',
         Value(
           'Id',
           IdBox(
-            'AssetDefinitionId',
-            AssetDefinitionId({
-              name: 'roses',
-              domain_id: DomainId({ name: 'wonderland' }),
+            'AssetId',
+            AssetId({
+              account_id: AccountId({
+                name: 'alice',
+                domain_id: DomainId({
+                  name: 'wonderland',
+                }),
+              }),
+              definition_id: AssetDefinitionId({
+                name: 'time',
+                domain_id: DomainId({ name: 'looking_glass' }),
+              }),
             }),
           ),
         ),
