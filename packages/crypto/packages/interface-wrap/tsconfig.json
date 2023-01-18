@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      // TODO comment
+      "~wasm-pkg": ["../../crypto-rs/wasm-pkg-nodejs/iroha_crypto.d.ts"]
+    }
+  },
+  "include": ["src"]
+}

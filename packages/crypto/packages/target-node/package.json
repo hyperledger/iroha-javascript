@@ -20,6 +20,7 @@
     "@iroha2/crypto-core": "workspace:^0.1.1"
   },
   "devDependencies": {
-    "@types/node": "^18.6.4"
+    "@iroha2/crypto-interface-wrap": "workspace:^0.0.0",
+    "@types/node": "^18.11.18"
   }
 }

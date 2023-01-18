@@ -1,0 +1,6 @@
+{
+  "name": "@iroha2/crypto-interface-wrap",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/lib.ts"
+}
