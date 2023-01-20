@@ -25,41 +25,51 @@ export const DigestFunction = {
  * Or even track & free everything automatically within a scope like `track(() => { ... })`?
  */
 class FreeGuard<T extends Freeable> implements Freeable {
-  #object: null | [T]
+  /**
+   * See {@link SingleFreeWrap.__guard}
+   * @private
+   */
+  public __object: null | [T]
 
   public constructor(value: T) {
-    this.#object = [value]
+    this.__object = [value]
   }
 
-  public get object(): T {
-    if (!this.#object) {
+  public get _object(): T {
+    if (!this.__object) {
       throw new Error('Already freed')
     }
-    return this.#object[0]
+    return this.__object[0]
   }
 
   public free(): void {
-    this.object.free()
-    this.#object = null
+    this._object.free()
+    this.__object = null
   }
 }
 
 class SingleFreeWrap<T extends Freeable> implements Freeable {
-  #guard: FreeGuard<T>
+  /**
+   * We don't use `#guard` or `private guard`, because it breaks assignability checks with
+   * non-direct implementations
+   * @private
+   */
+  public __guard: FreeGuard<T>
 
   protected constructor(object: T) {
-    this.#guard = new FreeGuard(object)
+    this.__guard = new FreeGuard(object)
   }
 
   /**
+   * Get access to the underlying free-able object. For internal use.
    * @internal
    */
   public get underlying(): T {
-    return this.#guard.object
+    return this.__guard._object
   }
 
   public free() {
-    this.#guard.free()
+    this.__guard.free()
   }
 }
 

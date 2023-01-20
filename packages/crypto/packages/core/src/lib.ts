@@ -1,3 +1,3 @@
-import * as IrohaCryptoInterface from '@iroha2/crypto-interface-wrap'
+import * as crypto from '@iroha2/crypto-interface-wrap'
 
-export { IrohaCryptoInterface }
+export type IrohaCryptoInterface = typeof crypto
