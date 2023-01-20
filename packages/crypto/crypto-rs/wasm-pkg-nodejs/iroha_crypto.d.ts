@@ -18,6 +18,9 @@ export function digest_function_to_byte_code(digest: DigestFunction): number;
 * @returns {Algorithm}
 */
 export function algorithm_default(): Algorithm;
+/**
+*/
+export function main(): void;
 
 export type VerifyResult =
     | { t: 'ok' }
@@ -67,20 +70,24 @@ export type Algorithm =
 export class Hash {
   free(): void;
 /**
-* @returns {Uint8Array}
-*/
-  clone_bytes(): Uint8Array;
-/**
-* Hash the given bytes.
-* @param {Uint8Array} bytes
-* @returns {Hash}
-*/
-  static hash(bytes: Uint8Array): Hash;
-/**
 * Construct zeroed hash
 * @returns {Hash}
 */
   static zeroed(): Hash;
+/**
+* Hash the given bytes.
+* @param {BytesInput} bytes
+* @returns {Hash}
+*/
+  static hash(bytes: BytesInput): Hash;
+/**
+* @returns {Uint8Array}
+*/
+  bytes(): Uint8Array;
+/**
+* @returns {string}
+*/
+  bytes_hex(): string;
 }
 /**
 * Configuration of key generation
@@ -90,7 +97,7 @@ export class KeyGenConfiguration {
 /**
 * @returns {KeyGenConfiguration}
 */
-  static default_wasm(): KeyGenConfiguration;
+  static _default(): KeyGenConfiguration;
 /**
 * @param {Algorithm} algorithm
 * @returns {KeyGenConfiguration}
@@ -118,18 +125,6 @@ export class KeyGenConfiguration {
 export class KeyPair {
   free(): void;
 /**
-* @returns {Algorithm}
-*/
-  digest_function_wasm(): Algorithm;
-/**
-* @returns {PrivateKey}
-*/
-  private_key_wasm(): PrivateKey;
-/**
-* @returns {PublicKey}
-*/
-  public_key_wasm(): PublicKey;
-/**
 * @param {KeyPairJson} value
 * @returns {KeyPair}
 */
@@ -138,12 +133,27 @@ export class KeyPair {
 * @param {KeyGenConfiguration} key_gen_configuration
 * @returns {KeyPair}
 */
-  static generate_with_configuration_wasm(key_gen_configuration: KeyGenConfiguration): KeyPair;
+  static generate_with_configuration(key_gen_configuration: KeyGenConfiguration): KeyPair;
 /**
 * Generate with default configuration
 * @returns {KeyPair}
 */
-  static generate_wasm(): KeyPair;
+  static generate(): KeyPair;
+/**
+* @returns {PrivateKey}
+*/
+  private_key(): PrivateKey;
+/**
+* @returns {PublicKey}
+*/
+  public_key(): PublicKey;
+/**
+* @returns {KeyPairJson}
+*/
+  to_json(): KeyPairJson;
+/**
+*/
+  readonly digest_function: Algorithm;
 }
 /**
 * Multihash
@@ -187,10 +197,6 @@ export class PrivateKey {
 */
   static from_json(value: PrivateKeyJson): PrivateKey;
 /**
-* @returns {Algorithm}
-*/
-  digest_function(): Algorithm;
-/**
 * @returns {Uint8Array}
 */
   payload(): Uint8Array;
@@ -198,6 +204,13 @@ export class PrivateKey {
 * @returns {string}
 */
   payload_hex(): string;
+/**
+* @returns {string}
+*/
+  to_json(): string;
+/**
+*/
+  readonly digest_function: Algorithm;
 }
 /**
 * Public Key used in signatures.

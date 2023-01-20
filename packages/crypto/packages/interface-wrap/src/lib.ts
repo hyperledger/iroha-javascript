@@ -29,17 +29,17 @@ class FreeGuard<T extends Freeable> implements Freeable {
    * See {@link SingleFreeWrap.__guard}
    * @private
    */
-  public __object: null | [T]
+  public __internal: null | [T]
 
   public constructor(value: T) {
-    this.__object = [value]
+    this.__internal = [value]
   }
 
-  public get _object(): T {
-    if (!this.__object) {
+  public get object(): T {
+    if (!this.__internal) {
       throw new Error('Already freed')
     }
-    return this.__object[0]
+    return this.__internal[0]
   }
 
   public free(): void {
@@ -65,7 +65,13 @@ class SingleFreeWrap<T extends Freeable> implements Freeable {
    * @internal
    */
   public get underlying(): T {
-    return this.__guard._object
+    return this.__guard.object
+  }
+
+  public underlyingMove(fn: (object: T) => T): void {
+    const moved = fn(this.underlying)
+    this.__guard.moved()
+    this.__guard = new FreeGuard(moved)
   }
 
   public free() {
@@ -111,14 +117,15 @@ export class Hash extends SingleFreeWrap<wasmPkg.Hash> {
     return new Hash(wasmPkg.Hash.zeroed())
   }
 
-  // TODO accept hex payload too
-  public static hash(payload: Uint8Array): Hash {
-    return new Hash(wasmPkg.Hash.hash(payload))
+  public static hash(payload: BytesInputTuple): Hash {
+    return new Hash(wasmPkg.Hash.hash(bytesInputTupleToEnum(payload)))
   }
 
   // TODO extract as HEX
-  public bytes(): Uint8Array {
-    return this.underlying.clone_bytes()
+  public bytes(): Uint8Array
+  public bytes(mode: 'hex'): string
+  public bytes(mode?: 'hex'): Uint8Array | string {
+    return mode === 'hex' ? this.underlying.bytes_hex() : this.underlying.bytes()
   }
 }
 
@@ -153,11 +160,11 @@ export class PrivateKey extends SingleFreeWrap<wasmPkg.PrivateKey> implements Ha
   }
 
   public static fromKeyPair(pair: KeyPair): PrivateKey {
-    return new PrivateKey(pair.underlying.private_key_wasm())
+    return new PrivateKey(pair.underlying.private_key())
   }
 
   public get digestFunction(): Algorithm {
-    return this.underlying.digest_function()
+    return this.underlying.digest_function
   }
 
   public payload(): Uint8Array
@@ -184,7 +191,7 @@ export class PublicKey extends SingleFreeWrap<wasmPkg.PublicKey> implements HasD
   }
 
   public static fromKeyPair(pair: KeyPair): PublicKey {
-    return new PublicKey(pair.underlying.public_key_wasm())
+    return new PublicKey(pair.underlying.public_key())
   }
 
   public static fromBytes(...bytes: BytesInputTuple): PublicKey {
@@ -211,7 +218,7 @@ export class PublicKey extends SingleFreeWrap<wasmPkg.PublicKey> implements HasD
 
 export class KeyGenConfiguration extends SingleFreeWrap<wasmPkg.KeyGenConfiguration> {
   public static default(): KeyGenConfiguration {
-    return new KeyGenConfiguration(wasmPkg.KeyGenConfiguration.default_wasm())
+    return new KeyGenConfiguration(wasmPkg.KeyGenConfiguration._default())
   }
 
   public static withAlgorithm(algorithm: Algorithm): KeyGenConfiguration {
@@ -219,17 +226,17 @@ export class KeyGenConfiguration extends SingleFreeWrap<wasmPkg.KeyGenConfigurat
   }
 
   public withAlgorithm(algorithm: Algorithm): KeyGenConfiguration {
-    this.underlying.with_algorithm(algorithm)
+    this.underlyingMove((cfg) => cfg.with_algorithm(algorithm))
     return this
   }
 
   public usePrivateKey(privateKey: PrivateKey): KeyGenConfiguration {
-    this.underlying.use_private_key(privateKey.underlying)
+    this.underlyingMove((cfg) => cfg.use_private_key(privateKey.underlying))
     return this
   }
 
   public useSeed(...seed: BytesInputTuple): KeyGenConfiguration {
-    this.underlying.use_seed(bytesInputTupleToEnum(seed))
+    this.underlyingMove((cfg) => cfg.use_seed(bytesInputTupleToEnum(seed)))
     return this
   }
 
@@ -247,13 +254,13 @@ export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasDiges
 
   public static generate(configuration?: KeyGenConfiguration): KeyPair {
     const pair = configuration
-      ? wasmPkg.KeyPair.generate_with_configuration_wasm(configuration.underlying)
-      : wasmPkg.KeyPair.generate_wasm()
+      ? wasmPkg.KeyPair.generate_with_configuration(configuration.underlying)
+      : wasmPkg.KeyPair.generate()
     return new KeyPair(pair)
   }
 
   public get digestFunction(): Algorithm {
-    return this.underlying.digest_function_wasm()
+    return this.underlying.digest_function
   }
 
   public privateKey(): PrivateKey {
@@ -266,6 +273,10 @@ export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasDiges
 
   public sign(payload: BytesInputTuple): Signature {
     return Signature.fromKeyPair(this, payload)
+  }
+
+  public toJSON(): wasmPkg.KeyPairJson {
+    return this.underlying.to_json()
   }
 }
 

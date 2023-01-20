@@ -1,4 +1,4 @@
-use super::wasm_bindgen;
+use super::*;
 
 use core::{hash, marker::PhantomData};
 
@@ -10,22 +10,23 @@ use ursa::{
     blake2::{digest::VariableOutput, VarBlake2b},
     sha3::digest::Input,
 };
+use crate::utils::BytesInputJs;
 
 /// Hash of Iroha entities. Currently supports only blake2b-32.
 #[derive(
-    Clone,
-    Copy,
-    Display,
-    DebugCustom,
-    Hash,
-    Eq,
-    PartialEq,
-    Ord,
-    PartialOrd,
-    Decode,
-    Encode,
-    Deserialize,
-    Serialize,
+Clone,
+Copy,
+Display,
+DebugCustom,
+Hash,
+Eq,
+PartialEq,
+Ord,
+PartialOrd,
+Decode,
+Encode,
+Deserialize,
+Serialize,
 )]
 #[repr(transparent)]
 #[serde(transparent)]
@@ -75,18 +76,26 @@ impl Hash {
 #[wasm_bindgen]
 impl Hash {
     /// Construct zeroed hash
-    #[wasm_bindgen(js_name=zeroed)]
+    #[wasm_bindgen(js_name = "zeroed")]
     pub fn zeroed_wasm() -> Self {
         Self::zeroed()
     }
 
     /// Hash the given bytes.
-    pub fn hash(bytes: &[u8]) -> Self {
-        Self::new(bytes)
+    #[wasm_bindgen(js_name = "hash")]
+    pub fn hash_wasm(bytes: BytesInputJs) -> Result<Hash, JsError> {
+        let bytes: Vec<_> = bytes.try_into()?;
+        Ok(Self::new(bytes))
     }
 
-    pub fn clone_bytes(&self) -> Vec<u8> {
+    #[wasm_bindgen(js_name = "bytes")]
+    pub fn bytes_wasm(&self) -> Vec<u8> {
         self.0.into()
+    }
+
+    #[wasm_bindgen(js_name = "bytes_hex")]
+    pub fn bytes_hex_wasm(&self) -> String {
+        hex::encode(self.bytes_wasm())
     }
 }
 
@@ -130,6 +139,7 @@ impl<T> Clone for HashOf<T> {
         Self(self.0, PhantomData)
     }
 }
+
 impl<T> Copy for HashOf<T> {}
 
 impl<T> PartialEq for HashOf<T> {
@@ -137,6 +147,7 @@ impl<T> PartialEq for HashOf<T> {
         self.0.eq(&other.0)
     }
 }
+
 impl<T> Eq for HashOf<T> {}
 
 impl<T> PartialOrd for HashOf<T> {
@@ -144,6 +155,7 @@ impl<T> PartialOrd for HashOf<T> {
         self.0.partial_cmp(&other.0)
     }
 }
+
 impl<T> Ord for HashOf<T> {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.0.cmp(&other.0)

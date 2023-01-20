@@ -211,13 +211,6 @@ function _assertClass(instance, klass) {
 function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
-
-function passArray8ToWasm0(arg, malloc) {
-    const ptr = malloc(arg.length * 1);
-    getUint8Memory0().set(arg, ptr / 1);
-    WASM_VECTOR_LEN = arg.length;
-    return ptr;
-}
 /**
 * @returns {DigestFunction}
 */
@@ -266,12 +259,24 @@ export function digest_function_to_byte_code(digest) {
     }
 }
 
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1);
+    getUint8Memory0().set(arg, ptr / 1);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
 /**
 * @returns {Algorithm}
 */
 export function algorithm_default() {
     const ret = wasm.algorithm_default();
     return takeObject(ret);
+}
+
+/**
+*/
+export function main() {
+    wasm.main();
 }
 
 function handleError(f, args) {
@@ -305,12 +310,40 @@ export class Hash {
         wasm.__wbg_hash_free(ptr);
     }
     /**
-    * @returns {Uint8Array}
+    * Construct zeroed hash
+    * @returns {Hash}
     */
-    clone_bytes() {
+    static zeroed() {
+        const ret = wasm.hash_zeroed();
+        return Hash.__wrap(ret);
+    }
+    /**
+    * Hash the given bytes.
+    * @param {BytesInput} bytes
+    * @returns {Hash}
+    */
+    static hash(bytes) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.hash_clone_bytes(retptr, this.ptr);
+            wasm.hash_hash(retptr, addHeapObject(bytes));
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return Hash.__wrap(r0);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    bytes() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.hash_bytes(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var v0 = getArrayU8FromWasm0(r0, r1).slice();
@@ -321,23 +354,19 @@ export class Hash {
         }
     }
     /**
-    * Hash the given bytes.
-    * @param {Uint8Array} bytes
-    * @returns {Hash}
+    * @returns {string}
     */
-    static hash(bytes) {
-        const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.hash_hash(ptr0, len0);
-        return Hash.__wrap(ret);
-    }
-    /**
-    * Construct zeroed hash
-    * @returns {Hash}
-    */
-    static zeroed() {
-        const ret = wasm.hash_zeroed();
-        return Hash.__wrap(ret);
+    bytes_hex() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.hash_bytes_hex(retptr, this.ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
     }
 }
 /**
@@ -366,8 +395,8 @@ export class KeyGenConfiguration {
     /**
     * @returns {KeyGenConfiguration}
     */
-    static default_wasm() {
-        const ret = wasm.keygenconfiguration_default_wasm();
+    static _default() {
+        const ret = wasm.keygenconfiguration__default();
         return KeyGenConfiguration.__wrap(ret);
     }
     /**
@@ -464,27 +493,6 @@ export class KeyPair {
         wasm.__wbg_keypair_free(ptr);
     }
     /**
-    * @returns {Algorithm}
-    */
-    digest_function_wasm() {
-        const ret = wasm.keypair_digest_function_wasm(this.ptr);
-        return takeObject(ret);
-    }
-    /**
-    * @returns {PrivateKey}
-    */
-    private_key_wasm() {
-        const ret = wasm.keypair_private_key_wasm(this.ptr);
-        return PrivateKey.__wrap(ret);
-    }
-    /**
-    * @returns {PublicKey}
-    */
-    public_key_wasm() {
-        const ret = wasm.keypair_public_key_wasm(this.ptr);
-        return PublicKey.__wrap(ret);
-    }
-    /**
     * @param {KeyPairJson} value
     * @returns {KeyPair}
     */
@@ -507,11 +515,11 @@ export class KeyPair {
     * @param {KeyGenConfiguration} key_gen_configuration
     * @returns {KeyPair}
     */
-    static generate_with_configuration_wasm(key_gen_configuration) {
+    static generate_with_configuration(key_gen_configuration) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             _assertClass(key_gen_configuration, KeyGenConfiguration);
-            wasm.keypair_generate_with_configuration_wasm(retptr, key_gen_configuration.ptr);
+            wasm.keypair_generate_with_configuration(retptr, key_gen_configuration.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -527,10 +535,10 @@ export class KeyPair {
     * Generate with default configuration
     * @returns {KeyPair}
     */
-    static generate_wasm() {
+    static generate() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.keypair_generate_wasm(retptr);
+            wasm.keypair_generate(retptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -538,6 +546,45 @@ export class KeyPair {
                 throw takeObject(r1);
             }
             return KeyPair.__wrap(r0);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {Algorithm}
+    */
+    get digest_function() {
+        const ret = wasm.keypair_digest_function(this.ptr);
+        return takeObject(ret);
+    }
+    /**
+    * @returns {PrivateKey}
+    */
+    private_key() {
+        const ret = wasm.keypair_private_key(this.ptr);
+        return PrivateKey.__wrap(ret);
+    }
+    /**
+    * @returns {PublicKey}
+    */
+    public_key() {
+        const ret = wasm.keypair_public_key(this.ptr);
+        return PublicKey.__wrap(ret);
+    }
+    /**
+    * @returns {KeyPairJson}
+    */
+    to_json() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.keypair_to_json(retptr, this.ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return takeObject(r0);
         } finally {
             wasm.__wbindgen_add_to_stack_pointer(16);
         }
@@ -721,7 +768,7 @@ export class PrivateKey {
     /**
     * @returns {Algorithm}
     */
-    digest_function() {
+    get digest_function() {
         const ret = wasm.privatekey_digest_function(this.ptr);
         return takeObject(ret);
     }
@@ -748,6 +795,21 @@ export class PrivateKey {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.privatekey_payload_hex(retptr, this.ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
+        }
+    }
+    /**
+    * @returns {string}
+    */
+    to_json() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.privatekey_to_json(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             return getStringFromWasm0(r0, r1);
@@ -1070,6 +1132,27 @@ export function __wbindgen_bigint_from_u64(arg0) {
 export function __wbindgen_is_undefined(arg0) {
     const ret = getObject(arg0) === undefined;
     return ret;
+};
+
+export function __wbg_new_abda76e883ba8a5f() {
+    const ret = new Error();
+    return addHeapObject(ret);
+};
+
+export function __wbg_stack_658279fe44541cf6(arg0, arg1) {
+    const ret = getObject(arg1).stack;
+    const ptr0 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    getInt32Memory0()[arg0 / 4 + 1] = len0;
+    getInt32Memory0()[arg0 / 4 + 0] = ptr0;
+};
+
+export function __wbg_error_f851667af71bcfc6(arg0, arg1) {
+    try {
+        console.error(getStringFromWasm0(arg0, arg1));
+    } finally {
+        wasm.__wbindgen_free(arg0, arg1);
+    }
 };
 
 export function __wbindgen_object_clone_ref(arg0) {

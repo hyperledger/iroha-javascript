@@ -1,7 +1,7 @@
 //! This module contains structures and implementations related to the cryptographic parts of the Iroha.
-//! But in WebAssembly-compatible maner.
-// #![allow(clippy::std_instead_of_alloc, clippy::arithmetic)]
-// #![cfg_attr(not(feature = "std"), no_std)]
+//! But in WebAssembly-compatible manner.
+//! 
+//! TODO rustfmt & clippy
 #![no_std]
 
 #[macro_use]
@@ -41,10 +41,10 @@ use ursa::{
 };
 use wasm_bindgen::prelude::*;
 
-// #[wasm_bindgen(start)]
-// pub fn main() {
-//     utils::set_panic_hook()
-// }
+#[wasm_bindgen(start)]
+pub fn main() {
+    utils::set_panic_hook()
+}
 
 /// Error when dealing with cryptographic functions
 #[derive(Debug, Display)]

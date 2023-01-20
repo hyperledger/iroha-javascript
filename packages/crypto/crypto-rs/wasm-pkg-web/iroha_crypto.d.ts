@@ -18,6 +18,9 @@ export function digest_function_to_byte_code(digest: DigestFunction): number;
 * @returns {Algorithm}
 */
 export function algorithm_default(): Algorithm;
+/**
+*/
+export function main(): void;
 
 export type VerifyResult =
     | { t: 'ok' }
@@ -67,20 +70,24 @@ export type Algorithm =
 export class Hash {
   free(): void;
 /**
-* @returns {Uint8Array}
-*/
-  clone_bytes(): Uint8Array;
-/**
-* Hash the given bytes.
-* @param {Uint8Array} bytes
-* @returns {Hash}
-*/
-  static hash(bytes: Uint8Array): Hash;
-/**
 * Construct zeroed hash
 * @returns {Hash}
 */
   static zeroed(): Hash;
+/**
+* Hash the given bytes.
+* @param {BytesInput} bytes
+* @returns {Hash}
+*/
+  static hash(bytes: BytesInput): Hash;
+/**
+* @returns {Uint8Array}
+*/
+  bytes(): Uint8Array;
+/**
+* @returns {string}
+*/
+  bytes_hex(): string;
 }
 /**
 * Configuration of key generation
@@ -90,7 +97,7 @@ export class KeyGenConfiguration {
 /**
 * @returns {KeyGenConfiguration}
 */
-  static default_wasm(): KeyGenConfiguration;
+  static _default(): KeyGenConfiguration;
 /**
 * @param {Algorithm} algorithm
 * @returns {KeyGenConfiguration}
@@ -118,18 +125,6 @@ export class KeyGenConfiguration {
 export class KeyPair {
   free(): void;
 /**
-* @returns {Algorithm}
-*/
-  digest_function_wasm(): Algorithm;
-/**
-* @returns {PrivateKey}
-*/
-  private_key_wasm(): PrivateKey;
-/**
-* @returns {PublicKey}
-*/
-  public_key_wasm(): PublicKey;
-/**
 * @param {KeyPairJson} value
 * @returns {KeyPair}
 */
@@ -138,12 +133,27 @@ export class KeyPair {
 * @param {KeyGenConfiguration} key_gen_configuration
 * @returns {KeyPair}
 */
-  static generate_with_configuration_wasm(key_gen_configuration: KeyGenConfiguration): KeyPair;
+  static generate_with_configuration(key_gen_configuration: KeyGenConfiguration): KeyPair;
 /**
 * Generate with default configuration
 * @returns {KeyPair}
 */
-  static generate_wasm(): KeyPair;
+  static generate(): KeyPair;
+/**
+* @returns {PrivateKey}
+*/
+  private_key(): PrivateKey;
+/**
+* @returns {PublicKey}
+*/
+  public_key(): PublicKey;
+/**
+* @returns {KeyPairJson}
+*/
+  to_json(): KeyPairJson;
+/**
+*/
+  readonly digest_function: Algorithm;
 }
 /**
 * Multihash
@@ -187,10 +197,6 @@ export class PrivateKey {
 */
   static from_json(value: PrivateKeyJson): PrivateKey;
 /**
-* @returns {Algorithm}
-*/
-  digest_function(): Algorithm;
-/**
 * @returns {Uint8Array}
 */
   payload(): Uint8Array;
@@ -198,6 +204,13 @@ export class PrivateKey {
 * @returns {string}
 */
   payload_hex(): string;
+/**
+* @returns {string}
+*/
+  to_json(): string;
+/**
+*/
+  readonly digest_function: Algorithm;
 }
 /**
 * Public Key used in signatures.
@@ -280,28 +293,31 @@ export interface InitOutput {
   readonly signature_create_from_key_pair: (a: number, b: number, c: number) => void;
   readonly signature_create_from_public_key: (a: number, b: number, c: number) => void;
   readonly signature_verify_wasm: (a: number, b: number, c: number) => void;
+  readonly __wbg_hash_free: (a: number) => void;
+  readonly hash_zeroed: () => number;
+  readonly hash_hash: (a: number, b: number) => void;
+  readonly hash_bytes: (a: number, b: number) => void;
+  readonly hash_bytes_hex: (a: number, b: number) => void;
   readonly __wbg_privatekey_free: (a: number) => void;
   readonly privatekey_from_json: (a: number, b: number) => void;
   readonly privatekey_digest_function: (a: number) => number;
   readonly privatekey_payload: (a: number, b: number) => void;
   readonly privatekey_payload_hex: (a: number, b: number) => void;
-  readonly __wbg_hash_free: (a: number) => void;
-  readonly hash_clone_bytes: (a: number, b: number) => void;
-  readonly hash_hash: (a: number, b: number) => number;
-  readonly hash_zeroed: () => number;
+  readonly privatekey_to_json: (a: number, b: number) => void;
   readonly __wbg_keygenconfiguration_free: (a: number) => void;
-  readonly keygenconfiguration_default_wasm: () => number;
+  readonly keygenconfiguration__default: () => number;
   readonly keygenconfiguration_create_with_algorithm: (a: number, b: number) => void;
   readonly keygenconfiguration_with_algorithm: (a: number, b: number, c: number) => void;
   readonly keygenconfiguration_use_private_key: (a: number, b: number) => number;
   readonly keygenconfiguration_use_seed: (a: number, b: number, c: number) => void;
   readonly __wbg_keypair_free: (a: number) => void;
-  readonly keypair_digest_function_wasm: (a: number) => number;
-  readonly keypair_private_key_wasm: (a: number) => number;
-  readonly keypair_public_key_wasm: (a: number) => number;
   readonly keypair_from_json: (a: number, b: number) => void;
-  readonly keypair_generate_with_configuration_wasm: (a: number, b: number) => void;
-  readonly keypair_generate_wasm: (a: number) => void;
+  readonly keypair_generate_with_configuration: (a: number, b: number) => void;
+  readonly keypair_generate: (a: number) => void;
+  readonly keypair_digest_function: (a: number) => number;
+  readonly keypair_private_key: (a: number) => number;
+  readonly keypair_public_key: (a: number) => number;
+  readonly keypair_to_json: (a: number, b: number) => void;
   readonly digest_function_default: () => number;
   readonly digest_function_from_byte_code: (a: number, b: number) => void;
   readonly digest_function_to_byte_code: (a: number, b: number) => void;
@@ -324,11 +340,13 @@ export interface InitOutput {
   readonly publickey_payload: (a: number, b: number) => void;
   readonly publickey_payload_hex: (a: number, b: number) => void;
   readonly algorithm_default: () => number;
+  readonly main: () => void;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_free: (a: number, b: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
+  readonly __wbindgen_start: () => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;

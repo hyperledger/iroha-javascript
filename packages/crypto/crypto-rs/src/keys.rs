@@ -311,7 +311,7 @@ export interface PrivateKeyJson {
             Ok(parsed)
         }
 
-        #[wasm_bindgen(js_name = "digest_function")]
+        #[wasm_bindgen(js_name = "digest_function", getter)]
         pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
             self.digest_function().into()
         }
@@ -324,6 +324,10 @@ export interface PrivateKeyJson {
         #[wasm_bindgen(js_name = "payload_hex")]
         pub fn payload_hex_wasm(&self) -> String {
             hex::encode(&self.payload)
+        }
+
+        pub fn to_json(&self) -> String {
+            todo!()
         }
     }
 }
@@ -398,6 +402,7 @@ mod pair {
 
     #[wasm_bindgen]
     impl KeyGenConfiguration {
+        #[wasm_bindgen(js_name = "default")]
         pub fn default_wasm() -> Self {
             Self::default()
         }
@@ -428,7 +433,7 @@ mod pair {
     }
 
     /// Pair of Public and Private keys.
-    #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+    #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
     #[wasm_bindgen]
     pub struct KeyPair {
         /// Public Key.
@@ -437,8 +442,6 @@ mod pair {
         pub(crate) private_key: PrivateKey,
     }
 
-    #[cfg(feature = "std")]
-    impl std::error::Error for Error {}
 
     impl KeyPair {
         /// Digest function
@@ -500,6 +503,7 @@ mod pair {
         /// Generates a pair of Public and Private key with [`Algorithm::default()`] selected as generation algorithm.
         ///
         /// # Errors
+        ///
         /// Fails if decoding fails
         pub fn generate() -> Result<Self, Error> {
             Self::generate_with_configuration(KeyGenConfiguration::default())
@@ -508,6 +512,7 @@ mod pair {
         /// Generates a pair of Public and Private key with the corresponding [`KeyGenConfiguration`].
         ///
         /// # Errors
+        ///
         /// Fails if decoding fails
         pub fn generate_with_configuration(
             configuration: KeyGenConfiguration,
@@ -538,24 +543,6 @@ mod pair {
         }
     }
 
-    impl<'de> Deserialize<'de> for KeyPair {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-        {
-            use serde::de::Error as _;
-
-            #[derive(Deserialize)]
-            struct KeyPair {
-                public_key: PublicKey,
-                private_key: PrivateKey,
-            }
-
-            let key_pair = KeyPair::deserialize(deserializer)?;
-            Self::new(key_pair.public_key, key_pair.private_key).map_err(D::Error::custom)
-        }
-    }
-
     impl From<KeyPair> for (PublicKey, PrivateKey) {
         fn from(key_pair: KeyPair) -> Self {
             (key_pair.public_key, key_pair.private_key)
@@ -578,32 +565,43 @@ export interface KeyPairJson {
 
     #[wasm_bindgen]
     impl KeyPair {
-        pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
-            self.digest_function().into()
-        }
-
-        pub fn private_key_wasm(&self) -> PrivateKey {
-            self.private_key.clone()
-        }
-
-        pub fn public_key_wasm(&self) -> PublicKey {
-            self.public_key.clone()
-        }
-
         pub fn from_json(value: KeyPairJson) -> Result<KeyPair, JsError> {
             let kp: KeyPair = serde_wasm_bindgen::from_value(value.obj).map_err(JsErrorWrap::from)?;
             Ok(kp)
         }
 
+
+        #[wasm_bindgen(js_name = "generate_with_configuration")]
         pub fn generate_with_configuration_wasm(key_gen_configuration: &KeyGenConfiguration) -> Result<KeyPair, JsError> {
             let kp = Self::generate_with_configuration(key_gen_configuration.clone()).map_err(JsErrorWrap::from)?;
             Ok(kp)
         }
 
         /// Generate with default configuration
+        #[wasm_bindgen(js_name = "generate")]
         pub fn generate_wasm() -> Result<KeyPair, JsError> {
             let kp = Self::generate().map_err(JsErrorWrap::from)?;
             Ok(kp)
+        }
+
+        #[wasm_bindgen(js_name = "digest_function", getter)]
+        pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
+            self.digest_function().into()
+        }
+
+        #[wasm_bindgen(js_name = "private_key")]
+        pub fn private_key_wasm(&self) -> PrivateKey {
+            self.private_key.clone()
+        }
+
+        #[wasm_bindgen(js_name = "public_key")]
+        pub fn public_key_wasm(&self) -> PublicKey {
+            self.public_key.clone()
+        }
+
+        pub fn to_json(&self) -> Result<KeyPairJson, JsError> {
+            let json = serde_wasm_bindgen::to_value(&self)?;
+            Ok(KeyPairJson { obj: json })
         }
     }
 }
