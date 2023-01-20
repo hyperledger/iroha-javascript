@@ -1,5 +1,9 @@
 # iroha-crypto Rust sources
 
+## How this is built
+
+TODO describe the pipeline
+
 ## Interfaces rules
 
 **Don't expose ownership model implicitly**
@@ -59,11 +63,11 @@ It transforms into such class:
 
 ```ts
 declare class User {
-    constructor(name: string);
+  constructor(name: string)
 
-    static with_empty_name(): User;
+  static with_empty_name(): User
 
-    get_name(): string;
+  get_name(): string
 }
 ```
 

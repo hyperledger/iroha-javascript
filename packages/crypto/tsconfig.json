@@ -1,4 +1,12 @@
 {
   "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "~wasm-pkg/nodejs": ["./crypto-rs/wasm-pkg-nodejs/iroha_crypto"],
+      "~wasm-pkg/web": ["./crypto-rs/wasm-pkg-web/iroha_crypto"],
+      "~wasm-pkg/bundler": ["./crypto-rs/wasm-pkg-bundler/iroha_crypto"],
+      "~wasm-pkg": ["./crypto-rs/wasm-pkg-nodejs/iroha_crypto"]
+    }
+  },
   "include": ["."]
 }
