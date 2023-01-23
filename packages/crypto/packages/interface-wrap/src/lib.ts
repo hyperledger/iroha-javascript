@@ -4,6 +4,7 @@
  * - Create scope-utilities
  */
 
+import { FreeGuard, Freeable, FreeableScope, GetInnerTrackObject } from '@iroha2/crypto-util'
 import { wasmPkg } from '@iroha2/crypto-interface-wrap/~wasm-pack-proxy'
 
 export type Algorithm = wasmPkg.Algorithm
@@ -20,35 +21,7 @@ export const DigestFunction = {
   toByteCode: (digest: DigestFunction): number => wasmPkg.digest_function_to_byte_code(digest),
 }
 
-/**
- * **TODO:** Store all non-freed structures in some global constant for debugging memory leaks?
- * Or even track & free everything automatically within a scope like `track(() => { ... })`?
- */
-class FreeGuard<T extends Freeable> implements Freeable {
-  /**
-   * See {@link SingleFreeWrap.__guard}
-   * @private
-   */
-  public __internal: null | [T]
-
-  public constructor(value: T) {
-    this.__internal = [value]
-  }
-
-  public get object(): T {
-    if (!this.__internal) {
-      throw new Error('Already freed')
-    }
-    return this.__internal[0]
-  }
-
-  public free(): void {
-    this._object.free()
-    this.__object = null
-  }
-}
-
-class SingleFreeWrap<T extends Freeable> implements Freeable {
+class SingleFreeWrap<T extends Freeable> implements Freeable, GetInnerTrackObject {
   /**
    * We don't use `#guard` or `private guard`, because it breaks assignability checks with
    * non-direct implementations
@@ -70,17 +43,17 @@ class SingleFreeWrap<T extends Freeable> implements Freeable {
 
   public underlyingMove(fn: (object: T) => T): void {
     const moved = fn(this.underlying)
-    this.__guard.moved()
+    this.__guard.forget()
     this.__guard = new FreeGuard(moved)
   }
 
   public free() {
     this.__guard.free()
   }
-}
 
-export interface Freeable {
-  free: () => void
+  public [FreeableScope.getInnerTrackObject]() {
+    return this.__guard
+  }
 }
 
 type BytesInputTuple = [kind: 'array', array: Uint8Array] | [kind: 'hex', hex: string]
@@ -100,24 +73,12 @@ export interface HasPayload {
   }
 }
 
-// declare function freeableScope<R extends (() => void) | (() => { keep?: Record<string, Freeable>, etc?: any })>(fn: R): R extends (() => infer R) ? R : never;
-//
-// const test1 = freeableScope(() => {
-// })
-// const test2 = freeableScope(() => {
-//   return {etc: null}
-// })
-//
-// const test3 = freeableScope(() => {
-//   return {keep: {a: 32}}
-// })
-
 export class Hash extends SingleFreeWrap<wasmPkg.Hash> {
   public static zeroed(): Hash {
     return new Hash(wasmPkg.Hash.zeroed())
   }
 
-  public static hash(payload: BytesInputTuple): Hash {
+  public static hash(...payload: BytesInputTuple): Hash {
     return new Hash(wasmPkg.Hash.hash(bytesInputTupleToEnum(payload)))
   }
 

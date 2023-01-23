@@ -1,22 +1,29 @@
-import { RollupOptions, defineConfig, Plugin } from 'rollup'
+import { Plugin, RollupOptions, defineConfig } from 'rollup'
 import dts from 'rollup-plugin-dts'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import esbuild from 'rollup-plugin-esbuild'
 import {
+  INTERFACE_WRAP_PROXY_TO_WASM_PKG_ROLLUP_ID,
   IrohaCryptoTarget,
+  RollupPackage,
   WASM_PACK_OUT_NAME,
   WASM_PKG_ROLLUP_ID,
   WasmPackTarget,
-  irohaCryptoTargetOrCorePackagePaths,
   toWasmPackTarget,
   wasmPackOutDirForTarget,
-  INTERFACE_WRAP_PROXY_TO_WASM_PKG_ROLLUP_ID,
 } from './meta'
 import path from 'path'
 import { match } from 'ts-pattern'
 import { glob } from 'zx'
 import fs from 'fs/promises'
+import { PackageJson } from 'type-fest'
 
+async function loadDependencies(pkg: RollupPackage): Promise<string[]> {
+  const {
+    default: { dependencies },
+  }: { default: PackageJson } = await import(`../packages/${pkg}/package.json`, { assert: { type: 'json' } })
+  return Object.keys(dependencies ?? {})
+}
 
 async function readWasmPkgAssets(target: WasmPackTarget): Promise<{ fileName: string; content: Buffer }[]> {
   return glob(path.join(wasmPackOutDirForTarget(target), '*')).then((files) =>
@@ -95,66 +102,120 @@ function pluginWasmPkg(target: WasmPackTarget, mode: 'types' | 'esm-reexport' | 
   }
 }
 
-function optionsForTargetTypes(target: IrohaCryptoTarget): RollupOptions {
-  const { dist, libFile } = irohaCryptoTargetOrCorePackagePaths(target)
-
+/**
+ * Rollup plugin to redirect imports from `@iroha2/crypto-util` to `@iroha2/crypto-core`, since the core package
+ * re-exports everything from the util one.
+ */
+function pluginRedirectUtilToCore(): Plugin {
   return {
-    input: libFile,
-    plugins: [dts({ respectExternal: true }), pluginWasmPkg(toWasmPackTarget(target), 'types')],
-    output: {
-      format: 'esm',
-      file: path.join(dist, 'lib.d.ts'),
+    name: 'redirect-from-crypto-util-to-crypto-core',
+    resolveId(id) {
+      if (id === '@iroha2/crypto-util') return '@iroha2/crypto-core'
     },
   }
 }
 
-function optionsForTargetBundle(target: IrohaCryptoTarget, format: 'cjs' | 'esm'): RollupOptions {
-  const { dist, libFile } = irohaCryptoTargetOrCorePackagePaths(target)
 
-  const isNodeEsm = target === 'node' && format === 'esm'
+async function optionsForPlainPackage(
+  packageName: RollupPackage,
+  options?: {
+    /**
+     * Useful for the core package
+     */
+    wasmPkgTypes?: { target: WasmPackTarget }
+  },
+): Promise<RollupOptions[]> {
+  const input = `packages/${packageName}/src/lib.ts`
+  const dist = `packages/${packageName}/dist`
+  const external = await loadDependencies(packageName)
 
-  return {
-    input: libFile,
-    plugins: [
-      pluginWasmPkg(toWasmPackTarget(target), isNodeEsm ? 'cjs-in-esm' : 'esm-reexport'),
-      esbuild({ target: 'esnext' }),
-      nodeResolve(),
-    ],
-    output: {
-      format,
-      file: path.join(
-        dist,
-        'lib.' +
-          match(format)
-            .with('esm', () => 'mjs')
-            .with('cjs', (a) => a)
-            .exhaustive(),
-      ),
+  return [
+    {
+      input,
+      external,
+      plugins: [
+        dts({ respectExternal: true }),
+        options?.wasmPkgTypes ? pluginWasmPkg(options.wasmPkgTypes.target, 'types') : null,
+      ],
+      output: { format: 'esm', file: path.join(dist, 'lib.d.ts') },
     },
-  }
+    {
+      input,
+      external,
+      plugins: [esbuild({ target: 'esnext' }), nodeResolve()],
+      output: [
+        { format: 'esm', file: path.join(dist, 'lib.mjs') },
+        { format: 'cjs', file: path.join(dist, 'lib.cjs') },
+      ],
+    },
+  ]
 }
 
-function optionsForCoreTypes(whichTargetToUse: WasmPackTarget): RollupOptions {
-  return {
-    input: 'packages/core/src/lib.ts',
-    plugins: [dts({ respectExternal: true }), pluginWasmPkg(whichTargetToUse, 'types')],
-    output: {
-      format: 'esm',
-      file: 'packages/core/dist/lib.d.ts',
-    },
-  }
+
+async function optionsForTarget(
+  target: IrohaCryptoTarget,
+  ...formats: ('types' | 'esm' | 'cjs')[]
+): Promise<RollupOptions[]> {
+  const targetFull = `target-${target}` as const
+
+  const input = `packages/${targetFull}/src/lib.ts`
+  const external = await loadDependencies(targetFull)
+  const dist = `packages/${targetFull}/dist`
+
+  return formats.map(
+    (format): RollupOptions =>
+      match(format)
+        .with(
+          'types',
+          (): RollupOptions => ({
+            input,
+            external,
+            plugins: [
+              pluginRedirectUtilToCore(),
+              pluginWasmPkg(toWasmPackTarget(target), 'types'),
+              dts({ respectExternal: true }),
+            ],
+            output: {
+              format: 'esm',
+              file: path.join(dist, 'lib.d.ts'),
+            },
+          }),
+        )
+        .with('esm', 'cjs', (format): RollupOptions => {
+          const isNodeEsm = target === 'node' && format === 'esm'
+
+          return {
+            input,
+            external,
+            plugins: [
+              pluginRedirectUtilToCore(),
+              pluginWasmPkg(toWasmPackTarget(target), isNodeEsm ? 'cjs-in-esm' : 'esm-reexport'),
+              esbuild({ target: 'esnext' }),
+              nodeResolve(),
+            ],
+            output: {
+              format,
+              file: path.join(
+                dist,
+                'lib.' +
+                match(format)
+                  .with('esm', () => 'mjs')
+                  .with('cjs', (a) => a)
+                  .exhaustive(),
+              ),
+            },
+          }
+        })
+        .exhaustive(),
+  )
 }
 
-export default defineConfig([
-  optionsForCoreTypes('nodejs'),
+export default defineConfig(async () => [
+  ...(await optionsForPlainPackage('util')),
 
-  optionsForTargetTypes('node'),
-  optionsForTargetBundle('node', 'cjs'),
-  optionsForTargetBundle('node', 'esm'),
+  ...(await optionsForPlainPackage('core', { wasmPkgTypes: { target: 'nodejs' } })),
 
-  optionsForTargetTypes('web'),
-  optionsForTargetBundle('web', 'esm'),
-
-  optionsForTargetTypes('bundler'),
-  optionsForTargetBundle('bundler', 'esm'),
+  ...(await optionsForTarget('node', 'types', 'esm', 'cjs')),
+  ...(await optionsForTarget('web', 'types', 'esm')),
+  ...(await optionsForTarget('bundler', 'types', 'esm')),
 ])

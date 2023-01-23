@@ -5,5 +5,8 @@
   "main": "dist/lib.d.ts",
   "devDependencies": {
     "@iroha2/crypto-interface-wrap": "workspace:^0.0.0"
+  },
+  "dependencies": {
+    "@iroha2/crypto-util": "workspace:^0.1.0"
   }
 }

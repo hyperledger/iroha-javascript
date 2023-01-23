@@ -16,6 +16,7 @@
     "chalk": "4.1.2",
     "consola": "^2.15.3",
     "del": "^6.0.0",
+    "esbuild": "^0.14.27",
     "jake": "^10.8.5",
     "rollup": "^3.10.0",
     "rollup-plugin-dts": "^5.1.1",

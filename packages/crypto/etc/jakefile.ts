@@ -6,20 +6,17 @@ import path from 'path'
 import { $, cd } from 'zx'
 import {
   CRYPTO_MONOREPO_ROOT,
-  IROHA_CRYPTO_TARGETS,
+  ROLLUP_CLEAN_TARGETS,
   WASM_PACK_CRATE_DIR,
   WASM_PACK_OUT_NAME,
   WASM_PACK_TARGETS,
   wasmPackOutDirForTarget,
-  irohaCryptoTargetOrCorePackagePaths,
 } from './meta'
-import { List } from 'immutable'
 
 async function preserveCwd<T>(fn: () => Promise<T>): Promise<T> {
   const preserved = process.cwd()
   try {
-    const ret = await fn()
-    return ret
+    return fn()
   } finally {
     cd(preserved)
   }
@@ -73,19 +70,14 @@ namespace('wasm', () => {
 
 namespace('rollup', () => {
   task('clean', async () => {
-    const dists = List(IROHA_CRYPTO_TARGETS)
-      .map((a) => irohaCryptoTargetOrCorePackagePaths(a).dist)
-      .push(irohaCryptoTargetOrCorePackagePaths('core').dist)
-
     consola.info(
       'Cleaning:\n' +
-        dists
-          .map((a) => path.relative(CRYPTO_MONOREPO_ROOT, a))
+        ROLLUP_CLEAN_TARGETS.map((a) => path.relative(CRYPTO_MONOREPO_ROOT, a))
           .map((a) => `  ` + chalk.red(a))
           .join('\n'),
     )
 
-    await del(dists.toArray())
+    await del(ROLLUP_CLEAN_TARGETS.toArray())
   })
 
   task('all', async () => {

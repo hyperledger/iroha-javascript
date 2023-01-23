@@ -1,0 +1,19 @@
+{
+  "name": "@iroha2/crypto-util",
+  "version": "0.1.0",
+  "license": "Apache 2.0",
+  "main": "dist/lib.cjs",
+  "module": "dist/lib.mjs",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/lib.mjs",
+      "require": "./dist/lib.cjs",
+      "types": "./dist/lib.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ]
+}
