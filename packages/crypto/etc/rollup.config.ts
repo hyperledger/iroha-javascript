@@ -67,7 +67,9 @@ function pluginWasmPkg(target: WasmPackTarget, mode: 'types' | 'esm-reexport' | 
         return match(mode)
           .with('types', () => {
             const id = path.join(wasmPackOutDirForTarget(target), WASM_PACK_OUT_NAME + `.d.ts`)
-            return `export * from '${id}'\nexport { default } from '${id}'`
+            let source = `export * from '${id}'\n`
+            if (target === 'web') source += `export { default } from '${id}'\n`
+            return source
           })
           .with('esm-reexport', 'cjs-in-esm', async (mode): Promise<string> => {
             const assets = await readWasmPkgAssets(target)
@@ -81,12 +83,11 @@ function pluginWasmPkg(target: WasmPackTarget, mode: 'types' | 'esm-reexport' | 
             }
 
             return match(mode)
-              .with(
-                'esm-reexport',
-                () =>
-                  `export * from '${WASM_PKG_COPIED_ENTRY_EXTERNAL}'\n` +
-                  `export { default } from '${WASM_PKG_COPIED_ENTRY_EXTERNAL}'`,
-              )
+              .with('esm-reexport', () => {
+                let source = `export * from '${WASM_PKG_COPIED_ENTRY_EXTERNAL}'\n`
+                if (target === 'web') source += `export { default } from '${WASM_PKG_COPIED_ENTRY_EXTERNAL}'\n`
+                return source
+              })
               .with(
                 'cjs-in-esm',
                 () =>
@@ -114,7 +115,6 @@ function pluginRedirectUtilToCore(): Plugin {
     },
   }
 }
-
 
 async function optionsForPlainPackage(
   packageName: RollupPackage,
@@ -150,7 +150,6 @@ async function optionsForPlainPackage(
     },
   ]
 }
-
 
 async function optionsForTarget(
   target: IrohaCryptoTarget,
@@ -198,10 +197,10 @@ async function optionsForTarget(
               file: path.join(
                 dist,
                 'lib.' +
-                match(format)
-                  .with('esm', () => 'mjs')
-                  .with('cjs', (a) => a)
-                  .exhaustive(),
+                  match(format)
+                    .with('esm', () => 'mjs')
+                    .with('cjs', (a) => a)
+                    .exhaustive(),
               ),
             },
           }
