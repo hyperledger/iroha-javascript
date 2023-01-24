@@ -1,10 +1,19 @@
-/* eslint-disable max-nested-callbacks */
+/* eslint-disable max-nested-callbacks,no-new */
 import { beforeEach, describe, expect, test, vi } from 'vitest'
-import { FREE_HEAP, FreeGuard, scopeFreeable } from './free'
+import { FREE_HEAP, FreeGuard, FreeScope, freeScope } from './free'
 
-function dummyFreeable() {
+function dummyFree() {
   return {
     free: vi.fn(),
+  }
+}
+
+function dummyAccessor() {
+  return {
+    guard: new FreeGuard(dummyFree()),
+    [FreeScope.getInnerTrackObject]() {
+      return this.guard
+    },
   }
 }
 
@@ -15,16 +24,16 @@ describe('Test `.free()` utilities', () => {
 
   describe('when FreeGuard is created', () => {
     test('then it is added to the heap', () => {
-      const guard = new FreeGuard(dummyFreeable())
+      const guard = new FreeGuard(dummyFree())
 
       expect(FREE_HEAP.has(guard)).toBe(true)
     })
 
     test('within a scope, then it is freed with the scope', () => {
-      const dummy = dummyFreeable()
+      const dummy = dummyFree()
 
-      scopeFreeable(() => {
-        const _guard = new FreeGuard(dummy)
+      freeScope(() => {
+        new FreeGuard(dummy);
       })
 
       expect(dummy.free).toBeCalled()
@@ -33,7 +42,7 @@ describe('Test `.free()` utilities', () => {
 
   describe('when FreeGuard is freed', () => {
     test('then the underlying object is freed too', () => {
-      const dummy = dummyFreeable()
+      const dummy = dummyFree()
       const guard = new FreeGuard(dummy)
 
       guard.free()
@@ -42,7 +51,7 @@ describe('Test `.free()` utilities', () => {
     })
 
     test('then it is deleted from the heap', () => {
-      const guard = new FreeGuard(dummyFreeable())
+      const guard = new FreeGuard(dummyFree())
 
       guard.free()
 
@@ -52,7 +61,7 @@ describe('Test `.free()` utilities', () => {
 
   describe('when FreeGuard is forgotten by itself', () => {
     test('then it is deleted from the heap', () => {
-      const guard = new FreeGuard(dummyFreeable())
+      const guard = new FreeGuard(dummyFree())
 
       guard.forget()
 
@@ -60,7 +69,7 @@ describe('Test `.free()` utilities', () => {
     })
 
     test('then the underlying object is not freed', () => {
-      const dummy = dummyFreeable()
+      const dummy = dummyFree()
       const guard = new FreeGuard(dummy)
 
       guard.forget()
@@ -69,9 +78,9 @@ describe('Test `.free()` utilities', () => {
     })
 
     test('then the object is not freed even in the scope', () => {
-      const dummy = dummyFreeable()
+      const dummy = dummyFree()
 
-      scopeFreeable(() => {
+      freeScope(() => {
         new FreeGuard(dummy).forget()
       })
 
@@ -80,35 +89,35 @@ describe('Test `.free()` utilities', () => {
   })
 
   test('when scope is disposed, all guards are freed', () => {
-    const dummies = Array.from({ length: 5 }, () => dummyFreeable())
+    const dummies = Array.from({ length: 5 }, () => dummyFree())
 
-    scopeFreeable(() => {
-      const guards = dummies.map((a) => new FreeGuard(a))
+    freeScope(() => {
+      dummies.map((a) => new FreeGuard(a));
     })
 
     for (const dummy of dummies) expect(dummy.free).toBeCalled()
   })
 
   test('when scope is disposed and some guard was "forgotten" by the scope, then it is not freed', () => {
-    const dummy = dummyFreeable()
+    const dummy = dummyFree()
 
-    scopeFreeable((forget) => {
+    freeScope((scope) => {
       const guard = new FreeGuard(dummy)
-      forget(guard)
+      scope.forget(guard)
     })
 
     expect(dummy.free).not.toBeCalled()
   })
 
   test('when scope is disposed within another scope, only inner objects are freed', () => {
-    const dummy1 = dummyFreeable()
-    const dummy2 = dummyFreeable()
+    const dummy1 = dummyFree()
+    const dummy2 = dummyFree()
 
-    scopeFreeable(() => {
-      const guard1 = new FreeGuard(dummy1)
+    freeScope(() => {
+      new FreeGuard(dummy1);
 
-      scopeFreeable(() => {
-        const guard2 = new FreeGuard(dummy2)
+      freeScope(() => {
+        new FreeGuard(dummy2);
       })
 
       expect(dummy2.free).toBeCalled()
@@ -116,5 +125,54 @@ describe('Test `.free()` utilities', () => {
     })
 
     expect(dummy1.free).toBeCalled()
+  })
+
+  test('case with nested scopes, forgetting and tracking back', () => {
+    const guard = freeScope((scope) => {
+      const inner = freeScope((scope) => {
+        new FreeGuard(dummyFree())
+        const guard = new FreeGuard(dummyFree())
+        scope.forget(guard)
+        return guard
+      })
+
+      expect(inner.object.free).not.toBeCalled()
+
+      scope.track(inner)
+
+      const outer = new FreeGuard(dummyFree())
+      scope.forget(outer)
+      return outer
+    })
+
+    expect(guard.object.free).not.toBeCalled()
+
+    guard.free()
+
+    expect(FREE_HEAP.size).toBe(0)
+  })
+
+  describe('Accessing inner track object', () => {
+    test('It could be tracked by scope', () => {
+      const accessor = dummyAccessor()
+      const { free } = accessor.guard.object
+      const scope = new FreeScope()
+
+      scope.track(accessor)
+      scope.free()
+
+      expect(free).toBeCalled()
+    })
+
+    test('It could be forgotten by scope', () => {
+      const accessor = dummyAccessor()
+      const scope = new FreeScope()
+
+      scope.track(accessor)
+      scope.forget(accessor)
+      scope.free()
+
+      expect(accessor.guard.object.free).not.toBeCalled()
+    })
   })
 })

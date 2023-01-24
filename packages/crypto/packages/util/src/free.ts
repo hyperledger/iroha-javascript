@@ -1,16 +1,16 @@
-export interface Freeable {
+export interface Free {
   free: () => void
 }
 
-export class FreeableScope implements Freeable {
+export class FreeScope implements Free {
   public static readonly getInnerTrackObject = Symbol('GetInnerTrackObject')
 
   public static readonly trackObject = Symbol('TrackObject')
 
   #tracked = new Set<TrackObject>()
 
-  public track(object: TrackObject): void {
-    this.#tracked.add(object)
+  public track(object: TrackObjectOrInner): void {
+    this.#tracked.add(unwrapTrackObject(object))
   }
 
   /**
@@ -21,15 +21,7 @@ export class FreeableScope implements Freeable {
    * @param strict if `true` and the object is not tracked, throws an error
    */
   public forget(object: TrackObjectOrInner, strict = true): void {
-    let unwrapped: TrackObject
-    {
-      let i = object
-      while (!(FreeableScope.trackObject in i)) {
-        i = i[FreeableScope.getInnerTrackObject]()
-      }
-      unwrapped = i
-    }
-
+    const unwrapped = unwrapTrackObject(object)
     if (this.#tracked.has(unwrapped)) this.#tracked.delete(unwrapped)
     else if (strict) throw new Error(`The object ${String(unwrapped)} is not tracked`)
   }
@@ -42,32 +34,40 @@ export class FreeableScope implements Freeable {
 }
 
 export interface GetInnerTrackObject {
-  [FreeableScope.getInnerTrackObject]: () => TrackObjectOrInner
+  [FreeScope.getInnerTrackObject]: () => TrackObjectOrInner
 }
 
-export interface TrackObject extends Freeable {
-  [FreeableScope.trackObject]: true
+export interface TrackObject extends Free {
+  [FreeScope.trackObject]: true
 }
 
 export type TrackObjectOrInner = TrackObject | GetInnerTrackObject
 
-export const FREE_HEAP = new Set<FreeGuard<Freeable>>()
+function unwrapTrackObject(object: TrackObjectOrInner): TrackObject {
+  let i = object
+  while (!(FreeScope.trackObject in i)) {
+    i = i[FreeScope.getInnerTrackObject]()
+  }
+  return i
+}
+
+export const FREE_HEAP = new Set<FreeGuard<Free>>()
 
 /**
  * Wrapper around a free-able object to control its access,
  * to track in a global heap (see {@link FREE_HEAP}), and to track
- * within scopes (see {@link FreeableScope}).
+ * within scopes (see {@link FreeScope}).
  */
-export class FreeGuard<T extends Freeable> implements TrackObject {
-  public readonly [FreeableScope.trackObject] = true
+export class FreeGuard<T extends Free> implements TrackObject {
+  public readonly [FreeScope.trackObject] = true
 
   #maybeInner: null | {
     object: T
-    scope: null | FreeableScope
+    scope: null | FreeScope
   }
 
   public constructor(object: T) {
-    const scope = getCurrentScope()
+    const scope = getCurrentFreeScope()
     this.#maybeInner = { object, scope }
     scope?.track(this)
     FREE_HEAP.add(this)
@@ -100,7 +100,7 @@ export class FreeGuard<T extends Freeable> implements TrackObject {
    * Removes the guard from {@link FREE_HEAP} and the attached scope (if there is)
    * and removes the ability to access the underlying object.
    *
-   * Same as {@link free}, but doesn't call {@link Freeable.free} on the underlying object.
+   * Same as {@link free}, but doesn't call {@link Free.free} on the underlying object.
    */
   public forget(): void {
     if (!this.#maybeInner) throw new Error('Already forgotten')
@@ -111,13 +111,11 @@ export class FreeGuard<T extends Freeable> implements TrackObject {
   }
 }
 
-const SCOPES_STACK: FreeableScope[] = []
+const SCOPES_STACK: FreeScope[] = []
 
-export function getCurrentScope(): FreeableScope | null {
+export function getCurrentFreeScope(): FreeScope | null {
   return SCOPES_STACK.at(-1) ?? null
 }
-
-export type ForgetFn = (object: TrackObjectOrInner) => void
 
 /**
  * Runs the provided function, tracking all trackable (see {@link TrackObject}) objets that
@@ -126,30 +124,35 @@ export type ForgetFn = (object: TrackObjectOrInner) => void
  *
  * Scopes might be nested into each other.
  *
- * In order to exclude some object from being freed with the scope, the `forget` callback might be used:
+ * In order to exclude some object from being freed with the scope,
+ * or to include it explicitly into the scope, the scope itself is passed
+ * as first parameter:
  *
  * ```ts
- * let outerGuard, innerGuard
+ * let excluded, automaticallyFreed
  *
- * scopeFreeable((forget) => {
- *   innerGuard = new FreeGuard({ ... })
- *   outerGuard = new FreeGuard({ ... })
+ * const included = new FreeGuard()
  *
- *   forget(outerGuard)
+ * freeScope((scope) => {
+ *   automaticallyFreed = new FreeGuard({ ... })
+ *   excluded = new FreeGuard({ ... })
+ *
+ *   scope.forget(excluded)
+ *   scope.track(included)
  * })
  *
- * // at this point, `innerGuard` is freed, but `outerGuard` is not
+ * // at this point, `automaticallyFreed` and `included` are freed, but `excluded` is not
  * ```
  *
  * Note that `forget` callback does not execute {@link FreeGuard.forget}, but {@link FreeGuard.forget}
  * removes the guard from the scope.
  */
-export function scopeFreeable<T>(fn: (forget: ForgetFn) => T): T {
-  const scope = new FreeableScope()
+export function freeScope<T>(fn: (scope: FreeScope) => T): T {
+  const scope = new FreeScope()
   SCOPES_STACK.push(scope)
 
   try {
-    return fn((object) => scope.forget(object))
+    return fn(scope)
   } finally {
     scope.free()
     SCOPES_STACK.pop()
