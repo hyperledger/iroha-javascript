@@ -200,15 +200,15 @@ function debugString(val) {
     return className;
 }
 
+function getArrayU8FromWasm0(ptr, len) {
+    return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
+}
+
 function _assertClass(instance, klass) {
     if (!(instance instanceof klass)) {
         throw new Error(`expected instance of ${klass.name}`);
     }
     return instance.ptr;
-}
-
-function getArrayU8FromWasm0(ptr, len) {
-    return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
 /**
 * @returns {DigestFunction}
@@ -501,6 +501,26 @@ class KeyPair {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.keypair_from_json(retptr, addHeapObject(value));
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return KeyPair.__wrap(r0);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @param {PrivateKey} priv_key
+    * @returns {KeyPair}
+    */
+    static from_private_key(priv_key) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            _assertClass(priv_key, PrivateKey);
+            wasm.keypair_from_private_key(retptr, priv_key.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -807,7 +827,7 @@ class PrivateKey {
         }
     }
     /**
-    * @returns {string}
+    * @returns {PrivateKeyJson}
     */
     to_json() {
         try {
@@ -815,10 +835,13 @@ class PrivateKey {
             wasm.privatekey_to_json(retptr, this.ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
-            return getStringFromWasm0(r0, r1);
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return takeObject(r0);
         } finally {
             wasm.__wbindgen_add_to_stack_pointer(16);
-            wasm.__wbindgen_free(r0, r1);
         }
     }
 }
@@ -884,25 +907,6 @@ class PublicKey {
         _assertClass(key, PrivateKey);
         const ret = wasm.publickey_from_private_key(key.ptr);
         return PublicKey.__wrap(ret);
-    }
-    /**
-    * @param {BytesInput} bytes
-    * @returns {PublicKey}
-    */
-    static from_bytes(bytes) {
-        try {
-            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.publickey_from_bytes(retptr, addHeapObject(bytes));
-            var r0 = getInt32Memory0()[retptr / 4 + 0];
-            var r1 = getInt32Memory0()[retptr / 4 + 1];
-            var r2 = getInt32Memory0()[retptr / 4 + 2];
-            if (r2) {
-                throw takeObject(r1);
-            }
-            return PublicKey.__wrap(r0);
-        } finally {
-            wasm.__wbindgen_add_to_stack_pointer(16);
-        }
     }
     /**
     * @returns {string}
@@ -1006,14 +1010,35 @@ class Signature {
     }
     /**
     * @param {KeyPair} key_pair
-    * @param {BytesInput} payload
+    * @param {BytesInput} message
     * @returns {Signature}
     */
-    static create_from_key_pair(key_pair, payload) {
+    static sign_with_key_pair(key_pair, message) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             _assertClass(key_pair, KeyPair);
-            wasm.signature_create_from_key_pair(retptr, key_pair.ptr, addHeapObject(payload));
+            wasm.signature_sign_with_key_pair(retptr, key_pair.ptr, addHeapObject(message));
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return Signature.__wrap(r0);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @param {PrivateKey} private_key
+    * @param {BytesInput} message
+    * @returns {Signature}
+    */
+    static sign_with_private_key(private_key, message) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            _assertClass(private_key, PrivateKey);
+            wasm.signature_sign_with_private_key(retptr, private_key.ptr, addHeapObject(message));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -1050,10 +1075,10 @@ class Signature {
     * @param {BytesInput} payload
     * @returns {VerifyResult}
     */
-    verify_wasm(payload) {
+    verify(payload) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.signature_verify_wasm(retptr, this.ptr, addHeapObject(payload));
+            wasm.signature_verify(retptr, this.ptr, addHeapObject(payload));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -1063,6 +1088,44 @@ class Signature {
             return takeObject(r0);
         } finally {
             wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {PublicKey}
+    */
+    public_key() {
+        const ret = wasm.signature_public_key(this.ptr);
+        return PublicKey.__wrap(ret);
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    payload() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.signature_payload(retptr, this.ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var v0 = getArrayU8FromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 1);
+            return v0;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {string}
+    */
+    payload_hex() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.signature_payload_hex(retptr, this.ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            return getStringFromWasm0(r0, r1);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+            wasm.__wbindgen_free(r0, r1);
         }
     }
 }

@@ -1,11 +1,5 @@
-/**
- * TODO:
- * - Export `wasmPkg` from the package too, for advanced usages
- * - Create scope-utilities
- */
-
-import { FreeGuard, Freeable, FreeableScope, GetInnerTrackObject } from '@iroha2/crypto-util'
 import { wasmPkg } from '@iroha2/crypto-interface-wrap/~wasm-pack-proxy'
+import { FreeGuard, Free, FreeScope, GetInnerTrackObject } from '@iroha2/crypto-util'
 
 export type Algorithm = wasmPkg.Algorithm
 
@@ -21,7 +15,7 @@ export const DigestFunction = {
   toByteCode: (digest: DigestFunction): number => wasmPkg.digest_function_to_byte_code(digest),
 }
 
-class SingleFreeWrap<T extends Freeable> implements Freeable, GetInnerTrackObject {
+class SingleFreeWrap<T extends Free> implements Free, GetInnerTrackObject {
   /**
    * We don't use `#guard` or `private guard`, because it breaks assignability checks with
    * non-direct implementations
@@ -51,7 +45,7 @@ class SingleFreeWrap<T extends Freeable> implements Freeable, GetInnerTrackObjec
     this.__guard.free()
   }
 
-  public [FreeableScope.getInnerTrackObject]() {
+  public [FreeScope.getInnerTrackObject]() {
     return this.__guard
   }
 }
@@ -71,6 +65,10 @@ export interface HasPayload {
     (): Uint8Array
     (kind: 'hex'): string
   }
+}
+
+export interface SignMessage {
+  sign: (...message: BytesInputTuple) => Signature
 }
 
 export class Hash extends SingleFreeWrap<wasmPkg.Hash> {
@@ -114,8 +112,11 @@ export class Multihash extends SingleFreeWrap<wasmPkg.Multihash> implements HasD
   }
 }
 
-export class PrivateKey extends SingleFreeWrap<wasmPkg.PrivateKey> implements HasDigestFunction<Algorithm>, HasPayload {
-  public static fromJson(value: wasmPkg.PrivateKeyJson): PrivateKey {
+export class PrivateKey
+  extends SingleFreeWrap<wasmPkg.PrivateKey>
+  implements HasDigestFunction<Algorithm>, HasPayload, SignMessage
+{
+  public static fromJSON(value: wasmPkg.PrivateKeyJson): PrivateKey {
     const key = wasmPkg.PrivateKey.from_json(value)
     return new PrivateKey(key)
   }
@@ -133,6 +134,18 @@ export class PrivateKey extends SingleFreeWrap<wasmPkg.PrivateKey> implements Ha
   public payload(kind?: 'hex'): string | Uint8Array {
     return kind === 'hex' ? this.underlying.payload_hex() : this.underlying.payload()
   }
+
+  public sign(...message: BytesInputTuple): Signature {
+    return Signature.signWithPrivateKey(this, ...message)
+  }
+
+  public toKeyPair(): KeyPair {
+    return KeyPair.fromPrivateKey(this)
+  }
+
+  public toJSON(): wasmPkg.PrivateKeyJson {
+    return this.underlying.to_json()
+  }
 }
 
 export class PublicKey extends SingleFreeWrap<wasmPkg.PublicKey> implements HasDigestFunction<Algorithm>, HasPayload {
@@ -146,6 +159,13 @@ export class PublicKey extends SingleFreeWrap<wasmPkg.PublicKey> implements HasD
     return new PublicKey(key)
   }
 
+  /**
+   * Equal to {@link fromMultihash} in `'hex'` mode.
+   */
+  public static fromJSON(multihashHex: string): PublicKey {
+    return PublicKey.fromMultihash('hex', multihashHex)
+  }
+
   public static fromPrivateKey(privateKey: PrivateKey): PublicKey {
     const key = wasmPkg.PublicKey.from_private_key(privateKey.underlying)
     return new PublicKey(key)
@@ -153,11 +173,6 @@ export class PublicKey extends SingleFreeWrap<wasmPkg.PublicKey> implements HasD
 
   public static fromKeyPair(pair: KeyPair): PublicKey {
     return new PublicKey(pair.underlying.public_key())
-  }
-
-  public static fromBytes(...bytes: BytesInputTuple): PublicKey {
-    const key = wasmPkg.PublicKey.from_bytes(bytesInputTupleToEnum(bytes))
-    return new PublicKey(key)
   }
 
   public toMultihash(): Multihash
@@ -174,6 +189,13 @@ export class PublicKey extends SingleFreeWrap<wasmPkg.PublicKey> implements HasD
   public payload(kind: 'hex'): string
   public payload(kind?: 'hex'): string | Uint8Array {
     return kind === 'hex' ? this.underlying.payload_hex() : this.underlying.payload()
+  }
+
+  /**
+   * Equal to {@link toMultihash} in `'hex'` mode
+   */
+  public toJSON(): string {
+    return this.toMultihash('hex')
   }
 }
 
@@ -206,8 +228,7 @@ export class KeyGenConfiguration extends SingleFreeWrap<wasmPkg.KeyGenConfigurat
   }
 }
 
-// TODO add toJSON too
-export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasDigestFunction<Algorithm> {
+export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasDigestFunction<Algorithm>, SignMessage {
   public static fromJSON(value: wasmPkg.KeyPairJson): KeyPair {
     const pair = wasmPkg.KeyPair.from_json(value)
     return new KeyPair(pair)
@@ -217,6 +238,11 @@ export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasDiges
     const pair = configuration
       ? wasmPkg.KeyPair.generate_with_configuration(configuration.underlying)
       : wasmPkg.KeyPair.generate()
+    return new KeyPair(pair)
+  }
+
+  public static fromPrivateKey(key: PrivateKey): KeyPair {
+    const pair = wasmPkg.KeyPair.from_private_key(key.underlying)
     return new KeyPair(pair)
   }
 
@@ -232,8 +258,8 @@ export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasDiges
     return PublicKey.fromKeyPair(this)
   }
 
-  public sign(payload: BytesInputTuple): Signature {
-    return Signature.fromKeyPair(this, payload)
+  public sign(...message: BytesInputTuple): Signature {
+    return Signature.signWithKeyPair(this, ...message)
   }
 
   public toJSON(): wasmPkg.KeyPairJson {
@@ -241,16 +267,33 @@ export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasDiges
   }
 }
 
-export class Signature extends SingleFreeWrap<wasmPkg.Signature> {
-  public static fromKeyPair(keyPair: KeyPair, payload: BytesInputTuple): Signature {
-    return new Signature(wasmPkg.Signature.create_from_key_pair(keyPair.underlying, bytesInputTupleToEnum(payload)))
+export class Signature extends SingleFreeWrap<wasmPkg.Signature> implements HasPayload {
+  public static signWithKeyPair(keyPair: KeyPair, ...message: BytesInputTuple): Signature {
+    return new Signature(wasmPkg.Signature.sign_with_key_pair(keyPair.underlying, bytesInputTupleToEnum(message)))
   }
 
-  public static fromPublicKey(publicKey: PublicKey, payload: BytesInputTuple): Signature {
+  public static signWithPrivateKey(privateKey: PrivateKey, ...message: BytesInputTuple): Signature {
+    return new Signature(wasmPkg.Signature.sign_with_private_key(privateKey.underlying, bytesInputTupleToEnum(message)))
+  }
+
+  /**
+   * Create a signature from its payload and public key. This function **does not sign the payload**.
+   */
+  public static fromPublicKey(publicKey: PublicKey, ...payload: BytesInputTuple): Signature {
     return new Signature(wasmPkg.Signature.create_from_public_key(publicKey.underlying, bytesInputTupleToEnum(payload)))
   }
 
-  public verify(payload: BytesInputTuple): wasmPkg.VerifyResult {
-    return this.underlying.verify_wasm(bytesInputTupleToEnum(payload))
+  public verify(...message: BytesInputTuple): wasmPkg.VerifyResult {
+    return this.underlying.verify(bytesInputTupleToEnum(message))
+  }
+
+  public publicKey(): PublicKey {
+    return new PublicKey(this.underlying.public_key())
+  }
+
+  public payload(): Uint8Array
+  public payload(mode: 'hex'): string
+  public payload(mode?: 'hex'): string | Uint8Array {
+    return mode === 'hex' ? this.underlying.payload_hex() : this.underlying.payload()
   }
 }

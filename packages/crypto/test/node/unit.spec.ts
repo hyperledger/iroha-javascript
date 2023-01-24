@@ -1,6 +1,6 @@
-import { expect, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
-import { cryptoTypes, scopeFreeable } from '@iroha2/crypto-core'
+import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
 
 test('Generates KeyPair from seed as expected', () => {
   const SEED_BYTES = [49, 50, 51, 52]
@@ -36,7 +36,7 @@ test('Constructs KeyPair from JSON', () => {
 test('When keyGenConfiguration is created within a scope, its used outside of it throws an error', () => {
   let keyGenConfig: cryptoTypes.KeyGenConfiguration
 
-  scopeFreeable(() => {
+  freeScope(() => {
     keyGenConfig = crypto.KeyGenConfiguration.default()
   })
 
@@ -46,9 +46,9 @@ test('When keyGenConfiguration is created within a scope, its used outside of it
 test('When key gen conf is created within a scope and forgotten in it, it can be used outside of the scope', () => {
   let keyGenConfig: cryptoTypes.KeyGenConfiguration
 
-  scopeFreeable((forget) => {
+  freeScope((scope) => {
     keyGenConfig = crypto.KeyGenConfiguration.default().useSeed('hex', '001122')
-    forget(keyGenConfig)
+    scope.forget(keyGenConfig)
   })
 
   expect(keyGenConfig!.generate().toJSON()).toMatchInlineSnapshot(`
@@ -60,4 +60,87 @@ test('When key gen conf is created within a scope and forgotten in it, it can be
       "public_key": "ed0120797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9",
     }
   `)
+})
+
+test('Generating multiple key pairs from a single configuration does not error', () => {
+  freeScope(() => {
+    const config = crypto.KeyGenConfiguration.default()
+
+    for (let i = 0; i < 10; i++) {
+      config.useSeed('array', new Uint8Array([i])).generate()
+    }
+  })
+})
+
+describe('Given a multihash', () => {
+  const MULTIHASH = 'ed0120797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9'
+
+  test('a public key could be constructed', () => {
+    const key = crypto.PublicKey.fromMultihash('hex', MULTIHASH)
+
+    expect(key.digestFunction).toMatchInlineSnapshot('"ed25519"')
+    expect(key.payload('hex')).toMatchInlineSnapshot(
+      '"797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9"',
+    )
+  })
+
+  test('a public key could be parsed and transformed back through JSON methods', () => {
+    const key = crypto.PublicKey.fromJSON(MULTIHASH)
+
+    expect(key.toJSON()).toEqual(MULTIHASH)
+  })
+})
+
+describe('Signature verification', () => {
+  function pairFactory() {
+    return freeScope((scope) => {
+      const pair = crypto.KeyGenConfiguration.default().useSeed('hex', 'aa1108').generate()
+      scope.forget(pair)
+      return pair
+    })
+  }
+
+  function privateKeyFactory() {
+    return freeScope((scope) => {
+      const pair = pairFactory()
+      scope.track(pair)
+      const key = pair.privateKey()
+      scope.forget(key)
+      return key
+    })
+  }
+
+  test('result is ok', () => {
+    const MESSAGE = 'deadbeef'
+    const pair = pairFactory()
+
+    const signature = pair.sign('hex', MESSAGE)
+
+    expect(signature.verify('hex', MESSAGE)).toMatchInlineSnapshot(`
+      {
+        "t": "ok",
+      }
+    `)
+  })
+
+  test('result is err', () => {
+    const pair = pairFactory()
+
+    const signature = pair.sign('hex', 'deadbeef')
+
+    expect(signature.verify('hex', 'feedbabe')).toMatchInlineSnapshot(`
+      {
+        "error": "Signing failed. Verification equation was not satisfied",
+        "t": "err",
+      }
+    `)
+  })
+
+  test('exception is thrown if input is invalid', () => {
+    const signature = pairFactory().sign('hex', 'deadbeef')
+
+    expect(() => signature.verify('hex', 'not really a hex')).toThrowErrorMatchingInlineSnapshot(
+      '"Invalid character \'n\' at position 0"',
+    )
+  })
 })

@@ -101,20 +101,41 @@ impl Signature {
 
 #[wasm_bindgen]
 impl Signature {
-    pub fn create_from_key_pair(key_pair: &KeyPair, payload: BytesInputJs) -> Result<Signature, JsError> {
-        let payload: Vec<_> = payload.try_into()?;
-        let value = Signature::new(key_pair.clone(), &payload).map_err(JsErrorWrap::from)?;
+    pub fn sign_with_key_pair(key_pair: &KeyPair, message: BytesInputJs) -> Result<Signature, JsError> {
+        let message: Vec<_> = message.try_into()?;
+        let value = Signature::new(key_pair.clone(), &message).map_err(JsErrorWrap::from)?;
         Ok(value)
+    }
+
+    pub fn sign_with_private_key(private_key: &PrivateKey, message: BytesInputJs) -> Result<Signature, JsError> {
+        let pair = KeyPair::from_private_key(private_key)?;
+        Self::sign_with_key_pair(&pair, message)
     }
 
     pub fn create_from_public_key(pub_key: &PublicKey, payload: BytesInputJs) -> Result<Signature, JsError> {
         Ok(Signature { public_key: pub_key.clone(), payload: payload.try_into()? })
     }
 
+    #[wasm_bindgen(js_name = "verify")]
     pub fn verify_wasm(&self, payload: BytesInputJs) -> Result<VerifyResultJs, JsError> {
         let payload: Vec<_> = payload.try_into()?;
         let res = self.verify(&payload).try_into()?;
         Ok(res)
+    }
+
+    #[wasm_bindgen(js_name = "public_key")]
+    pub fn public_key_wasm(&self) -> PublicKey {
+        self.public_key.clone()
+    }
+
+    #[wasm_bindgen(js_name = "payload")]
+    pub fn payload_wasm(&self) -> Vec<u8> {
+        self.payload.clone()
+    }
+
+    #[wasm_bindgen(js_name = "payload_hex")]
+    pub fn payload_hex_wasm(&self) -> String {
+        hex::encode(&self.payload)
     }
 }
 

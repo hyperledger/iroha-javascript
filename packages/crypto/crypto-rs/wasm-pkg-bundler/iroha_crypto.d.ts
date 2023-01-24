@@ -22,12 +22,6 @@ export function algorithm_default(): Algorithm;
 */
 export function main(): void;
 
-export type VerifyResult =
-    | { t: 'ok' }
-    | { t: 'err', error: string }
-
-
-
 export interface PrivateKeyJson {
     digest_function: string
     /** Hex-encoded bytes */
@@ -54,6 +48,12 @@ export type DigestFunction =
     | 'secp256k1-pub'
     | 'bls12_381-g1-pub'
     | 'bls12_381-g2-pub'
+
+
+
+export type VerifyResult =
+    | { t: 'ok' }
+    | { t: 'err', error: string }
 
 
 
@@ -130,6 +130,11 @@ export class KeyPair {
 */
   static from_json(value: KeyPairJson): KeyPair;
 /**
+* @param {PrivateKey} priv_key
+* @returns {KeyPair}
+*/
+  static from_private_key(priv_key: PrivateKey): KeyPair;
+/**
 * @param {KeyGenConfiguration} key_gen_configuration
 * @returns {KeyPair}
 */
@@ -205,9 +210,9 @@ export class PrivateKey {
 */
   payload_hex(): string;
 /**
-* @returns {string}
+* @returns {PrivateKeyJson}
 */
-  to_json(): string;
+  to_json(): PrivateKeyJson;
 /**
 */
   readonly digest_function: Algorithm;
@@ -232,11 +237,6 @@ export class PublicKey {
 * @returns {PublicKey}
 */
   static from_private_key(key: PrivateKey): PublicKey;
-/**
-* @param {BytesInput} bytes
-* @returns {PublicKey}
-*/
-  static from_bytes(bytes: BytesInput): PublicKey;
 /**
 * @returns {string}
 */
@@ -268,10 +268,16 @@ export class Signature {
   free(): void;
 /**
 * @param {KeyPair} key_pair
-* @param {BytesInput} payload
+* @param {BytesInput} message
 * @returns {Signature}
 */
-  static create_from_key_pair(key_pair: KeyPair, payload: BytesInput): Signature;
+  static sign_with_key_pair(key_pair: KeyPair, message: BytesInput): Signature;
+/**
+* @param {PrivateKey} private_key
+* @param {BytesInput} message
+* @returns {Signature}
+*/
+  static sign_with_private_key(private_key: PrivateKey, message: BytesInput): Signature;
 /**
 * @param {PublicKey} pub_key
 * @param {BytesInput} payload
@@ -282,5 +288,17 @@ export class Signature {
 * @param {BytesInput} payload
 * @returns {VerifyResult}
 */
-  verify_wasm(payload: BytesInput): VerifyResult;
+  verify(payload: BytesInput): VerifyResult;
+/**
+* @returns {PublicKey}
+*/
+  public_key(): PublicKey;
+/**
+* @returns {Uint8Array}
+*/
+  payload(): Uint8Array;
+/**
+* @returns {string}
+*/
+  payload_hex(): string;
 }

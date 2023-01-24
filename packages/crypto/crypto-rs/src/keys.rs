@@ -171,11 +171,11 @@ mod pub_key {
             key.clone().into()
         }
 
-        pub fn from_bytes(bytes: BytesInputJs) -> Result<PublicKey, JsError> {
-            let bytes: Vec<_> = bytes.try_into()?;
-            let pk = PublicKey::decode(&mut (&bytes[..])).map_err(JsErrorWrap::from)?;
-            Ok(pk)
-        }
+        // pub fn from_bytes(bytes: BytesInputJs) -> Result<PublicKey, JsError> {
+        //     let bytes: Vec<_> = bytes.try_into()?;
+        //     let pk = PublicKey::decode(&mut (&bytes[..])).map_err(JsErrorWrap::from)?;
+        //     Ok(pk)
+        // }
 
         pub fn to_format(&self) -> String {
             format!("{self:?}")
@@ -326,9 +326,11 @@ export interface PrivateKeyJson {
             hex::encode(&self.payload)
         }
 
-        pub fn to_json(&self) -> String {
-            todo!()
+        pub fn to_json(&self) -> Result<PrivateKeyJson, JsError> {
+            let js_value = serde_wasm_bindgen::to_value(&self)?;
+            Ok(PrivateKeyJson { obj: js_value })
         }
+
     }
 }
 
@@ -430,6 +432,7 @@ mod pair {
             let seed: Vec<_> = seed.try_into()?;
             Ok(self.use_seed(seed))
         }
+
     }
 
     /// Pair of Public and Private keys.
@@ -570,6 +573,11 @@ export interface KeyPairJson {
             Ok(kp)
         }
 
+        pub fn from_private_key(priv_key: &PrivateKey) -> Result<KeyPair, JsError> {
+            let pub_key: PublicKey = priv_key.clone().try_into()?;
+            let pair = KeyPair::new_unchecked(pub_key, priv_key.clone());
+            Ok(pair)
+        }
 
         #[wasm_bindgen(js_name = "generate_with_configuration")]
         pub fn generate_with_configuration_wasm(key_gen_configuration: &KeyGenConfiguration) -> Result<KeyPair, JsError> {

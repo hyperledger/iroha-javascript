@@ -22,12 +22,6 @@ export function algorithm_default(): Algorithm;
 */
 export function main(): void;
 
-export type VerifyResult =
-    | { t: 'ok' }
-    | { t: 'err', error: string }
-
-
-
 export interface PrivateKeyJson {
     digest_function: string
     /** Hex-encoded bytes */
@@ -54,6 +48,12 @@ export type DigestFunction =
     | 'secp256k1-pub'
     | 'bls12_381-g1-pub'
     | 'bls12_381-g2-pub'
+
+
+
+export type VerifyResult =
+    | { t: 'ok' }
+    | { t: 'err', error: string }
 
 
 
@@ -130,6 +130,11 @@ export class KeyPair {
 */
   static from_json(value: KeyPairJson): KeyPair;
 /**
+* @param {PrivateKey} priv_key
+* @returns {KeyPair}
+*/
+  static from_private_key(priv_key: PrivateKey): KeyPair;
+/**
 * @param {KeyGenConfiguration} key_gen_configuration
 * @returns {KeyPair}
 */
@@ -205,9 +210,9 @@ export class PrivateKey {
 */
   payload_hex(): string;
 /**
-* @returns {string}
+* @returns {PrivateKeyJson}
 */
-  to_json(): string;
+  to_json(): PrivateKeyJson;
 /**
 */
   readonly digest_function: Algorithm;
@@ -232,11 +237,6 @@ export class PublicKey {
 * @returns {PublicKey}
 */
   static from_private_key(key: PrivateKey): PublicKey;
-/**
-* @param {BytesInput} bytes
-* @returns {PublicKey}
-*/
-  static from_bytes(bytes: BytesInput): PublicKey;
 /**
 * @returns {string}
 */
@@ -268,10 +268,16 @@ export class Signature {
   free(): void;
 /**
 * @param {KeyPair} key_pair
-* @param {BytesInput} payload
+* @param {BytesInput} message
 * @returns {Signature}
 */
-  static create_from_key_pair(key_pair: KeyPair, payload: BytesInput): Signature;
+  static sign_with_key_pair(key_pair: KeyPair, message: BytesInput): Signature;
+/**
+* @param {PrivateKey} private_key
+* @param {BytesInput} message
+* @returns {Signature}
+*/
+  static sign_with_private_key(private_key: PrivateKey, message: BytesInput): Signature;
 /**
 * @param {PublicKey} pub_key
 * @param {BytesInput} payload
@@ -282,17 +288,25 @@ export class Signature {
 * @param {BytesInput} payload
 * @returns {VerifyResult}
 */
-  verify_wasm(payload: BytesInput): VerifyResult;
+  verify(payload: BytesInput): VerifyResult;
+/**
+* @returns {PublicKey}
+*/
+  public_key(): PublicKey;
+/**
+* @returns {Uint8Array}
+*/
+  payload(): Uint8Array;
+/**
+* @returns {string}
+*/
+  payload_hex(): string;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_signature_free: (a: number) => void;
-  readonly signature_create_from_key_pair: (a: number, b: number, c: number) => void;
-  readonly signature_create_from_public_key: (a: number, b: number, c: number) => void;
-  readonly signature_verify_wasm: (a: number, b: number, c: number) => void;
   readonly __wbg_hash_free: (a: number) => void;
   readonly hash_zeroed: () => number;
   readonly hash_hash: (a: number, b: number) => void;
@@ -312,6 +326,7 @@ export interface InitOutput {
   readonly keygenconfiguration_use_seed: (a: number, b: number, c: number) => void;
   readonly __wbg_keypair_free: (a: number) => void;
   readonly keypair_from_json: (a: number, b: number) => void;
+  readonly keypair_from_private_key: (a: number, b: number) => void;
   readonly keypair_generate_with_configuration: (a: number, b: number) => void;
   readonly keypair_generate: (a: number) => void;
   readonly keypair_digest_function: (a: number) => number;
@@ -328,11 +343,18 @@ export interface InitOutput {
   readonly multihash_to_bytes_hex: (a: number, b: number) => void;
   readonly multihash_clone_payload: (a: number, b: number) => void;
   readonly multihash_digest_function: (a: number) => number;
+  readonly __wbg_signature_free: (a: number) => void;
+  readonly signature_sign_with_key_pair: (a: number, b: number, c: number) => void;
+  readonly signature_sign_with_private_key: (a: number, b: number, c: number) => void;
+  readonly signature_create_from_public_key: (a: number, b: number, c: number) => void;
+  readonly signature_verify: (a: number, b: number, c: number) => void;
+  readonly signature_public_key: (a: number) => number;
+  readonly signature_payload: (a: number, b: number) => void;
+  readonly signature_payload_hex: (a: number, b: number) => void;
   readonly __wbg_publickey_free: (a: number) => void;
   readonly publickey_from_multihash_hex: (a: number, b: number, c: number) => void;
   readonly publickey_from_multihash: (a: number) => number;
   readonly publickey_from_private_key: (a: number) => number;
-  readonly publickey_from_bytes: (a: number, b: number) => void;
   readonly publickey_to_format: (a: number, b: number) => void;
   readonly publickey_to_multihash: (a: number) => number;
   readonly publickey_to_multihash_hex: (a: number, b: number) => void;
