@@ -1,10 +1,10 @@
 import { RollupOptions, defineConfig } from 'rollup'
 import { BUNDLE_PACKAGES, getPackageRollupMeta } from './meta'
-import PluginDTS from 'rollup-plugin-dts'
-import PluginReplace from '@rollup/plugin-replace'
+import dts from 'rollup-plugin-dts'
+import replace from '@rollup/plugin-replace'
 
 function replaceVitest() {
-  return PluginReplace({
+  return replace({
     preventAssignment: true,
     values: {
       'import.meta.vitest': 'undefined',
@@ -12,13 +12,13 @@ function replaceVitest() {
   })
 }
 
-function* generateRollups(): Generator<RollupOptions> {
+function* generateRolls(): Generator<RollupOptions> {
   for (const pkg of BUNDLE_PACKAGES) {
     for (const { inputBase, outputBase, external } of getPackageRollupMeta(pkg)) {
       yield {
         input: inputBase + '.d.ts',
         external,
-        plugins: [PluginDTS(), replaceVitest()],
+        plugins: [dts(), replaceVitest()],
         output: [{ file: outputBase + '.d.ts', format: 'esm' }],
       }
 
@@ -35,4 +35,4 @@ function* generateRollups(): Generator<RollupOptions> {
   }
 }
 
-export default defineConfig([...generateRollups()])
+export default defineConfig([...generateRolls()])
