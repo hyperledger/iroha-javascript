@@ -16,7 +16,7 @@ import {
 async function preserveCwd<T>(fn: () => Promise<T>): Promise<T> {
   const preserved = process.cwd()
   try {
-    return fn()
+    return await fn()
   } finally {
     cd(preserved)
   }
