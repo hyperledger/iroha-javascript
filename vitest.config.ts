@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@iroha2/i64-fixnum': resolve('./packages/i64-fixnum/src/lib.ts'),
+      '@iroha2/data-model': resolve('./packages/data-model/src/lib.ts')
     },
   },
   test: {

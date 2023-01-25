@@ -606,6 +606,17 @@ export class KeyPair {
             wasm.__wbindgen_add_to_stack_pointer(16);
         }
     }
+    /**
+    * @param {PublicKey} public_key
+    * @param {PrivateKey} private_key
+    * @returns {KeyPair}
+    */
+    static reproduce(public_key, private_key) {
+        _assertClass(public_key, PublicKey);
+        _assertClass(private_key, PrivateKey);
+        const ret = wasm.keypair_reproduce(public_key.ptr, private_key.ptr);
+        return KeyPair.__wrap(ret);
+    }
 }
 /**
 * Multihash
@@ -838,6 +849,26 @@ export class PrivateKey {
             wasm.__wbindgen_add_to_stack_pointer(16);
         }
     }
+    /**
+    * @param {Algorithm} digest_function
+    * @param {BytesInput} payload
+    * @returns {PrivateKey}
+    */
+    static reproduce(digest_function, payload) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.privatekey_reproduce(retptr, addHeapObject(digest_function), addHeapObject(payload));
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return PrivateKey.__wrap(r0);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
 }
 /**
 * Public Key used in signatures.
@@ -976,6 +1007,26 @@ export class PublicKey {
             wasm.__wbindgen_free(r0, r1);
         }
     }
+    /**
+    * @param {Algorithm} digest_function
+    * @param {BytesInput} payload
+    * @returns {PublicKey}
+    */
+    static reproduce(digest_function, payload) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.publickey_reproduce(retptr, addHeapObject(digest_function), addHeapObject(payload));
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return PublicKey.__wrap(r0);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
 }
 /**
 * Represents signature of the data (`Block` or `Transaction` for example).
@@ -1047,11 +1098,11 @@ export class Signature {
     * @param {BytesInput} payload
     * @returns {Signature}
     */
-    static create_from_public_key(pub_key, payload) {
+    static reproduce(pub_key, payload) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             _assertClass(pub_key, PublicKey);
-            wasm.signature_create_from_public_key(retptr, pub_key.ptr, addHeapObject(payload));
+            wasm.signature_reproduce(retptr, pub_key.ptr, addHeapObject(payload));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];

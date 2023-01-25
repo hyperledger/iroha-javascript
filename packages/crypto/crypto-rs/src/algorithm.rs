@@ -104,6 +104,15 @@ impl TryFrom<AlgorithmJsStr> for Algorithm {
     }
 }
 
+impl TryFrom<AlgorithmJsStr> for ConstString {
+    type Error = JsError;
+
+    fn try_from(value: AlgorithmJsStr) -> Result<Self, Self::Error> {
+        let alg: Algorithm = value.try_into()?;
+        Ok(alg.to_string().into())
+    }
+}
+
 impl From<Algorithm> for AlgorithmJsStr {
     fn from(value: Algorithm) -> Self {
         AlgorithmJsStr {

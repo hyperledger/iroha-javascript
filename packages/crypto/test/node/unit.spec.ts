@@ -1,13 +1,21 @@
-import { describe, expect, test } from 'vitest'
+/* eslint-disable max-nested-callbacks */
+import { afterAll, describe, expect, test } from 'vitest'
 import { crypto } from '@iroha2/crypto-target-node'
-import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
+import { FREE_HEAP, cryptoTypes, freeScope } from '@iroha2/crypto-core'
+
+afterAll(() => {
+  // TODO check that FREE_HEAP is empty to be more sure there are no internal leaks
+  expect(FREE_HEAP.size).toEqual(0)
+})
 
 test('Generates KeyPair from seed as expected', () => {
   const SEED_BYTES = [49, 50, 51, 52]
 
-  const keyPair = crypto.KeyGenConfiguration.default().useSeed('array', Uint8Array.from(SEED_BYTES)).generate()
+  const json = freeScope(() =>
+    crypto.KeyGenConfiguration.default().useSeed('array', Uint8Array.from(SEED_BYTES)).generate().toJSON(),
+  )
 
-  expect(keyPair.toJSON()).toMatchInlineSnapshot(`
+  expect(json).toMatchInlineSnapshot(`
     {
       "private_key": {
         "digest_function": "ed25519",
@@ -19,7 +27,7 @@ test('Generates KeyPair from seed as expected', () => {
 })
 
 test('Constructs KeyPair from JSON', () => {
-  const json = {
+  const INPUT = {
     private_key: {
       digest_function: 'ed25519',
       payload:
@@ -28,9 +36,9 @@ test('Constructs KeyPair from JSON', () => {
     public_key: 'ed0120f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7',
   }
 
-  const keyPair = crypto.KeyPair.fromJSON(json)
+  const json = freeScope(() => crypto.KeyPair.fromJSON(INPUT).toJSON())
 
-  expect(keyPair.toJSON()).toEqual(json)
+  expect(json).toEqual(INPUT)
 })
 
 test('When keyGenConfiguration is created within a scope, its used outside of it throws an error', () => {
@@ -44,14 +52,15 @@ test('When keyGenConfiguration is created within a scope, its used outside of it
 })
 
 test('When key gen conf is created within a scope and forgotten in it, it can be used outside of the scope', () => {
-  let keyGenConfig: cryptoTypes.KeyGenConfiguration
+  freeScope(() => {
+    let keyGenConfig: cryptoTypes.KeyGenConfiguration
 
-  freeScope((scope) => {
-    keyGenConfig = crypto.KeyGenConfiguration.default().useSeed('hex', '001122')
-    scope.forget(keyGenConfig)
-  })
+    freeScope((scope) => {
+      keyGenConfig = crypto.KeyGenConfiguration.default().useSeed('hex', '001122')
+      scope.forget(keyGenConfig)
+    })
 
-  expect(keyGenConfig!.generate().toJSON()).toMatchInlineSnapshot(`
+    expect(keyGenConfig!.generate().toJSON()).toMatchInlineSnapshot(`
     {
       "private_key": {
         "digest_function": "ed25519",
@@ -60,6 +69,7 @@ test('When key gen conf is created within a scope and forgotten in it, it can be
       "public_key": "ed0120797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9",
     }
   `)
+  })
 })
 
 test('Generating multiple key pairs from a single configuration does not error', () => {
@@ -76,18 +86,18 @@ describe('Given a multihash', () => {
   const MULTIHASH = 'ed0120797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9'
 
   test('a public key could be constructed', () => {
-    const key = crypto.PublicKey.fromMultihash('hex', MULTIHASH)
+    freeScope(() => {
+      const key = crypto.PublicKey.fromMultihash('hex', MULTIHASH)
 
-    expect(key.digestFunction).toMatchInlineSnapshot('"ed25519"')
-    expect(key.payload('hex')).toMatchInlineSnapshot(
-      '"797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9"',
-    )
+      expect(key.digestFunction).toMatchInlineSnapshot('"ed25519"')
+      expect(key.payload('hex')).toMatchInlineSnapshot(
+        '"797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9"',
+      )
+    })
   })
 
   test('a public key could be parsed and transformed back through JSON methods', () => {
-    const key = crypto.PublicKey.fromJSON(MULTIHASH)
-
-    expect(key.toJSON()).toEqual(MULTIHASH)
+    expect(freeScope(() => crypto.PublicKey.fromJSON(MULTIHASH).toJSON())).toEqual(MULTIHASH)
   })
 })
 
@@ -100,23 +110,12 @@ describe('Signature verification', () => {
     })
   }
 
-  function privateKeyFactory() {
-    return freeScope((scope) => {
-      const pair = pairFactory()
-      scope.track(pair)
-      const key = pair.privateKey()
-      scope.forget(key)
-      return key
-    })
-  }
-
   test('result is ok', () => {
     const MESSAGE = 'deadbeef'
-    const pair = pairFactory()
 
-    const signature = pair.sign('hex', MESSAGE)
+    const result = freeScope(() => pairFactory().sign('hex', MESSAGE).verify('hex', MESSAGE))
 
-    expect(signature.verify('hex', MESSAGE)).toMatchInlineSnapshot(`
+    expect(result).toMatchInlineSnapshot(`
       {
         "t": "ok",
       }
@@ -124,11 +123,9 @@ describe('Signature verification', () => {
   })
 
   test('result is err', () => {
-    const pair = pairFactory()
+    const result = freeScope(() => pairFactory().sign('hex', 'deadbeef').verify('hex', 'feedbabe'))
 
-    const signature = pair.sign('hex', 'deadbeef')
-
-    expect(signature.verify('hex', 'feedbabe')).toMatchInlineSnapshot(`
+    expect(result).toMatchInlineSnapshot(`
       {
         "error": "Signing failed. Verification equation was not satisfied",
         "t": "err",
@@ -137,10 +134,43 @@ describe('Signature verification', () => {
   })
 
   test('exception is thrown if input is invalid', () => {
-    const signature = pairFactory().sign('hex', 'deadbeef')
+    freeScope(() => {
+      const signature = pairFactory().sign('hex', 'deadbeef')
 
-    expect(() => signature.verify('hex', 'not really a hex')).toThrowErrorMatchingInlineSnapshot(
-      '"Invalid character \'n\' at position 0"',
-    )
+      expect(() => signature.verify('hex', 'not really a hex')).toThrowErrorMatchingInlineSnapshot(
+        '"Invalid character \'n\' at position 0"',
+      )
+    })
+  })
+})
+
+describe('PublicKey.toMultihash()', () => {
+  const MULTIHASH = 'ed0120797507786f9c6a4de91b5462b8a6f7bf9ab21c22b853e9c992c2ef68da5307f9'
+
+  test('When called without args, returns multihash instance', () => {
+    freeScope(() => {
+      const key = crypto.PublicKey.fromMultihash('hex', MULTIHASH)
+
+      expect(key.toMultihash()).toBeInstanceOf(crypto.Multihash)
+    })
+  })
+
+  test('When called in hex mode, returns hex', () => {
+    freeScope(() => {
+      const key = crypto.PublicKey.fromMultihash('hex', MULTIHASH)
+
+      expect(key.toMultihash('hex')).toBe(MULTIHASH)
+    })
+  })
+})
+
+test('Signature serializes to data model repr as expected', () => {
+  freeScope(() => {
+    const cryptoSignature = crypto.KeyGenConfiguration.default().generate().sign('hex', '112233')
+    const dataModelSignature = cryptoSignature.toDataModel()
+
+    expect(cryptoSignature.payload()).toEqual(dataModelSignature.payload)
+    expect(cryptoSignature.publicKey().digestFunction).toEqual(dataModelSignature.public_key.digest_function)
+    expect(cryptoSignature.publicKey().payload()).toEqual(dataModelSignature.public_key.payload)
   })
 })

@@ -219,25 +219,31 @@ importers:
     specifiers:
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
       '@iroha2/crypto-util': workspace:^0.1.0
+      '@iroha2/data-model': workspace:^4.0.0
     dependencies:
       '@iroha2/crypto-util': link:../util
+      '@iroha2/data-model': link:../../../data-model
     devDependencies:
       '@iroha2/crypto-interface-wrap': link:../interface-wrap
 
   packages/crypto/packages/interface-wrap:
     specifiers:
       '@iroha2/crypto-util': workspace:^0.1.0
+      '@iroha2/data-model': workspace:^4.0.0
     devDependencies:
       '@iroha2/crypto-util': link:../util
+      '@iroha2/data-model': link:../../../data-model
 
   packages/crypto/packages/target-bundler:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
+      '@iroha2/data-model': workspace:^4.0.0
       '@types/node': ^18.11.18
       typescript: ^4.9.4
     dependencies:
       '@iroha2/crypto-core': link:../core
+      '@iroha2/data-model': link:../../../data-model
     devDependencies:
       '@iroha2/crypto-interface-wrap': link:../interface-wrap
       '@types/node': 18.11.18
@@ -247,9 +253,11 @@ importers:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
+      '@iroha2/data-model': workspace:^4.0.0
       '@types/node': ^18.11.18
     dependencies:
       '@iroha2/crypto-core': link:../core
+      '@iroha2/data-model': link:../../../data-model
     devDependencies:
       '@iroha2/crypto-interface-wrap': link:../interface-wrap
       '@types/node': 18.11.18
@@ -258,10 +266,12 @@ importers:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
+      '@iroha2/data-model': workspace:^4.0.0
       '@types/node': ^18.11.18
       typescript: ^4.9.4
     dependencies:
       '@iroha2/crypto-core': link:../core
+      '@iroha2/data-model': link:../../../data-model
     devDependencies:
       '@iroha2/crypto-interface-wrap': link:../interface-wrap
       '@types/node': 18.11.18

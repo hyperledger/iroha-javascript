@@ -157,6 +157,12 @@ export class KeyPair {
 */
   to_json(): KeyPairJson;
 /**
+* @param {PublicKey} public_key
+* @param {PrivateKey} private_key
+* @returns {KeyPair}
+*/
+  static reproduce(public_key: PublicKey, private_key: PrivateKey): KeyPair;
+/**
 */
   readonly digest_function: Algorithm;
 }
@@ -214,6 +220,12 @@ export class PrivateKey {
 */
   to_json(): PrivateKeyJson;
 /**
+* @param {Algorithm} digest_function
+* @param {BytesInput} payload
+* @returns {PrivateKey}
+*/
+  static reproduce(digest_function: Algorithm, payload: BytesInput): PrivateKey;
+/**
 */
   readonly digest_function: Algorithm;
 }
@@ -258,6 +270,12 @@ export class PublicKey {
 */
   payload_hex(): string;
 /**
+* @param {Algorithm} digest_function
+* @param {BytesInput} payload
+* @returns {PublicKey}
+*/
+  static reproduce(digest_function: Algorithm, payload: BytesInput): PublicKey;
+/**
 */
   readonly digest_function: Algorithm;
 }
@@ -283,7 +301,7 @@ export class Signature {
 * @param {BytesInput} payload
 * @returns {Signature}
 */
-  static create_from_public_key(pub_key: PublicKey, payload: BytesInput): Signature;
+  static reproduce(pub_key: PublicKey, payload: BytesInput): Signature;
 /**
 * @param {BytesInput} payload
 * @returns {VerifyResult}

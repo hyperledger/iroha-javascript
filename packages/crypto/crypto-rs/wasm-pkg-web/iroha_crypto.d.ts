@@ -157,6 +157,12 @@ export class KeyPair {
 */
   to_json(): KeyPairJson;
 /**
+* @param {PublicKey} public_key
+* @param {PrivateKey} private_key
+* @returns {KeyPair}
+*/
+  static reproduce(public_key: PublicKey, private_key: PrivateKey): KeyPair;
+/**
 */
   readonly digest_function: Algorithm;
 }
@@ -214,6 +220,12 @@ export class PrivateKey {
 */
   to_json(): PrivateKeyJson;
 /**
+* @param {Algorithm} digest_function
+* @param {BytesInput} payload
+* @returns {PrivateKey}
+*/
+  static reproduce(digest_function: Algorithm, payload: BytesInput): PrivateKey;
+/**
 */
   readonly digest_function: Algorithm;
 }
@@ -258,6 +270,12 @@ export class PublicKey {
 */
   payload_hex(): string;
 /**
+* @param {Algorithm} digest_function
+* @param {BytesInput} payload
+* @returns {PublicKey}
+*/
+  static reproduce(digest_function: Algorithm, payload: BytesInput): PublicKey;
+/**
 */
   readonly digest_function: Algorithm;
 }
@@ -283,7 +301,7 @@ export class Signature {
 * @param {BytesInput} payload
 * @returns {Signature}
 */
-  static create_from_public_key(pub_key: PublicKey, payload: BytesInput): Signature;
+  static reproduce(pub_key: PublicKey, payload: BytesInput): Signature;
 /**
 * @param {BytesInput} payload
 * @returns {VerifyResult}
@@ -307,17 +325,18 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_hash_free: (a: number) => void;
-  readonly hash_zeroed: () => number;
-  readonly hash_hash: (a: number, b: number) => void;
-  readonly hash_bytes: (a: number, b: number) => void;
-  readonly hash_bytes_hex: (a: number, b: number) => void;
   readonly __wbg_privatekey_free: (a: number) => void;
   readonly privatekey_from_json: (a: number, b: number) => void;
   readonly privatekey_digest_function: (a: number) => number;
   readonly privatekey_payload: (a: number, b: number) => void;
   readonly privatekey_payload_hex: (a: number, b: number) => void;
   readonly privatekey_to_json: (a: number, b: number) => void;
+  readonly privatekey_reproduce: (a: number, b: number, c: number) => void;
+  readonly __wbg_hash_free: (a: number) => void;
+  readonly hash_zeroed: () => number;
+  readonly hash_hash: (a: number, b: number) => void;
+  readonly hash_bytes: (a: number, b: number) => void;
+  readonly hash_bytes_hex: (a: number, b: number) => void;
   readonly __wbg_keygenconfiguration_free: (a: number) => void;
   readonly keygenconfiguration__default: () => number;
   readonly keygenconfiguration_create_with_algorithm: (a: number, b: number) => void;
@@ -333,6 +352,7 @@ export interface InitOutput {
   readonly keypair_private_key: (a: number) => number;
   readonly keypair_public_key: (a: number) => number;
   readonly keypair_to_json: (a: number, b: number) => void;
+  readonly keypair_reproduce: (a: number, b: number) => number;
   readonly digest_function_default: () => number;
   readonly digest_function_from_byte_code: (a: number, b: number) => void;
   readonly digest_function_to_byte_code: (a: number, b: number) => void;
@@ -346,7 +366,7 @@ export interface InitOutput {
   readonly __wbg_signature_free: (a: number) => void;
   readonly signature_sign_with_key_pair: (a: number, b: number, c: number) => void;
   readonly signature_sign_with_private_key: (a: number, b: number, c: number) => void;
-  readonly signature_create_from_public_key: (a: number, b: number, c: number) => void;
+  readonly signature_reproduce: (a: number, b: number, c: number) => void;
   readonly signature_verify: (a: number, b: number, c: number) => void;
   readonly signature_public_key: (a: number) => number;
   readonly signature_payload: (a: number, b: number) => void;
@@ -361,6 +381,7 @@ export interface InitOutput {
   readonly publickey_digest_function: (a: number) => number;
   readonly publickey_payload: (a: number, b: number) => void;
   readonly publickey_payload_hex: (a: number, b: number) => void;
+  readonly publickey_reproduce: (a: number, b: number, c: number) => void;
   readonly algorithm_default: () => number;
   readonly main: () => void;
   readonly __wbindgen_malloc: (a: number) => number;

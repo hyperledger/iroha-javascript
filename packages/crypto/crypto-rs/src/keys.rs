@@ -5,6 +5,7 @@ pub use priv_key::PrivateKey;
 pub use pub_key::PublicKey;
 
 mod pub_key {
+    use crate::multihash::DigestFunctionJsStr;
     use crate::utils::{BytesInputJs, decode_hex};
     use super::*;
 
@@ -203,10 +204,19 @@ mod pub_key {
         pub fn payload_hex_wasm(&self) -> String {
             hex::encode(&self.payload)
         }
+
+        #[wasm_bindgen(js_name = "reproduce")]
+        pub fn reproduce_wasm(digest_function: AlgorithmJsStr, payload: BytesInputJs) -> Result<PublicKey, JsError> {
+            Ok(Self {
+                digest_function: digest_function.try_into()?,
+                payload: payload.try_into()?
+            })
+        }
     }
 }
 
 mod priv_key {
+    use crate::utils::BytesInputJs;
     use super::*;
 
     /// Private Key used in signatures.
@@ -331,6 +341,13 @@ export interface PrivateKeyJson {
             Ok(PrivateKeyJson { obj: js_value })
         }
 
+        #[wasm_bindgen(js_name = "reproduce")]
+        pub fn reproduce_wasm(digest_function: AlgorithmJsStr, payload: BytesInputJs) -> Result<PrivateKey, JsError> {
+            Ok(Self {
+                digest_function: digest_function.try_into()?,
+                payload: payload.try_into()?
+            })
+        }
     }
 }
 
@@ -432,6 +449,7 @@ mod pair {
             let seed: Vec<_> = seed.try_into()?;
             Ok(self.use_seed(seed))
         }
+
 
     }
 
@@ -611,6 +629,15 @@ export interface KeyPairJson {
             let json = serde_wasm_bindgen::to_value(&self)?;
             Ok(KeyPairJson { obj: json })
         }
+
+        #[wasm_bindgen(js_name = "reproduce")]
+        pub fn reproduce_wasm(public_key: &PublicKey, private_key: &PrivateKey) -> Self {
+            Self {
+                public_key: public_key.clone(),
+                private_key: private_key.clone()
+            }
+        }
+
     }
 }
 

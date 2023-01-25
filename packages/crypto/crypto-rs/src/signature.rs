@@ -103,7 +103,7 @@ impl Signature {
 impl Signature {
     pub fn sign_with_key_pair(key_pair: &KeyPair, message: BytesInputJs) -> Result<Signature, JsError> {
         let message: Vec<_> = message.try_into()?;
-        let value = Signature::new(key_pair.clone(), &message).map_err(JsErrorWrap::from)?;
+        let value = Self::new(key_pair.clone(), &message).map_err(JsErrorWrap::from)?;
         Ok(value)
     }
 
@@ -112,8 +112,8 @@ impl Signature {
         Self::sign_with_key_pair(&pair, message)
     }
 
-    pub fn create_from_public_key(pub_key: &PublicKey, payload: BytesInputJs) -> Result<Signature, JsError> {
-        Ok(Signature { public_key: pub_key.clone(), payload: payload.try_into()? })
+    pub fn reproduce(pub_key: &PublicKey, payload: BytesInputJs) -> Result<Signature, JsError> {
+        Ok(Self { public_key: pub_key.clone(), payload: payload.try_into()? })
     }
 
     #[wasm_bindgen(js_name = "verify")]
@@ -176,7 +176,6 @@ impl TryFrom<Result<(), Error>> for VerifyResultJs {
     }
 }
 
-// enum VerifyResult
 
 impl From<Signature> for (PublicKey, Payload) {
     fn from(

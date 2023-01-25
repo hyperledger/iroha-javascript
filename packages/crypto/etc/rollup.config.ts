@@ -18,6 +18,10 @@ import { glob } from 'zx'
 import fs from 'fs/promises'
 import { PackageJson } from 'type-fest'
 
+/**
+ * This function implements the important convention: production dependencies of the package, written in `package.json`,
+ * are also its Rollup externals. It allows to avoid mismatch between dev and deploy (NPM-published) environment.
+ */
 async function loadDependencies(pkg: RollupPackage): Promise<string[]> {
   const {
     default: { dependencies },
