@@ -1,4 +1,4 @@
-use super::*;
+use super::{wasm_bindgen, ConstString, Display, FromStr, JsError, JsErrorWrap, ToString};
 
 /// ed25519
 pub const ED_25519: &str = "ed25519";
@@ -57,16 +57,16 @@ pub struct NoSuchAlgorithm;
 // #[wasm_bindgen]
 pub enum Algorithm {
     /// Ed25519
-    #[display(fmt = "{}", "ED_25519")]
+    #[display(fmt = "{ED_25519}")]
     Ed25519,
     /// Secp256k1
-    #[display(fmt = "{}", "SECP_256_K1")]
+    #[display(fmt = "{SECP_256_K1}")]
     Secp256k1,
     /// BlsNormal
-    #[display(fmt = "{}", "BLS_NORMAL")]
+    #[display(fmt = "{BLS_NORMAL}")]
     BlsNormal,
     /// BlsSmall
-    #[display(fmt = "{}", "BLS_SMALL")]
+    #[display(fmt = "{BLS_SMALL}")]
     BlsSmall,
 }
 
@@ -122,6 +122,7 @@ impl From<Algorithm> for AlgorithmJsStr {
 }
 
 #[wasm_bindgen]
+#[must_use]
 pub fn algorithm_default() -> AlgorithmJsStr {
     Algorithm::default().into()
 }

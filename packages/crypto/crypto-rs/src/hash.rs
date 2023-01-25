@@ -1,7 +1,6 @@
-use super::*;
-
 use core::{hash, marker::PhantomData};
 
+use crate::{alloc, utils::BytesInputJs, wasm_bindgen, JsError, String};
 use alloc::vec::Vec;
 use derive_more::{DebugCustom, Deref, DerefMut, Display};
 use parity_scale_codec::{Decode, Encode};
@@ -10,23 +9,23 @@ use ursa::{
     blake2::{digest::VariableOutput, VarBlake2b},
     sha3::digest::Input,
 };
-use crate::utils::BytesInputJs;
 
 /// Hash of Iroha entities. Currently supports only blake2b-32.
+#[allow(clippy::unsafe_derive_deserialize)]
 #[derive(
-Clone,
-Copy,
-Display,
-DebugCustom,
-Hash,
-Eq,
-PartialEq,
-Ord,
-PartialOrd,
-Decode,
-Encode,
-Deserialize,
-Serialize,
+    Clone,
+    Copy,
+    Display,
+    DebugCustom,
+    Hash,
+    Eq,
+    PartialEq,
+    Ord,
+    PartialOrd,
+    Decode,
+    Encode,
+    Deserialize,
+    Serialize,
 )]
 #[repr(transparent)]
 #[serde(transparent)]
@@ -123,7 +122,7 @@ impl<T> From<HashOf<T>> for Hash {
 // Lint triggers when expanding #[codec(skip)]
 #[allow(clippy::default_trait_access)]
 #[derive(DebugCustom, Deref, DerefMut, Display, Decode, Encode, Deserialize, Serialize)]
-#[display(fmt = "{}", _0)]
+#[display(fmt = "{_0}")]
 #[debug(fmt = "{{ {} {_0} }}", "core::any::type_name::<Self>()")]
 #[serde(transparent)]
 #[repr(transparent)]
@@ -164,7 +163,7 @@ impl<T> Ord for HashOf<T> {
 
 impl<T> hash::Hash for HashOf<T> {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        self.0.hash(state)
+        self.0.hash(state);
     }
 }
 
@@ -209,6 +208,6 @@ mod tests {
                 res[..],
                 hex!("ba67336efd6a3df3a70eeb757860763036785c182ff4cf587541a0068d09f5b2")[..]
             );
-        })
+        });
     }
 }

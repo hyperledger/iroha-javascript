@@ -35,6 +35,13 @@ namespace('wasm', () => {
     await del(dirsToClean)
   })
 
+  task('cargo-test', async () => {
+    await preserveCwd(async () => {
+      cd(WASM_PACK_CRATE_DIR)
+      await $`cargo test`
+    })
+  })
+
   task('build-targets', async () => {
     await preserveCwd(async () => {
       cd(WASM_PACK_CRATE_DIR)
@@ -46,7 +53,6 @@ namespace('wasm', () => {
     })
   })
 
-  desc('dev')
   task('keep-only-necessary', async () => {
     function* patterns() {
       for (const target of WASM_PACK_TARGETS) {
@@ -86,7 +92,7 @@ namespace('rollup', () => {
 })
 
 desc('Build wasm-pack for each target with only necessary artifacts needed for rolling up packages on top of it')
-task('build-wasm-pkgs', ['wasm:clean', 'wasm:build-targets', 'wasm:keep-only-necessary'])
+task('build-wasm-pkgs', ['wasm:clean', 'wasm:cargo-test', 'wasm:build-targets', 'wasm:keep-only-necessary'])
 
 desc('Rollup packages on top of wasm-pack artifacts')
 task('rollup', ['rollup:clean', 'rollup:all'])

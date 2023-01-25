@@ -1,16 +1,13 @@
 //! Module with multihash implementation
 
-use alloc::{
-    string::{String, ToString as _},
-    vec,
-    vec::Vec,
-};
+use alloc::{string::String, vec, vec::Vec};
 
-use derive_more::Display;
-use hex::ToHex;
 use crate::utils::decode_hex;
+use derive_more::Display;
 
-use super::*;
+use super::{
+    alloc, varint, wasm_bindgen, FromStr, JsError, JsErrorWrap, NoSuchAlgorithm, ToString,
+};
 
 /// ed25519 public string
 pub const ED_25519_PUB_STR: &str = "ed25519-pub";
@@ -28,16 +25,16 @@ pub const BLS12_381_G2_PUB: &str = "bls12_381-g2-pub";
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Display)]
 pub enum DigestFunction {
     /// Ed25519
-    #[display(fmt = "{}", "ED_25519_PUB_STR")]
+    #[display(fmt = "{ED_25519_PUB_STR}")]
     Ed25519Pub = 0xed,
     /// Secp256k1
-    #[display(fmt = "{}", "SECP_256_K1_PUB_STR")]
+    #[display(fmt = "{SECP_256_K1_PUB_STR}")]
     Secp256k1Pub = 0xe7,
     /// Bls12381G1
-    #[display(fmt = "{}", "BLS12_381_G1_PUB")]
+    #[display(fmt = "{BLS12_381_G1_PUB}")]
     Bls12381G1Pub = 0xea,
     /// Bls12381G2
-    #[display(fmt = "{}", "BLS12_381_G2_PUB")]
+    #[display(fmt = "{BLS12_381_G2_PUB}")]
     Bls12381G2Pub = 0xeb,
 }
 
@@ -128,20 +125,26 @@ impl From<DigestFunction> for DigestFunctionJsStr {
 }
 
 #[wasm_bindgen]
+#[must_use]
 pub fn digest_function_default() -> DigestFunctionJsStr {
     DigestFunction::default().into()
 }
 
+/// # Errors
+/// Fails if byte code is not valid
 #[wasm_bindgen]
 pub fn digest_function_from_byte_code(value: u32) -> Result<DigestFunctionJsStr, JsError> {
-    let digest = DigestFunction::try_from(value as u64).map_err(JsErrorWrap::from)?;
+    let digest = DigestFunction::try_from(u64::from(value)).map_err(JsErrorWrap::from)?;
     Ok(digest.into())
 }
 
+/// # Errors
+/// Fails if digest function parsing fails
 #[wasm_bindgen]
 pub fn digest_function_to_byte_code(digest: DigestFunctionJsStr) -> Result<u32, JsError> {
     let digest: DigestFunction = digest.try_into()?;
     let num: u64 = digest.into();
+    #[allow(clippy::cast_possible_truncation)]
     Ok(num as u32)
 }
 
@@ -242,30 +245,40 @@ impl TryFrom<&Multihash> for Vec<u8> {
 
 #[wasm_bindgen]
 impl Multihash {
+    /// # Errors
+    /// Fails if digest could not fit into a byte
     pub fn to_bytes(&self) -> Result<Vec<u8>, JsError> {
         let bytes = self.try_into().map_err(JsErrorWrap::from)?;
         Ok(bytes)
     }
 
+    /// # Errors
+    /// Fails if bytes are not a valid multihash
     pub fn from_bytes(bytes: Vec<u8>) -> Result<Multihash, JsError> {
         let hash = bytes.try_into().map_err(JsErrorWrap::from)?;
         Ok(hash)
     }
 
+    /// # Errors
+    /// Fails if bytes are not a valid multihash
     pub fn from_bytes_hex(hex: String) -> Result<Multihash, JsError> {
         Self::from_bytes(decode_hex(hex)?)
     }
 
+    /// # Errors
+    /// Fails if bytes conversion fails
     pub fn to_bytes_hex(&self) -> Result<String, JsError> {
         let bytes = self.to_bytes()?;
         Ok(hex::encode(bytes))
     }
 
+    #[must_use]
     pub fn clone_payload(&self) -> Vec<u8> {
         self.payload.clone()
     }
 
     #[wasm_bindgen(getter)]
+    #[must_use]
     pub fn digest_function(&self) -> DigestFunctionJsStr {
         self.digest_function.into()
     }
@@ -291,7 +304,7 @@ mod tests {
             hex::decode("ed01201509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4")
                 .expect("Failed to decode"),
             bytes
-        )
+        );
     }
 
     #[test]
@@ -307,7 +320,7 @@ mod tests {
             hex::decode("ed01201509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4")
                 .expect("Failed to decode");
         let multihash_decoded: Multihash = bytes.try_into().expect("Failed to decode.");
-        assert_eq!(multihash, multihash_decoded)
+        assert_eq!(multihash, multihash_decoded);
     }
 
     #[test]

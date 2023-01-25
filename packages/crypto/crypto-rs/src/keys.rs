@@ -1,19 +1,31 @@
-use super::*;
-
 pub use pair::{KeyGenConfiguration, KeyGenOption, KeyPair};
 pub use priv_key::PrivateKey;
 pub use pub_key::PublicKey;
 
+use super::{
+    alloc, fmt, format, multihash, wasm_bindgen, Algorithm, AlgorithmJsStr, BlsNormal, BlsSmall,
+    ConstString, DebugCustom, Decode, Deserialize, Display, EcdsaSecp256k1Sha256, Ed25519Sha512,
+    Encode, Error, From, FromStr, JsError, JsErrorWrap, Multihash, MultihashDigestFunction,
+    NoSuchAlgorithm, ScaleError, Serialize, SignatureOf, SignatureScheme, String, ToOwned,
+    ToString, UrsaKeyGenOption, UrsaPrivateKey, Vec,
+};
+
 mod pub_key {
-    use crate::multihash::DigestFunctionJsStr;
-    use crate::utils::{BytesInputJs, decode_hex};
-    use super::*;
+    use crate::utils::BytesInputJs;
+
+    use super::{
+        alloc, fmt, format, wasm_bindgen, Algorithm, AlgorithmJsStr, BlsNormal, BlsSmall,
+        ConstString, DebugCustom, Decode, Deserialize, EcdsaSecp256k1Sha256, Ed25519Sha512, Encode,
+        FromStr, JsError, JsErrorWrap, KeyParseError, Multihash, MultihashDigestFunction,
+        PrivateKey, ScaleError, Serialize, SignatureScheme, String, ToOwned, ToString,
+        UrsaKeyGenOption, UrsaPrivateKey, Vec,
+    };
 
     /// Public Key used in signatures.
     #[derive(DebugCustom, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Encode)]
     #[debug(
-    fmt = "{{ digest: {digest_function}, payload: {} }}",
-    "hex::encode_upper(payload.as_slice())"
+        fmt = "{{ digest: {digest_function}, payload: {} }}",
+        "hex::encode_upper(payload.as_slice())"
     )]
     #[wasm_bindgen]
     pub struct PublicKey {
@@ -25,11 +37,13 @@ mod pub_key {
 
     impl PublicKey {
         /// Key payload
+        #[must_use]
         pub fn payload(&self) -> &[u8] {
             &self.payload
         }
 
         /// Digest function
+        #[must_use]
         pub fn digest_function(&self) -> Algorithm {
             self.digest_function.parse().expect("Valid")
         }
@@ -94,7 +108,7 @@ mod pub_key {
                 Algorithm::BlsNormal => BlsNormal::new().keypair(key_gen_option),
                 Algorithm::BlsSmall => BlsSmall::new().keypair(key_gen_option),
             }
-                .expect("can't fail for valid `PrivateKey`");
+            .expect("can't fail for valid `PrivateKey`");
             PublicKey {
                 digest_function: private_key.digest_function,
                 payload: core::mem::take(&mut public_key.0),
@@ -121,17 +135,17 @@ mod pub_key {
 
     impl Serialize for PublicKey {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-            where
-                S: serde::Serializer,
+        where
+            S: serde::Serializer,
         {
-            serializer.serialize_str(&format!("{}", self))
+            serializer.serialize_str(&format!("{self}"))
         }
     }
 
     impl<'de> Deserialize<'de> for PublicKey {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-            where
-                D: serde::Deserializer<'de>,
+        where
+            D: serde::Deserializer<'de>,
         {
             use alloc::borrow::Cow;
             use serde::de::Error as _;
@@ -156,18 +170,21 @@ mod pub_key {
         }
     }
 
-
     #[wasm_bindgen]
     impl PublicKey {
+        /// # Errors
+        /// Fails if multihash parsing fails
         pub fn from_multihash_hex(multihash: &str) -> Result<PublicKey, JsError> {
             let pk = PublicKey::from_str(multihash).map_err(JsErrorWrap::from)?;
             Ok(pk)
         }
 
+        #[must_use]
         pub fn from_multihash(multihash: &Multihash) -> PublicKey {
             multihash.clone().into()
         }
 
+        #[must_use]
         pub fn from_private_key(key: &PrivateKey) -> PublicKey {
             key.clone().into()
         }
@@ -178,38 +195,49 @@ mod pub_key {
         //     Ok(pk)
         // }
 
+        #[must_use]
         pub fn to_format(&self) -> String {
             format!("{self:?}")
         }
 
+        #[must_use]
         pub fn to_multihash(&self) -> Multihash {
             self.clone().into()
         }
 
+        #[must_use]
         pub fn to_multihash_hex(&self) -> String {
             self.to_string()
         }
 
         #[wasm_bindgen(js_name = "digest_function", getter)]
+        #[must_use]
         pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
             self.digest_function().into()
         }
 
         #[wasm_bindgen(js_name = "payload")]
+        #[must_use]
         pub fn payload_wasm(&self) -> Vec<u8> {
             self.payload.clone()
         }
 
         #[wasm_bindgen(js_name = "payload_hex")]
+        #[must_use]
         pub fn payload_hex_wasm(&self) -> String {
             hex::encode(&self.payload)
         }
 
+        /// # Errors
+        /// Fails if parsing of digest function or payload byte input fails
         #[wasm_bindgen(js_name = "reproduce")]
-        pub fn reproduce_wasm(digest_function: AlgorithmJsStr, payload: BytesInputJs) -> Result<PublicKey, JsError> {
+        pub fn reproduce_wasm(
+            digest_function: AlgorithmJsStr,
+            payload: BytesInputJs,
+        ) -> Result<PublicKey, JsError> {
             Ok(Self {
                 digest_function: digest_function.try_into()?,
-                payload: payload.try_into()?
+                payload: payload.try_into()?,
             })
         }
     }
@@ -217,11 +245,15 @@ mod pub_key {
 
 mod priv_key {
     use crate::utils::BytesInputJs;
-    use super::*;
+
+    use super::{
+        alloc, wasm_bindgen, Algorithm, AlgorithmJsStr, ConstString, DebugCustom, Deserialize,
+        Display, FromStr, JsError, JsErrorWrap, Serialize, String, Vec,
+    };
 
     /// Private Key used in signatures.
     #[derive(DebugCustom, Clone, PartialEq, Eq, Display, Serialize)]
-    #[debug(fmt = "{{ digest: {digest_function}, payload: {:X?} }}", payload)]
+    #[debug(fmt = "{{ digest: {digest_function}, payload: {payload:X?} }}")]
     #[display(fmt = "{}", "hex::encode(payload)")]
     #[allow(clippy::multiple_inherent_impl)]
     #[wasm_bindgen]
@@ -235,12 +267,14 @@ mod priv_key {
 
     impl PrivateKey {
         /// Key payload
+        #[must_use]
         pub fn payload(&self) -> &[u8] {
             &self.payload
         }
 
         /// Digest function
         #[allow(clippy::expect_used)]
+        #[must_use]
         pub fn digest_function(&self) -> Algorithm {
             self.digest_function.parse().expect("Valid")
         }
@@ -275,8 +309,8 @@ mod priv_key {
 
     impl<'de> Deserialize<'de> for PrivateKey {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-            where
-                D: serde::Deserializer<'de>,
+        where
+            D: serde::Deserializer<'de>,
         {
             use serde::de::Error as _;
 
@@ -314,38 +348,50 @@ export interface PrivateKeyJson {
     }
 
     #[wasm_bindgen]
-    impl PrivateKey
-    {
+    impl PrivateKey {
+        /// # Errors
+        /// Fails if serialization fails
         pub fn from_json(value: PrivateKeyJson) -> Result<PrivateKey, JsError> {
-            let parsed: Self = serde_wasm_bindgen::from_value(value.obj).map_err(JsErrorWrap::from)?;
+            let parsed: Self =
+                serde_wasm_bindgen::from_value(value.obj).map_err(JsErrorWrap::from)?;
             Ok(parsed)
         }
 
         #[wasm_bindgen(js_name = "digest_function", getter)]
+        #[must_use]
         pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
             self.digest_function().into()
         }
 
         #[wasm_bindgen(js_name = "payload")]
+        #[must_use]
         pub fn payload_wasm(&self) -> Vec<u8> {
             self.payload.clone()
         }
 
         #[wasm_bindgen(js_name = "payload_hex")]
+        #[must_use]
         pub fn payload_hex_wasm(&self) -> String {
             hex::encode(&self.payload)
         }
 
+        /// # Errors
+        /// Fails is serialization fails
         pub fn to_json(&self) -> Result<PrivateKeyJson, JsError> {
             let js_value = serde_wasm_bindgen::to_value(&self)?;
             Ok(PrivateKeyJson { obj: js_value })
         }
 
+        /// # Errors
+        /// Fails if parsing of digest function or payload byte input fails
         #[wasm_bindgen(js_name = "reproduce")]
-        pub fn reproduce_wasm(digest_function: AlgorithmJsStr, payload: BytesInputJs) -> Result<PrivateKey, JsError> {
+        pub fn reproduce_wasm(
+            digest_function: AlgorithmJsStr,
+            payload: BytesInputJs,
+        ) -> Result<PrivateKey, JsError> {
             Ok(Self {
                 digest_function: digest_function.try_into()?,
-                payload: payload.try_into()?
+                payload: payload.try_into()?,
             })
         }
     }
@@ -353,7 +399,13 @@ export interface PrivateKeyJson {
 
 mod pair {
     use crate::utils::BytesInputJs;
-    use super::*;
+
+    use super::{
+        wasm_bindgen, Algorithm, AlgorithmJsStr, BlsNormal, BlsSmall, ConstString, Deserialize,
+        EcdsaSecp256k1Sha256, Ed25519Sha512, Error, JsError, JsErrorWrap, NoSuchAlgorithm,
+        PrivateKey, PublicKey, Serialize, SignatureOf, SignatureScheme, String, ToString,
+        UrsaKeyGenOption, UrsaPrivateKey, Vec,
+    };
 
     /// Options for key generation
     #[derive(Debug, Clone, serde::Deserialize)]
@@ -364,7 +416,6 @@ mod pair {
         /// Derive from private key
         FromPrivateKey(PrivateKey),
     }
-
 
     impl TryFrom<KeyGenOption> for UrsaKeyGenOption {
         type Error = NoSuchAlgorithm;
@@ -422,38 +473,50 @@ mod pair {
     #[wasm_bindgen]
     impl KeyGenConfiguration {
         #[wasm_bindgen(js_name = "default")]
+        #[must_use]
         pub fn default_wasm() -> Self {
             Self::default()
         }
 
+        /// # Errors
+        /// Fails if algorithm parsing fails.
         #[wasm_bindgen(js_name = "create_with_algorithm")]
-        pub fn with_algorithm_wasm_static(algorithm: AlgorithmJsStr) -> Result<KeyGenConfiguration, JsError> {
+        pub fn with_algorithm_wasm_static(
+            algorithm: AlgorithmJsStr,
+        ) -> Result<KeyGenConfiguration, JsError> {
             Ok(Self {
                 algorithm: algorithm.try_into()?,
                 key_gen_option: None,
             })
         }
 
+        /// # Errors
+        /// Fails if algorithm parsing fails
         #[wasm_bindgen(js_name = "with_algorithm")]
-        pub fn with_algorithm_wasm(self, algorithm: AlgorithmJsStr) -> Result<KeyGenConfiguration, JsError> {
+        pub fn with_algorithm_wasm(
+            self,
+            algorithm: AlgorithmJsStr,
+        ) -> Result<KeyGenConfiguration, JsError> {
             Ok(self.with_algorithm(algorithm.try_into()?))
         }
 
         #[wasm_bindgen(js_name = "use_private_key")]
+        #[must_use]
         pub fn use_private_key_wasm(self, key: &PrivateKey) -> Self {
             self.use_private_key(key.clone())
         }
 
+        /// # Errors
+        /// Fails if byte input parsing fails
         #[wasm_bindgen(js_name = "use_seed")]
         pub fn use_seed_wasm(self, seed: BytesInputJs) -> Result<KeyGenConfiguration, JsError> {
             let seed: Vec<_> = seed.try_into()?;
             Ok(self.use_seed(seed))
         }
-
-
     }
 
     /// Pair of Public and Private keys.
+    #[allow(clippy::unsafe_derive_deserialize)]
     #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
     #[wasm_bindgen]
     pub struct KeyPair {
@@ -463,15 +526,16 @@ mod pair {
         pub(crate) private_key: PrivateKey,
     }
 
-
     impl KeyPair {
         /// Digest function
+        #[must_use]
         pub fn digest_function(&self) -> Algorithm {
             self.private_key.digest_function()
         }
 
         /// Construct `KeyPair` from a matching pair of public and private key.
         /// It is up to the user to ensure that the given keys indeed make a pair.
+        #[must_use]
         pub fn new_unchecked(public_key: PublicKey, private_key: PrivateKey) -> Self {
             Self {
                 public_key,
@@ -586,20 +650,30 @@ export interface KeyPairJson {
 
     #[wasm_bindgen]
     impl KeyPair {
+        /// # Errors
+        /// Fails if deserialization fails
         pub fn from_json(value: KeyPairJson) -> Result<KeyPair, JsError> {
-            let kp: KeyPair = serde_wasm_bindgen::from_value(value.obj).map_err(JsErrorWrap::from)?;
+            let kp: KeyPair =
+                serde_wasm_bindgen::from_value(value.obj).map_err(JsErrorWrap::from)?;
             Ok(kp)
         }
 
+        /// # Errors
+        /// Fails if public key fails to derive from the private key
         pub fn from_private_key(priv_key: &PrivateKey) -> Result<KeyPair, JsError> {
             let pub_key: PublicKey = priv_key.clone().try_into()?;
             let pair = KeyPair::new_unchecked(pub_key, priv_key.clone());
             Ok(pair)
         }
 
+        /// # Errors
+        /// Fails if decoding fails
         #[wasm_bindgen(js_name = "generate_with_configuration")]
-        pub fn generate_with_configuration_wasm(key_gen_configuration: &KeyGenConfiguration) -> Result<KeyPair, JsError> {
-            let kp = Self::generate_with_configuration(key_gen_configuration.clone()).map_err(JsErrorWrap::from)?;
+        pub fn generate_with_configuration_wasm(
+            key_gen_configuration: &KeyGenConfiguration,
+        ) -> Result<KeyPair, JsError> {
+            let kp = Self::generate_with_configuration(key_gen_configuration.clone())
+                .map_err(JsErrorWrap::from)?;
             Ok(kp)
         }
 
@@ -611,33 +685,38 @@ export interface KeyPairJson {
         }
 
         #[wasm_bindgen(js_name = "digest_function", getter)]
+        #[must_use]
         pub fn digest_function_wasm(&self) -> AlgorithmJsStr {
             self.digest_function().into()
         }
 
         #[wasm_bindgen(js_name = "private_key")]
+        #[must_use]
         pub fn private_key_wasm(&self) -> PrivateKey {
             self.private_key.clone()
         }
 
         #[wasm_bindgen(js_name = "public_key")]
+        #[must_use]
         pub fn public_key_wasm(&self) -> PublicKey {
             self.public_key.clone()
         }
 
+        /// # Errors
+        /// Fails if serialization fails
         pub fn to_json(&self) -> Result<KeyPairJson, JsError> {
             let json = serde_wasm_bindgen::to_value(&self)?;
             Ok(KeyPairJson { obj: json })
         }
 
         #[wasm_bindgen(js_name = "reproduce")]
+        #[must_use]
         pub fn reproduce_wasm(public_key: &PublicKey, private_key: &PrivateKey) -> Self {
             Self {
                 public_key: public_key.clone(),
-                private_key: private_key.clone()
+                private_key: private_key.clone(),
             }
         }
-
     }
 }
 

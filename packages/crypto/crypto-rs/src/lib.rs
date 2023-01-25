@@ -1,10 +1,10 @@
 //! This module contains structures and implementations related to the cryptographic parts of the Iroha.
 //! But in WebAssembly-compatible manner.
-//! 
+//!
 //! TODO rustfmt & clippy
 #![no_std]
+#![allow(clippy::module_name_repetitions)]
 
-#[macro_use]
 extern crate alloc;
 
 mod algorithm;
@@ -16,13 +16,13 @@ mod utils;
 mod varint;
 
 use alloc::string::ToString;
-use alloc::{alloc::alloc, borrow::ToOwned, boxed::Box, format, string::String, vec::Vec};
+use alloc::{borrow::ToOwned, format, string::String, vec::Vec};
 use core::{fmt, str::FromStr};
 
 pub use crate::algorithm::*;
-use crate::hash::*;
+use crate::hash::HashOf;
 pub use crate::keys::*;
-use crate::multihash::{DigestFunction as MultihashDigestFunction, Multihash};
+pub use crate::multihash::{DigestFunction as MultihashDigestFunction, Multihash, *};
 use crate::signature::SignatureOf;
 use crate::utils::JsErrorWrap;
 
@@ -43,7 +43,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
 pub fn main() {
-    utils::set_panic_hook()
+    utils::set_panic_hook();
 }
 
 /// Error when dealing with cryptographic functions
@@ -187,7 +187,7 @@ mod tests {
                 }
             ),
             "eb01c1040cb3231f601e7245a6ec9a647b450936f707ca7dc347ed258586c1924941d8bc38576473a8ba3bb2c37e3e121130ab67103498a96d0d27003e3ad960493da79209cf024e2aa2ae961300976aeee599a31a5e1b683eaa1bcffc47b09757d20f21123c594cf0ee0baf5e1bdd272346b7dc98a8f12c481a6b28174076a352da8eae881b90911013369d7fa960716a5abc5314307463fa2285a5bf2a5b5c6220d68c2d34101a91dbfc531c5b9bbfb2245ccc0c50051f79fc6714d16907b1fc40e0c0"
-        )
+        );
     }
 
     #[derive(Debug, PartialEq, Deserialize)]
@@ -289,6 +289,6 @@ mod tests {
                     .expect("Failed to decode private key"),
                 }
             }
-        )
+        );
     }
 }

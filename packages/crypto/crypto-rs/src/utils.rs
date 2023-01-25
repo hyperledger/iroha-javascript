@@ -1,6 +1,6 @@
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
-use hex::FromHexError;
+
 use wasm_bindgen::prelude::*;
 
 pub fn set_panic_hook() {
@@ -25,8 +25,8 @@ pub struct JsErrorWrap(String);
 // }
 
 impl<T> From<T> for JsErrorWrap
-    where
-        T: ToString,
+where
+    T: ToString,
 {
     fn from(value: T) -> Self {
         Self(value.to_string())
@@ -71,13 +71,12 @@ impl TryFrom<BytesInputJs> for Vec<u8> {
         let structured: BytesInputEnum = serde_wasm_bindgen::from_value(value.obj)?;
         let vec = match structured {
             BytesInputEnum::Array(vec) => vec,
-            BytesInputEnum::Hex(hexstr) => hex::decode(hexstr).map_err(JsErrorWrap::from)?
+            BytesInputEnum::Hex(hexstr) => hex::decode(hexstr).map_err(JsErrorWrap::from)?,
         };
 
         Ok(vec)
     }
 }
-
 
 // impl<T> JsErrorWrap<T> where T: ToString {
 //     pub fn
