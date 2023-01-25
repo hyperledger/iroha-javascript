@@ -19,6 +19,7 @@ function dummyAccessor() {
 
 describe('Test `.free()` utilities', () => {
   beforeEach(() => {
+    FREE_HEAP.forEach((a) => a.free())
     FREE_HEAP.clear()
   })
 
@@ -33,7 +34,7 @@ describe('Test `.free()` utilities', () => {
       const dummy = dummyFree()
 
       freeScope(() => {
-        new FreeGuard(dummy);
+        new FreeGuard(dummy)
       })
 
       expect(dummy.free).toBeCalled()
@@ -92,7 +93,7 @@ describe('Test `.free()` utilities', () => {
     const dummies = Array.from({ length: 5 }, () => dummyFree())
 
     freeScope(() => {
-      dummies.map((a) => new FreeGuard(a));
+      dummies.map((a) => new FreeGuard(a))
     })
 
     for (const dummy of dummies) expect(dummy.free).toBeCalled()
@@ -114,10 +115,10 @@ describe('Test `.free()` utilities', () => {
     const dummy2 = dummyFree()
 
     freeScope(() => {
-      new FreeGuard(dummy1);
+      new FreeGuard(dummy1)
 
       freeScope(() => {
-        new FreeGuard(dummy2);
+        new FreeGuard(dummy2)
       })
 
       expect(dummy2.free).toBeCalled()
@@ -138,7 +139,8 @@ describe('Test `.free()` utilities', () => {
 
       expect(inner.object.free).not.toBeCalled()
 
-      scope.track(inner)
+      // not necessary - it is tracked by parent scope by default
+      // scope.track(inner)
 
       const outer = new FreeGuard(dummyFree())
       scope.forget(outer)
@@ -174,5 +176,31 @@ describe('Test `.free()` utilities', () => {
 
       expect(accessor.guard.object.free).not.toBeCalled()
     })
+  })
+
+  test('When an object is forgotten in the nested scope, it is tracked by the parent ones', () => {
+    freeScope(() => {
+      freeScope((scope) => {
+        const guard = new FreeGuard(dummyFree())
+        scope.forget(guard)
+      })
+
+      expect(FREE_HEAP.size).toBe(1)
+    })
+
+    expect(FREE_HEAP.size).toBe(0)
+  })
+
+  test('When an object is forgotten and not adopted in the nested scope, it is not tracked by the parent ones', () => {
+    freeScope(() =>
+      freeScope(() =>
+        freeScope((scope) => {
+          const guard = new FreeGuard(dummyFree())
+          scope.forget(guard, { adopt: false })
+        }),
+      ),
+    )
+
+    expect(FREE_HEAP.size).toBe(1)
   })
 })

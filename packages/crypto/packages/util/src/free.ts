@@ -8,6 +8,11 @@ export class FreeScope implements Free {
   public static readonly trackObject = Symbol('TrackObject')
 
   #tracked = new Set<TrackObject>()
+  #parent: null | FreeScope
+
+  public constructor(parentScope: null | FreeScope = null) {
+    this.#parent = parentScope
+  }
 
   public track(object: TrackObjectOrInner): void {
     this.#tracked.add(unwrapTrackObject(object))
@@ -16,14 +21,28 @@ export class FreeScope implements Free {
   /**
    * Removes the object from being tracked by the scope, preventing the object from
    * being freed when the scope is freed.
-   *
-   * @param object the object itself, or its accessor
-   * @param strict if `true` and the object is not tracked, throws an error
    */
-  public forget(object: TrackObjectOrInner, strict = true): void {
+  public forget(
+    object: TrackObjectOrInner,
+    options?: {
+      /**
+       * if `true` and the object is not tracked, throws an error
+       * @default true
+       */
+      strict?: boolean
+      /**
+       * "Adopting" means that if the object is forgotten by the current scope, it will be tracked by the parent one,
+       * if there is some.
+       * @default true
+       */
+      adopt?: boolean
+    },
+  ): void {
     const unwrapped = unwrapTrackObject(object)
-    if (this.#tracked.has(unwrapped)) this.#tracked.delete(unwrapped)
-    else if (strict) throw new Error(`The object ${String(unwrapped)} is not tracked`)
+    if (this.#tracked.has(unwrapped)) {
+      this.#tracked.delete(unwrapped)
+      if (options?.adopt ?? true) this.#parent?.track(unwrapped)
+    } else if (options?.strict ?? true) throw new Error(`The object ${String(unwrapped)} is not tracked`)
   }
 
   public free(): void {
@@ -106,7 +125,7 @@ export class FreeGuard<T extends Free> implements TrackObject {
     if (!this.#maybeInner) throw new Error('Already forgotten')
     const { scope } = this.#maybeInner
     FREE_HEAP.delete(this)
-    scope?.forget(this, false)
+    scope?.forget(this, { strict: false, adopt: false })
     this.#maybeInner = null
   }
 }
@@ -148,7 +167,7 @@ export function getCurrentFreeScope(): FreeScope | null {
  * removes the guard from the scope.
  */
 export function freeScope<T>(fn: (scope: FreeScope) => T): T {
-  const scope = new FreeScope()
+  const scope = new FreeScope(getCurrentFreeScope())
   SCOPES_STACK.push(scope)
 
   try {
