@@ -1,9 +1,9 @@
-import { KeyPair } from '@iroha2/crypto-core'
+import { cryptoTypes } from '@iroha2/crypto-core'
 import { Signer } from '@iroha2/client'
 import { AccountId, DomainId } from '@iroha2/data-model'
 
 // Key pair from previous step
-declare const keyPair: KeyPair
+declare const keyPair: cryptoTypes.KeyPair
 
 const accountId = AccountId({
   // Account name

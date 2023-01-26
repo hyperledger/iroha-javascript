@@ -54,7 +54,6 @@ import {
   VecPublicKey,
   VecRoleId,
 } from '@iroha2/data-model'
-import { hexToBytes } from 'hada'
 import { Seq } from 'immutable'
 import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
 import { delay } from '../util'
@@ -65,11 +64,7 @@ new ScaleLogger().mount()
 
 // #region Keys
 
-const multihash = crypto.createMultihashFromBytes(Uint8Array.from(hexToBytes(client_config.publicKey)))
-const publicKey = crypto.createPublicKeyFromMultihash(multihash)
-const privateKey = crypto.createPrivateKeyFromJsKey(client_config.privateKey)
-const keyPair = crypto.createKeyPairFromKeys(publicKey, privateKey)
-;[publicKey, privateKey, multihash].forEach((x) => x.free())
+const keyPair = crypto.KeyPair.fromJSON(client_config)
 
 // #endregion
 

@@ -5,7 +5,7 @@
  * Events, Status & Health check.
  */
 
-import { KeyPair } from '@iroha2/crypto-core'
+import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
 import {
   AccountId,
   Enum,
@@ -30,7 +30,6 @@ import {
   VersionedSignedTransaction,
 } from '@iroha2/data-model'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
-import { garbageScope } from './collect-garbage'
 import {
   ENDPOINT_CONFIGURATION,
   ENDPOINT_HEALTH,
@@ -47,6 +46,8 @@ import { IsomorphicWebSocketAdapter } from './web-socket/types'
 import { Except } from 'type-fest'
 
 type Fetch = typeof fetch
+
+type KeyPair = cryptoTypes.KeyPair
 
 export interface SetPeerConfigParams {
   LogLevel?: 'WARN' | 'ERROR' | 'INFO' | 'DEBUG' | 'TRACE'
@@ -73,21 +74,17 @@ export class Signer {
     this.keyPair = keyPair
   }
 
-  public sign(payload: Uint8Array): Signature {
-    const { createSignature } = getCryptoAnyway()
-
-    return garbageScope((collect) => {
-      const signature = collect(createSignature(this.keyPair, payload))
-
-      // Should it be collected?
-      const pubKey = this.keyPair.publicKey()
+  public sign(...message: cryptoTypes.BytesInputTuple): Signature {
+    return freeScope(() => {
+      const signature = this.keyPair.sign(...message)
+      const publicKey = signature.publicKey()
 
       return Signature({
         public_key: PublicKey({
-          digest_function: pubKey.digestFunction(),
-          payload: pubKey.payload(),
+          digest_function: publicKey.digestFunction,
+          payload: publicKey.payload(),
         }),
-        payload: signature.signatureBytes(),
+        payload: signature.payload(),
       })
     })
   }
@@ -127,12 +124,12 @@ export function makeTransactionPayload(params: MakeTransactionPayloadParams): Tr
 }
 
 export function computeTransactionHash(payload: TransactionPayload): Uint8Array {
-  return cryptoHash(TransactionPayload.toBuffer(payload))
+  return cryptoHash('array', TransactionPayload.toBuffer(payload))
 }
 
 export function signTransaction(payload: TransactionPayload, signer: Signer): Signature {
   const hash = computeTransactionHash(payload)
-  return signer.sign(hash)
+  return signer.sign('array', hash)
 }
 
 export function makeVersionedSignedTransaction(
@@ -193,12 +190,12 @@ export function makeQueryPayload(params: MakeQueryPayloadParams): QueryPayload {
 }
 
 export function computeQueryHash(payload: QueryPayload): Uint8Array {
-  return cryptoHash(QueryPayload.toBuffer(payload))
+  return cryptoHash('array', QueryPayload.toBuffer(payload))
 }
 
 export function signQuery(payload: QueryPayload, signer: Signer): Signature {
   const hash = computeQueryHash(payload)
-  return signer.sign(hash)
+  return signer.sign('array', hash)
 }
 
 export function makeVersionedSignedQuery(payload: QueryPayload, signer: Signer): VersionedSignedQueryRequest {
