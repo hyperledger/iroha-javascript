@@ -17,7 +17,6 @@
   ],
   "license": "Apache 2.0",
   "scripts": {
-    "build:tsc": "tsc",
     "codegen": "tsx etc/codegen"
   },
   "dependencies": {

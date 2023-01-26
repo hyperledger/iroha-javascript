@@ -33,8 +33,7 @@
     "test:integration": "run-s test:build-iroha test:node test:web",
     "test:build-iroha": "pnpm --filter iroha-source build:iroha",
     "test:node": "pnpm --filter client-test-node test",
-    "test:web": "pnpm --filter client-test-web test",
-    "build:tsc": "tsc"
+    "test:web": "pnpm --filter client-test-web test"
   },
   "dependencies": {
     "@iroha2/crypto-core": "workspace:^0.1.1",

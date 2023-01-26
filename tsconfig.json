@@ -5,7 +5,7 @@
     "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
     "declaration": true,
-    "outDir": "ts-dist",
+    "outDir": "dist-tsc",
     // "removeComments": false,
     // "stripInternal": true,
     // since 2.3
@@ -19,9 +19,19 @@
     "resolveJsonModule": true,
     "types": ["vitest/importMeta"],
     "paths": {
+      // TODO add doc comment
+      "@iroha2/crypto/~wasm-pkg/*": ["./packages/crypto/crypto-rs/wasm-pkg-*/iroha_crypto"],
+      "@iroha2/crypto/~wasm-pkg": ["./packages/crypto/crypto-rs/wasm-pkg-nodejs/iroha_crypto"],
+
       "@iroha2/client/*": ["./packages/client/src/*"],
+      "@iroha2/crypto-*": ["./packages/crypto/packages/*/src/lib.ts"],
       "@iroha2/*": ["./packages/*/src/lib.ts"]
     }
   },
-  "exclude": ["**/dist/**/*", "**/node_modules/**/*", "**/client/test/integration/test-web/cypress/integration/**/*"]
+  "exclude": [
+    "**/dist/**/*",
+    "**/node_modules/**/*",
+    "packages/client/test/integration/test-web/cypress/integration/**/*",
+    "packages/crypto/crypto-rs"
+  ]
 }

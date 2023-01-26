@@ -1,56 +1,64 @@
 import path from 'path'
 import { PackageJson } from 'type-fest'
 import { Set } from 'immutable'
-import packageClient from '../packages/client/package.json'
-import packageDataModel from '../packages/data-model/package.json'
-import packageFixnum from '../packages/i64-fixnum/package.json'
+import * as metaCrypto from './meta-crypto'
+import { P, match } from 'ts-pattern'
+import { SetEntry, resolve } from './util'
 
-function getProdDeps(pkg: PackageJson): Set<string> {
-  return Set(Object.keys(pkg.dependencies ?? {}))
+function predicateStartsWith<S extends string>(prefix: S): (x: string) => x is `${S}${string}` {
+  return (x): x is `${S}` => x.startsWith(prefix)
 }
 
-function resolve(...paths: string[]): string {
-  return path.relative(process.cwd(), path.resolve(__dirname, '../', ...paths))
+function trimPrefixTypeSafe<Prefix extends string, T extends `${Prefix}${string}`>(
+  value: T,
+  prefix: Prefix,
+): T extends `${Prefix}${infer V}` ? V : never {
+  return value.slice(prefix.length) as any
 }
 
-type SetEntry<T> = T extends Set<infer V> ? V : never
-
-export const PUBLIC_PACKAGES = Set([
-  'client',
-  'data-model',
-  'data-model-schema',
-  'i64-fixnum',
-  'crypto-core',
-  'crypto-target-node',
-  'crypto-target-web',
-  'crypto-target-bundler',
-] as const)
-
-export const PUBLIC_PACKAGES_WITH_DTS_ROLLUP: Set<Exclude<PublicPackage, 'data-model-schema'>> = PUBLIC_PACKAGES.delete(
-  'data-model-schema',
-) as Set<any>
-
-export const BUNDLE_PACKAGES = Set(['client', 'data-model', 'i64-fixnum'] as const)
-
-// add here private packages too if necessary
-export const ALL_PACKAGES = PUBLIC_PACKAGES.merge(BUNDLE_PACKAGES)
-
-export type PublicPackage = SetEntry<typeof PUBLIC_PACKAGES>
-
-export type PublicPackageWithDtsRollup = SetEntry<typeof PUBLIC_PACKAGES_WITH_DTS_ROLLUP>
-
-export type BundlePackage = SetEntry<typeof BUNDLE_PACKAGES>
-
-export type AllPackages = SetEntry<typeof ALL_PACKAGES>
-
-const BUNDLE_PACKAGES_EXTERNAL: Record<BundlePackage, Set<string>> = {
-  client: getProdDeps(packageClient).remove('json-bigint').add('json-bigint/lib/parse'),
-  'data-model': getProdDeps(packageDataModel),
-  'i64-fixnum': getProdDeps(packageFixnum),
+export function packageRoot(pkg: PackageAny): string {
+  return match(pkg)
+    .with('client', 'data-model', 'data-model-schema', 'i64-fixnum', (a) => resolve('packages', a))
+    .with(P.when(predicateStartsWith('crypto-')), (a) =>
+      resolve('packages/crypto/packages', trimPrefixTypeSafe(a, 'crypto-')),
+    )
+    .exhaustive()
 }
 
-export function scopePackage(name: AllPackages): string {
-  return `@iroha2/${name}`
+export function packageRollupDirs(pkg: PackageToRollup) {
+  const root = packageRoot(pkg)
+  const tsEmitRoot = path.join(root, 'dist-tsc')
+  const dist = path.join(root, 'dist')
+
+  return { root, tsEmitRoot, dist }
+}
+
+/**
+ * This function implements the important convention: production dependencies of the package, written in `package.json`,
+ * are also its Rollup externals. It allows to avoid mismatch between dev and deploy (NPM-published) environment.
+ */
+export async function loadProductionDependencies(pkg: PackageToRollup): Promise<Set<string>> {
+  const pathToPackageJson: string = path.join(packageRoot(pkg), 'package.json')
+  const {
+    default: { dependencies },
+  }: { default: PackageJson } = await import(pathToPackageJson, { assert: { type: 'json' } })
+  return Set(Object.keys(dependencies ?? {}))
+}
+
+export type PackageToRollup = SetEntry<typeof PACKAGES_TO_ROLLUP>
+
+export const PACKAGES_TO_ROLLUP = metaCrypto.PACKAGES_TO_ROLLUP.merge(
+  Set(['client', 'data-model', 'i64-fixnum'] as const),
+)
+
+export type PackageToPublish = SetEntry<typeof PACKAGES_TO_PUBLISH>
+
+export const PACKAGES_TO_PUBLISH = PACKAGES_TO_ROLLUP.merge(Set(['data-model-schema'] as const))
+
+export type PackageAny = PackageToRollup | PackageToPublish
+
+export function scopePackage(name: PackageAny) {
+  return `@iroha2/${name}` as const
 }
 
 interface PackageRollupMeta {
@@ -59,49 +67,11 @@ interface PackageRollupMeta {
   external: (string | RegExp)[]
 }
 
-export function* getPackageRollupMeta(name: BundlePackage): Generator<PackageRollupMeta> {
-  const packageDist = resolve('packages', name, 'dist')
-  const packageDistTsc = resolve('packages', name, 'dist-tsc')
-  const defaultLibOutputBase = path.join(packageDist, 'lib')
-  const external = BUNDLE_PACKAGES_EXTERNAL[name].toArray()
-
-  if (name === 'data-model') {
-    yield {
-      inputBase: path.join(packageDistTsc, 'data-model/src/lib'),
-      outputBase: defaultLibOutputBase,
-      external,
-    }
-  } else if (name === 'client') {
-    yield {
-      inputBase: path.join(packageDistTsc, 'client/src/lib'),
-      outputBase: defaultLibOutputBase,
-      external,
-    }
-    yield {
-      inputBase: path.join(packageDistTsc, 'client/src/web-socket/node'),
-      outputBase: path.join(packageDist, `web-socket/node`),
-      external: ['@iroha2/client', 'ws'],
-    }
-    yield {
-      inputBase: path.join(packageDistTsc, 'client/src/web-socket/native'),
-      outputBase: path.join(packageDist, `web-socket/native`),
-      external: ['@iroha2/client'],
-    }
-  } else {
-    yield {
-      inputBase: path.join(packageDistTsc, 'lib'),
-      outputBase: defaultLibOutputBase,
-      external,
-    }
-  }
-}
-
 export function artifactsToClean(): string[] {
   return [
     '**/dist',
-    // their dists are static
-    '!./packages/crypto/packages/*/dist',
     '**/dist-tsc',
+
     // compilation artifacts
     'packages/data-model-schema/src/__schema__.json',
     'packages/data-model-rust-samples/samples.json',
