@@ -39,7 +39,6 @@ import {
   ENDPOINT_TRANSACTION,
   HEALTHY_RESPONSE,
 } from './const'
-import { getCryptoAnyway } from './crypto-singleton'
 import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events'
 import { cryptoHash, parseJsonWithBigInts } from './util'
 import { IsomorphicWebSocketAdapter } from './web-socket/types'
