@@ -10,6 +10,7 @@
     "strictNullChecks": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "stripInternal": true
   }
 }
