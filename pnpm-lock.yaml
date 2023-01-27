@@ -97,7 +97,6 @@ importers:
       '@iroha2/crypto-target-node': workspace:^0.4.0
       '@iroha2/test-peer': workspace:^0.0.1
       cross-env: ^7.0.3
-      hada: ^0.0.8
       node-fetch: ^3.2.4
       vite: ^3.1.1
     devDependencies:
@@ -105,7 +104,6 @@ importers:
       '@iroha2/crypto-target-node': link:../../../../crypto/packages/target-node
       '@iroha2/test-peer': link:../../../../test-peer
       cross-env: 7.0.3
-      hada: 0.0.8
       node-fetch: 3.2.10
       vite: 3.1.1
 
@@ -124,7 +122,6 @@ importers:
       cross-env: ^7.0.3
       cypress: ^10.4.0
       esbuild: ^0.14.27
-      hada: ^0.0.8
       sass: ^1.52.1
       start-server-and-test: ^1.14.0
       vite: ^3.1.1
@@ -143,7 +140,6 @@ importers:
       cross-env: 7.0.3
       cypress: 10.4.0
       esbuild: 0.14.51
-      hada: 0.0.8
       sass: 1.54.0
       start-server-and-test: 1.14.0
       vite: 3.1.1_sass@1.54.0
@@ -223,23 +219,19 @@ importers:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/crypto-target-node': workspace:^0.4.0
-      hada: ^0.0.8
     devDependencies:
       '@iroha2/crypto-core': link:../../../packages/core
       '@iroha2/crypto-target-node': link:../../../packages/target-node
-      hada: 0.0.8
 
   packages/crypto/test/integration/test-web:
     specifiers:
       '@iroha2/crypto-target-web': workspace:^0.4.0
       cypress: ^10.4.0
-      hada: ^0.0.8
       start-server-and-test: ^1.14.0
       vite: ^3.1.1
     devDependencies:
       '@iroha2/crypto-target-web': link:../../../packages/target-web
       cypress: 10.4.0
-      hada: 0.0.8
       start-server-and-test: 1.14.0
       vite: 3.1.1
 
@@ -288,7 +280,6 @@ importers:
       '@iroha2/crypto-target-node': workspace:^0.4.0
       '@iroha2/crypto-target-web': workspace:^0.4.0
       '@iroha2/data-model': workspace:^4.0.0
-      hada: ^0.0.8
       node-fetch: ^3.2.4
       undici: ^5.8.1
     devDependencies:
@@ -298,7 +289,6 @@ importers:
       '@iroha2/crypto-target-node': link:../crypto/packages/target-node
       '@iroha2/crypto-target-web': link:../crypto/packages/target-web
       '@iroha2/data-model': link:../data-model
-      hada: 0.0.8
       node-fetch: 3.2.10
       undici: 5.8.1
 
@@ -3579,10 +3569,6 @@ packages:
 
   /grapheme-splitter/1.0.4:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
-    dev: true
-
-  /hada/0.0.8:
-    resolution: {integrity: sha512-CLzCvrb53E6Lh1rO/NFty1PG7VJV3r4pDCU5nR/0yaUCT05lk5ayLBd/0QX7z2QH4t6xu7jflYBa9Dwoo7giZA==}
     dev: true
 
   /hard-rejection/2.1.0:
