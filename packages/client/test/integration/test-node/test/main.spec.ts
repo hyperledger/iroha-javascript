@@ -58,6 +58,7 @@ import { Seq } from 'immutable'
 import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
 import { delay } from '../../util'
 import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../../config'
+import { FREE_HEAP } from '@iroha2/crypto-core'
 
 // for debugging convenience
 new ScaleLogger().mount()
@@ -222,6 +223,9 @@ afterEach(async () => {
 
 afterAll(async () => {
   await cleanConfiguration()
+
+  keyPair.free()
+  expect(FREE_HEAP.size).toEqual(0)
 })
 
 // Actually it is already tested within `@iroha2/test-peer`
