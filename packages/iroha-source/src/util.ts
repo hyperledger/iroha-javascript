@@ -22,6 +22,9 @@ export async function clone(config: Configuration): Promise<void> {
   await execa('git', ['fetch', 'origin', config.rev], EXECA_OPTS)
   await execa('git', ['reset', '--hard', 'FETCH_HEAD'], EXECA_OPTS)
 
+  const META_FILE_DIR = path.dirname(CLONED_DIR_META_FILE)
+  await makeDir(META_FILE_DIR)
+  await fs.writeFile(path.join(META_FILE_DIR, '.gitignore'), '*\n')
   await fs.writeFile(CLONED_DIR_META_FILE, JSON.stringify(config))
 
   consola.success('Iroha Git repo is cloned')
