@@ -14,9 +14,6 @@ export const toriiPre = {
   fetch: fetch.bind(window),
 }
 
-const signer = new Signer(
-  client_config.account as AccountId,
-  crypto.KeyPair.fromJSON(client_config)
-)
+const signer = new Signer(client_config.account as AccountId, crypto.KeyPair.fromJSON(client_config))
 
 export const client = new Client({ signer })

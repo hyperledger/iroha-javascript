@@ -26,7 +26,6 @@ function replaceVitest() {
   })
 }
 
-
 async function readWasmPkgAssets(target: WasmPackTarget): Promise<{ fileName: string; content: Buffer }[]> {
   return glob(path.join(wasmPackOutDirForTarget(target), '*')).then((files) =>
     Promise.all(

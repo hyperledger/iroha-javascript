@@ -20,7 +20,7 @@ module.exports = {
   overrides: [
     {
       files: [
-        '**/packages/crypto/test/web/cypress/**/*.js',
+        '**/packages/crypto/test/integration/web/cypress/**/*.js',
         '**/packages/client/test/integration/test-web/cypress/e2e/**/*.{js,ts}',
         '**/packages/client/test/integration/test-web/cypress/support/**/*.{js,ts}',
       ],
