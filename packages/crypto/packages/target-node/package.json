@@ -10,7 +10,8 @@
       "import": "./dist/lib.mjs",
       "require": "./dist/lib.cjs",
       "types": "./dist/lib.d.ts"
-    }
+    },
+    "./*": "./dist/*"
   },
   "files": [
     "dist",
