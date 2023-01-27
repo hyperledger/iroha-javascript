@@ -2,7 +2,7 @@
   "name": "@iroha2/crypto-test-interfaces",
   "private": true,
   "scripts": {
-    "test": "tsc test.ts --noEmit"
+    "test": "tsc --noEmit"
   },
   "devDependencies": {
     "@iroha2/crypto-core": "workspace:^0.1.1",

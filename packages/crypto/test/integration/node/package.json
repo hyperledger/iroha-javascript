@@ -7,8 +7,9 @@
     "hada": "^0.0.8"
   },
   "scripts": {
-    "test": "run-s run:cjs run:mjs",
-    "run:cjs": "node run.js",
-    "run:mjs": "node run.mjs"
+    "test": "run-s run:cjs run:mjs test:unit",
+    "run:cjs": "node test/run.cjs",
+    "run:mjs": "node test/run.mjs",
+    "test:unit": "vitest run main.spec"
   }
 }

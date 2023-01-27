@@ -1,22 +1,8 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["esnext", "DOM"],
-    "esModuleInterop": true,
     "declaration": true,
     "outDir": "dist-tsc",
-    // "removeComments": false,
-    // "stripInternal": true,
-    // since 2.3
-    // "strict": true,
-    "alwaysStrict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
     "types": ["vitest/importMeta"],
     "paths": {
       // TODO add doc comment
@@ -32,6 +18,7 @@
     "**/dist/**/*",
     "**/node_modules/**/*",
     "packages/client/test/integration/test-web/cypress/integration/**/*",
-    "packages/crypto/crypto-rs"
+    "packages/crypto/crypto-rs",
+    "packages/crypto/test/integration"
   ]
 }

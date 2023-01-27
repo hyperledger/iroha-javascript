@@ -2,7 +2,20 @@
   "name": "@iroha2/crypto-core",
   "version": "0.1.1",
   "license": "Apache 2.0",
-  "main": "dist/lib.d.ts",
+  "main": "dist/lib.cjs",
+  "module": "dist/lib.mjs",
+  "types": "dist/lib.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/lib.mjs",
+      "require": "./dist/lib.cjs",
+      "types": "./dist/lib.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
   "devDependencies": {
     "@iroha2/crypto-interface-wrap": "workspace:^0.0.0"
   },
