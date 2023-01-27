@@ -19,14 +19,17 @@ importers:
       eslint-config-alloy: ^4.9.0
       eslint-plugin-cypress: ^2.12.1
       eslint-plugin-vue: ^9.9.0
+      execa: ^4.1.0
       immutable: ^4.0.0
       jake: ^10.8.5
+      make-dir: ^3.1.0
       npm-run-all: ^4.1.5
       prettier: ^2.8.3
       prettier-eslint: ^15.0.1
       prettier-eslint-cli: ^7.1.0
       rollup: ^3.10.0
       rollup-plugin-dts: ^5.1.1
+      tiny-invariant: ^1.3.1
       ts-pattern: ^4.1.3
       tsx: ^3.12.2
       type-fest: ^3.5.2
@@ -49,14 +52,17 @@ importers:
       eslint-config-alloy: 4.9.0_gl5ox3npgs4o7og6nxco3mgm6q
       eslint-plugin-cypress: 2.12.1_eslint@8.32.0
       eslint-plugin-vue: 9.9.0_eslint@8.32.0
+      execa: 4.1.0
       immutable: 4.1.0
       jake: 10.8.5
+      make-dir: 3.1.0
       npm-run-all: 4.1.5
       prettier: 2.8.3
       prettier-eslint: 15.0.1
       prettier-eslint-cli: 7.1.0_prettier-eslint@15.0.1
       rollup: 3.10.0
       rollup-plugin-dts: 5.1.1_eymahajmafh3u7vrzmo7ylp2pa
+      tiny-invariant: 1.3.1
       ts-pattern: 4.1.3
       tsx: 3.12.2
       type-fest: 3.5.2
@@ -70,12 +76,9 @@ importers:
       '@iroha2/data-model': workspace:4.0.0
       '@types/debug': ^4.1.7
       '@types/ws': ^8.2.2
-      consola: ^2.15.3
       debug: ^4.3.4
       emittery: ^0.10.1
       json-bigint: ^1.0.0
-      npm-run-all: ^4.1.5
-      type-fest: ^3.5.2
       ws: ^8.4.0
     dependencies:
       '@iroha2/crypto-core': link:../crypto/packages/core
@@ -87,57 +90,24 @@ importers:
       ws: 8.8.1
     devDependencies:
       '@types/debug': 4.1.7
-      consola: 2.15.3
-      npm-run-all: 4.1.5
-      type-fest: 3.5.2
-
-  packages/client-isomorphic-fetch:
-    specifiers:
-      esbuild: ^0.14.27
-      node-fetch: ^3.2.4
-      npm-run-all: ^4.1.5
-    dependencies:
-      node-fetch: 3.2.10
-    devDependencies:
-      esbuild: 0.14.51
-      npm-run-all: 4.1.5
-
-  packages/client-isomorphic-ws:
-    specifiers:
-      '@types/ws': ^8.2.2
-      esbuild: ^0.14.27
-      npm-run-all: ^4.1.5
-      ws: ^8.4.0
-    dependencies:
-      ws: 8.8.1
-    devDependencies:
-      '@types/ws': 8.5.3
-      esbuild: 0.14.51
-      npm-run-all: 4.1.5
 
   packages/client/test/integration/test-node:
     specifiers:
       '@iroha2/client': workspace:^4.0.0
       '@iroha2/crypto-target-node': workspace:^0.4.0
       '@iroha2/test-peer': workspace:^0.0.1
-      consola: ^2.15.3
       cross-env: ^7.0.3
       hada: ^0.0.8
-      immutable: ^4.0.0
       node-fetch: ^3.2.4
       vite: ^3.1.1
-      vitest: ^0.23.2
     devDependencies:
       '@iroha2/client': link:../../..
       '@iroha2/crypto-target-node': link:../../../../crypto/packages/target-node
       '@iroha2/test-peer': link:../../../../test-peer
-      consola: 2.15.3
       cross-env: 7.0.3
       hada: 0.0.8
-      immutable: 4.1.0
       node-fetch: 3.2.10
       vite: 3.1.1
-      vitest: 0.23.2
 
   packages/client/test/integration/test-web:
     specifiers:
@@ -151,16 +121,12 @@ importers:
       '@vitejs/plugin-vue': ^3.1.0
       '@vue-kakuyaku/core': ^0.3.0
       '@vueuse/core': ^8.0.1
-      consola: ^2.15.3
       cross-env: ^7.0.3
       cypress: ^10.4.0
       esbuild: ^0.14.27
-      execa: 5.1.1
       hada: ^0.0.8
-      npm-run-all: ^4.1.5
       sass: ^1.52.1
       start-server-and-test: ^1.14.0
-      typescript: ^4.9.4
       vite: ^3.1.1
       vue: ^3.2.31
     devDependencies:
@@ -174,50 +140,17 @@ importers:
       '@vitejs/plugin-vue': 3.1.0_vite@3.1.1+vue@3.2.37
       '@vue-kakuyaku/core': 0.3.0
       '@vueuse/core': 8.9.4_vue@3.2.37
-      consola: 2.15.3
       cross-env: 7.0.3
       cypress: 10.4.0
       esbuild: 0.14.51
-      execa: 5.1.1
       hada: 0.0.8
-      npm-run-all: 4.1.5
       sass: 1.54.0
       start-server-and-test: 1.14.0
-      typescript: 4.9.4
       vite: 3.1.1_sass@1.54.0
       vue: 3.2.37
 
   packages/crypto:
-    specifiers:
-      '@iroha2/crypto-target-web': workspace:^0.4.0
-      '@rollup/plugin-node-resolve': ^15.0.1
-      '@types/jake': ^0.0.33
-      chalk: 4.1.2
-      consola: ^2.15.3
-      del: ^6.0.0
-      esbuild: ^0.14.27
-      jake: ^10.8.5
-      rollup: ^3.10.0
-      rollup-plugin-dts: ^5.1.1
-      rollup-plugin-esbuild: ^5.0.0
-      ts-pattern: ^4.1.3
-      typescript: ^4.9.4
-      zx: ^4.2.0
-    devDependencies:
-      '@iroha2/crypto-target-web': link:packages/target-web
-      '@rollup/plugin-node-resolve': 15.0.1_rollup@3.10.0
-      '@types/jake': 0.0.33
-      chalk: 4.1.2
-      consola: 2.15.3
-      del: 6.1.1
-      esbuild: 0.14.51
-      jake: 10.8.5
-      rollup: 3.10.0
-      rollup-plugin-dts: 5.1.1_eymahajmafh3u7vrzmo7ylp2pa
-      rollup-plugin-esbuild: 5.0.0_hazqy6musc527v46bynh2qj26q
-      ts-pattern: 4.1.3
-      typescript: 4.9.4
-      zx: 4.3.0
+    specifiers: {}
 
   packages/crypto/packages/core:
     specifiers:
@@ -243,43 +176,33 @@ importers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
       '@iroha2/data-model': workspace:^4.0.0
-      '@types/node': ^18.11.18
-      typescript: ^4.9.4
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
     devDependencies:
       '@iroha2/crypto-interface-wrap': link:../interface-wrap
-      '@types/node': 18.11.18
-      typescript: 4.9.4
 
   packages/crypto/packages/target-node:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
       '@iroha2/data-model': workspace:^4.0.0
-      '@types/node': ^18.11.18
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
     devDependencies:
       '@iroha2/crypto-interface-wrap': link:../interface-wrap
-      '@types/node': 18.11.18
 
   packages/crypto/packages/target-web:
     specifiers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
       '@iroha2/data-model': workspace:^4.0.0
-      '@types/node': ^18.11.18
-      typescript: ^4.9.4
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
     devDependencies:
       '@iroha2/crypto-interface-wrap': link:../interface-wrap
-      '@types/node': 18.11.18
-      typescript: 4.9.4
 
   packages/crypto/packages/util:
     specifiers: {}
@@ -290,15 +213,11 @@ importers:
       '@iroha2/crypto-target-bundler': workspace:^0.4.0
       '@iroha2/crypto-target-node': workspace:^0.4.0
       '@iroha2/crypto-target-web': workspace:^0.4.0
-      '@types/node': ^18.11.18
-      typescript: ^4.9.4
     devDependencies:
       '@iroha2/crypto-core': link:../../../packages/core
       '@iroha2/crypto-target-bundler': link:../../../packages/target-bundler
       '@iroha2/crypto-target-node': link:../../../packages/target-node
       '@iroha2/crypto-target-web': link:../../../packages/target-web
-      '@types/node': 18.11.18
-      typescript: 4.9.4
 
   packages/crypto/test/integration/test-node:
     specifiers:
@@ -315,14 +234,12 @@ importers:
       '@iroha2/crypto-target-web': workspace:^0.4.0
       cypress: ^10.4.0
       hada: ^0.0.8
-      npm-run-all: ^4.1.5
       start-server-and-test: ^1.14.0
       vite: ^3.1.1
     devDependencies:
       '@iroha2/crypto-target-web': link:../../../packages/target-web
       cypress: 10.4.0
       hada: 0.0.8
-      npm-run-all: 4.1.5
       start-server-and-test: 1.14.0
       vite: 3.1.1
 
@@ -333,14 +250,6 @@ importers:
       '@scale-codec/definition-compiler': ^2.2.2
       '@scale-codec/definition-runtime': ^2.2.2
       '@scale-codec/util': ^1.1.1
-      '@types/debug': ^4.1.7
-      case: ^1.6.3
-      chalk: 4.1.2
-      consola: ^2.15.3
-      debug: ^4.3.4
-      execa: 5.1.1
-      immutable: ^4.0.0
-      typescript: ^4.9.4
     dependencies:
       '@iroha2/i64-fixnum': link:../i64-fixnum
       '@scale-codec/definition-runtime': 2.2.2
@@ -348,14 +257,6 @@ importers:
       '@iroha2/data-model-schema': link:../data-model-schema
       '@scale-codec/definition-compiler': 2.2.2
       '@scale-codec/util': 1.1.1
-      '@types/debug': 4.1.7
-      case: 1.6.3
-      chalk: 4.1.2
-      consola: 2.15.3
-      debug: 4.3.4
-      execa: 5.1.1
-      immutable: 4.1.0
-      typescript: 4.9.4
 
   packages/data-model-rust-samples:
     specifiers: {}
@@ -368,13 +269,7 @@ importers:
       '@scale-codec/util': ^1.1.1
       '@types/debug': ^4.1.7
       case: ^1.6.3
-      chalk: 4.1.2
-      consola: ^2.15.3
       debug: ^4.3.4
-      execa: 5.1.1
-      immutable: ^4.0.0
-      type-fest: ^3.5.2
-      typescript: ^4.9.4
     dependencies:
       '@scale-codec/definition-runtime': 2.2.2
     devDependencies:
@@ -383,13 +278,7 @@ importers:
       '@scale-codec/util': 1.1.1
       '@types/debug': 4.1.7
       case: 1.6.3
-      chalk: 4.1.2
-      consola: 2.15.3
       debug: 4.3.4
-      execa: 5.1.1
-      immutable: 4.1.0
-      type-fest: 3.5.2
-      typescript: 4.9.4
 
   packages/docs-recipes:
     specifiers:
@@ -422,21 +311,9 @@ importers:
   packages/iroha-source:
     specifiers:
       '@types/yargs': ^17.0.15
-      chalk: 4.1.2
-      consola: ^2.15.3
-      del: ^6.0.0
-      execa: 5.1.1
-      make-dir: ^3.1.0
-      tsx: ^3.12.2
       yargs: ^17.6.2
     devDependencies:
       '@types/yargs': 17.0.15
-      chalk: 4.1.2
-      consola: 2.15.3
-      del: 6.1.1
-      execa: 5.1.1
-      make-dir: 3.1.0
-      tsx: 3.12.2
       yargs: 17.6.2
 
   packages/test-peer:
@@ -451,20 +328,12 @@ importers:
       '@types/koa__router': ^8.0.11
       '@types/yargs': ^17.0.15
       axios: ^0.24.0
-      chalk: 4.1.2
-      consola: ^2.15.3
       debug: ^4.3.4
-      del: ^6.0.0
-      execa: 5.1.1
       koa: ^2.13.4
       koa-bodyparser: ^4.3.0
       koa-morgan: ^1.0.1
-      make-dir: ^3.1.0
       node-fetch: ^3.2.4
-      tiny-invariant: ^1.3.1
-      typescript: ^4.9.4
       yargs: ^17.6.2
-      zx: ^4.2.0
     devDependencies:
       '@iroha2/client': link:../client
       '@iroha2/iroha-source': link:../iroha-source
@@ -476,20 +345,12 @@ importers:
       '@types/koa__router': 8.0.11
       '@types/yargs': 17.0.15
       axios: 0.24.0_debug@4.3.4
-      chalk: 4.1.2
-      consola: 2.15.3
       debug: 4.3.4
-      del: 6.1.1
-      execa: 5.1.1
       koa: 2.13.4
       koa-bodyparser: 4.3.0
       koa-morgan: 1.0.1
-      make-dir: 3.1.0
       node-fetch: 3.2.10
-      tiny-invariant: 1.3.1
-      typescript: 4.9.4
       yargs: 17.6.2
-      zx: 4.3.0
 
 packages:
 
@@ -952,24 +813,6 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@rollup/plugin-node-resolve/15.0.1_rollup@3.10.0:
-    resolution: {integrity: sha512-ReY88T7JhJjeRVbfCyNj+NXAG3IIsVMsX9b5/9jC98dRP8/yxlZdz7mHZbHk5zHr24wZZICS5AcXsFZAXYUQEg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.0.2_rollup@3.10.0
-      '@types/resolve': 1.20.2
-      deepmerge: 4.2.2
-      is-builtin-module: 3.2.0
-      is-module: 1.0.0
-      resolve: 1.22.1
-      rollup: 3.10.0
-    dev: true
-
   /@rollup/plugin-replace/5.0.2_rollup@3.10.0:
     resolution: {integrity: sha512-M9YXNekv/C/iHHK+cvORzfRYfPbq0RDD8r0G+bMiTXjNGKulPnCT9O3Ss46WfhI6ZOCgApOP7xAdmCQJ+U2LAA==}
     engines: {node: '>=14.0.0'}
@@ -1255,10 +1098,6 @@ packages:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
     dev: true
 
-  /@types/resolve/1.20.2:
-    resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
-    dev: true
-
   /@types/semver/6.2.3:
     resolution: {integrity: sha512-KQf+QAMWKMrtBMsB8/24w53tEsxllMj6TuA80TT/5igJalLI/zm0L3oXRbIAl4Ohfc85gyHX/jhMwsVkmhLU4A==}
     dev: true
@@ -1290,6 +1129,7 @@ packages:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
     dependencies:
       '@types/node': 18.0.0
+    dev: false
 
   /@types/yargs-parser/21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
@@ -1883,11 +1723,6 @@ packages:
       ieee754: 1.2.1
     dev: true
 
-  /builtin-modules/3.3.0:
-    resolution: {integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==}
-    engines: {node: '>=6'}
-    dev: true
-
   /bytes/3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
@@ -2318,6 +2153,7 @@ packages:
   /data-uri-to-buffer/4.0.0:
     resolution: {integrity: sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==}
     engines: {node: '>= 12'}
+    dev: true
 
   /dayjs/1.11.4:
     resolution: {integrity: sha512-Zj/lPM5hOvQ1Bf7uAvewDaUcsJoI6JmNqmHhHl3nyumwe0XHwt8sWdOVAPACJzCebL8gQCi+K49w7iKWnGwX9g==}
@@ -2408,11 +2244,6 @@ packages:
 
   /deep-is/0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
-    dev: true
-
-  /deepmerge/4.2.2:
-    resolution: {integrity: sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==}
-    engines: {node: '>=0.10.0'}
     dev: true
 
   /defaults/1.0.4:
@@ -2608,10 +2439,6 @@ packages:
       typed-array-length: 1.0.4
       unbox-primitive: 1.0.2
       which-typed-array: 1.1.9
-    dev: true
-
-  /es-module-lexer/1.1.0:
-    resolution: {integrity: sha512-fJg+1tiyEeS8figV+fPcPpm8WqJEflG3yPU0NOm5xMvrNkuiy7HzX/Ljng4Y0hAoiw4/3hQTCFYw+ub8+a2pRA==}
     dev: true
 
   /es-set-tostringtag/2.0.1:
@@ -3401,6 +3228,7 @@ packages:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.2.1
+    dev: true
 
   /figures/3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
@@ -3520,6 +3348,7 @@ packages:
     engines: {node: '>=12.20.0'}
     dependencies:
       fetch-blob: 3.2.0
+    dev: true
 
   /fresh/0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==}
@@ -3984,13 +3813,6 @@ packages:
       has-tostringtag: 1.0.0
     dev: true
 
-  /is-builtin-module/3.2.0:
-    resolution: {integrity: sha512-phDA4oSGt7vl1n5tJvTWooWWAsXLY+2xCnxNqvKhGEzujg+A43wPlPOyDg3C8XQHN+6k/JTQWJ/j0dQh/qr+Hw==}
-    engines: {node: '>=6'}
-    dependencies:
-      builtin-modules: 3.3.0
-    dev: true
-
   /is-callable/1.2.4:
     resolution: {integrity: sha512-nsuwtxZfMX67Oryl9LCQ+upnC0Z0BgpwntpS89m1H/TLF0zNfzfLMV/9Wa/6MZsj0acpEjAO0KF1xT6ZdLl95w==}
     engines: {node: '>= 0.4'}
@@ -4056,10 +3878,6 @@ packages:
     dependencies:
       global-dirs: 3.0.0
       is-path-inside: 3.0.3
-    dev: true
-
-  /is-module/1.0.0:
-    resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
     dev: true
 
   /is-negative-zero/2.0.2:
@@ -4194,11 +4012,6 @@ packages:
       '@sideway/pinpoint': 2.0.0
     dev: true
 
-  /joycon/3.1.1:
-    resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
-    engines: {node: '>=10'}
-    dev: true
-
   /js-sdsl/4.2.0:
     resolution: {integrity: sha512-dyBIzQBDkCqCu+0upx25Y2jGdbTGxE9fshMsCdK0ViOongpV+n5tXRcZY9v7CaVQ79AGS9KA1KHtojxiM7aXSQ==}
     dev: true
@@ -4254,10 +4067,6 @@ packages:
 
   /json-stringify-safe/5.0.1:
     resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
-    dev: true
-
-  /jsonc-parser/3.2.0:
-    resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
     dev: true
 
   /jsonfile/4.0.0:
@@ -4708,6 +4517,7 @@ packages:
   /node-domexception/1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    dev: true
 
   /node-fetch/2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
@@ -4728,6 +4538,7 @@ packages:
       data-uri-to-buffer: 4.0.0
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
+    dev: true
 
   /normalize-package-data/2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}
@@ -5387,24 +5198,6 @@ packages:
       typescript: 4.9.4
     optionalDependencies:
       '@babel/code-frame': 7.18.6
-    dev: true
-
-  /rollup-plugin-esbuild/5.0.0_hazqy6musc527v46bynh2qj26q:
-    resolution: {integrity: sha512-1cRIOHAPh8WQgdQQyyvFdeOdxuiyk+zB5zJ5+YOwrZP4cJ0MT3Fs48pQxrZeyZHcn+klFherytILVfE4aYrneg==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
-    peerDependencies:
-      esbuild: '>=0.10.1'
-      rollup: ^1.20.0 || ^2.0.0 || ^3.0.0
-    dependencies:
-      '@rollup/pluginutils': 5.0.2_rollup@3.10.0
-      debug: 4.3.4
-      es-module-lexer: 1.1.0
-      esbuild: 0.14.51
-      joycon: 3.1.1
-      jsonc-parser: 3.2.0
-      rollup: 3.10.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /rollup/2.78.1:
@@ -6323,6 +6116,7 @@ packages:
   /web-streams-polyfill/3.2.1:
     resolution: {integrity: sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q==}
     engines: {node: '>= 8'}
+    dev: true
 
   /webidl-conversions/3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}

@@ -8,8 +8,6 @@
     "@iroha2/crypto-core": "workspace:^0.1.1",
     "@iroha2/crypto-target-bundler": "workspace:^0.4.0",
     "@iroha2/crypto-target-node": "workspace:^0.4.0",
-    "@iroha2/crypto-target-web": "workspace:^0.4.0",
-    "@types/node": "^18.11.18",
-    "typescript": "^4.9.4"
+    "@iroha2/crypto-target-web": "workspace:^0.4.0"
   }
 }

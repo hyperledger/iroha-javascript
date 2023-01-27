@@ -21,7 +21,6 @@
     "@iroha2/data-model": "workspace:^4.0.0"
   },
   "devDependencies": {
-    "@iroha2/crypto-interface-wrap": "workspace:^0.0.0",
-    "@types/node": "^18.11.18"
+    "@iroha2/crypto-interface-wrap": "workspace:^0.0.0"
   }
 }

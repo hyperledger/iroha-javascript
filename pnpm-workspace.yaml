@@ -1,3 +1,4 @@
 packages:
   - "packages/**"
-  - "!packages/crypto/rust/**"
+  - "!packages/crypto-rs/**"
+  - "!packages/client-isomorphic-*"
