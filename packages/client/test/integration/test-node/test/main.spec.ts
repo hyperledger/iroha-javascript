@@ -56,8 +56,8 @@ import {
 } from '@iroha2/data-model'
 import { Seq } from 'immutable'
 import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
-import { delay } from '../util'
-import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../config'
+import { delay } from '../../util'
+import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../../config'
 
 // for debugging convenience
 new ScaleLogger().mount()

@@ -15,10 +15,9 @@
     }
   },
   "exclude": [
-    "**/dist/**/*",
-    "**/node_modules/**/*",
-    "packages/client/test/integration/test-web/cypress/integration/**/*",
-    "packages/crypto/crypto-rs",
-    "packages/crypto/test/integration"
+    "**/dist",
+    "**/node_modules",
+    "**/test/integration",
+    "packages/crypto/crypto-rs"
   ]
 }

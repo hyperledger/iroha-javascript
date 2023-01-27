@@ -2,7 +2,7 @@
   "name": "@iroha2/client-test-node",
   "private": true,
   "scripts": {
-    "test": "cross-env DEBUG=@iroha2* vitest run"
+    "test": "cross-env DEBUG=@iroha2* vitest run main.spec"
   },
   "devDependencies": {
     "@iroha2/client": "workspace:^4.0.0",
