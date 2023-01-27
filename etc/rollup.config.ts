@@ -1,8 +1,6 @@
 import { Plugin, RollupOptions, defineConfig } from 'rollup'
 import dts from 'rollup-plugin-dts'
 import replace from '@rollup/plugin-replace'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
-import esbuild from 'rollup-plugin-esbuild'
 import { glob } from 'zx'
 import { match } from 'ts-pattern'
 import path from 'path'
@@ -28,9 +26,6 @@ function replaceVitest() {
   })
 }
 
-function esbuildDefault() {
-  return esbuild({ target: 'esnext' })
-}
 
 async function readWasmPkgAssets(target: WasmPackTarget): Promise<{ fileName: string; content: Buffer }[]> {
   return glob(path.join(wasmPackOutDirForTarget(target), '*')).then((files) =>
@@ -58,6 +53,8 @@ function wasmPkg(target: WasmPackTarget, mode: 'types' | 'esm-reexport' | 'cjs-i
       if (id === WASM_PKG_ROLLUP_ID) return WASM_PKG_TARGET_ROLLUP_ID
       if (id === WASM_PKG_TARGET_ROLLUP_ID) return id
       if (id === WASM_PKG_COPIED_ENTRY_EXTERNAL && importer === WASM_PKG_TARGET_ROLLUP_ID) return { id, external: true }
+      // in this mode, we import it to do `createRequire()`
+      if (id === 'module' && mode === 'cjs-in-esm') return { id, external: true }
     },
     async load(id) {
       if (id === INTERFACE_WRAP_PROXY_TO_WASM_PKG_ROLLUP_ID) {
@@ -124,6 +121,35 @@ function redirectCryptoUtilToCore(): Plugin {
 }
 
 /**
+ * By default, imports of `@iroha2/crypto-interface-wrap` will resolve to `src/main.ts`,
+ * which is especially bad for types - declarations will contain actual TS code instead
+ * of pure types.
+ *
+ * For consistency TS-compiled JavaScript is imported too
+ */
+function resolveCryptoInterfaceWrapEntry(entry: 'types' | 'js'): Plugin {
+  const PKG = 'crypto-interface-wrap' as const
+  const root = packageRoot(PKG)
+  const resolveTo = path.join(
+    root,
+    'dist-tsc',
+    'lib' +
+      match(entry)
+        .with('types', () => '.d.ts')
+        .with('js', () => '.js')
+        .exhaustive(),
+  )
+  const pkgFull = scopePackage(PKG)
+
+  return {
+    name: 'resolve-crypto-interface-wrap-entry',
+    resolveId: (id) => {
+      if (id === pkgFull) return resolveTo
+    },
+  }
+}
+
+/**
  * @param root the root of the package
  * @param entry the file relative to `${root}/src`, without extension
  * @param externalSet
@@ -143,7 +169,7 @@ function simpleOptions(root: string, entry: string, externalSet: Set<string>) {
     js: {
       input: `${inputBase}.js`,
       external,
-      plugins: [replaceVitest(), esbuildDefault()],
+      plugins: [replaceVitest()],
       output: [
         { format: 'esm', file: `${outputBase}.mjs` },
         { format: 'cjs', file: `${outputBase}.cjs` },
@@ -165,7 +191,6 @@ async function* rollupCryptoTarget(
   const pkg = `crypto-target-${target}` as const
   const root = packageRoot(pkg)
   const deps = await loadProductionDependencies(pkg)
-  const external = deps.toArray()
 
   const inputBase = path.join(root, `dist-tsc/lib`)
   const outputBase = path.join(root, `dist/lib`)
@@ -176,8 +201,9 @@ async function* rollupCryptoTarget(
         'types',
         (): RollupOptions => ({
           input: `${inputBase}.d.ts`,
-          external,
+          external: deps.toArray(),
           plugins: [
+            resolveCryptoInterfaceWrapEntry('types'),
             redirectCryptoUtilToCore(),
             wasmPkg(IrohaCryptoTarget.toWasmPackTarget(target), 'types'),
             dts({ respectExternal: true }),
@@ -193,14 +219,11 @@ async function* rollupCryptoTarget(
 
         return {
           input: `${inputBase}.js`,
-          external,
+          external: deps.toArray(),
           plugins: [
+            resolveCryptoInterfaceWrapEntry('js'),
             redirectCryptoUtilToCore(),
             wasmPkg(IrohaCryptoTarget.toWasmPackTarget(target), isNodeEsm ? 'cjs-in-esm' : 'esm-reexport'),
-            esbuildDefault(),
-            // FIXME do it with custom resolver to avoid unexpected inclusions?
-            //       it seems that it is enough to explicitly resolve just `@iroha2/crypto-interface-wrap` and `module`
-            nodeResolve(),
           ],
           output: {
             format,
@@ -218,7 +241,7 @@ async function* rollupCryptoTarget(
 }
 
 async function* generateRolls(): AsyncGenerator<RollupOptions> {
-  for (const pkg of PACKAGES_TO_ROLLUP) {
+  for (const pkg of PACKAGES_TO_ROLLUP.toList().sort()) {
     yield* match(pkg)
       .with('client', async function* (pkg): AsyncGenerator<RollupOptions> {
         const root = packageRoot(pkg)
@@ -243,7 +266,8 @@ async function* generateRolls(): AsyncGenerator<RollupOptions> {
         const deps = await loadProductionDependencies(pkg)
 
         const { types, js } = simpleOptions(root, 'lib', deps)
-        types.plugins.unshift(wasmPkg('nodejs', 'types'))
+        types.plugins.unshift(resolveCryptoInterfaceWrapEntry('types'), wasmPkg('nodejs', 'types'))
+        js.plugins.unshift(resolveCryptoInterfaceWrapEntry('js'))
 
         yield types
         yield js

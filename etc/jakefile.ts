@@ -5,23 +5,16 @@
 
 import 'jake'
 import del from 'del'
-import {$, cd} from 'zx'
+import { $, cd } from 'zx'
 import path from 'path'
-import {preserveCwd, reportDeleted, ROOT} from "./util";
-import {PACKAGES_TO_PUBLISH, artifactsToClean, scopePackage, PACKAGES_TO_ROLLUP, packageRoot} from './meta'
-import {
-  CRYPTO_MONOREPO_ROOT,
-  WASM_PACK_CRATE_DIR, WASM_PACK_OUT_NAME,
-  WASM_PACK_TARGETS,
-  wasmPackOutDirForTarget
-} from "./meta-crypto";
-
+import { ROOT, preserveCwd, reportDeleted } from './util'
+import { PACKAGES_TO_BUILD_WITH_TSC, PACKAGES_TO_PUBLISH, artifactsToClean, packageRoot, scopePackage } from './meta'
+import { WASM_PACK_CRATE_DIR, WASM_PACK_OUT_NAME, WASM_PACK_TARGETS, wasmPackOutDirForTarget } from './meta-crypto'
 
 desc('Clean all build artifacts')
 task('clean', async () => {
   const deleted = await del(artifactsToClean())
   reportDeleted(deleted)
-
 })
 
 namespace('prepare', () => {
@@ -86,13 +79,12 @@ namespace('crypto-wasm', () => {
   task('rebuild', ['clean-wasm-pkgs', 'cargo-test', 'build-targets', 'keep-only-necessary'])
 })
 
-
 namespace('build', () => {
   desc('Build TypeScript of the whole project and put corresponding artifacts near the packages')
   task('tsc', ['clean', 'prepare:all'], async () => {
     await $`pnpm tsc`
 
-    for (const pkg of PACKAGES_TO_ROLLUP) {
+    for (const pkg of PACKAGES_TO_BUILD_WITH_TSC) {
       const root = path.relative(ROOT, packageRoot(pkg))
       const tsEmitRoot = path.join('dist-tsc', root)
 
