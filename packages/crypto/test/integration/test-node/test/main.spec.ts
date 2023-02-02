@@ -4,7 +4,6 @@ import { crypto } from '@iroha2/crypto-target-node'
 import { FREE_HEAP, cryptoTypes, freeScope } from '@iroha2/crypto-core'
 
 afterAll(() => {
-  // TODO check that FREE_HEAP is empty to be more sure there are no internal leaks
   expect(FREE_HEAP.size).toEqual(0)
 })
 
