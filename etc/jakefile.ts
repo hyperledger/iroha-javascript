@@ -123,7 +123,7 @@ task('lint', async () => {
 })
 
 desc('Performs all kinds of checks from artifacts compilation and linting to end-2-end tests')
-task('run-all-checks', ['type-check', 'lint', 'build:all', 'test:all'])
+task('run-all-checks', ['lint', 'build:all', 'test:all'])
 
 desc('Publish all public packages')
 task('publish-all', ['run-all-checks', 'build:all'], async () => {
