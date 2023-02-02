@@ -1,11 +1,13 @@
+// #region intro
 import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
 import { QueryBox } from '@iroha2/data-model'
 
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
+// #endregion intro
 
-// list all domains
 {
+  // #region domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
     QueryBox('FindAllDomains', null),
@@ -23,10 +25,11 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
     )
     // => Domain "wonderland" has 5 accounts and 3 asset definitions
   }
+  // #endregion domains
 }
 
-// list all accounts
 {
+  // #region accounts
   const result = await client.requestWithQueryBox(
     toriiRequirements,
     QueryBox('FindAllAccounts', null),
@@ -44,10 +47,11 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
     )
     // => Account "alice@wonderland" has 3 assets
   }
+  // #endregion accounts
 }
 
-// list all assets
 {
+  // #region assets
   const result = await client.requestWithQueryBox(
     toriiRequirements,
     QueryBox('FindAllAssets', null),
@@ -73,4 +77,5 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
     )
     // => Asset "rose#wonderland" at account "alice@wonderland" has type "Quantity"
   }
+  // #endregion assets
 }
