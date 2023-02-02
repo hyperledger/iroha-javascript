@@ -1,8 +1,3 @@
-/**
- * TODO move client package test scripts here, so it will be possible
- * to avoid duplicated builds during CI.
- */
-
 import 'jake'
 import del from 'del'
 import { $, cd } from 'zx'

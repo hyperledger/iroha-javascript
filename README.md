@@ -14,8 +14,6 @@ The Iroha 2 JavaScript library includes the following packages:
 
 Other packages you can find in this repository:
 
-- [`@iroha2/client-isomorphic-fetch`](./packages/client-isomorphic-fetch/) fallbacks to `node-fetch` or native `fetch()` in Node.js
-- [`@iroha2/client-isomorphic-ws`](./packages/client-isomorphic-ws/) contains isomorphic WebSocket transport for `@iroha2/client`
 - [`@iroha2/docs-recipes`](./packages/docs-recipes/) contains code samples used in documentation
 - [`@iroha2/data-model-schema`](./packages/data-model-schema/) contains Iroha 2 Schema
 - [`@iroha2/i64-fixnum`](./packages/i64-fixnum/) handles operations with fixed-point numbers
