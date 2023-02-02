@@ -75,21 +75,21 @@ importers:
       '@iroha2/crypto-core': workspace:^0.1.1
       '@iroha2/data-model': workspace:4.0.0
       '@types/debug': ^4.1.7
-      '@types/ws': ^8.2.2
+      '@types/ws': ^8.5.3
       debug: ^4.3.4
       emittery: ^0.10.1
       json-bigint: ^1.0.0
-      ws: ^8.4.0
+      ws: ^8.8.1
     dependencies:
       '@iroha2/crypto-core': link:../crypto/packages/core
       '@iroha2/data-model': link:../data-model
-      '@types/ws': 8.5.3
       debug: 4.3.4
       emittery: 0.10.2
       json-bigint: 1.0.0
-      ws: 8.8.1
     devDependencies:
       '@types/debug': 4.1.7
+      '@types/ws': 8.5.3
+      ws: 8.8.1
 
   packages/client/test/integration/test-node:
     specifiers:
@@ -1067,6 +1067,7 @@ packages:
 
   /@types/node/18.0.0:
     resolution: {integrity: sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==}
+    dev: true
 
   /@types/node/18.11.18:
     resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
@@ -1119,7 +1120,7 @@ packages:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
     dependencies:
       '@types/node': 18.0.0
-    dev: false
+    dev: true
 
   /@types/yargs-parser/21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
@@ -6211,7 +6212,7 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: false
+    dev: true
 
   /xml-name-validator/4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}

@@ -44,16 +44,23 @@ For WebSocket, the client has two entrypoints: `@iroha2/client/web-socket/native
    import { adapter } from '@iroha2/client/web-socket/native'
    ```
 
-   Import `@iroha2/client/web-socket/node` with the `ws` package for Node.js:
+   Import `@iroha2/client/web-socket/node` with the `ws` package (it is a peer dependency of the client package) for Node.js:
+
+   ```bash
+   // you need to install `ws` package first
+   npm i ws @types/ws
+   ```
 
    ```ts
    import { adapter } from '@iroha2/client/web-socket/node'
    ```
 
-2. Inject WebSocket adapter into Iroha Client:
+2. Use WebSocket adapter with Torii:
 
    ```ts
-   new Client({ ws: adapter })
+   import { Torii } from '@iroha2/client'
+
+   Torii.listenForEvents({ adapter })
    ```
 
 ### Fetch
@@ -70,13 +77,17 @@ For WebSocket, the client has two entrypoints: `@iroha2/client/web-socket/native
 2. Inject `fetch` into Iroha Client:
 
    ```ts
-   new Torii({ fetch: nodeFetch as typeof fetch, ...rest })
+   import { Torii } from '@iroha2/client'
+
+   Torii.getStatus({ fetch: nodeFetch as typeof fetch })
    ```
 
    In Browser:
 
    ```ts
-   new Torii({ fetch: fetch.bind(window) })
+   import { Torii } from '@iroha2/client'
+
+   Torii.getStatus({ fetch: fetch.bind(window) })
    ```
 
    > **Note**: we make `fetch.bind(window)` to avoid `TypeError: "'fetch' called on an object that does not implement interface Window."`.

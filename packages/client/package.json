@@ -38,13 +38,17 @@
   "dependencies": {
     "@iroha2/crypto-core": "workspace:^0.1.1",
     "@iroha2/data-model": "workspace:4.0.0",
-    "@types/ws": "^8.2.2",
     "debug": "^4.3.4",
     "emittery": "^0.10.1",
-    "json-bigint": "^1.0.0",
-    "ws": "^8.4.0"
+    "json-bigint": "^1.0.0"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.7"
+    "@types/debug": "^4.1.7",
+    "@types/ws": "^8.5.3",
+    "ws": "^8.8.1"
+  },
+  "peerDependencies": {
+    "@types/ws": "^8.5.3",
+    "ws": "^8.8.1"
   }
 }

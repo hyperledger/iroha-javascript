@@ -20,6 +20,7 @@
     "**/dist",
     "**/node_modules",
     "**/test/integration",
+    "packages/client-isomorphic-*",
     "packages/crypto/crypto-rs"
   ]
 }
