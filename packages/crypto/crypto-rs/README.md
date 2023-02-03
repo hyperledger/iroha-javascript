@@ -12,7 +12,7 @@ pnpm jake crypto-wasm:rebuild
 
 ## Be aware of moves
 
-Take a look at this Rust code:
+Consider the following example in Rust:
 
 ```rs
 #[wasm_bindgen]
@@ -32,7 +32,7 @@ fn foo_from_bar(bar: Bar) -> Foo {
 }
 ```
 
-The problem appears when you use this code (compiled to WASM) in JavaScript:
+After you compile this code to WASM and try to use it in JavaScript, your code will panic because `bar` is used **after it was moved to `foo_from_bar`**:
 
 ```js
 const bar = create_bar()
@@ -56,6 +56,6 @@ Thus, the crypto API doesn't expose any methods that *moves* structs passed into
       Foo(bar.0 - 16)
   }
 ```
-It makes the API safer. The cost of it is higher amount of clones and allocations.
+It makes the API safer. The cost of it is a higher number of clones and allocations.
 
 You can read more details in [the PR's description](https://github.com/hyperledger/iroha-javascript/pull/69#issue-963187691).

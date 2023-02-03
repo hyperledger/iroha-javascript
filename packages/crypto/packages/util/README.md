@@ -44,7 +44,7 @@ guard.object.do_stuff()
 // so it will be not usable anymore
 guard.free()
 
-// same as `guard.free()`, but without calling `.free()` on the object itself
+// same as `guard.free()` but without calling `.free()` on the object itself
 guard.forget()
 ```
 
