@@ -47,7 +47,7 @@ const foo2 = foo_from_bar(bar)
 
 In Rust, using `bar` after moving it to `foo_from_bar` causes compilation error. However, in JavaScript there is no way to prevent violation of borrowing rules.
 
-Thus, the crypto API doesn't expose any methods that *moves* structs passed into them, but borrows them:
+Thus, the crypto API doesn't expose any methods that *move* structs passed into them. Instead, the methods borrow them:
 
 ```diff
   #[wasm_bindgen]
