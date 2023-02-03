@@ -40,8 +40,11 @@ const guard = new FreeGuard(wasmObject)
 // access the object
 guard.object.do_stuff()
 
-// call `.free()` on the object itself, clear tracks and empty the guard,
-// so it will be not usable anymore
+// call `.free()` on the guard to:
+// - call `.free()` on the guarded object itself, i.e. `guard.object.free()`
+// - clear tracks, i.e. remove the guard from `FREE_HEAP` and from the scope (if there is any)
+// - empty the guard, i.e. remove the guarded object and make it unusable
+//   so that it could no longer be accessed with `guard.object`
 guard.free()
 
 // same as `guard.free()` but without calling `.free()` on the object itself

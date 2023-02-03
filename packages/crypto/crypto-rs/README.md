@@ -45,7 +45,7 @@ const foo2 = foo_from_bar(bar)
 //                        ^^^ `bar` cannot be used second time
 ```
 
-Code panics, because `bar` is used **after it was moved to `foo_from_bar`**. It is completely valid from Rust side and such a usage of `bar` after its movement will cause a compilation error. However, JavaScript can't apply borrowing rules on its side.
+In Rust, using `bar` after moving it to `foo_from_bar` causes compilation error. However, in JavaScript there is no way to prevent violation of borrowing rules.
 
 Thus, the crypto API doesn't expose any methods that *moves* structs passed into them, but borrows them:
 
