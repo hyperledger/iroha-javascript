@@ -1,4 +1,4 @@
-# Iroha Crypto WASM - Rust sources
+# Iroha Crypto WASM (Rust sources)
 
 This Cargo project is a port of [`iroha_crypto` crate](https://github.com/hyperledger/iroha/tree/iroha2-lts/crypto) with `wasm_bindgen`s.
 

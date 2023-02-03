@@ -32,7 +32,7 @@ To install the necessary packages with `npm`/`pnpm`:
 
 ### Use target implementation
 
-Each target exports the same `crypto` namespace, containing all the types and classes to work with hashes, keys and signatures:
+Each target exports the same `crypto` namespace containing all the types and classes to work with hashes, keys, and signatures:
 
 ```ts
 import { crypto } from '@iroha2/crypto-target-node'
@@ -83,7 +83,7 @@ for (const x of [hash, conf]) {
 }
 ```
 
-Fortunately, all such objects are wrapped and tracked so this process could be automatised, so the previous example could be re-written in a more _robust_ (because you can't forget something, it will be freed for you) way:
+Fortunately, all such objects are wrapped and tracked so this process can be automated. The previous example can be re-written in a more _robust_ way that ensures every object is freed:
 
 ```ts
 // re-export from `@iroha2/crypto-util`

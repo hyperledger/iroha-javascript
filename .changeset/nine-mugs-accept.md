@@ -13,13 +13,13 @@ Each target now provides high-level wrappers around raw `wasm-pack` artifacts. T
 
 Moreover, the WASM itself is re-written and now provides more flexibility, such as working with JSON and HEX representations out of the box.
 
-The connection between `@iroha2/crypto-core` and `@iroha2/crypto-target-*` you can see here:
+Here you can see how `@iroha2/crypto-core` and `@iroha2/crypto-target-*` are connected:
 
 ```ts
 import { IrohaCryptoInterface, cryptoTypes } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
 
-// each target exports `crypto` which is the `IrohaCryptoInterface` type from
+// each target exports `crypto`, which is the `IrohaCryptoInterface` type from
 // the core library
 const cryptoAsserted: IrohaCryptoInterface = crypto
 
@@ -36,22 +36,22 @@ import { crypto } from '@iroha2/crypto-target-web'
 
 const keyPair = freeScope((scope) => {
   const pair = crypto.KeyGenConfiguration
-    // here the configuration object is created, and you can `.free()` it manually
-    // fortunately, it is automatically attached to the scope it is created within,
-    // and when the scope is over, everything attached to it will be freed
+    // Create a configuration object that you can later `.free()` manually.
+    // It is automatically attached to the scope it is created within,
+    // so when the scope is over, everything attached to it will be freed.
     .default()
     .useSeed('hex', 'ff')
-    // here the new `.free()` object is created - a key pair
+    // Create a new `.free()` object: a key pair
     .generate()
 
-  // we want to use the key pair (and nothing else) out of scope
-  // thus, we need to "untrack" it
+  // to use the key pair (and nothing else) out of scope,
+  // you need to "untrack" it
   scope.forget(pair)
 
   return pair
 })
 
-// we can inspect the heap in order to determine if there are memory leaks
+// inspect the heap in order to determine if there are memory leaks
 if (FREE_HEAP.size > 1) {
   console.log('Something went wrong, I guess?')
 }
@@ -63,11 +63,11 @@ Codegen of `wasm_bindgen` is very limited. This change is made to provide a bett
 
 ### How a consumer should update their code
 
-Unfortunately, the code should be updated completely. However, here are some major points.
+Unfortunately, the code should be updated completely. Here are some major points you should note.
 
 `IrohaCryptoInterface` type from the core package is still the same as `crypto` export from target packages, but the content of the type is completely different.
 
-Previously types such as `Hash`, `Signature`, `PublicKey` were separate exports from the core library. Now they are contained within the `cryptoTypes` namespace:
+Previously, types such as `Hash`, `Signature`, `PublicKey` were separate exports from the core library. Now they are contained within the `cryptoTypes` namespace:
 
 ```ts
 // doesn't work anymore

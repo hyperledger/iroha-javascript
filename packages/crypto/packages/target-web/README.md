@@ -13,7 +13,7 @@ init().then(() => {
 })
 ```
 
-> There is a known [issue](https://github.com/hyperledger/iroha-javascript/issues/104) with [Vite](https://vitejs.dev/) - you need to initialise the WASM this way:
+> Due to a known [issue](https://github.com/hyperledger/iroha-javascript/issues/104) with [Vite](https://vitejs.dev/), you need to initialise WASM this way:
 >
 > ```ts
 > import { crypto, init } from '@iroha2/crypto-target-web'

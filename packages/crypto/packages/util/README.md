@@ -27,14 +27,14 @@ interface Free {
 - gives access to the inner object
 - throws a friendly error when the object is freed (more friendly than a Rust panic in WASM)
 - tracks itself in the global [`FREE_HEAP`](#inspect-active-guards-in-freeheap)
-- attaches itself to the current [scope](#scope-guards) if there is some
+- attaches itself to the current [scope](#scope-guards) if there is any
 
 ```ts
 import { FreeGuard, freeScope, FREE_HEAP, Free } from '@iroha2/crypto-util'
 
 declare const wasmObject: Free & { do_stuff: () => void }
 
-// this guard is added to the current
+// add this guard to the current scope
 const guard = new FreeGuard(wasmObject)
 
 // access the object
@@ -47,7 +47,7 @@ guard.free()
 guard.forget()
 ```
 
-**Note**: you should not call `.free()` on the inner object, but call it on the guard:
+**Note**: You should not call `.free()` on the inner object. You should call it on the guard instead:
 
 ```ts
 // ✓ CORRECT
@@ -57,7 +57,7 @@ guard.free()
 guard.object.free()
 ```
 
-**Note**: `.forget()` method could be used if you want to "untrack" the guard everywhere, but not to free the object itself.
+**Note**: `.forget()` method could be used if you want to "untrack" the guard everywhere without freeing the object itself.
 
 #### Scope guards
 
@@ -70,7 +70,7 @@ const { barGuard } = freeScope((scope) => {
   const fooGuard = new FreeGuard(foo)
   const barGuard = new FreeGuard(bar)
 
-  // we need to explicitly specify what do want to not
+  // explicitly specify the object that you do not want to 
   // be freed when the scope is over
   scope.forget(barGuard)
 
@@ -78,10 +78,10 @@ const { barGuard } = freeScope((scope) => {
 })
 
 // voila!
-// `fooGuard` is freed automatically, while `barGuard` could be used here
+// `fooGuard` is freed automatically, while `barGuard` could still be used here
 ```
 
-`FreeScope` API could be used without `freeScope()` too:
+You can also use `FreeScope` API without `freeScope()`:
 
 ```ts
 import { FreeScope } from '@iroha2/crypto-util'
@@ -91,13 +91,13 @@ const scope = new FreeScope()
 scope.track(foo)
 scope.track(bar)
 
-// frees every tracked object
+// free every tracked object
 scope.free()
 ```
 
 #### Inspect active guards in `FREE_HEAP`
 
-All `FreeGuard`s are automatically added into the global const `FREE_HEAP` set, so you can inspect it in order to detect what you forget to free, or just to try yourself as a garbage collector for a little time:
+All `FreeGuard`s are automatically added into the global const `FREE_HEAP` set. You can inspect it in order to detect what you forgot to free:
 
 ```ts
 import { FREE_HEAP } from '@iroha2/crypto-util'
