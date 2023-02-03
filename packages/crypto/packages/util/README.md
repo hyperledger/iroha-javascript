@@ -47,7 +47,7 @@ guard.object.do_stuff()
 //   so that it could no longer be accessed with `guard.object`
 guard.free()
 
-// same as `guard.free()` but without calling `.free()` on the object itself
+// same as `guard.free()` but without calling `.free()` on the guarded object itself
 guard.forget()
 ```
 
