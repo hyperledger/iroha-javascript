@@ -1,5 +1,19 @@
 # @iroha2/client
 
+## 4.1.0
+
+### Minor Changes
+
+- 650cdb0: **chore**: update `ws` version; move `ws` and `@types/ws` to peer dependencies
+- ddfeeac: **refactor**: target new major version of `@iroha2/crypto-core`
+
+### Patch Changes
+
+- 650cdb0: **docs**: update README
+- Updated dependencies [ddfeeac]
+  - @iroha2/crypto-core@1.0.0
+  - @iroha2/data-model@4.1.0
+
 ## 4.0.0
 
 ### Major Changes

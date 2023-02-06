@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/crypto-target-node",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "license": "Apache 2.0",
   "main": "dist/lib.cjs",
   "module": "dist/lib.mjs",
@@ -18,8 +18,8 @@
     "CHANGELOG.md"
   ],
   "dependencies": {
-    "@iroha2/crypto-core": "workspace:^0.1.1",
-    "@iroha2/data-model": "workspace:^4.0.0"
+    "@iroha2/crypto-core": "workspace:^1.0.0",
+    "@iroha2/data-model": "workspace:^4.1.0"
   },
   "devDependencies": {
     "@iroha2/crypto-interface-wrap": "workspace:^0.0.0"

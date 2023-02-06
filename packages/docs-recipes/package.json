@@ -3,12 +3,12 @@
   "private": true,
   "version": "0.0.3",
   "devDependencies": {
-    "@iroha2/client": "workspace:^4.0.0",
-    "@iroha2/crypto-core": "workspace:^0.1.1",
-    "@iroha2/crypto-target-bundler": "workspace:^0.4.0",
-    "@iroha2/crypto-target-node": "workspace:^0.4.0",
-    "@iroha2/crypto-target-web": "workspace:^0.4.0",
-    "@iroha2/data-model": "workspace:^4.0.0",
+    "@iroha2/client": "workspace:^4.1.0",
+    "@iroha2/crypto-core": "workspace:^1.0.0",
+    "@iroha2/crypto-target-bundler": "workspace:^1.0.0",
+    "@iroha2/crypto-target-node": "workspace:^1.0.0",
+    "@iroha2/crypto-target-web": "workspace:^1.0.0",
+    "@iroha2/data-model": "workspace:^4.1.0",
     "node-fetch": "^3.2.4",
     "undici": "^5.8.1"
   }
