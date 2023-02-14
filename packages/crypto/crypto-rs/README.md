@@ -1,94 +1,61 @@
-# iroha-crypto Rust sources
+# Iroha Crypto WASM (Rust sources)
 
-## Interfaces rules
+This Cargo project is a port of [`iroha_crypto` crate](https://github.com/hyperledger/iroha/tree/iroha2-lts/crypto) with `wasm_bindgen`s.
 
-**Don't expose ownership model implicitly**
+## Rebuild WASMs
 
-It is not visible from JS side. Prefer always to borrow structs.
+To re-create `./wasm-pkg-*`, run in the monorepo root:
 
-```rust
+```bash
+pnpm jake crypto-wasm:rebuild
+```
+
+## Be aware of moves
+
+Consider the following example in Rust:
+
+```rs
 #[wasm_bindgen]
-pub struct User {
-    name: String
+struct Foo(u32);
+
+#[wasm_bindgen]
+struct Bar(u32);
+
+#[wasm_bindgen]
+fn create_bar() -> Bar {
+    Bar(42)
 }
 
-// WRONG
-// `user` will be freed after invocation of this function so
-// any usage of related object on JS side after this will be
-// incorrect
 #[wasm_bindgen]
-pub fn get_user_name(user: User) -> String {
-    user.name
-}
-
-// GOOD
-#[wasm_bindgen]
-pub fn get_user_name(user: &User) -> String {
-    user.name.clone()
+fn foo_from_bar(bar: Bar) -> Foo {
+    Foo(bar.0 - 16)
 }
 ```
 
-**Avoid "static" class methods**
+After you compile this code to WASM and try to use it in JavaScript, your code will panic because `bar` is used **after it was moved to `foo_from_bar`**:
 
-Classes are the thing that is hard to type in TypeScript. When you write code like this:
+```js
+const bar = create_bar()
 
-```rust
-#[wasm_bindgen]
-pub struct User {
-    name: String
-}
+const foo = foo_from_bar(bar)
+//                       ^^^ `bar` is moved here
 
-#[wasm_bindgen]
-impl User {
-    #[wasm_bindgen(constructor)]
-    pub fn new(name: String) -> User {
-        User { name }
-    }
-
-    pub fn with_empty_name() -> User {
-        User::new("".to_owned())
-    }
-
-    pub fn get_name(&self) -> String {
-        self.name.clone()
-    }
-}
+// panic! null ptr is passed to Rust
+const foo2 = foo_from_bar(bar)
+//                        ^^^ `bar` cannot be used second time
 ```
 
-It transforms into such class:
+In Rust, using `bar` after moving it to `foo_from_bar` causes compilation error. However, in JavaScript there is no way to prevent violation of borrowing rules.
 
-```ts
-declare class User {
-    constructor(name: string);
+Thus, the crypto API doesn't expose any methods that *move* structs passed into them. Instead, the methods borrow them:
 
-    static with_empty_name(): User;
-
-    get_name(): string;
-}
+```diff
+  #[wasm_bindgen]
+- fn foo_from_bar(bar: Bar) -> Foo {
++ fn foo_from_bar(bar: &Bar) -> Foo {
+      Foo(bar.0 - 16)
+  }
 ```
+It makes the API safer. The cost of it is a higher number of clones and allocations.
 
-The problem is that library have to expose universal API interface for each target and it is decoupled from implementation, but classes are always a mix of runtime and types sides. Also it has 2 type sides: static type and instance type. It is hard to pack it all in `IrohaCryptoInterface`, so I decided to move all static methods away from classes and leave there only instance methods. So, do like this:
-
-```rust
-#[wasm_bindgen]
-pub struct User {
-    name: String
-}
-
-#[wasm_bindgen]
-pub fn new_user(name: String) -> User {
-    User { name }
-}
-
-#[wasm_bindgen]
-pub fn user_with_empty_name() -> User {
-    User::new("".to_owned())
-}
-
-#[wasm_bindgen]
-impl User {
-    pub fn get_name(&self) -> String {
-        self.name.clone()
-    }
-}
-```
+You can read more details in [the PR's description](https://github.com/hyperledger/iroha-javascript/pull/69#issue-963187691).

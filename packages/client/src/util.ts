@@ -3,14 +3,14 @@ import { Debugger } from 'debug'
 import Emittery from 'emittery'
 import JsonBigIntParseFactory from 'json-bigint/lib/parse.js'
 import { getCryptoAnyway } from './crypto-singleton'
-import { garbageScope } from './collect-garbage'
+import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
 
-export function cryptoHash(input: Uint8Array): Uint8Array {
-  const { createHash } = getCryptoAnyway()
-  return garbageScope((c) => {
-    const hash = c(createHash(input))
-    return hash.bytes()
-  })
+export function cryptoHash(...input: cryptoTypes.BytesInputTuple): Uint8Array {
+  return freeScope(() =>
+    getCryptoAnyway()
+      .Hash.hash(...input)
+      .bytes(),
+  )
 }
 
 export function transformProtocolInUrlFromHttpToWs(url: string): string {

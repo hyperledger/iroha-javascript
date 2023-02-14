@@ -10,8 +10,11 @@ import {
   PipelineStatusKind,
 } from '@iroha2/data-model'
 import { computed, onBeforeUnmount, shallowReactive, shallowRef } from 'vue'
-import { bytesToHex } from 'hada'
 import { toriiPre } from '../client'
+
+function bytesToHex(bytes: Uint8Array): string {
+  return [...bytes].map(byte => byte.toString(16).padStart(2, '0')).join('')
+}
 
 interface EventData {
   hash: string
@@ -39,7 +42,7 @@ async function startListening() {
   currentListener.value.ee.on('event', (event) => {
     const { hash, status } = event.as('Pipeline')
     events.push({
-      hash: bytesToHex([...hash]),
+      hash: bytesToHex(hash),
       status: status.match({
         Validating: () => 'validating',
         Committed: () => 'committed',

@@ -6,3 +6,4 @@ dist-tsc
 /docs/api
 
 .pnpm-debug.log
+.idea

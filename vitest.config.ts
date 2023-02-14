@@ -8,11 +8,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@iroha2/i64-fixnum': resolve('./packages/i64-fixnum/src/lib.ts'),
+      '@iroha2/data-model': resolve('./packages/data-model/src/lib.ts'),
+      '@iroha2/crypto-core': resolve('./packages/crypto/packages/core/src/lib.ts'),
+      '@iroha2/crypto-util': resolve('./packages/crypto/packages/util/src/lib.ts'),
     },
   },
   test: {
     include: ['**/*.spec.ts'],
-    exclude: ['packages/client/test/integration', '**/node_modules', '**/dist', '**/dist-tsc'],
+    exclude: ['**/test/integration', '**/node_modules', '**/dist', '**/dist-tsc'],
     includeSource: ['packages/i64-fixnum/src/**/*.ts', 'packages/client/src/**/*.ts'],
   },
 })

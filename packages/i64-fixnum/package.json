@@ -16,9 +16,6 @@
     "CHANGELOG.md"
   ],
   "license": "Apache 2.0",
-  "scripts": {
-    "build:tsc": "tsc"
-  },
   "dependencies": {
     "@scale-codec/util": "^1.1.1"
   }

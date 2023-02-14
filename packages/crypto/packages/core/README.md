@@ -1,13 +1,14 @@
 # `@iroha2/crypto-core`
 
-The `@iroha2/crypto-core` package contains the unified crypto interface for Iroha 2 Javascript.
-Compiled implementations for each target (`node`, `web`, `bundler`) are in their own packages:
+The core package primary contains types, so you can base your code on them instead of relying on a particular target implementation. Compiled implementations for each target (`node`, `web`, `bundler`) are in their own packages:
 
 - [`@iroha2/crypto-target-node`](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/target-node)
 - [`@iroha2/crypto-target-web`](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/target-web)
 - [`@iroha2/crypto-target-bundler`](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/target-bundler)
 
 You can learn more about targets in the [`wasm-bindgen` documentation](https://rustwasm.github.io/docs/wasm-bindgen/reference/deployment.html).
+
+Also, this package re-exports everything from [`@iroha2/crypto-util` package](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/util).
 
 ## Installation
 
@@ -16,47 +17,86 @@ To install the necessary packages with `npm`/`pnpm`:
 
 1. Configure your package manager to fetch scoped packages from Nexus Registry.
 
-    ```ini
-    # FILE: .npmrc
-    @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
-    ```
+   ```ini
+   # FILE: .npmrc
+   @iroha2:registry=https://nexus.iroha.tech/repository/npm-group/
+   ```
 
 2. Install the packages you need:
 
-    ```shell
-    pnpm add @iroha2/crypto-core @iroha2/crypto-target-node
-    ```
+   ```shell
+   pnpm add @iroha2/crypto-core @iroha2/crypto-target-node
+   ```
 
-## Development
+## Guide
 
-To develop environment-agnostic libraries that would depend on Iroha Crypto, you have to use dependency-inversion strategy. This means making your library depend on the `IrohaCryptoInterface` interface instead of a particular implementation of it.
+### Use target implementation
 
-For example:
+Each target exports the same `crypto` namespace containing all the types and classes to work with hashes, keys, and signatures:
 
 ```ts
-import { IrohaCryptoInterface } from '@iroha2/crypto-core';
+import { crypto } from '@iroha2/crypto-target-node'
 
-interface MyEmailHashingLibrary {
-    hash(email: string): Uint8Array;
-}
+const hex = crypto.Hash.hash('hex', '0011ff').bytes('hex')
 
-function encodeString(str: string): Uint8Array {
-    /* making utf-8 magic... */
-}
+const signature: crypto.Signature = crypto.KeyGenConfiguration.default()
+  .generate()
+  .sign('array', new Uint8Array([1, 1, 2, 3]))
+```
 
-/**
- * Injecting crypto in runtime as an argument
- */
-export function createEmailHashing(crypto: IrohaCryptoInterface): MyEmailHashingLibrary {
-    return {
-        hash(email) {
-            // and using crypto
-            const hash = crypto.createHash(encodeString(email));
-            const bytes = hash.bytes();
-            // also don't forget to `free` structures from the wasm to avoid memory leaks!
-            hash.free();
-            return bytes;
-        },
-    };
+### Write target-agnostic logic
+
+`cryptoTypes` namespace export in `@iroha2/crypto-core` contains all the **types** you may find in `crypto` namespace export from `@iroha2/crypto-target-*`:
+
+```ts
+import { cryptoTypes } from '@iroha2/crypto-core'
+
+function hashAsHex(hash: cryptoTypes.Hash): string {
+  return hash.bytes('hex')
 }
 ```
+
+`IrohaCryptoInterface` type represents the type of `crypto` itself:
+
+```ts
+import { IrohaCryptoInterface } from '@iroha2/crypto-core'
+
+function printHexHash(data: Uint8Array, crypto: IrohaCryptoInterface) {
+  const hex = crypto.Hash.hash('array', data).bytes('hex')
+  console.log({ hex })
+}
+```
+
+### Avoid memory leaks
+
+WASM objects are not deallocated automatically. All the objects that reflect some struct in WASM have `.free()` method to trigger deallocation manually, for example:
+
+```ts
+import { crypto } from '@iroha2/crypto-target-node'
+
+const hash = crypto.Hash.hash('hex', '0011ff')
+const conf = crypto.KeyGenConfiguration.default().useSeed('array', hash.bytes())
+const keypair = conf.generate()
+
+for (const x of [hash, conf]) {
+  x.free()
+}
+```
+
+Fortunately, all such objects are wrapped and tracked so this process can be automated. The previous example can be re-written in a more _robust_ way that ensures every object is freed:
+
+```ts
+// re-export from `@iroha2/crypto-util`
+import { freeScope } from '@iroha2/crypto-core'
+
+import { crypto } from '@iroha2/crypto-target-node'
+
+const keypair = freeScope((scope) => {
+  const seed = crypto.Hash.hash('hex', '00aa11').bytes()
+  const keypair = crypto.KeyGenConfiguration.default().useSeed('array', seed).generate()
+  scope.forget(keypair)
+  return keypair
+})
+```
+
+Please refer to [`@iroha2/crypto-util`](https://github.com/hyperledger/iroha-javascript/tree/iroha2/packages/crypto/packages/util) package documentation for more details.

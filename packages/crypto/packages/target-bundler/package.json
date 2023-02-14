@@ -1,27 +1,25 @@
 {
   "name": "@iroha2/crypto-target-bundler",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "license": "Apache 2.0",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "module": "dist/lib.mjs",
+  "types": "dist/lib.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    }
+      "import": "./dist/lib.mjs",
+      "types": "./dist/lib.d.ts"
+    },
+    "./*": "./dist/*"
   },
   "files": [
     "dist",
     "CHANGELOG.md"
   ],
   "dependencies": {
-    "@iroha2/crypto-core": "workspace:^0.1.1"
+    "@iroha2/crypto-core": "workspace:^1.0.0",
+    "@iroha2/data-model": "workspace:^4.1.0"
   },
   "devDependencies": {
-    "@types/node": "^18.6.4",
-    "typescript": "^4.8.3"
-  },
-  "scripts": {
-    "dts": "tsc --declaration --emitDeclarationOnly dist/index.ts"
+    "@iroha2/crypto-interface-wrap": "workspace:^0.0.0"
   }
 }

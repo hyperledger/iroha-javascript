@@ -1,27 +1,26 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "lib": ["esnext", "DOM"],
-    "esModuleInterop": true,
     "declaration": true,
-    "outDir": "ts-dist",
-    // "removeComments": false,
-    // "stripInternal": true,
-    // since 2.3
-    // "strict": true,
-    "alwaysStrict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "outDir": "dist-tsc",
     "types": ["vitest/importMeta"],
     "paths": {
+      // these virtual imports are replaced in Rollup
+      "@iroha2/crypto/~wasm-pkg/*": ["./packages/crypto/crypto-rs/wasm-pkg-*/iroha_crypto"],
+
+      // "default" virtual import - might be any of `wasm-pkg-*`
+      "@iroha2/crypto/~wasm-pkg": ["./packages/crypto/crypto-rs/wasm-pkg-nodejs/iroha_crypto"],
+
+      "@iroha2/crypto-*": ["./packages/crypto/packages/*/src/lib.ts"],
       "@iroha2/client/*": ["./packages/client/src/*"],
       "@iroha2/*": ["./packages/*/src/lib.ts"]
     }
   },
-  "exclude": ["**/dist/**/*", "**/node_modules/**/*", "**/client/test/integration/test-web/cypress/integration/**/*"]
+  "exclude": [
+    "**/dist",
+    "**/node_modules",
+    "**/test/integration",
+    "packages/client-isomorphic-*",
+    "packages/crypto/crypto-rs"
+  ]
 }
