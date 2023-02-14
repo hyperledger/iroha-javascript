@@ -80,12 +80,12 @@ Each monorepo package might have its own scripts and tasks. You can find the pac
 
 ### Manually update reference Iroha version
 
-1. Update `packages/iroha-source/config.json`:
+1. Update `packages/iroha-source/config.js`:
 
-   ```json
-   {
-     "origin": "https://github.com/hyperledger/iroha.git",
-     "rev": "52dc18cd81bdc1d1906ffeecb666dd9b2eb27955"
+   ```js
+   export default {
+     origin: 'https://github.com/hyperledger/iroha.git',
+     rev: '52dc18cd81bdc1d1906ffeecb666dd9b2eb27955',
    }
    ```
 

@@ -1,5 +1,7 @@
 import path from 'path'
 
-export const CLONED_DIR = path.join(__dirname, '../cloned')
+export const IROHA_DIR = path.join(__dirname, '../.iroha')
 
-export const CLONED_DIR_META_FILE = path.join(CLONED_DIR, '.js-sdk/meta.json')
+export const CLONE_DIR = path.join(__dirname, '../.iroha-clone')
+
+export const IROHA_DIR_CLONE_META_DIR_FILE = path.join(IROHA_DIR, '.js-sdk/meta.json')
