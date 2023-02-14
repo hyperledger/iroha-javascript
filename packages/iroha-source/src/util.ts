@@ -1,8 +1,4 @@
-import {
-  ConfigResolved,
-  ConfigResolvedGitClone,
-  GitCloneConfiguration,
-} from './types'
+import { ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration } from './types'
 import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
 import fs from 'fs/promises'
 import del from 'del'
@@ -66,6 +62,13 @@ export async function isAccessible(path: string, mode?: number): Promise<boolean
     .catch(() => false)
 }
 
+async function readlink(path: string): Promise<{ t: 'ok'; target: string } | { t: 'err' }> {
+  return fs
+    .readlink(path)
+    .then((target) => ({ t: 'ok', target } as const))
+    .catch(() => ({ t: 'err' }))
+}
+
 export function assertConfigurationIsGitClone(cfg: ConfigResolved): asserts cfg is ConfigResolvedGitClone {
   if (cfg.t !== 'git-clone')
     throw new Error(`Expected to work with git-clone configuration, but got cfg with type of "${cfg.t}"`)
@@ -73,13 +76,13 @@ export function assertConfigurationIsGitClone(cfg: ConfigResolved): asserts cfg 
 
 export async function syncIrohaSymlink(config: ConfigResolved) {
   const symlinkDir = IROHA_DIR
-  const symlinkDirRelative = path.relative(process.cwd(), symlinkDir)
-
+  const symlinkDirRelative = path.relative(path.join(__dirname, '../'), symlinkDir)
   const target = config.t === 'git-clone' ? CLONE_DIR : config.absolutePath
-  if (await isAccessible(symlinkDir)) {
+  const existingLink = await readlink(symlinkDir)
+  if (!(existingLink.t === 'ok' && existingLink.target === target)) {
     await del(symlinkDir, { force: true })
     consola.info(chalk`Removed existing {blue ${symlinkDirRelative}}`)
+    await fs.symlink(target, symlinkDir)
+    consola.info(chalk`Created symlink {blue ${symlinkDirRelative}} -> {blue ${target}}`)
   }
-  await fs.symlink(target, symlinkDir)
-  consola.info(chalk`Created symlink {blue ${symlinkDirRelative}} -> {blue ${target}}`)
 }
