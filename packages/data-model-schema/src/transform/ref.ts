@@ -1,9 +1,24 @@
 import { pascal } from 'case'
+import Debug from 'debug'
+
+const dbg = Debug('iroha2-schema-transform:ref')
+
+const CACHE = new Map<string, string>()
 
 export function transform(ref: string): string {
   // Schema contains arrays, but on both
 
-  return [transformDefaultRuntimeLibAliases, transformArray, normalizeIdentifier].reduce((acc, fn) => fn(acc), ref)
+  if (CACHE.has(ref)) return CACHE.get(ref)!
+
+  const output = [transformDefaultRuntimeLibAliases, transformArray, normalizeIdentifier].reduce(
+    (acc, fn) => fn(acc),
+    ref,
+  )
+
+  CACHE.set(ref, output)
+  dbg('transform %o to %o', ref, output)
+
+  return output
 }
 
 const STD_ALIASES: Record<string, string> = {
