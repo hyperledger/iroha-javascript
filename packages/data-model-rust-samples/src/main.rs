@@ -13,20 +13,21 @@ fn main() {
             .add("DomainId", &DomainId::from_str("Hey").unwrap())
             .add(
                 "AssetDefinitionId",
-                &AssetDefinitionId::from_str("rose#wonderland").unwrap()
+                &AssetDefinitionId::from_str("rose#wonderland").unwrap(),
             )
             .add(
                 "AccountId",
-                &AccountId::from_str("alice@wonderland").unwrap()
+                &AccountId::from_str("alice@wonderland").unwrap(),
             )
             .add(
                 "Time-based Trigger ISI",
-                &create_some_time_based_trigger_isi()
+                &create_some_time_based_trigger_isi(),
             )
             .add(
                 "Event-based Trigger ISI",
-                &create_some_event_based_trigger_isi()
+                &create_some_event_based_trigger_isi(),
             )
+            .add("Metadata", &create_metadata())
             .to_json()
     );
 }
@@ -117,4 +118,37 @@ fn create_some_event_based_trigger_isi() -> RegisterBox {
             )))),
         ),
     ))
+}
+
+fn create_metadata() -> Metadata {
+    trait LocalSet {
+        fn set(self, name: &str, value: Value) -> Self;
+    }
+
+    impl LocalSet for Metadata {
+        fn set(mut self, name: &str, value: Value) -> Self {
+            match self
+                .insert_with_limits(
+                    Name::from_str(name).unwrap(),
+                    value,
+                    iroha_data_model::metadata::Limits::new(30, 1024),
+                )
+                .unwrap()
+            {
+                None => {}
+                Some(_) => panic!("unreachable"),
+            };
+            self
+        }
+    }
+
+    Metadata::new()
+        .set(
+            "authentication",
+            Value::String(
+                "80252ad79c68c01ec8946983411ce3b7cbea21d25f68c8546c687b2a7e2505cc".to_owned(),
+            ),
+        )
+        .set("email", Value::String("user123@mail.com".to_owned()))
+        .set("salt", Value::String("ABCDEFG".to_owned()))
 }

@@ -16,7 +16,7 @@
     "@types/koa-bodyparser": "^4.3.5",
     "@types/koa-morgan": "^1.0.5",
     "@types/koa__router": "^8.0.11",
-    "@types/yargs": "^17.0.15",
+    "@types/yargs": "^17.0.22",
     "axios": "^0.24.0",
     "debug": "^4.3.4",
     "koa": "^2.13.4",

@@ -9,7 +9,7 @@
     "build:iroha": "pnpm cli build iroha"
   },
   "devDependencies": {
-    "@types/yargs": "^17.0.15",
+    "@types/yargs": "^17.0.22",
     "yargs": "^17.6.2"
   }
 }

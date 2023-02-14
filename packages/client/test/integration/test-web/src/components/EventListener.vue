@@ -7,13 +7,14 @@ import {
   OptionPipelineStatusKind,
   PipelineEntityKind,
   PipelineEventFilter,
+  PipelineStatus,
   PipelineStatusKind,
 } from '@iroha2/data-model'
 import { computed, onBeforeUnmount, shallowReactive, shallowRef } from 'vue'
 import { toriiPre } from '../client'
 
-function bytesToHex(bytes: Uint8Array): string {
-  return [...bytes].map(byte => byte.toString(16).padStart(2, '0')).join('')
+function bytesToHex(bytes: number[]): string {
+  return bytes.map((byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 interface EventData {
@@ -26,6 +27,17 @@ const events = shallowReactive<EventData[]>([])
 const currentListener = shallowRef<null | SetupEventsReturn>(null)
 
 const isListening = computed(() => !!currentListener.value)
+
+function displayStatus(status: PipelineStatus): string {
+  switch (status.enum.tag) {
+    case 'Validating':
+      return 'validating'
+    case 'Committed':
+      return 'committed'
+    case 'Rejected':
+      return 'rejected with some reason'
+  }
+}
 
 async function startListening() {
   currentListener.value = await Torii.listenForEvents(toriiPre, {
@@ -40,14 +52,10 @@ async function startListening() {
   })
 
   currentListener.value.ee.on('event', (event) => {
-    const { hash, status } = event.as('Pipeline')
+    const { hash, status } = event.enum.as('Pipeline')
     events.push({
-      hash: bytesToHex(hash),
-      status: status.match({
-        Validating: () => 'validating',
-        Committed: () => 'committed',
-        Rejected: (_reason) => 'rejected with some reason',
-      }),
+      hash: bytesToHex([...hash.more_significant_bits, hash.least_significant_byte]),
+      status: displayStatus(status),
     })
   })
 }

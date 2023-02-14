@@ -6,11 +6,29 @@ import { renderNamespaceDefinition } from '@scale-codec/definition-compiler'
 import { SCHEMA, transformSchema } from '@iroha2/data-model-schema'
 import { CODEGEN_OUTPUT_FILE } from './meta'
 
+const AVAILABLE_FIXED_POINTS = new Set(['I64P9'])
+const EXTENSION_MODULE = './extension'
+
 async function main() {
   consola.log(chalk`Converting {blue.bold input.json} to compiler-compatible format...`)
-  const codegenDefinitions = transformSchema(SCHEMA)
+  const { definition, fixedPoints } = transformSchema(SCHEMA)
 
-  const generated = renderNamespaceDefinition(codegenDefinitions, {
+  definition['NonZeroU8'] = {
+    t: 'import',
+    module: EXTENSION_MODULE,
+  }
+
+  for (const { decimalPlaces, base, ref } of fixedPoints) {
+    const code = `${base.toUpperCase()}P${decimalPlaces}`
+    if (!AVAILABLE_FIXED_POINTS.has(code)) throw new Error(`FixedPoint ${code} is not supported`)
+    definition[ref] = {
+      t: 'import',
+      module: EXTENSION_MODULE,
+      nameInModule: `FixedPoint${code}`,
+    }
+  }
+
+  const generated = renderNamespaceDefinition(definition, {
     rollupSingleTuplesIntoAliases: true,
   })
 

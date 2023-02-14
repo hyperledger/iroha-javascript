@@ -8,6 +8,7 @@ import {
   Expression,
   IdBox,
   Instruction,
+  NumericValue,
   TransferBox,
   Value,
 } from '@iroha2/data-model'
@@ -21,7 +22,7 @@ const assetDefinitionId = AssetDefinitionId({
   domain_id: domainId,
 })
 
-const amountToTransfer = Value('U32', 100)
+const amountToTransfer = Value('Numeric', NumericValue('U32', 100))
 
 const fromAccount = AccountId({
   name: 'alice',

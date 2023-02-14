@@ -1,6 +1,7 @@
+/* eslint-disable max-nested-callbacks */
 import { NamespaceDefinition, TypeDef } from '@scale-codec/definition-compiler'
-import { Enum, Result } from '@scale-codec/definition-runtime'
-import { RustDefinitions, RustTypeDefinitionVariant } from './types'
+import { RustResult, variant } from '@scale-codec/core'
+import { RustDefinitions, RustFixedPointDef, RustTypeDefinitionVariant } from './types'
 import {
   isRustArrayDef,
   isRustDirectAlias,
@@ -17,6 +18,7 @@ import {
 import { Map, Set } from 'immutable'
 import { transform as transformRef } from './ref'
 import Debug from 'debug'
+import { match } from 'ts-pattern'
 
 const debug = Debug('iroha2-schema-transform')
 
@@ -29,8 +31,6 @@ const IGNORE_TYPES = Set<string>([
   'bool',
   'Vec<u8>',
 ])
-
-const AVAILABLE_FIXED_POINTS = Set(['I64P9'])
 
 function rawSchemaFilter(value: RustTypeDefinitionVariant, key: string): boolean {
   if (IGNORE_TYPES.has(key)) {
@@ -51,27 +51,19 @@ function rawSchemaFilter(value: RustTypeDefinitionVariant, key: string): boolean
   return true
 }
 
-function ok<Ok, Err>(ok: Ok): Result<Ok, Err> {
-  return Enum.variant('Ok', ok)
-}
-
-function err<Ok, Err>(err: Err): Result<Ok, Err> {
-  return Enum.variant('Err', err)
-}
-
-function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, string> {
+function transformRustDef(def: Exclude<RustTypeDefinitionVariant, RustFixedPointDef>): RustResult<TypeDef, string> {
   if (isRustArrayDef(def)) {
     const { len, ty } = def.Array
 
     if (ty === 'u8') {
       // specially cover case with array of bytes
-      return ok({
+      return variant('Ok', {
         t: 'bytes-array',
         len,
       })
     }
 
-    return ok({
+    return variant('Ok', {
       t: 'array',
       len,
       item: transformRef(ty),
@@ -80,7 +72,7 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
   if (isRustMapDef(def)) {
     const { key, value } = def.Map
 
-    return ok({
+    return variant('Ok', {
       t: 'map',
       key: transformRef(key),
       value: transformRef(value),
@@ -88,7 +80,7 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
     })
   }
   if (isRustStructDef(def)) {
-    return ok({
+    return variant('Ok', {
       t: 'struct',
       fields: def.Struct.declarations.map(({ name, ty }) => ({
         name,
@@ -97,7 +89,7 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
     })
   }
   if (isRustEnumDef(def)) {
-    return ok({
+    return variant('Ok', {
       t: 'enum',
       variants: def.Enum.variants.map(({ name, discriminant, ty }) => ({
         name,
@@ -107,72 +99,77 @@ function transformRustDef(def: RustTypeDefinitionVariant): Result<TypeDef, strin
     })
   }
   if (isRustOptionDef(def)) {
-    return ok({
+    return variant('Ok', {
       t: 'option',
       some: transformRef(def.Option),
     })
   }
   if (isRustVecDef(def)) {
-    return ok({
+    return variant('Ok', {
       t: 'vec',
       // TODO handle def.Vec.sorted
       item: transformRef(def.Vec.ty),
     })
   }
   if (isRustTupleStructDef(def)) {
-    return ok({
+    return variant('Ok', {
       t: 'tuple',
       items: def.TupleStruct.types.map((x) => transformRef(x)),
     })
   }
-  if (isRustFixedPointDef(def)) {
-    const {
-      FixedPoint: { decimal_places, base },
-    } = def
-    /**
-     * Something like `I64P9`
-     */
-    const fixedPointKey = `${base.toUpperCase()}P${decimal_places}`
-    if (AVAILABLE_FIXED_POINTS.has(fixedPointKey)) {
-      return ok({
-        t: 'import',
-        module: `./fixed-point`,
-        nameInModule: `FixedPoint${fixedPointKey}`,
-      })
-    }
-    return err(`Unsupported fixed point with base ${base} and ${decimal_places} decimal places`)
-  }
   if (isRustTupleDef(def)) {
-    return ok({
+    return variant('Ok', {
       t: 'tuple',
       items: def.Tuple.types.map(transformRef),
     })
   }
   if (isRustIntDef(def)) {
-    return err(`Int should has been filtered on an earlier stage: ${def.Int}`)
+    return variant('Err', `Int should has been filtered on an earlier stage: ${def.Int}`)
   }
   if (isRustDirectAlias(def)) {
-    return err(`Alias should has been filtered: ${def}`)
+    return variant('Err', `Alias should has been filtered: ${def}`)
   }
 
+  // noinspection UnnecessaryLocalVariableJS
   const undefinedDef: never = def
   debug('Unknown def: %O', undefinedDef)
-  return err('Unexpected definition')
+  return variant('Err', 'Unexpected definition (set DEBUG env var to see details)')
 }
 
-export function transformSchema(schema: RustDefinitions): NamespaceDefinition {
-  let schemaMap = Map(schema).filter(rawSchemaFilter)
+export interface FixedPointParams {
+  base: string
+  decimalPlaces: number
+  ref: string
+}
 
-  // const [add, filter] = extractAdditionalTypesFromStructures(schemaMap)
+export interface TransformReturn {
+  definition: NamespaceDefinition
+  fixedPoints: FixedPointParams[]
+}
 
-  return (
-    schemaMap
-      // .filter((v, key) => !filter.has(key))
-      .mapEntries(([key, value]) => [transformRef(key), transformRustDef(value).as('Ok')])
-      // .merge(add)
-      .reduce<NamespaceDefinition>((acc, value, key) => {
-        acc[key] = value
+export function transformSchema(schema: RustDefinitions): TransformReturn {
+  return Map(schema)
+    .filter(rawSchemaFilter)
+    .reduce<TransformReturn>(
+      (acc, value, key) => {
+        const ref = transformRef(key)
+
+        if (isRustFixedPointDef(value)) {
+          const { decimal_places: decimalPlaces, base } = value.FixedPoint
+          acc.fixedPoints.push({ base, ref, decimalPlaces })
+        } else {
+          const typedef = match(transformRustDef(value))
+            .with({ tag: 'Ok' }, ({ content }) => content)
+            .with({ tag: 'Err' }, ({ content }) => {
+              throw new Error(content)
+            })
+            .exhaustive()
+
+          acc.definition[ref] = typedef
+        }
+
         return acc
-      }, {})
-  )
+      },
+      { definition: {}, fixedPoints: [] },
+    )
 }

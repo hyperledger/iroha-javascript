@@ -37,7 +37,7 @@ export async function waitUntilPeerIsHealthy(
     if (now > endAt) throw new Error(`Peer is still not alive even after ${options.checkTimeout}ms`)
 
     const health = await Torii.getHealth(toriiPre)
-    if (health.is('Ok')) return
+    if (health.tag === 'Ok') return
     debug('not yet healthy')
 
     await new Promise((r) => setTimeout(r, options.checkInterval))

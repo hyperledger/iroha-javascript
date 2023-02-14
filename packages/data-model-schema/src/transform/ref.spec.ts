@@ -57,6 +57,8 @@ describe('Refs transformation', () => {
 
     // New in RC4
     ['AtomicU32Wrapper', 'U32'],
+
+    ['iroha_data_model::predicate::GenericPredicateBox<iroha_data_model::predicate::value::Predicate>', 'PredicateBox'],
   ])('%s transformed into %s', (input, output) => {
     expect(transform(input)).toEqual(output)
   })

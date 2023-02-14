@@ -9,6 +9,7 @@ import {
   IdBox,
   Instruction,
   MintBox,
+  NumericValue,
   Value,
 } from '@iroha2/data-model'
 
@@ -16,7 +17,7 @@ const mint = Instruction(
   'Mint',
   MintBox({
     object: EvaluatesToValue({
-      expression: Expression('Raw', Value('U32', 42)),
+      expression: Expression('Raw', Value('Numeric', NumericValue('U32', 42))),
     }),
     destination_id: EvaluatesToIdBox({
       expression: Expression(
