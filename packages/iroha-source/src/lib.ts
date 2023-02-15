@@ -47,8 +47,8 @@ export async function resolveBinary(
 
   const binaryPath = resolveBinaryPath(config, bin)
 
-  if (!(await isAccessible(binaryPath))) {
-    if (skipUpdate) throw new Error('The binary is not build')
+  if (!skipUpdate) {
+    if (!(await isAccessible(binaryPath))) throw new Error('The binary is not build')
     await runCargoBuild(bin)
   }
 
