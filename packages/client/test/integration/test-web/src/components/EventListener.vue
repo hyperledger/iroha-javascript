@@ -54,7 +54,7 @@ async function startListening() {
   currentListener.value.ee.on('event', (event) => {
     const { hash, status } = event.enum.as('Pipeline')
     events.push({
-      hash: bytesToHex([...hash.more_significant_bits, hash.least_significant_byte]),
+      hash: bytesToHex([...hash]),
       status: displayStatus(status),
     })
   })
