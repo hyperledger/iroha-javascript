@@ -518,8 +518,7 @@ describe('Setting configuration', () => {
 })
 
 describe('Blocks Stream API', () => {
-  // Doesn't work
-  // TODO create issue
+  // Doesn't work - https://github.com/hyperledger/iroha/issues/3162
   test.skip('When committing 3 blocks sequentially, nothing fails', async () => {
     const { pre, client } = clientFactory()
 
