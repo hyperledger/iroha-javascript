@@ -1,7 +1,7 @@
-import { TMP_DIR, TMP_IROHA_BIN } from '../etc/meta'
+import { TMP_DIR } from '../etc/meta'
 import path from 'path'
 import execa from 'execa'
-import { $, fs } from 'zx'
+import { fs } from 'zx'
 import { rmForce, saveDataAsJSON, waitUntilPeerIsHealthy } from './util'
 import readline from 'readline'
 import debug from './dbg'
@@ -80,28 +80,24 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
 
   // starting peer
   const withGenesis: boolean = params?.withGenesis ?? true
+  debug(`${iroha} --submit-genesis`)
   const subprocess = execa(iroha, withGenesis ? ['--submit-genesis'] : [], {
     cwd: TMP_DIR,
     env: {
       IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
       IROHA2_GENESIS_PATH: resolveTempJsonConfigFile('genesis'),
-      /**
-       * Enable JSON logging into STDOUT
-       *
-       * It works fine locally, but fails in CI
-       * https://github.com/hyperledger/iroha/issues/2894
-       */
-      // LOG_FILE_PATH: '"/dev/stderr"',
+      LOG_FILE_PATH: '/dev/stderr',
     },
-    // stdout: 'ignore',
+    // Iroha logs human-readable logs to STDOUT anyway. In order to get only JSON logs, STDOUT is ignored,
+    // but logs are redirected to STDERR
+    stdout: 'ignore',
   })
-  debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs)
+  debug('Peer spawned with args: %o', subprocess.spawnargs)
 
-  const debugStdout = debug.extend('stdout')
-  readline.createInterface(subprocess.stdout!).on('line', (line) => debugStdout(line))
-
-  const debugStderr = debug.extend('stderr')
-  readline.createInterface(subprocess.stderr!).on('line', (line) => debugStderr(line))
+  {
+    const dbg = debug.extend('peer-stdout-stderr')
+    readline.createInterface(subprocess.stderr!).on('line', (line) => dbg(line))
+  }
 
   subprocess.on('error', (err) => {
     debug('Subprocess error:', err)
@@ -169,7 +165,7 @@ export async function cleanConfiguration(): Promise<void> {
 }
 
 /**
- * Clear all side-effects from last peer startup. Use it before each peer startup if you want to isolate states.
+ * Clear all side effects from last peer startup. Use it before each peer startup if you want to isolate states.
  */
 export async function cleanSideEffects(kuraBlockStorePath: string) {
   const rmTarget = path.resolve(TMP_DIR, kuraBlockStorePath)
