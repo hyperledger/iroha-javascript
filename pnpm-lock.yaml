@@ -241,15 +241,15 @@ importers:
     specifiers:
       '@iroha2/data-model-schema': workspace:4.1.0
       '@iroha2/i64-fixnum': workspace:^0.4.2
-      '@scale-codec/definition-compiler': ^3.0.0
-      '@scale-codec/definition-runtime': ^3.0.0
+      '@scale-codec/definition-compiler': ^4.0.0
+      '@scale-codec/definition-runtime': ^4.0.0
       '@scale-codec/util': ^1.1.1
     dependencies:
       '@iroha2/i64-fixnum': link:../i64-fixnum
-      '@scale-codec/definition-runtime': 3.0.0
+      '@scale-codec/definition-runtime': 4.0.0
     devDependencies:
       '@iroha2/data-model-schema': link:../data-model-schema
-      '@scale-codec/definition-compiler': 3.0.0
+      '@scale-codec/definition-compiler': 4.0.0
       '@scale-codec/util': 1.1.1
 
   packages/data-model-rust-samples:
@@ -258,17 +258,17 @@ importers:
   packages/data-model-schema:
     specifiers:
       '@iroha2/iroha-source': workspace:^0.0.0
-      '@scale-codec/definition-compiler': ^2.2.2
-      '@scale-codec/definition-runtime': ^2.2.2
+      '@scale-codec/definition-compiler': ^4.0.0
+      '@scale-codec/definition-runtime': ^4.0.0
       '@scale-codec/util': ^1.1.1
       '@types/debug': ^4.1.7
       case: ^1.6.3
       debug: ^4.3.4
     dependencies:
-      '@scale-codec/definition-runtime': 2.2.2
+      '@scale-codec/definition-runtime': 4.0.0
     devDependencies:
       '@iroha2/iroha-source': link:../iroha-source
-      '@scale-codec/definition-compiler': 2.2.2
+      '@scale-codec/definition-compiler': 4.0.0
       '@scale-codec/util': 1.1.1
       '@types/debug': 4.1.7
       case: 1.6.3
@@ -1033,68 +1033,36 @@ packages:
       rollup: 3.15.0
     dev: true
 
-  /@scale-codec/core/1.1.1:
-    resolution: {integrity: sha512-feiLqQYopj3VXOCFa7xvRexFB8Ik7NJd8L9wGoPzeux+83cnwMjBPQu2TdcKDcchOMtXZ6RyFfF3MNuun75Shg==}
-    engines: {node: '>=14.5.0'}
-    dependencies:
-      '@scale-codec/enum': 1.1.1
-      '@scale-codec/util': 1.1.1
-    dev: false
-
   /@scale-codec/core/2.0.0:
     resolution: {integrity: sha512-2hrCsATcvjiuQbUxk4umuCNSZoKDRvJZitzE0ovXb9BAIrRpHJ39O3GOyDa2c5N1Un8JS6MqMV5tjVjhzcYT0w==}
     engines: {node: '>=14.5.0'}
     dependencies:
-      '@scale-codec/enum': 2.0.0
+      '@scale-codec/enum': 2.1.0
       '@scale-codec/util': 1.1.1
     dev: false
 
-  /@scale-codec/definition-compiler/2.2.2:
-    resolution: {integrity: sha512-YuFYMxVbTecAjZCxTI2ioBmGjirNs0T8phGf4dbw9QqCBHisprbIfTRiuUkszOzvxqEbH74dJh6Mi/bpX3Nyaw==}
+  /@scale-codec/definition-compiler/4.0.0:
+    resolution: {integrity: sha512-6IQJMeUJhheq7vibByyN2Sd/gfMtGcsragRCR5W6HWrBI4kWNYo2k2zYUlkRlsxcyYKQs+Q1EiAOnAQ6X473FQ==}
     engines: {node: '>16.8'}
     dependencies:
-      '@scale-codec/enum': 1.1.1
-      '@scale-codec/util': 1.1.1
-      immutable: 4.1.0
-      sort-es: 1.5.1
-      tarjan-graph: 3.0.0
-    dev: true
-
-  /@scale-codec/definition-compiler/3.0.0:
-    resolution: {integrity: sha512-mt2girQYsuPlIdAtWDcNC56rDU5gxC4J1KsfFh814vkRtTvmBXuLOguQgx+5ZGUqnQch7nFzEy+U5lj0mWwnaA==}
-    engines: {node: '>16.8'}
-    dependencies:
-      '@scale-codec/enum': 2.0.0
+      '@scale-codec/enum': 2.1.0
       '@scale-codec/util': 1.1.1
       immutable: 4.2.4
-      sort-es: 1.5.1
+      sort-es: 1.6.6
       tarjan-graph: 3.0.0
-      ts-pattern: 4.1.3
+      ts-pattern: 4.2.1
     dev: true
 
-  /@scale-codec/definition-runtime/2.2.2:
-    resolution: {integrity: sha512-dZ/0T5LynQRqGMU+XMmM68Hom+mvvI3xMxz09ZBgJEmTQrXkdnvpu5l8mFVWrzBNqjNCi+d6qZ2UMQFAk1NfVg==}
-    dependencies:
-      '@scale-codec/core': 1.1.1
-      '@scale-codec/util': 1.1.1
-      fmt-subs: 1.1.1
-      type-fest: 2.19.0
-    dev: false
-
-  /@scale-codec/definition-runtime/3.0.0:
-    resolution: {integrity: sha512-KLqp1xNADpKSTeFuzLKXlqycJ5OS4JnjPkFxuB1FXvJa0SKYm7X3IknRvN3KVO4QFC2+4xfKQMtX9eff9aMhWA==}
+  /@scale-codec/definition-runtime/4.0.0:
+    resolution: {integrity: sha512-WLwrNHI4Y3dpWMDoAQhqGMNwrbuomO1hBXDWS8Uf7S975Yq+MxPfh1BUzDJo4+ZB9TX7H3NScjNFMKxsg3+dOQ==}
     dependencies:
       '@scale-codec/core': 2.0.0
       '@scale-codec/util': 1.1.1
       fmt-subs: 1.1.1
-      type-fest: 3.5.7
     dev: false
 
-  /@scale-codec/enum/1.1.1:
-    resolution: {integrity: sha512-GTB5LPcqjZOoWSPn90q97yMUZP6PD1Y3Lk+WnvvqkW1nOgz9vXEqTchm+eYtV23tTeh594Dg5plElA/mVHEUfQ==}
-
-  /@scale-codec/enum/2.0.0:
-    resolution: {integrity: sha512-gWnUV3KMpbf+T10fbiVtqwA/3GxMPUPX4qdVKukC6uU0yv3CwRuE9DIPnF7HeKla3SwaNEvI45CC8XMU9gw1oA==}
+  /@scale-codec/enum/2.1.0:
+    resolution: {integrity: sha512-qy2/vugWqtBRrd5bdoa5vp1zYPtZD+8Oi1j27XljNjTb5jaNfwxdeyC+hzUKNx3614HiAU91pqx2DW1FAIBjLg==}
 
   /@scale-codec/util/1.1.1:
     resolution: {integrity: sha512-MXKLSZHjoMOyJvHZo+AnOo6URY2cK77KS9gnEMRJRVFE9IW2Gv3lj+H+BBN5hY57dbboeNGZGfUEcQqFUKAxTw==}
@@ -1116,14 +1084,14 @@ packages:
   /@types/accepts/1.3.5:
     resolution: {integrity: sha512-jOdnI/3qTpHABjM5cx1Hc0sKsPoYCp+DP/GJRGtDlPd7fiV9oXGGIcjW/ZOxLIvjGz8MA+uMZI9metHlgqbgwQ==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
     dev: true
 
   /@types/body-parser/1.19.2:
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
     dev: true
 
   /@types/chai-subset/1.3.3:
@@ -1139,7 +1107,7 @@ packages:
   /@types/connect/3.4.35:
     resolution: {integrity: sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
     dev: true
 
   /@types/content-disposition/0.5.5:
@@ -1152,7 +1120,7 @@ packages:
       '@types/connect': 3.4.35
       '@types/express': 4.17.13
       '@types/keygrip': 1.0.2
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
     dev: true
 
   /@types/debug/4.1.7:
@@ -1175,7 +1143,7 @@ packages:
   /@types/express-serve-static-core/4.17.30:
     resolution: {integrity: sha512-gstzbTWro2/nFed1WXtf+TtrpwxH7Ggs4RLYTLbeVgIkUQOI3WG/JKjgeOU1zXDvezllupjrf8OPIdvTbIaVOQ==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
     dev: true
@@ -1252,7 +1220,7 @@ packages:
       '@types/http-errors': 1.8.2
       '@types/keygrip': 1.0.2
       '@types/koa-compose': 3.2.5
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
     dev: true
 
   /@types/koa__router/8.0.11:
@@ -1272,7 +1240,7 @@ packages:
   /@types/morgan/1.9.3:
     resolution: {integrity: sha512-BiLcfVqGBZCyNCnCH3F4o2GmDLrpy0HeBVnNlyZG4fo88ZiE9SoiBe3C+2ezuwbjlEyT+PDZ17//TAlRxAn75Q==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
     dev: true
 
   /@types/ms/0.7.31:
@@ -1338,7 +1306,7 @@ packages:
     resolution: {integrity: sha512-z5xyF6uh8CbjAu9760KDKsH2FcDxZ2tFCsA4HIMWE6IkiYMXfVoa+4f9KX+FN0ZLsaMw1WNG2ETLA6N+/YA+cg==}
     dependencies:
       '@types/mime': 3.0.0
-      '@types/node': 18.11.18
+      '@types/node': 18.13.0
     dev: true
 
   /@types/sinonjs__fake-timers/8.1.1:
@@ -5748,8 +5716,8 @@ packages:
       yargs: 15.4.1
     dev: true
 
-  /sort-es/1.5.1:
-    resolution: {integrity: sha512-8HL8OFN8EwbwDSEublYEelKFYHsAoBUcQYtLEt4sSQbjtFU4+YDtahJr73wkS0RC5KeSrDy8m+54KoJO4vMYLg==}
+  /sort-es/1.6.6:
+    resolution: {integrity: sha512-28+kv5wXehxePLk0SQ51qNCegiaBCH+o1QIPkdfkLqhfxovPbw/a0eLy8rdW11VSkZq2U10cwIVhwGoIM6xfAQ==}
     dev: true
 
   /source-map-js/1.0.2:
@@ -6121,6 +6089,10 @@ packages:
     resolution: {integrity: sha512-8beXMWTGEv1JfDjSxfNhe4uT5jKYdhmEUKzt4gZW9dmHlquq3b+IbEyA7vX9LjBfzHmvKnM4HiomAUCyaW2Pew==}
     dev: true
 
+  /ts-pattern/4.2.1:
+    resolution: {integrity: sha512-lXCmHZb01QOM9HdCLvisCGUH9ATdKPON9UaUvwe007gJAhuSBhRWIAIowys5QqNxEq6odWctfMIdI96vzjnOMQ==}
+    dev: true
+
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
@@ -6224,16 +6196,12 @@ packages:
   /type-fest/2.19.0:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
     engines: {node: '>=12.20'}
+    dev: true
 
   /type-fest/3.5.2:
     resolution: {integrity: sha512-Ph7S4EhXzWy0sbljEuZo0tTNoLl+K2tPauGrQpcwUWrOVneLePTuhVzcuzVJJ6RU5DsNwQZka+8YtkXXU4z9cA==}
     engines: {node: '>=14.16'}
     dev: true
-
-  /type-fest/3.5.7:
-    resolution: {integrity: sha512-6J4bYzb4sdkcLBty4XW7F18VPI66M4boXNE+CY40532oq2OJe6AVMB5NmjOp6skt/jw5mRjz/hLRpuglz0U+FA==}
-    engines: {node: '>=14.16'}
-    dev: false
 
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}

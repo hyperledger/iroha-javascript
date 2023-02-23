@@ -11,11 +11,11 @@
     "compile-with-kagami": "tsx etc/compile-with-kagami"
   },
   "dependencies": {
-    "@scale-codec/definition-runtime": "^2.2.2"
+    "@scale-codec/definition-runtime": "^4.0.0"
   },
   "devDependencies": {
     "@iroha2/iroha-source": "workspace:^0.0.0",
-    "@scale-codec/definition-compiler": "^2.2.2",
+    "@scale-codec/definition-compiler": "^4.0.0",
     "@scale-codec/util": "^1.1.1",
     "@types/debug": "^4.1.7",
     "case": "^1.6.3",

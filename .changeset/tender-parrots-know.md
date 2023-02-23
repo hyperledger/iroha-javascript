@@ -4,13 +4,7 @@
 
 **refactor!**: update major version of `@scale-codec/*` - new wrapped enums and stronger types
 
-#### How a consumer should update their code
-
-[//]: # 'TODO add changelog links and finalize changeset'
-
-For how new enums work refer to the changelog of `@scale-codec/enum`.
-
-In short:
+The change in short is the following:
 
 ```ts
 import { Value } from '@iroha2/data-model'
@@ -29,6 +23,7 @@ if (value.enum.tag === 'U32') {
 }
 ```
 
-For how new compilation model is changed please refer to the CHANGELOG of `@scale-codec/definition-compiler`.
+Please consider the following changelogs for in-detail explanations:
 
-The most significant change is accessing all enums with `.enum` accessor:
+- [`@scale-codec/enum@2.0.0`](https://github.com/soramitsu/scale-codec-js-library/blob/master/packages/enum/CHANGELOG.md#200)
+- [`@scale-codec/definition-compiler@4.0.0`](https://github.com/soramitsu/scale-codec-js-library/blob/master/packages/definition-compiler/CHANGELOG.md#400)
