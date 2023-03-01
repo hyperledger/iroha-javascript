@@ -2,7 +2,6 @@
  * @type {import('./src/types').Configuration}
  */
 export default {
-  // path: '../../../iroha',
   origin: 'https://github.com/hyperledger/iroha.git',
-  rev: 'fe826be88d785f83496c781b104abb871fd7a13f',
+  rev: '753377ed0f02bf6a0430c280d82a24bb0602e121',
 }

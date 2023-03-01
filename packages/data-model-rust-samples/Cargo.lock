@@ -1044,6 +1044,7 @@ dependencies = [
 name = "iroha_data_model_derive"
 version = "2.0.0-pre-rc.13"
 dependencies = [
+ "iroha_macro_utils",
  "proc-macro-error",
  "proc-macro2",
  "quote",
@@ -1083,6 +1084,16 @@ name = "iroha_macro"
 version = "2.0.0-pre-rc.13"
 dependencies = [
  "iroha_derive",
+]
+
+[[package]]
+name = "iroha_macro_utils"
+version = "2.0.0-pre-rc.13"
+dependencies = [
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
