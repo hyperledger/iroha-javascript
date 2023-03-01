@@ -4,7 +4,7 @@ Client for Iroha 2, which is used to submit requests to Iroha peer.
 
 ## Target version
 
-This package targets `hyperledger/iroha` at current `iroha2-lts` branch, which has a hash `e3cd89bd2b6bef0d822900eb71a1854c7b86e2aa`.
+This package targets `hyperledger/iroha` at current `iroha2-stable` branch, which has a hash `c4af68c4f7959b154eb5380aa93c894e2e63fe4e`.
 
 ## Installation
 
