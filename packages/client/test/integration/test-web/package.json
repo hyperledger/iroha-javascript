@@ -16,7 +16,7 @@
     "@iroha2/crypto-target-web": "workspace:^1.0.0",
     "@iroha2/data-model": "workspace:^4.1.0",
     "@iroha2/test-peer": "workspace:^0.0.1",
-    "@scale-codec/util": "^1.1.1",
+    "@scale-codec/util": "^1.1.2",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue-kakuyaku/core": "^0.3.0",
     "@vueuse/core": "^8.0.1",

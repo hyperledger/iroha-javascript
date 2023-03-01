@@ -1,6 +1,6 @@
 /* eslint-disable max-nested-callbacks */
 import { NamespaceDefinition, TypeDef } from '@scale-codec/definition-compiler'
-import { RustResult, variant } from '@scale-codec/core'
+import { RustResult, variant } from '@scale-codec/definition-runtime'
 import { RustDefinitions, RustFixedPointDef, RustTypeDefinitionVariant } from './types'
 import {
   isRustArrayDef,
