@@ -22,7 +22,7 @@
     "koa": "^2.13.4",
     "koa-bodyparser": "^4.3.0",
     "koa-morgan": "^1.0.1",
-    "node-fetch": "^3.2.4",
+    "node-fetch": "^3.3.0",
     "yargs": "^17.6.2"
   }
 }

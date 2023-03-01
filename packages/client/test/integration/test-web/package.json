@@ -18,14 +18,14 @@
     "@iroha2/test-peer": "workspace:^0.0.1",
     "@scale-codec/util": "^1.1.2",
     "@vitejs/plugin-vue": "^4.0.0",
-    "@vue-kakuyaku/core": "^0.3.0",
+    "@vue-kakuyaku/core": "^0.4.3",
     "@vueuse/core": "^8.0.1",
     "cross-env": "^7.0.3",
     "cypress": "^12.5.1",
-    "esbuild": "^0.14.27",
+    "esbuild": "^0.17.10",
     "sass": "^1.52.1",
     "start-server-and-test": "^1.14.0",
-    "vite": "^4.1.1",
+    "vite": "^4.1.4",
     "vue": "^3.2.47"
   }
 }
