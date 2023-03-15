@@ -1,184 +1,25 @@
 import {
   Client,
-  Signer,
+  setCrypto,
   Torii,
   ToriiRequirementsForApiHttp,
   ToriiRequirementsForTelemetry,
-  setCrypto,
+  build,
 } from '@iroha2/client'
-import { adapter as WS } from '@iroha2/client/web-socket/node'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
-import {
-  AccountId,
-  AssetDefinitionId,
-  AssetId,
-  AssetValueType,
-  DomainId,
-  EvaluatesToAccountId,
-  EvaluatesToAssetId,
-  EvaluatesToIdBox,
-  EvaluatesToRegistrableBox,
-  EvaluatesToValue,
-  Executable,
-  Expression,
-  FilterBox,
-  FindAssetById,
-  FindAssetsByAccountId,
-  FixedPointI64,
-  IdBox,
-  IdentifiableBox,
-  Instruction,
-  MapNameValue,
-  Metadata,
-  MintBox,
-  Mintable,
-  NewAccount,
-  NewAssetDefinition,
-  NewDomain,
-  NumericValue,
-  OptionHash,
-  OptionIpfsPath,
-  OptionPipelineEntityKind,
-  OptionPipelineStatusKind,
-  PipelineEntityKind,
-  PipelineEventFilter,
-  PipelineStatusKind,
-  QueryBox,
-  RegisterBox,
-  RustResult,
-  Logger as ScaleLogger,
-  Value,
-  VecInstruction,
-  VecPublicKey,
-  variant,
-} from '@iroha2/data-model'
-import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
+import * as model from '@iroha2/data-model'
+import { cleanConfiguration, cleanSideEffects, setConfiguration, startPeer, StartPeerReturn } from '@iroha2/test-peer'
 import { Seq } from 'immutable'
-import nodeFetch from 'node-fetch'
 import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../../config'
+import { client_config, peer_config, peer_genesis } from '../../config'
 import { delay } from '../../util'
+import { clientFactory, keyPair, pipelineStepDelay } from './test-util'
+import { pipe } from 'fp-ts/function'
 
 // for debugging convenience
-new ScaleLogger().mount()
-
-// #region Keys
-
-const keyPair = crypto.KeyPair.fromJSON(client_config)
-
-// #endregion
-
-// #region Client
-
+new model.Logger().mount()
 setCrypto(crypto)
-
-function clientFactory() {
-  const signer = new Signer(client_config.account as AccountId, keyPair)
-
-  const pre = { ...client_config.torii, ws: WS, fetch: nodeFetch as typeof fetch }
-
-  const client = new Client({ signer })
-
-  return { signer, pre, client }
-}
-
-// #endregion
-
-async function addAsset({
-  client,
-  definitionId,
-  opts,
-  assetType,
-  pre,
-}: {
-  client: Client
-  pre: ToriiRequirementsForApiHttp
-  definitionId: AssetDefinitionId
-  assetType?: AssetValueType
-  opts?: {
-    mintable?: Mintable
-  }
-}) {
-  await client.submitExecutable(
-    pre,
-    Executable(
-      'Instructions',
-      VecInstruction([
-        Instruction(
-          'Register',
-          RegisterBox({
-            object: EvaluatesToRegistrableBox({
-              expression: Expression(
-                'Raw',
-                Value(
-                  'Identifiable',
-                  IdentifiableBox(
-                    'NewAssetDefinition',
-                    NewAssetDefinition({
-                      id: definitionId,
-                      value_type: assetType ?? AssetValueType('BigQuantity'),
-                      metadata: Metadata({ map: MapNameValue(new Map()) }),
-                      mintable: opts?.mintable ?? Mintable('Not'),
-                    }),
-                  ),
-                ),
-              ),
-            }),
-          }),
-        ),
-      ]),
-    ),
-  )
-}
-
-async function addAccount({
-  client,
-  accountId,
-  pre,
-}: {
-  client: Client
-  accountId: AccountId
-  pre: ToriiRequirementsForApiHttp
-}) {
-  await client.submitExecutable(
-    pre,
-    Executable(
-      'Instructions',
-      VecInstruction([
-        Instruction(
-          'Register',
-          RegisterBox({
-            object: EvaluatesToRegistrableBox({
-              expression: Expression(
-                'Raw',
-                Value(
-                  'Identifiable',
-                  IdentifiableBox(
-                    'NewAccount',
-                    NewAccount({
-                      id: accountId,
-                      signatories: VecPublicKey([]),
-                      metadata: Metadata({ map: MapNameValue(new Map()) }),
-                    }),
-                  ),
-                ),
-              ),
-            }),
-          }),
-        ),
-      ]),
-    ),
-  )
-}
-
-function mintIntoExecutable(mint: MintBox) {
-  return Executable('Instructions', VecInstruction([Instruction('Mint', mint)]))
-}
-
-async function pipelineStepDelay() {
-  await delay(PIPELINE_MS * 2)
-}
 
 let startedPeer: StartPeerReturn | null = null
 
@@ -227,34 +68,35 @@ afterAll(async () => {
 test('Peer is healthy', async () => {
   const { pre } = clientFactory()
 
-  expect(await Torii.getHealth(pre)).toEqual(variant('Ok', null) as RustResult<null, any>)
+  expect(await Torii.getHealth(pre)).toEqual(model.variant('Ok', null) as model.RustResult<null, any>)
 })
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
   const { client, pre } = clientFactory()
 
-  const normalAssetDefinitionId = AssetDefinitionId({
-    name: 'xor',
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  await addAsset({ client, pre, definitionId: normalAssetDefinitionId })
+  const normalAssetDefinitionId = build.assetDefinitionId('xor', 'wonderland')
 
   const tooLongAssetName = '0'.repeat(2 ** 14)
-  const invalidAssetDefinitionId = AssetDefinitionId({
-    name: tooLongAssetName,
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  await addAsset({ client, pre, definitionId: invalidAssetDefinitionId })
+  const invalidAssetDefinitionId = build.assetDefinitionId(tooLongAssetName, 'wonderland')
 
-  await delay(PIPELINE_MS * 2)
+  await client.submitExecutable(
+    pre,
+    pipe(
+      [normalAssetDefinitionId, invalidAssetDefinitionId].map((id) =>
+        pipe(
+          build.identifiable.newAssetDefinition(id, model.AssetValueType('BigQuantity')),
+          build.instruction.register,
+        ),
+      ),
+      build.executable.instructions,
+    ),
+  )
 
-  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAssetsDefinitions', null))
+  await pipelineStepDelay()
 
-  const existingDefinitions: AssetDefinitionId[] = queryResult
+  const queryResult = await client.requestWithQueryBox(pre, model.QueryBox('FindAllAssetsDefinitions', null))
+
+  const existingDefinitions: model.AssetDefinitionId[] = queryResult
     .as('Ok')
     .result.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('AssetDefinition').id)
@@ -266,25 +108,21 @@ test('AddAsset instruction with name length more than limit is not committed', a
 test('AddAccount instruction with name length more than limit is not committed', async () => {
   const { client, pre } = clientFactory()
 
-  const normal = AccountId({
-    name: 'bob',
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  const incorrect = AccountId({
-    name: '0'.repeat(2 ** 14),
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
+  const normal = build.accountId('bob', 'wonderland')
+  const incorrect = build.accountId('0'.repeat(2 ** 14), 'wonderland')
 
-  await Promise.all([normal, incorrect].map((x) => addAccount({ client, pre, accountId: x })))
-  await delay(PIPELINE_MS * 2)
+  await client.submitExecutable(
+    pre,
+    pipe(
+      [normal, incorrect].map((id) => pipe(build.identifiable.newAccount(id, []), build.instruction.register)),
+      build.executable.instructions,
+    ),
+  )
+  await pipelineStepDelay()
 
-  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAccounts', null))
+  const queryResult = await client.requestWithQueryBox(pre, build.find.allAccounts())
 
-  const existingAccounts: AccountId[] = queryResult
+  const existingAccounts: model.AccountId[] = queryResult
     .as('Ok')
     .result.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('Account').id)
@@ -297,46 +135,45 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   const { client, pre } = clientFactory()
 
   // Creating asset by definition
-  const ASSET_DEFINITION_ID = AssetDefinitionId({
-    name: 'xor',
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  await addAsset({
-    client,
+  const ASSET_DEFINITION_ID = build.assetDefinitionId('xor', 'wonderland')
+
+  await client.submitExecutable(
     pre,
-    definitionId: ASSET_DEFINITION_ID,
-    assetType: AssetValueType('Fixed'),
-    opts: { mintable: Mintable('Infinitely') },
-  })
+    pipe(
+      build.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, model.AssetValueType('Fixed'), {
+        mintable: model.Mintable('Infinitely'),
+      }),
+      build.instruction.register,
+      build.executable.instruction,
+    ),
+  )
   await pipelineStepDelay()
 
   // Adding mint
   const DECIMAL = '512.5881'
+
   await client.submitExecutable(
     pre,
-    mintIntoExecutable(
-      MintBox({
-        object: EvaluatesToValue({
-          expression: Expression('Raw', Value('Numeric', NumericValue('Fixed', FixedPointI64(DECIMAL)))),
-        }),
-        destination_id: EvaluatesToIdBox({
-          expression: Expression(
+    pipe(
+      model.MintBox({
+        object: model.EvaluatesToValue({
+          expression: model.Expression(
             'Raw',
-            Value(
+            model.Value('Numeric', model.NumericValue('Fixed', model.FixedPointI64(DECIMAL))),
+          ),
+        }),
+        destination_id: model.EvaluatesToIdBox({
+          expression: model.Expression(
+            'Raw',
+            model.Value(
               'Id',
-              IdBox(
-                'AssetId',
-                AssetId({
-                  account_id: client_config.account as AccountId,
-                  definition_id: ASSET_DEFINITION_ID,
-                }),
-              ),
+              model.IdBox('AssetId', build.assetId(client_config.account as model.AccountId, ASSET_DEFINITION_ID)),
             ),
           ),
         }),
       }),
+      build.instruction.mint,
+      build.executable.instruction,
     ),
   )
   await pipelineStepDelay()
@@ -344,14 +181,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   // Checking added asset via query
   const result = await client.requestWithQueryBox(
     pre,
-    QueryBox(
-      'FindAssetsByAccountId',
-      FindAssetsByAccountId({
-        account_id: EvaluatesToAccountId({
-          expression: Expression('Raw', Value('Id', IdBox('AccountId', client_config.account as AccountId))),
-        }),
-      }),
-    ),
+    build.find.assetByAccountId(client_config.account as model.AccountId),
   )
 
   // Assert
@@ -359,44 +189,28 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
     .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
 
-  expect(asset).toBeTruthy()
-  expect(asset!.value.enum.tag === 'Fixed').toBe(true)
-  expect(asset!.value.enum.as('Fixed')).toBe(DECIMAL)
+  expect(asset).toContainEqual({
+    value: model.AssetValue('Fixed', model.FixedPointI64(DECIMAL)),
+  } satisfies Pick<model.Asset, 'value'>)
 })
 
 test('Registering domain', async () => {
   const { client, pre } = clientFactory()
 
   async function registerDomain(domainName: string) {
-    const registerBox = RegisterBox({
-      object: EvaluatesToRegistrableBox({
-        expression: Expression(
-          'Raw',
-          Value(
-            'Identifiable',
-            IdentifiableBox(
-              'NewDomain',
-              NewDomain({
-                id: DomainId({
-                  name: domainName,
-                }),
-                metadata: Metadata({ map: MapNameValue(new Map()) }),
-                logo: OptionIpfsPath('None'),
-              }),
-            ),
-          ),
-        ),
-      }),
-    })
-
     await client.submitExecutable(
       pre,
-      Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
+      pipe(
+        //
+        build.identifiable.newDomain(domainName),
+        build.instruction.register,
+        build.executable.instruction,
+      ),
     )
   }
 
   async function ensureDomainExistence(domainName: string) {
-    const result = await client.requestWithQueryBox(pre, QueryBox('FindAllDomains', null))
+    const result = await client.requestWithQueryBox(pre, build.find.allDomains())
 
     const domain = result
       .as('Ok')
@@ -417,31 +231,9 @@ test('When querying for not existing domain, returns FindError', async () => {
 
   const result = await client.requestWithQueryBox(
     pre,
-    QueryBox(
-      'FindAssetById',
-      FindAssetById({
-        id: EvaluatesToAssetId({
-          expression: Expression(
-            'Raw',
-            Value(
-              'Id',
-              IdBox(
-                'AssetId',
-                AssetId({
-                  account_id: AccountId({
-                    name: 'alice',
-                    domain_id: DomainId({ name: 'wonderland' }),
-                  }),
-                  definition_id: AssetDefinitionId({
-                    name: 'XOR',
-                    domain_id: DomainId({ name: 'wonderland' }),
-                  }),
-                }),
-              ),
-            ),
-          ),
-        }),
-      }),
+    pipe(
+      build.assetId(build.accountId('alice', 'wonderland'), build.assetDefinitionId('XOR', 'wonderland')),
+      build.find.assetById,
     ),
   )
 
@@ -449,18 +241,24 @@ test('When querying for not existing domain, returns FindError', async () => {
   expect(result.as('Err').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
 })
 
+test.only('Multisignature', async () => {
+  await import('./multisignature')
+})
+
+// Transferring Store asset is not supported
+// TODO add link
+test.skip('Transferring Store asset between accounts', async () => {
+  await import('./transfer-store-asset')
+})
+
 describe('Events API', () => {
   test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
     const { pre, client } = clientFactory()
 
-    const filter = FilterBox(
-      'Pipeline',
-      PipelineEventFilter({
-        entity_kind: OptionPipelineEntityKind('Some', PipelineEntityKind('Transaction')),
-        status_kind: OptionPipelineStatusKind('Some', PipelineStatusKind('Committed')),
-        hash: OptionHash('None'),
-      }),
-    )
+    const filter = build.filter.pipeline({
+      entityKind: 'Transaction',
+      statusKind: 'Committed',
+    })
 
     // Listening
 
@@ -481,16 +279,15 @@ describe('Events API', () => {
     })
 
     // Triggering transaction
-    await addAsset({
-      client,
+    await client.submitExecutable(
       pre,
-      definitionId: AssetDefinitionId({
-        name: 'xor',
-        domain_id: DomainId({
-          name: 'wonderland',
-        }),
-      }),
-    })
+      pipe(
+        build.assetDefinitionId('xor', 'wonderland'),
+        (x) => build.identifiable.newAssetDefinition(x, model.AssetValueType('BigQuantity')),
+        build.instruction.register,
+        build.executable.instruction,
+      ),
+    )
 
     // Waiting for resolving
     await new Promise<void>((resolve, reject) => {
@@ -529,16 +326,15 @@ describe('Blocks Stream API', () => {
       const blockPromise = stream.ee.once('block')
 
       // triggering block creation
-      await addAsset({
-        client,
+      await client.submitExecutable(
         pre,
-        definitionId: AssetDefinitionId({
-          name: assetName,
-          domain_id: DomainId({
-            name: 'wonderland',
-          }),
-        }),
-      })
+        pipe(
+          build.assetDefinitionId(assetName, 'wonderland'),
+          (x) => build.identifiable.newAssetDefinition(x, model.AssetValueType('Quantity')),
+          build.instruction.register,
+          build.executable.instruction,
+        ),
+      )
 
       // waiting for it
       await blockPromise
