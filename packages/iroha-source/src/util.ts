@@ -5,7 +5,7 @@ import del from 'del'
 import consola from 'consola'
 import chalk from 'chalk'
 import makeDir from 'make-dir'
-import execa from 'execa'
+import { execa } from 'execa'
 import path from 'path'
 
 export async function clone(config: GitCloneConfiguration): Promise<void> {
