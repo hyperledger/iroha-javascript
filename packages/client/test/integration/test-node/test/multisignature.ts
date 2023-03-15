@@ -1,12 +1,13 @@
 import {
-  getCryptoAnyway,
-  build,
-  makeTransactionPayload,
   Signer,
   Torii,
+  build,
   computeTransactionHash,
+  getCryptoAnyway,
   makeQueryPayload,
+  makeTransactionPayload,
   makeVersionedSignedQuery,
+  makeVersionedSignedTransaction,
 } from '@iroha2/client'
 import { freeScope } from '@iroha2/crypto-core'
 import * as model from '@iroha2/data-model'
@@ -16,7 +17,7 @@ import { expect } from 'vitest'
 import { clientFactory, pipelineStepDelay } from './test-util'
 
 const crypto = getCryptoAnyway()
-const { client, pre } = clientFactory()
+const { client: clientAdmin, pre } = clientFactory()
 
 const MAD_HATTER = build.accountId('mad_hatter', 'wonderland')
 const CASOMILE_DEFINITION_ID = build.assetDefinitionId('casomile', 'wonderland')
@@ -34,7 +35,7 @@ const KEYS = freeScope((scope) => {
   return keys
 })
 
-// these will be useful later
+// these signers will be useful later
 const signer1 = new Signer(MAD_HATTER, KEYS[0])
 const signer2 = new Signer(MAD_HATTER, KEYS[1])
 
@@ -50,7 +51,9 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
   )
 
   const registerAssetDefinition = pipe(
-    build.identifiable.newAssetDefinition(CASOMILE_DEFINITION_ID, model.AssetValueType('Quantity')),
+    build.identifiable.newAssetDefinition(CASOMILE_DEFINITION_ID, model.AssetValueType('Quantity'), {
+      mintable: model.Mintable('Infinitely'),
+    }),
     build.instruction.register,
   )
 
@@ -101,15 +104,25 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
     build.instruction.mint,
   )
 
-  await client.submitExecutable(
-    pre,
-    build.executable.instructions([registerAccount, registerAssetDefinition, setSignatureCondition]),
-  )
+  // register Mad Hatter with the admin account
+  await clientAdmin.submitExecutable(pre, build.executable.instruction(registerAccount))
+  await pipelineStepDelay()
 
+  // Register the asset definition with the Mad Hatter's account
+  await Torii.submit(
+    pre,
+    pipe(
+      build.executable.instructions([registerAssetDefinition, setSignatureCondition]),
+      (executable) => makeTransactionPayload({ executable, accountId: MAD_HATTER }),
+      (x) => makeVersionedSignedTransaction(x, signer1),
+    ),
+  )
   await pipelineStepDelay()
 }
 
 const MINTED = 42
+
+// Preparing MST transaction payload
 
 const mintTransactionPayload = makeTransactionPayload({
   executable: pipe(
@@ -132,7 +145,7 @@ const mintTransactionPayload = makeTransactionPayload({
 
 const txHash = computeTransactionHash(mintTransactionPayload)
 
-// 1st transaction
+// 1st transaction, signed only with the first key
 
 const tx1 = model.VersionedSignedTransaction(
   'V1',
@@ -145,11 +158,14 @@ const tx1 = model.VersionedSignedTransaction(
 await Torii.submit(pre, tx1)
 await pipelineStepDelay()
 
-// 2nd transaction
+// 2nd transaction, signed with both keys
 
-const tx2 = produce(tx1, (draft) => {
-  draft.enum.content.signatures.push(signer2.sign('array', txHash))
-})
+const tx2 =
+  // we use `produce` from `immer` library
+  // it allows us to produce a new value from `tx1` without touching it in a declarative way
+  produce(tx1, (draft) => {
+    draft.enum.content.signatures.push(signer2.sign('array', txHash))
+  })
 
 await Torii.submit(pre, tx2)
 await pipelineStepDelay()
@@ -173,6 +189,7 @@ const asset = result
 
 expect(asset).toBeTruthy()
 expect(asset!.value.enum.as('Quantity')).toEqual(MINTED)
-// tear down
+
+// Finally, we collect our garbage
 
 for (const x of KEYS) x.free()
