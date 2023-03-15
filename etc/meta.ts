@@ -40,9 +40,9 @@ export function packageRollupDirs(pkg: PackageToRollup) {
 export async function loadProductionDependencies(pkg: PackageToRollup): Promise<Set<string>> {
   const pathToPackageJson: string = path.join(packageRoot(pkg), 'package.json')
   const {
-    default: { dependencies },
+    default: { dependencies, peerDependencies },
   }: { default: PackageJson } = await import(pathToPackageJson, { assert: { type: 'json' } })
-  return Set(Object.keys(dependencies ?? {}))
+  return Set(Object.keys({ ...dependencies, ...peerDependencies }))
 }
 
 export type PackageToRollup = SetEntry<typeof PACKAGES_TO_ROLLUP>

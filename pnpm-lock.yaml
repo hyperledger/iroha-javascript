@@ -20,6 +20,7 @@ importers:
       eslint-plugin-cypress: ^2.12.1
       eslint-plugin-vue: ^9.9.0
       execa: ^4.1.0
+      fp-ts: ^2.13.1
       immutable: ^4.2.4
       jake: ^10.8.5
       make-dir: ^3.1.0
@@ -54,6 +55,7 @@ importers:
       eslint-plugin-cypress: 2.12.1_eslint@8.35.0
       eslint-plugin-vue: 9.9.0_eslint@8.35.0
       execa: 4.1.0
+      fp-ts: 2.13.1
       immutable: 4.2.4
       jake: 10.8.5
       make-dir: 3.1.0
@@ -81,6 +83,7 @@ importers:
       debug: ^4.3.4
       emittery: ^0.10.1
       json-bigint: ^1.0.0
+      type-fest: ^3.6.1
       ws: ^8.8.1
     dependencies:
       '@iroha2/crypto-core': link:../crypto/packages/core
@@ -88,6 +91,7 @@ importers:
       debug: 4.3.4
       emittery: 0.10.2
       json-bigint: 1.0.0
+      type-fest: 3.6.1
     devDependencies:
       '@types/debug': 4.1.7
       '@types/ws': 8.5.3
@@ -99,6 +103,8 @@ importers:
       '@iroha2/crypto-target-node': workspace:^1.0.0
       '@iroha2/test-peer': workspace:^0.0.1
       cross-env: ^7.0.3
+      fp-ts: ^2.13.1
+      immer: ^9.0.19
       node-fetch: ^3.3.0
       vite: ^4.1.4
     devDependencies:
@@ -106,6 +112,8 @@ importers:
       '@iroha2/crypto-target-node': link:../../../../crypto/packages/target-node
       '@iroha2/test-peer': link:../../../../test-peer
       cross-env: 7.0.3
+      fp-ts: 2.13.1
+      immer: 9.0.19
       node-fetch: 3.3.0
       vite: 4.1.4
 
@@ -3696,6 +3704,10 @@ packages:
       fetch-blob: 3.2.0
     dev: true
 
+  /fp-ts/2.13.1:
+    resolution: {integrity: sha512-0eu5ULPS2c/jsa1lGFneEFFEdTbembJv8e4QKXeVJ3lm/5hyve06dlKZrpxmMwJt6rYen7sxmHHK2CLaXvWuWQ==}
+    dev: true
+
   /fresh/0.5.2:
     resolution: {integrity: sha512-zJ2mQYM18rEFOudeV4GShTGIQ7RbzA7ozbU9I/XBpm7kqgMywgmylMwXHxZJmkVoYkna9d2pVXVXPdYTP9ej8Q==}
     engines: {node: '>= 0.6'}
@@ -4053,6 +4065,10 @@ packages:
   /ignore/5.2.4:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
+    dev: true
+
+  /immer/9.0.19:
+    resolution: {integrity: sha512-eY+Y0qcsB4TZKwgQzLaE/lqYMlKhv5J9dyd2RhhtGhNo2njPXDqU9XPfcNfa3MIDsdtZt5KlkIsirlo4dHsWdQ==}
     dev: true
 
   /immutable/4.1.0:
@@ -6242,7 +6258,6 @@ packages:
   /type-fest/3.6.1:
     resolution: {integrity: sha512-htXWckxlT6U4+ilVgweNliPqlsVSSucbxVexRYllyMVJDtf5rTjv6kF/s+qAd4QSL1BZcnJPEJavYBPQiWuZDA==}
     engines: {node: '>=14.16'}
-    dev: true
 
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}

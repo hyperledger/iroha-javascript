@@ -6,6 +6,7 @@ import { match } from 'ts-pattern'
 import path from 'path'
 import { Set } from 'immutable'
 import fs from 'fs/promises'
+import { pipe } from 'fp-ts/function'
 import { PACKAGES_TO_ROLLUP, loadProductionDependencies, packageRoot, scopePackage } from './meta'
 import {
   INTERFACE_WRAP_PROXY_TO_WASM_PKG_ROLLUP_ID,
@@ -244,12 +245,62 @@ async function* generateRolls(): AsyncGenerator<RollupOptions> {
     yield* match(pkg)
       .with('client', async function* (pkg): AsyncGenerator<RollupOptions> {
         const root = packageRoot(pkg)
-        const deps = (await loadProductionDependencies(pkg)).remove('json-bigint').add('json-bigint/lib/parse.js')
-        const depsWithSelf = deps.add(scopePackage(pkg))
+        const external = (await loadProductionDependencies(pkg))
+          .remove('json-bigint')
+          .add('json-bigint/lib/parse.js')
+          .add(scopePackage(pkg))
+          .toArray()
 
-        yield* simpleOptionsAsGen(root, 'lib', deps)
-        yield* simpleOptionsAsGen(root, 'web-socket/native', depsWithSelf)
-        yield* simpleOptionsAsGen(root, 'web-socket/node', depsWithSelf)
+        const ENTRIES = ['lib', 'web-socket/native', 'web-socket/node'] as const
+        const entryInput = (entry: (typeof ENTRIES)[number], ext: 'js' | 'd.ts'): string =>
+          path.join(rootTsBuild, `${entry}.${ext}`)
+
+        const rootTsBuild = path.join(root, 'dist-tsc')
+        const dist = path.join(root, 'dist')
+
+        const dirEsm = 'esm'
+        const dirCjs = 'cjs'
+        const dirTypes = 'types'
+
+        // ESM / CJS
+
+        yield {
+          input: pipe(
+            ENTRIES.map((x) => [x, entryInput(x, 'js')] as const),
+            Object.fromEntries,
+          ),
+          external,
+          plugins: [replaceVitest()],
+          output: [
+            {
+              format: 'esm',
+              dir: path.join(dist, dirEsm),
+              entryFileNames: `[name].mjs`,
+              preserveModules: true,
+              preserveModulesRoot: rootTsBuild,
+            },
+            {
+              format: 'cjs',
+              dir: path.join(dist, dirCjs),
+              entryFileNames: `[name].cjs`,
+            },
+          ],
+        }
+
+        // TYPES
+
+        yield {
+          input: pipe(
+            ENTRIES.map((x) => [x, entryInput(x, 'd.ts')] as const),
+            Object.fromEntries,
+          ),
+          external,
+          plugins: [replaceVitest(), dts({ respectExternal: true })],
+          output: {
+            format: 'esm',
+            dir: path.join(dist, dirTypes),
+          },
+        }
       })
       .with('data-model', 'i64-fixnum', 'crypto-util', async function* (pkg): AsyncGenerator<RollupOptions> {
         const root = packageRoot(pkg)

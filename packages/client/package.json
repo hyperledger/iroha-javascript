@@ -1,24 +1,24 @@
 {
   "name": "@iroha2/client",
   "version": "4.1.0",
-  "module": "dist/lib.mjs",
-  "main": "dist/lib.cjs",
-  "types": "dist/lib.d.ts",
+  "module": "dist/esm/lib.mjs",
+  "main": "dist/cjs/lib.cjs",
+  "types": "dist/types/lib.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/lib.mjs",
-      "require": "./dist/lib.cjs",
-      "types": "./dist/lib.d.ts"
+      "import": "./dist/esm/lib.mjs",
+      "require": "./dist/cjs/lib.cjs",
+      "types": "./dist/types/lib.d.ts"
     },
     "./web-socket/native": {
-      "import": "./dist/web-socket/native.mjs",
-      "require": "./dist/web-socket/native.cjs",
-      "types": "./dist/web-socket/native.d.ts"
+      "import": "./dist/esm/web-socket/native.mjs",
+      "require": "./dist/cjs/web-socket/native.cjs",
+      "types": "./dist/types/web-socket/native.d.ts"
     },
     "./web-socket/node": {
-      "import": "./dist/web-socket/node.mjs",
-      "require": "./dist/web-socket/node.cjs",
-      "types": "./dist/web-socket/node.d.ts"
+      "import": "./dist/esm/web-socket/node.mjs",
+      "require": "./dist/cjs/web-socket/node.cjs",
+      "types": "./dist/types/web-socket/node.d.ts"
     }
   },
   "files": [
@@ -40,7 +40,8 @@
     "@iroha2/data-model": "workspace:4.1.0",
     "debug": "^4.3.4",
     "emittery": "^0.10.1",
-    "json-bigint": "^1.0.0"
+    "json-bigint": "^1.0.0",
+    "type-fest": "^3.6.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
