@@ -5,7 +5,7 @@ import del from 'del'
 import consola from 'consola'
 import chalk from 'chalk'
 import makeDir from 'make-dir'
-import { execa } from 'execa'
+import { Options as ExecaOptions, execa } from 'execa'
 import path from 'path'
 
 export async function clone(config: GitCloneConfiguration): Promise<void> {
@@ -16,7 +16,7 @@ export async function clone(config: GitCloneConfiguration): Promise<void> {
 
   await del(CLONE_DIR, { force: true })
   await makeDir(CLONE_DIR)
-  const EXECA_OPTS: execa.Options = { cwd: CLONE_DIR, stdio: 'inherit' }
+  const EXECA_OPTS: ExecaOptions = { cwd: CLONE_DIR, stdio: 'inherit' }
   await execa('git', ['init'], EXECA_OPTS)
   await execa('git', ['remote', 'add', 'origin', config.origin], EXECA_OPTS)
   await execa('git', ['fetch', 'origin', config.rev], EXECA_OPTS)
