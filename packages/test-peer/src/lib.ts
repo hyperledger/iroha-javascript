@@ -7,16 +7,13 @@ import readline from 'readline'
 import debug from './dbg'
 import { resolveBinary } from '@iroha2/iroha-source'
 import makeDir from 'make-dir'
+import invariant from 'tiny-invariant'
 
 /**
  * Time within to check if peer is up and running
  */
 const HEALTH_CHECK_TIMEOUT = 500
 const HEALTH_CHECK_INTERVAL = 50
-
-const JSON_LOGS_FILE = path.join(TMP_DIR, 'logs_json')
-
-// const MAGIC_PEER_READY_LOG_MESSAGE_REGEX = /Starting network actor/
 
 export interface StartPeerParams {
   /**
@@ -64,6 +61,17 @@ async function prepareTempDir(): Promise<void> {
   await makeDir(TMP_DIR)
 }
 
+async function reportTmpContents() {
+  const contents = await fs.readdir(TMP_DIR)
+  debug('Dir contents BEFORE start: %o', contents)
+}
+
+// eslint-disable-next-line no-undef
+function readableToDebug(input: NodeJS.ReadableStream, prefix: string) {
+  const dbg = debug.extend(prefix)
+  readline.createInterface(input).on('line', (line) => dbg(line))
+}
+
 /**
  * Start network with a single peer.
  *
@@ -72,98 +80,68 @@ async function prepareTempDir(): Promise<void> {
 export async function startPeer(params: StartPeerParams): Promise<StartPeerReturn> {
   const iroha = (await resolveBinary('iroha', { skipUpdate: true })).path
 
+  await reportTmpContents()
+
   // state
   let isAlive = false
-  let okAfterAll = false
-  let jsonLogsReadStream: fs.ReadStream
 
-  try {
-    await fs.rm(JSON_LOGS_FILE)
+  // starting peer
+  const withGenesis: boolean = params?.withGenesis ?? true
+  const subprocess = execa(iroha, withGenesis ? ['--submit-genesis'] : [], {
+    cwd: TMP_DIR,
+    env: {
+      IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
+      IROHA2_GENESIS_PATH: resolveTempJsonConfigFile('genesis'),
+    },
+  })
 
-    // previously we used redirection to `/dev/stderr`, but it turned out to not always work:
-    // https://stackoverflow.com/a/72906798
-    // thus, we create a real file to stream logs instead
-    jsonLogsReadStream = fs.createReadStream(JSON_LOGS_FILE, {
-      // appending + reading + creating file if not exists
-      // https://nodejs.org/api/fs.html#file-system-flags
-      flags: 'a+',
+  invariant(subprocess.stdout && subprocess.stderr)
+  readableToDebug(subprocess.stdout, 'subprocess-stdout')
+  readableToDebug(subprocess.stderr, 'subprocess-stderr')
+
+  subprocess.once('spawn', () => {
+    isAlive = true
+    debug('Subprocess spawned')
+  })
+
+  subprocess.on('error', (err) => {
+    debug('Subprocess error:', err)
+  })
+
+  const healthCheckAbort = new AbortController()
+  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, {
+    checkInterval: HEALTH_CHECK_INTERVAL,
+    checkTimeout: HEALTH_CHECK_TIMEOUT,
+    abort: healthCheckAbort.signal,
+  })
+
+  const exitPromise = new Promise<void>((resolve) => {
+    subprocess.once('exit', (...args) => {
+      debug('Peer exited:', args)
+      isAlive = false
+      resolve()
     })
+  })
 
-    {
-      const dbg = debug.extend('json-logs')
-      readline.createInterface(jsonLogsReadStream).on('line', (line) => dbg(line))
-    }
+  const kill = async function () {
+    if (!isAlive) throw new Error('Already dead')
+    debug('Killing peer...')
+    subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 })
+    await exitPromise
+    debug('Peer is killed')
+  }
 
-    {
-      const contents = await fs.readdir(TMP_DIR)
-      debug('Dir contents BEFORE start: %o', contents)
-    }
-
-    // starting peer
-    const withGenesis: boolean = params?.withGenesis ?? true
-    const subprocess = execa(iroha, withGenesis ? ['--submit-genesis'] : [], {
-      cwd: TMP_DIR,
-      env: {
-        IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
-        IROHA2_GENESIS_PATH: resolveTempJsonConfigFile('genesis'),
-        LOG_FILE_PATH: JSON_LOGS_FILE,
-      },
-      // Iroha logs human-readable logs to STDOUT, which is not needed because we listen for JSON logs
-      stdout: 'ignore',
+  await new Promise<void>((resolve, reject) => {
+    exitPromise.then(() => {
+      reject(new Error('Iroha has exited already, maybe something went wrong'))
+      healthCheckAbort.abort()
     })
-    subprocess.once('spawn', () => {
-      isAlive = true
-    })
+    irohaIsHealthyPromise.then(() => resolve()).catch((err) => reject(err))
+  })
 
-    {
-      const dbg = debug.extend('peer-stdout-stderr')
-      readline.createInterface(subprocess.stderr!).on('line', (line) => dbg(line))
-    }
-
-    subprocess.on('error', (err) => {
-      debug('Subprocess error:', err)
-    })
-
-    const healthCheckAbort = new AbortController()
-    const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, {
-      checkInterval: HEALTH_CHECK_INTERVAL,
-      checkTimeout: HEALTH_CHECK_TIMEOUT,
-      abort: healthCheckAbort.signal,
-    })
-
-    const exitPromise = new Promise<void>((resolve) => {
-      subprocess.once('exit', (...args) => {
-        isAlive = false
-        jsonLogsReadStream.close()
-        debug('Peer exited:', args)
-        resolve()
-      })
-    })
-
-    const kill = async function () {
-      if (!isAlive) throw new Error('Already dead')
-      debug('Killing peer...')
-      subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 })
-      await exitPromise
-      debug('Peer is killed')
-    }
-
-    await new Promise<void>((resolve, reject) => {
-      exitPromise.then(() => {
-        reject(new Error('Iroha has exited already, maybe something went wrong'))
-        healthCheckAbort.abort()
-      })
-      irohaIsHealthyPromise.then(() => resolve()).catch((err) => reject(err))
-    })
-
-    okAfterAll = true
-
-    return {
-      kill,
-      isAlive: () => isAlive,
-    }
-  } finally {
-    if (!okAfterAll) jsonLogsReadStream!.close((err) => console.error(err))
+  return {
+    kill,
+    isAlive: () => isAlive,
   }
 }
 
