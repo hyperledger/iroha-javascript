@@ -1,5 +1,15 @@
 # @iroha2/crypto-target-web
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [d1e5f68]
+- Updated dependencies [3ff768d]
+- Updated dependencies [d1e5f68]
+  - @iroha2/data-model@5.0.0
+  - @iroha2/crypto-core@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
