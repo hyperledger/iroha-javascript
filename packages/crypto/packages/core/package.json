@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/crypto-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "Apache 2.0",
   "main": "dist/lib.cjs",
   "module": "dist/lib.mjs",
@@ -21,6 +21,6 @@
   },
   "dependencies": {
     "@iroha2/crypto-util": "workspace:^0.1.0",
-    "@iroha2/data-model": "workspace:^4.1.0"
+    "@iroha2/data-model": "workspace:^5.0.0"
   }
 }

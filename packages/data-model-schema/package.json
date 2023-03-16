@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/data-model-schema",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "Data model schema related utilities",
   "main": "src/lib.ts",
   "files": [

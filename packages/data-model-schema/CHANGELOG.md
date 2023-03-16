@@ -1,5 +1,16 @@
 # @iroha2/data-model-schema
 
+## 5.0.0
+
+### Major Changes
+
+- d1e5f68: **refactor!**: don't include fixed points into the transformed schema anymore; instead, return them as a separate collection
+- d1e5f68: **feature**: transform `GenericPredicateBox<...::Predicate>` into just `PredicateBox`
+
+### Patch Changes
+
+- 7880c14: **feature**: cache transformed refs; print them to `debug`
+
 ## 4.1.0
 
 ## 4.0.0
