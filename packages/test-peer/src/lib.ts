@@ -1,20 +1,19 @@
-import { TMP_DIR, TMP_IROHA_BIN } from '../etc/meta'
+import { TMP_DIR } from '../etc/meta'
 import path from 'path'
-import execa from 'execa'
-import { $, fs } from 'zx'
+import { execa } from 'execa'
+import { fs } from 'zx'
 import { rmForce, saveDataAsJSON, waitUntilPeerIsHealthy } from './util'
 import readline from 'readline'
 import debug from './dbg'
 import { resolveBinary } from '@iroha2/iroha-source'
 import makeDir from 'make-dir'
+import invariant from 'tiny-invariant'
 
 /**
  * Time within to check if peer is up and running
  */
 const HEALTH_CHECK_TIMEOUT = 500
 const HEALTH_CHECK_INTERVAL = 50
-
-// const MAGIC_PEER_READY_LOG_MESSAGE_REGEX = /Starting network actor/
 
 export interface StartPeerParams {
   /**
@@ -62,6 +61,17 @@ async function prepareTempDir(): Promise<void> {
   await makeDir(TMP_DIR)
 }
 
+async function reportTmpContents() {
+  const contents = await fs.readdir(TMP_DIR)
+  debug('Dir contents BEFORE start: %o', contents)
+}
+
+// eslint-disable-next-line no-undef
+function readableToDebug(input: NodeJS.ReadableStream, prefix: string) {
+  const dbg = debug.extend(prefix)
+  readline.createInterface(input).on('line', (line) => dbg(line))
+}
+
 /**
  * Start network with a single peer.
  *
@@ -70,13 +80,10 @@ async function prepareTempDir(): Promise<void> {
 export async function startPeer(params: StartPeerParams): Promise<StartPeerReturn> {
   const iroha = (await resolveBinary('iroha', { skipUpdate: true })).path
 
-  // state
-  let isAlive = true
+  await reportTmpContents()
 
-  {
-    const contents = await fs.readdir(TMP_DIR)
-    debug('Dir contents BEFORE start: %o', contents)
-  }
+  // state
+  let isAlive = false
 
   // starting peer
   const withGenesis: boolean = params?.withGenesis ?? true
@@ -85,23 +92,17 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
     env: {
       IROHA2_CONFIG_PATH: resolveTempJsonConfigFile('config'),
       IROHA2_GENESIS_PATH: resolveTempJsonConfigFile('genesis'),
-      /**
-       * Enable JSON logging into STDOUT
-       *
-       * It works fine locally, but fails in CI
-       * https://github.com/hyperledger/iroha/issues/2894
-       */
-      // LOG_FILE_PATH: '"/dev/stderr"',
     },
-    // stdout: 'ignore',
   })
-  debug('Peer spawned. Spawnargs: %o', subprocess.spawnargs)
 
-  const debugStdout = debug.extend('stdout')
-  readline.createInterface(subprocess.stdout!).on('line', (line) => debugStdout(line))
+  invariant(subprocess.stdout && subprocess.stderr)
+  readableToDebug(subprocess.stdout, 'subprocess-stdout')
+  readableToDebug(subprocess.stderr, 'subprocess-stderr')
 
-  const debugStderr = debug.extend('stderr')
-  readline.createInterface(subprocess.stderr!).on('line', (line) => debugStderr(line))
+  subprocess.once('spawn', () => {
+    isAlive = true
+    debug('Subprocess spawned')
+  })
 
   subprocess.on('error', (err) => {
     debug('Subprocess error:', err)
@@ -116,13 +117,13 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
 
   const exitPromise = new Promise<void>((resolve) => {
     subprocess.once('exit', (...args) => {
-      isAlive = false
       debug('Peer exited:', args)
+      isAlive = false
       resolve()
     })
   })
 
-  async function kill() {
+  const kill = async function () {
     if (!isAlive) throw new Error('Already dead')
     debug('Killing peer...')
     subprocess.kill('SIGTERM', { forceKillAfterTimeout: 500 })
@@ -169,7 +170,7 @@ export async function cleanConfiguration(): Promise<void> {
 }
 
 /**
- * Clear all side-effects from last peer startup. Use it before each peer startup if you want to isolate states.
+ * Clear all side effects from last peer startup. Use it before each peer startup if you want to isolate states.
  */
 export async function cleanSideEffects(kuraBlockStorePath: string) {
   const rmTarget = path.resolve(TMP_DIR, kuraBlockStorePath)

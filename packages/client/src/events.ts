@@ -1,10 +1,4 @@
-import {
-  Event,
-  EventSubscriberMessage,
-  FilterBox,
-  VersionedEventPublisherMessage,
-  VersionedEventSubscriberMessage,
-} from '@iroha2/data-model'
+import { Event, FilterBox, VersionedEventMessage, VersionedEventSubscriptionRequest } from '@iroha2/data-model'
 import Emittery from 'emittery'
 import Debug from 'debug'
 import { SocketEmitMapBase, setupWebSocket } from './util'
@@ -46,24 +40,13 @@ export async function setupEvents(params: SetupEventsParams): Promise<SetupEvent
     adapter: params.adapter,
   })
 
-  function send(msg: EventSubscriberMessage) {
-    sendRaw(VersionedEventSubscriberMessage.toBuffer(VersionedEventSubscriberMessage('V1', msg)))
-  }
-
   ee.on('open', () => {
-    send(EventSubscriberMessage('SubscriptionRequest', params.filter))
+    sendRaw(VersionedEventSubscriptionRequest.toBuffer(VersionedEventSubscriptionRequest('V1', params.filter)))
   })
 
   ee.on('message', (raw) => {
-    const event = VersionedEventPublisherMessage.fromBuffer(raw).as('V1')
-
-    if (event.is('SubscriptionAccepted')) {
-      debug('subscription accepted')
-      ee.emit('accepted')
-    } else {
-      ee.emit('event', event.as('Event'))
-      send(EventSubscriberMessage('EventReceived'))
-    }
+    const event = VersionedEventMessage.fromBuffer(raw).enum.content
+    ee.emit('event', event)
   })
 
   await accepted()

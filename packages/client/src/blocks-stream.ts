@@ -1,11 +1,6 @@
 import Emittery from 'emittery'
 import Debug from 'debug'
-import {
-  BlockSubscriberMessage,
-  VersionedBlockPublisherMessage,
-  VersionedBlockSubscriberMessage,
-  VersionedCommittedBlock,
-} from '@iroha2/data-model'
+import { VersionedBlockMessage, VersionedBlockSubscriptionRequest, VersionedCommittedBlock } from '@iroha2/data-model'
 import { ENDPOINT_BLOCKS_STREAM } from './const'
 import { SocketEmitMapBase, setupWebSocket } from './util'
 import { IsomorphicWebSocketAdapter } from './web-socket/types'
@@ -42,28 +37,13 @@ export async function setupBlocksStream(params: SetupBlocksStreamParams): Promis
     adapter: params.adapter,
   })
 
-  function send(msg: BlockSubscriberMessage) {
-    sendRaw(VersionedBlockSubscriberMessage.toBuffer(VersionedBlockSubscriberMessage('V1', msg)))
-  }
-
   ee.on('open', () => {
-    send(BlockSubscriberMessage('SubscriptionRequest', params.height))
+    sendRaw(VersionedBlockSubscriptionRequest.toBuffer(VersionedBlockSubscriptionRequest('V1', params.height)))
   })
 
   ee.on('message', (raw) => {
-    const msg = VersionedBlockPublisherMessage.fromBuffer(raw).as('V1')
-
-    msg.match({
-      SubscriptionAccepted() {
-        debug('subscription accepted')
-        ee.emit('accepted')
-      },
-      Block(block) {
-        debug('new block: %o', block)
-        ee.emit('block', block)
-        send(BlockSubscriberMessage('BlockReceived'))
-      },
-    })
+    const block = VersionedBlockMessage.fromBuffer(raw).enum.content
+    ee.emit('block', block)
   })
 
   await accepted()

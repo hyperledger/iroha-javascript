@@ -1,9 +1,24 @@
 import { pascal } from 'case'
+import Debug from 'debug'
+
+const dbg = Debug('iroha2-schema-transform:ref')
+
+const CACHE = new Map<string, string>()
 
 export function transform(ref: string): string {
   // Schema contains arrays, but on both
 
-  return [transformDefaultRuntimeLibAliases, transformArray, normalizeIdentifier].reduce((acc, fn) => fn(acc), ref)
+  if (CACHE.has(ref)) return CACHE.get(ref)!
+
+  const output = [transformDefaultRuntimeLibAliases, transformArray, normalizeIdentifier].reduce(
+    (acc, fn) => fn(acc),
+    ref,
+  )
+
+  CACHE.set(ref, output)
+  dbg('transform %o to %o', ref, output)
+
+  return output
 }
 
 const STD_ALIASES: Record<string, string> = {
@@ -17,7 +32,7 @@ function transformDefaultRuntimeLibAliases(ref: string): string {
   if (ref.endsWith('Vec<u8>')) {
     return 'VecU8'
   }
-  if (ref.match(/Compact\<u128\>/)) {
+  if (ref.match(/Compact<u128>/)) {
     return 'Compact'
   }
   return ref
@@ -27,7 +42,7 @@ function transformArray(ref: string): string {
   // Arrays in form [x; x] are defined as separated types too,
   // so no need to move them into additional types
 
-  const match = ref.match(/^\[\s*(.+)\s*;\s*(\d+)\s*\]$/)
+  const match = ref.match(/^\[\s*(.+)\s*;\s*(\d+)\s*]$/)
   if (match) {
     const [, ty, count] = match
 
@@ -57,6 +72,7 @@ function normalizeIdentifier(ref: string): string {
     .replace(/iroha_data_model::(query|transaction)::Payload/g, '$1_Payload')
     .replace(/iroha_data_model::expression::If/g, 'IfExpression')
     .replace(/iroha_data_model::isi::If/g, 'IfInstruction')
+    .replace(/GenericPredicateBox<.+?Predicate>/g, 'PredicateBox')
     .replace(/iroha_version::error::Error/g, 'VersionError')
     .replace(/query::(\w+)?Error/g, 'Query$1Error')
     .replace('AtomicU32Wrapper', 'U32')

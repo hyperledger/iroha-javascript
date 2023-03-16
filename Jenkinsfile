@@ -2,7 +2,7 @@
 
 def pipeline = new org.js.LibPipeline( steps: this,
     packageManager: "pnpm",
-    buildDockerImage: 'build-tools/node:14-pnpm7-2',
+    buildDockerImage: 'build-tools/node:16-pnpm-nightly',
     libPushBranches: ['iroha2'],
     npmRegistries: ['https://nexus.iroha.tech/repository/npm-soramitsu/': 'bot-soramitsu-rw'],
     preBuildCmds: ['rm -rf ~/.cargo', 'npm install -g n','n 16.17.0', 'n prune', 'pnpm install --unsafe-perm'],

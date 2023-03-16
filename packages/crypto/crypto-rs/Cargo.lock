@@ -635,7 +635,7 @@ dependencies = [
 
 [[package]]
 name = "iroha_derive"
-version = "2.0.0-pre-rc.9"
+version = "2.0.0-pre-rc.13"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -644,14 +644,15 @@ dependencies = [
 
 [[package]]
 name = "iroha_ffi"
-version = "2.0.0-pre-rc.9"
+version = "2.0.0-pre-rc.13"
 dependencies = [
+ "derive_more",
  "iroha_ffi_derive",
 ]
 
 [[package]]
 name = "iroha_ffi_derive"
-version = "2.0.0-pre-rc.9"
+version = "2.0.0-pre-rc.13"
 dependencies = [
  "derive_more",
  "proc-macro-error",
@@ -662,14 +663,14 @@ dependencies = [
 
 [[package]]
 name = "iroha_macro"
-version = "2.0.0-pre-rc.9"
+version = "2.0.0-pre-rc.13"
 dependencies = [
  "iroha_derive",
 ]
 
 [[package]]
 name = "iroha_primitives"
-version = "2.0.0-pre-rc.9"
+version = "2.0.0-pre-rc.13"
 dependencies = [
  "derive_more",
  "fixnum",
@@ -684,7 +685,7 @@ dependencies = [
 
 [[package]]
 name = "iroha_schema"
-version = "2.0.0-pre-rc.9"
+version = "2.0.0-pre-rc.13"
 dependencies = [
  "fixnum",
  "iroha_schema_derive",
@@ -693,7 +694,7 @@ dependencies = [
 
 [[package]]
 name = "iroha_schema_derive"
-version = "2.0.0-pre-rc.9"
+version = "2.0.0-pre-rc.13"
 dependencies = [
  "proc-macro2",
  "quote",

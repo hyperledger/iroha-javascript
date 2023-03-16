@@ -1,20 +1,28 @@
-import CONFIG from '../config.json'
-import { clone, isAccessible, isCloneUpToDate, resolveBinaryPath, runCargoBuild } from './util'
+import config from './config-resolved'
+import {
+  assertConfigurationIsGitClone,
+  clone,
+  isAccessible,
+  isCloneUpToDate,
+  resolveBinaryPath,
+  runCargoBuild,
+  syncIrohaSymlink,
+} from './util'
 import consola from 'consola'
 import chalk from 'chalk'
 
 export type Binary = 'iroha' | 'kagami'
 
 export async function forceClone() {
-  await clone(CONFIG)
+  assertConfigurationIsGitClone(config)
+  await clone(config)
 }
 
 /**
  * Resolves path to the release build of the binary.
- * If the repo is not cloned or is outdated, clones it.
- * If the binary is not yet built, builds it.
  *
- * In order to avoid extra time for resolution, use {@link buildBinary} fn.
+ * If configuration is "git-clone" and the repo is not cloned or outdated,
+ * it is re-created. If the binary is not yet built, builds it. These updates could be disabled with the flag.
  */
 export async function resolveBinary(
   bin: Binary,
@@ -28,24 +36,29 @@ export async function resolveBinary(
 ): Promise<{ path: string }> {
   const skipUpdate = options?.skipUpdate ?? false
 
-  if (!(await isCloneUpToDate(CONFIG))) {
-    if (skipUpdate) throw new Error('Repo is out of date, cannot resolve the binary')
-    await clone(CONFIG)
+  if (config.t === 'git-clone') {
+    if (!(await isCloneUpToDate(config))) {
+      if (skipUpdate) throw new Error('Repo is out of date, cannot resolve the binary')
+      await clone(config)
+    }
   }
 
-  const binaryPath = resolveBinaryPath(bin)
+  await syncIrohaSymlink(config)
 
-  if (!(await isAccessible(binaryPath))) {
-    if (skipUpdate) throw new Error('The binary is not build')
+  const binaryPath = resolveBinaryPath(config, bin)
+
+  if (!skipUpdate) {
     await runCargoBuild(bin)
+  } else if (!(await isAccessible(binaryPath))) {
+    throw new Error('The binary is not built')
   }
 
   return { path: binaryPath }
 }
 
-export async function buildBinary(bin: Binary): Promise<void> {
-  if (!(await isCloneUpToDate(CONFIG))) await clone(CONFIG)
-  const path = resolveBinaryPath(bin)
-  if (!(await isAccessible(path))) await runCargoBuild(bin)
+export async function buildBinary(bin: Binary, ignoreBuilt = false): Promise<void> {
+  if (config.t === 'git-clone' && !(await isCloneUpToDate(config))) await clone(config)
+  const path = resolveBinaryPath(config, bin)
+  if (ignoreBuilt || !(await isAccessible(path))) await runCargoBuild(bin)
   consola.success(`${chalk.magenta.bold(bin)} is built`)
 }

@@ -7,6 +7,6 @@ const stream = await Torii.listenForBlocksStream(requirements, {
 })
 
 stream.ee.on('block', (block) => {
-  const height = block.as('V1').header.height
+  const height = block.enum.as('V1').header.height
   console.log('Got block with height', height)
 })

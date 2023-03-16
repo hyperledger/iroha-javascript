@@ -70,8 +70,8 @@ async function ensureDomainExistence(domainName: string) {
   // Obtain the domain
   const domain = result
     .as('Ok')
-    .result.as('Vec')
-    .map((x) => x.as('Identifiable').as('Domain'))
+    .result.enum.as('Vec')
+    .map((x) => x.enum.as('Identifiable').enum.as('Domain'))
     .find((x) => x.id.name === domainName) // [!code hl]
 
   // Throw an error if the domain is unavailable

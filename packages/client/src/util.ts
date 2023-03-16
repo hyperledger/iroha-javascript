@@ -21,7 +21,6 @@ export function transformProtocolInUrlFromHttpToWs(url: string): string {
 }
 
 export interface SocketEmitMapBase {
-  accepted: undefined
   open: WsEvent
   close: CloseEvent
   error: WsEvent
@@ -43,6 +42,9 @@ export function setupWebSocket<EmitMap extends SocketEmitMapBase>(params: {
   const debug = params.parentDebugger.extend('websocket')
   const url = transformProtocolInUrlFromHttpToWs(params.baseURL) + params.endpoint
   const ee = new Emittery<EmitMap>()
+
+  const onceOpened = ee.once('open')
+  const onceClosed = ee.once('close')
 
   debug('opening connection to %o', url)
 
@@ -75,10 +77,8 @@ export function setupWebSocket<EmitMap extends SocketEmitMapBase>(params: {
 
   async function accepted() {
     return new Promise<void>((resolve, reject) => {
-      ee.once('accepted').then(resolve)
-      ee.once('close').then(() => {
-        reject(new Error('Handshake acquiring failed - connection closed'))
-      })
+      onceOpened.then(() => resolve())
+      onceClosed.then(() => reject(new Error('Handshake acquiring failed - connection closed')))
     })
   }
 

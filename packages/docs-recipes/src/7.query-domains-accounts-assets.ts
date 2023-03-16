@@ -15,8 +15,8 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 
   const domains = result
     .as('Ok')
-    .result.as('Vec')
-    .map((x) => x.as('Identifiable').as('Domain'))
+    .result.enum.as('Vec')
+    .map((x) => x.enum.as('Identifiable').enum.as('Domain'))
 
   for (const domain of domains) {
     console.log(
@@ -37,8 +37,8 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 
   const accounts = result
     .as('Ok')
-    .result.as('Vec')
-    .map((x) => x.as('Identifiable').as('Account'))
+    .result.enum.as('Vec')
+    .map((x) => x.enum.as('Identifiable').enum.as('Account'))
 
   for (const account of accounts) {
     console.log(
@@ -59,21 +59,14 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 
   const assets = result
     .as('Ok')
-    .result.as('Vec')
-    .map((x) => x.as('Identifiable').as('Asset'))
+    .result.enum.as('Vec')
+    .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
 
   for (const asset of assets) {
-    const assetType = asset.value.match({
-      Quantity: () => 'Quantity',
-      BigQuantity: () => 'Big Quantity',
-      Fixed: () => 'Fixed',
-      Store: () => 'Store',
-    })
-
     console.log(
       `Asset "${asset.id.definition_id.name}#${asset.id.definition_id.domain_id.name}" ` +
         `at account "${asset.id.account_id.name}@${asset.id.account_id.domain_id.name}" ` +
-        `has type "${assetType}"`,
+        `has type "${asset.value.enum.tag}"`,
     )
     // => Asset "rose#wonderland" at account "alice@wonderland" has type "Quantity"
   }

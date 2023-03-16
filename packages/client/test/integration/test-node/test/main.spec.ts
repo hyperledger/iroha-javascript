@@ -1,5 +1,3 @@
-import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { crypto } from '@iroha2/crypto-target-node'
 import {
   Client,
   Signer,
@@ -9,18 +7,17 @@ import {
   setCrypto,
 } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
-import nodeFetch from 'node-fetch'
+import { FREE_HEAP } from '@iroha2/crypto-core'
+import { crypto } from '@iroha2/crypto-target-node'
 import {
-  Account,
   AccountId,
   AssetDefinitionId,
   AssetId,
   AssetValueType,
   DomainId,
-  Enum,
   EvaluatesToAccountId,
   EvaluatesToAssetId,
-  EvaluatesToBool,
+  EvaluatesToIdBox,
   EvaluatesToRegistrableBox,
   EvaluatesToValue,
   Executable,
@@ -28,16 +25,18 @@ import {
   FilterBox,
   FindAssetById,
   FindAssetsByAccountId,
+  FixedPointI64,
   IdBox,
   IdentifiableBox,
   Instruction,
-  MapAssetIdAsset,
   MapNameValue,
   Metadata,
   MintBox,
   Mintable,
+  NewAccount,
   NewAssetDefinition,
   NewDomain,
+  NumericValue,
   OptionHash,
   OptionIpfsPath,
   OptionPipelineEntityKind,
@@ -47,18 +46,19 @@ import {
   PipelineStatusKind,
   QueryBox,
   RegisterBox,
-  Result,
+  RustResult,
   Logger as ScaleLogger,
   Value,
   VecInstruction,
   VecPublicKey,
-  VecRoleId,
+  variant,
 } from '@iroha2/data-model'
-import { Seq } from 'immutable'
 import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
-import { delay } from '../../util'
+import { Seq } from 'immutable'
+import nodeFetch from 'node-fetch'
+import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../../config'
-import { FREE_HEAP } from '@iroha2/crypto-core'
+import { delay } from '../../util'
 
 // for debugging convenience
 new ScaleLogger().mount()
@@ -117,7 +117,7 @@ async function addAsset({
                     'NewAssetDefinition',
                     NewAssetDefinition({
                       id: definitionId,
-                      value_type: assetType ?? Enum.variant('BigQuantity'),
+                      value_type: assetType ?? AssetValueType('BigQuantity'),
                       metadata: Metadata({ map: MapNameValue(new Map()) }),
                       mintable: opts?.mintable ?? Mintable('Not'),
                     }),
@@ -156,15 +156,10 @@ async function addAccount({
                   'Identifiable',
                   IdentifiableBox(
                     'NewAccount',
-                    Account({
+                    NewAccount({
                       id: accountId,
-                      assets: MapAssetIdAsset(new Map()),
-                      signature_check_condition: EvaluatesToBool({
-                        expression: Expression('Raw', Value('Bool', false)),
-                      }),
                       signatories: VecPublicKey([]),
                       metadata: Metadata({ map: MapNameValue(new Map()) }),
-                      roles: VecRoleId([]),
                     }),
                   ),
                 ),
@@ -232,7 +227,7 @@ afterAll(async () => {
 test('Peer is healthy', async () => {
   const { pre } = clientFactory()
 
-  expect(await Torii.getHealth(pre)).toEqual(Enum.variant('Ok', null) as Result<null, any>)
+  expect(await Torii.getHealth(pre)).toEqual(variant('Ok', null) as RustResult<null, any>)
 })
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
@@ -261,8 +256,8 @@ test('AddAsset instruction with name length more than limit is not committed', a
 
   const existingDefinitions: AssetDefinitionId[] = queryResult
     .as('Ok')
-    .result.as('Vec')
-    .map((val) => val.as('Identifiable').as('AssetDefinition').id)
+    .result.enum.as('Vec')
+    .map((val) => val.enum.as('Identifiable').enum.as('AssetDefinition').id)
 
   expect(existingDefinitions).toContainEqual(normalAssetDefinitionId)
   expect(existingDefinitions).not.toContainEqual(invalidAssetDefinitionId)
@@ -291,8 +286,8 @@ test('AddAccount instruction with name length more than limit is not committed',
 
   const existingAccounts: AccountId[] = queryResult
     .as('Ok')
-    .result.as('Vec')
-    .map((val) => val.as('Identifiable').as('Account').id)
+    .result.enum.as('Vec')
+    .map((val) => val.enum.as('Identifiable').enum.as('Account').id)
 
   expect(existingAccounts).toContainEqual(normal)
   expect(existingAccounts).not.toContainEqual(incorrect)
@@ -324,9 +319,9 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     mintIntoExecutable(
       MintBox({
         object: EvaluatesToValue({
-          expression: Expression('Raw', Value('Fixed', DECIMAL)),
+          expression: Expression('Raw', Value('Numeric', NumericValue('Fixed', FixedPointI64(DECIMAL)))),
         }),
-        destination_id: EvaluatesToRegistrableBox({
+        destination_id: EvaluatesToIdBox({
           expression: Expression(
             'Raw',
             Value(
@@ -360,13 +355,13 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   )
 
   // Assert
-  const asset = Seq(result.as('Ok').result.as('Vec'))
-    .map((x) => x.as('Identifiable').as('Asset'))
+  const asset = Seq(result.as('Ok').result.enum.as('Vec'))
+    .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
     .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
 
   expect(asset).toBeTruthy()
-  expect(asset!.value.is('Fixed')).toBe(true)
-  expect(asset!.value.as('Fixed')).toBe(DECIMAL)
+  expect(asset!.value.enum.tag === 'Fixed').toBe(true)
+  expect(asset!.value.enum.as('Fixed')).toBe(DECIMAL)
 })
 
 test('Registering domain', async () => {
@@ -405,8 +400,8 @@ test('Registering domain', async () => {
 
     const domain = result
       .as('Ok')
-      .result.as('Vec')
-      .map((x) => x.as('Identifiable').as('Domain'))
+      .result.enum.as('Vec')
+      .map((x) => x.enum.as('Identifiable').enum.as('Domain'))
       .find((x) => x.id.name === domainName)
 
     if (!domain) throw new Error('Not found')
@@ -437,7 +432,7 @@ test('When querying for not existing domain, returns FindError', async () => {
                     name: 'alice',
                     domain_id: DomainId({ name: 'wonderland' }),
                   }),
-                  definition_id: AccountId({
+                  definition_id: AssetDefinitionId({
                     name: 'XOR',
                     domain_id: DomainId({ name: 'wonderland' }),
                   }),
@@ -450,8 +445,8 @@ test('When querying for not existing domain, returns FindError', async () => {
     ),
   )
 
-  expect(result.is('Err')).toBe(true)
-  expect(result.as('Err').as('Find').as('AssetDefinition').name).toBe('XOR')
+  expect(result.tag === 'Err').toBe(true)
+  expect(result.as('Err').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
 })
 
 describe('Events API', () => {
@@ -473,9 +468,9 @@ describe('Events API', () => {
 
     const committedPromise = new Promise<void>((resolve, reject) => {
       ee.on('event', (event) => {
-        if (event.is('Pipeline')) {
-          const { entity_kind, status } = event.as('Pipeline')
-          if (entity_kind.is('Transaction') && status.is('Committed')) {
+        if (event.enum.tag === 'Pipeline') {
+          const { entity_kind, status } = event.enum.as('Pipeline')
+          if (entity_kind.enum.tag === 'Transaction' && status.enum.tag === 'Committed') {
             resolve()
           }
         }
@@ -523,9 +518,8 @@ describe('Setting configuration', () => {
 })
 
 describe('Blocks Stream API', () => {
-  // FIXME: currently Iroha has a bug related to blocks stream, so this test fails
-  // https://github.com/hyperledger/iroha/issues/2880
-  test('When committing 3 blocks sequentially, nothing fails', async () => {
+  // Doesn't work - https://github.com/hyperledger/iroha/issues/3162
+  test.skip('When committing 3 blocks sequentially, nothing fails', async () => {
     const { pre, client } = clientFactory()
 
     const stream = await Torii.listenForBlocksStream(pre, { height: 0n })

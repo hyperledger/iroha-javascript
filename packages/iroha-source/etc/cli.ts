@@ -9,9 +9,12 @@ yargs(hideBin(process.argv))
   .command(
     'build <binary>',
     'Build specified binary',
-    (yargs) => yargs.positional('binary', { choices: ['iroha', 'kagami'] as const, demandOption: true }),
+    (yargs) =>
+      yargs
+        .positional('binary', { choices: ['iroha', 'kagami'] as const, demandOption: true })
+        .option('ignore-built', { type: 'boolean', default: false }),
     async (args) => {
-      await buildBinary(args.binary)
+      await buildBinary(args.binary, args.ignoreBuilt)
     },
   )
   .help()

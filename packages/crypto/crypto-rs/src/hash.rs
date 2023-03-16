@@ -39,8 +39,15 @@ impl Hash {
     pub const LENGTH: usize = 32;
 
     /// Wrap the given bytes; they must be prehashed with `VarBlake2b`
-    pub const fn prehashed(bytes: [u8; Self::LENGTH]) -> Self {
-        Self(bytes)
+    pub const fn prehashed(mut bytes: [u8; Self::LENGTH]) -> Self {
+        bytes[Self::LENGTH - 1] |= 1;
+        #[allow(unsafe_code)]
+        // SAFETY:
+        // - any `u8` value after bitwise or with 1 will be at least 1
+        // - `Hash` and `[u8; Hash::LENGTH]` have the same memory layout
+        unsafe {
+            core::mem::transmute(bytes)
+        }
     }
 
     /// Construct zeroed hash

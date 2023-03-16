@@ -8,7 +8,6 @@
 import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
 import {
   AccountId,
-  Enum,
   Executable,
   MapNameValue,
   OptionU32,
@@ -19,7 +18,7 @@ import {
   QueryBox,
   QueryError,
   QueryPayload,
-  Result,
+  RustResult,
   Signature,
   SignedQueryRequest,
   SignedTransaction,
@@ -28,6 +27,7 @@ import {
   VersionedPaginatedQueryResult,
   VersionedSignedQueryRequest,
   VersionedSignedTransaction,
+  variant,
 } from '@iroha2/data-model'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
 import {
@@ -145,11 +145,6 @@ export function makeVersionedSignedTransaction(
   )
 }
 
-/**
- * @deprecated use {@link makeVersionedSignedTransaction}
- */
-export const makeSignedTransaction = makeVersionedSignedTransaction
-
 export function executableIntoSignedTransaction(params: {
   signer: Signer
   executable: Executable
@@ -202,11 +197,6 @@ export function makeVersionedSignedQuery(payload: QueryPayload, signer: Signer):
   return VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature }))
 }
 
-/**
- * @deprecated use {@link makeVersionedSignedQuery}
- */
-export const makeSignedQuery = makeVersionedSignedQuery
-
 export function queryBoxIntoSignedQuery(params: {
   query: QueryBox
   signer: Signer
@@ -248,15 +238,15 @@ export type ToriiRequirementsForApiWebSocket = ToriiRequirementsPartUrlApi & Tor
 
 export type ToriiRequirementsForTelemetry = ToriiRequirementsPartUrlTelemetry & ToriiRequirementsPartHttp
 
-export type ToriiQueryResult = Result<PaginatedQueryResult, QueryError>
+export type ToriiQueryResult = RustResult<PaginatedQueryResult, QueryError>
 
 export interface ToriiApiHttp {
   submit: (prerequisites: ToriiRequirementsForApiHttp, tx: VersionedSignedTransaction) => Promise<void>
   request: (
     prerequisites: ToriiRequirementsForApiHttp,
     query: VersionedSignedQueryRequest,
-  ) => Promise<Result<PaginatedQueryResult, QueryError>>
-  getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<Result<null, string>>
+  ) => Promise<RustResult<PaginatedQueryResult, QueryError>>
+  getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<RustResult<null, string>>
   setPeerConfig: (prerequisites: ToriiRequirementsForApiHttp, params: SetPeerConfigParams) => Promise<void>
 }
 
@@ -303,12 +293,12 @@ export const Torii: ToriiOmnibus = {
 
     if (response.status === 200) {
       // OK
-      const value = VersionedPaginatedQueryResult.fromBuffer(bytes).as('V1')
-      return Enum.variant<ToriiQueryResult>('Ok', value)
+      const value: PaginatedQueryResult = VersionedPaginatedQueryResult.fromBuffer(bytes).enum.content
+      return variant('Ok', value)
     } else {
       // ERROR
       const error = QueryError.fromBuffer(bytes)
-      return Enum.variant<ToriiQueryResult>('Err', error)
+      return variant('Err', error)
     }
   },
 
@@ -317,17 +307,17 @@ export const Torii: ToriiOmnibus = {
     try {
       response = await pre.fetch(pre.apiURL + ENDPOINT_HEALTH)
     } catch (err) {
-      return Enum.variant('Err', `Network error: ${String(err)}`)
+      return variant('Err', `Network error: ${String(err)}`)
     }
 
     ResponseError.throwIfStatusIsNot(response, 200)
 
     const text = await response.text()
     if (text !== HEALTHY_RESPONSE) {
-      return Enum.variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`)
+      return variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`)
     }
 
-    return Enum.variant('Ok', null)
+    return variant('Ok', null)
   },
 
   async listenForEvents(pre, params: Pick<SetupEventsParams, 'filter'>) {
