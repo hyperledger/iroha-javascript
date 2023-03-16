@@ -13,8 +13,8 @@ export const assetsByAccountId = (accountId: model.AccountId): model.QueryBox =>
   )
 
 export const allDomains = () => model.QueryBox('FindAllDomains', null)
-
 export const allAccounts = () => model.QueryBox('FindAllAccounts', null)
+export const allAssets = () => model.QueryBox('FindAllAssets', null)
 
 export const assetById = (id: model.AssetId): model.QueryBox =>
   model.QueryBox(

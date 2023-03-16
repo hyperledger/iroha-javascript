@@ -1,59 +1,34 @@
-// #region imports
 import {
-  AccountId,
-  DomainId,
-  EvaluatesToRegistrableBox,
-  Expression,
-  IdentifiableBox,
-  Instruction,
-  MapNameValue,
-  Metadata,
-  NewAccount,
-  PublicKey,
-  RegisterBox,
-  Value,
-  VecPublicKey,
-} from '@iroha2/data-model'
-// #endregion imports
+  Client,
+  ToriiRequirementsForApiHttp,
+  build,
+  getCryptoAnyway,
+} from '@iroha2/client'
+import { freeScope } from '@iroha2/crypto-core'
+import { pipe } from 'fp-ts/function'
 
-// #region account
-const accountId = AccountId({
-  name: 'white_rabbit',
-  domain_id: DomainId({
-    name: 'looking_glass',
-  }),
+// --snip--
+declare const client: Client
+declare const toriiRequirements: ToriiRequirementsForApiHttp
+
+const crypto = getCryptoAnyway()
+
+// generating the key pair
+const accountKeyPair = freeScope((scope) => {
+  const pair = crypto.KeyGenConfiguration.default().useSeed('hex', 'abcd1122').generate()
+  scope.forget(pair)
+  return pair
 })
-// #endregion account
 
-// #region pubkey
-const pubKey = PublicKey({
-  payload: new Uint8Array([
-    /* put bytes here */
-  ]),
-  digest_function: 'some_digest',
-})
-// #endregion pubkey
+// extracting the public key
+const publicKey = freeScope(() => accountKeyPair.publicKey().toDataModel())
 
-// #region isi
-const registerAccountInstruction = Instruction(
-  'Register',
-  RegisterBox({
-    object: EvaluatesToRegistrableBox({
-      expression: Expression(
-        'Raw',
-        Value(
-          'Identifiable',
-          IdentifiableBox(
-            'NewAccount',
-            NewAccount({
-              id: accountId, // [!code hl:2]
-              signatories: VecPublicKey([pubKey]),
-              metadata: Metadata({ map: MapNameValue(new Map()) }),
-            }),
-          ),
-        ),
-      ),
-    }),
-  }),
+await client.submitExecutable(
+  toriiRequirements,
+  pipe(
+    build.accountId('white_rabbit', 'looking_glass'),
+    (id) => build.identifiable.newAccount(id, [publicKey]),
+    build.instruction.register,
+    build.executable.instruction,
+  ),
 )
-// #endregion isi

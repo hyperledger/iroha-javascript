@@ -1,61 +1,28 @@
-import {
-  AccountId,
-  AssetDefinitionId,
-  AssetId,
-  DomainId,
-  EvaluatesToIdBox,
-  EvaluatesToValue,
-  Expression,
-  IdBox,
-  Instruction,
-  NumericValue,
-  TransferBox,
-  Value,
-} from '@iroha2/data-model'
+import * as model from '@iroha2/data-model'
+import { Client, ToriiRequirementsForApiHttp, build } from '@iroha2/client'
+import { pipe } from 'fp-ts/function'
 
-const domainId = DomainId({
-  name: 'wonderland',
-})
+// --snip--
+declare const client: Client
+declare const toriiRequirements: ToriiRequirementsForApiHttp
 
-const assetDefinitionId = AssetDefinitionId({
-  name: 'time',
-  domain_id: domainId,
-})
+const domainId = build.domainId('wonderland')
 
-const amountToTransfer = Value('Numeric', NumericValue('U32', 100))
+const assetDefinitionId = build.assetDefinitionId('time', domainId)
 
-const fromAccount = AccountId({
-  name: 'alice',
-  domain_id: domainId,
-})
+const amountToTransfer = build.value.numericU32(100)
 
-const toAccount = AccountId({
-  name: 'mouse',
-  domain_id: domainId,
-})
+const fromAccount = build.accountId('alice', domainId)
 
-const evaluatesToAssetId = (assetId: AssetId): EvaluatesToIdBox =>
-  EvaluatesToIdBox({
-    expression: Expression('Raw', Value('Id', IdBox('AssetId', assetId))),
-  })
+const toAccount = build.accountId('mouse', domainId)
 
-const transferAssetInstruction = Instruction(
-  'Transfer',
-  TransferBox({
-    source_id: evaluatesToAssetId(
-      AssetId({
-        definition_id: assetDefinitionId,
-        account_id: fromAccount,
-      }),
-    ),
-    destination_id: evaluatesToAssetId(
-      AssetId({
-        definition_id: assetDefinitionId,
-        account_id: toAccount,
-      }),
-    ),
-    object: EvaluatesToValue({
-      expression: Expression('Raw', amountToTransfer),
-    }),
-  }),
+const transferIsi = build.instruction.transfer(
+  model.IdBox('AssetId', build.assetId(fromAccount, assetDefinitionId)),
+  amountToTransfer,
+  model.IdBox('AssetId', build.assetId(toAccount, assetDefinitionId)),
+)
+
+await client.submitExecutable(
+  toriiRequirements,
+  pipe(transferIsi, build.executable.instruction),
 )

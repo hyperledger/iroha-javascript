@@ -1,9 +1,4 @@
-import {
-  Torii,
-  ToriiRequirementsForTelemetry,
-  build,
-  setCrypto,
-} from '@iroha2/client'
+import { Torii, ToriiRequirementsForTelemetry, build, setCrypto } from '@iroha2/client'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
 import * as model from '@iroha2/data-model'
@@ -153,24 +148,10 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   await client.submitExecutable(
     pre,
     pipe(
-      model.MintBox({
-        object: model.EvaluatesToValue({
-          expression: model.Expression(
-            'Raw',
-            model.Value('Numeric', model.NumericValue('Fixed', model.FixedPointI64(DECIMAL))),
-          ),
-        }),
-        destination_id: model.EvaluatesToIdBox({
-          expression: model.Expression(
-            'Raw',
-            model.Value(
-              'Id',
-              model.IdBox('AssetId', build.assetId(client_config.account as model.AccountId, ASSET_DEFINITION_ID)),
-            ),
-          ),
-        }),
-      }),
-      build.instruction.mint,
+      build.instruction.mint(
+        build.value.numericFixed(model.FixedPointI64(DECIMAL)),
+        model.IdBox('AssetId', build.assetId(client_config.account as model.AccountId, ASSET_DEFINITION_ID)),
+      ),
       build.executable.instruction,
     ),
   )

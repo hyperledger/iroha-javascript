@@ -292,6 +292,7 @@ importers:
       '@iroha2/crypto-target-node': workspace:^1.0.0
       '@iroha2/crypto-target-web': workspace:^1.0.0
       '@iroha2/data-model': workspace:^4.1.0
+      fp-ts: ^2.13.1
       node-fetch: ^3.3.0
       undici: ^5.20.0
     devDependencies:
@@ -301,6 +302,7 @@ importers:
       '@iroha2/crypto-target-node': link:../crypto/packages/target-node
       '@iroha2/crypto-target-web': link:../crypto/packages/target-web
       '@iroha2/data-model': link:../data-model
+      fp-ts: 2.13.1
       node-fetch: 3.3.0
       undici: 5.20.0
 

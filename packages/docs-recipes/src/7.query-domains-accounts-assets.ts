@@ -1,6 +1,5 @@
 // #region intro
-import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
-import { QueryBox } from '@iroha2/data-model'
+import { Client, ToriiRequirementsForApiHttp, build } from '@iroha2/client'
 
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
@@ -10,7 +9,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllDomains', null),
+    build.find.allDomains(),
   )
 
   const domains = result
@@ -32,7 +31,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region accounts
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllAccounts', null),
+    build.find.allAccounts(),
   )
 
   const accounts = result
@@ -54,7 +53,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region assets
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllAssets', null),
+    build.find.allAssets(),
   )
 
   const assets = result
