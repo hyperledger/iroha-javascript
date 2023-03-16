@@ -22,4 +22,3 @@ export const assetId = (account: model.AccountId, definition: model.AssetDefinit
     account_id: account,
     definition_id: definition,
   })
-

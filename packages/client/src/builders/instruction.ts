@@ -10,7 +10,6 @@ export const register = (identifiable: model.IdentifiableBox): model.Instruction
     }),
   )
 
-
 /**
  * FIXME shouldn't it be more opinionated?
  */

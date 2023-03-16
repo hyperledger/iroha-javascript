@@ -120,9 +120,9 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
   await pipelineStepDelay()
 }
 
-const MINTED = 42
-
 // Preparing MST transaction payload
+
+const MINTED = 42
 
 const mintTransactionPayload = makeTransactionPayload({
   executable: pipe(
@@ -158,6 +158,33 @@ const tx1 = model.VersionedSignedTransaction(
 await Torii.submit(pre, tx1)
 await pipelineStepDelay()
 
+// Check that the asset is not minted
+
+// we will use this function twice - now and after the second transaction
+async function findAsset(): Promise<model.Asset | null> {
+  const result = await Torii.request(
+    pre,
+    pipe(
+      build.find.assetsByAccountId(MAD_HATTER),
+      (query) => makeQueryPayload({ query, accountId: MAD_HATTER }),
+      (payload) => makeVersionedSignedQuery(payload, signer1),
+    ),
+  )
+
+  const asset = result
+    .as('Ok')
+    .result.enum.as('Vec')
+    .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
+    .find((x) => x.id.definition_id.name === CASOMILE_DEFINITION_ID.name)
+
+  return asset ?? null
+}
+
+{
+  const asset = await findAsset()
+  expect(asset).toBeNull()
+}
+
 // 2nd transaction, signed with both keys
 
 const tx2 =
@@ -170,25 +197,13 @@ const tx2 =
 await Torii.submit(pre, tx2)
 await pipelineStepDelay()
 
-// Checking results
+// Checking results after the second transaction
 
-const result = await Torii.request(
-  pre,
-  pipe(
-    build.find.assetByAccountId(MAD_HATTER),
-    (query) => makeQueryPayload({ query, accountId: MAD_HATTER }),
-    (payload) => makeVersionedSignedQuery(payload, signer1),
-  ),
-)
-
-const asset = result
-  .as('Ok')
-  .result.enum.as('Vec')
-  .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
-  .find((x) => x.id.definition_id.name === CASOMILE_DEFINITION_ID.name)
-
-expect(asset).toBeTruthy()
-expect(asset!.value.enum.as('Quantity')).toEqual(MINTED)
+{
+  const asset = await findAsset()
+  expect(asset).not.toBeNull()
+  expect(asset!.value.enum.as('Quantity')).toEqual(MINTED)
+}
 
 // Finally, we collect our garbage
 

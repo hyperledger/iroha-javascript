@@ -1,6 +1,6 @@
 import * as model from '@iroha2/data-model'
-import {expect} from 'vitest'
-import {clientFactory, pipelineStepDelay} from './test-util'
+import { expect } from 'vitest'
+import { clientFactory, pipelineStepDelay } from './test-util'
 
 const { client, pre } = clientFactory()
 

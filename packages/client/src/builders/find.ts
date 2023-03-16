@@ -2,7 +2,7 @@
 
 import model from './model'
 
-export const assetByAccountId = (accountId: model.AccountId): model.QueryBox =>
+export const assetsByAccountId = (accountId: model.AccountId): model.QueryBox =>
   model.QueryBox(
     'FindAssetsByAccountId',
     model.FindAssetsByAccountId({

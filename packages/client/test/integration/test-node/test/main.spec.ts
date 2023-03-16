@@ -1,15 +1,13 @@
 import {
-  Client,
-  setCrypto,
   Torii,
-  ToriiRequirementsForApiHttp,
   ToriiRequirementsForTelemetry,
   build,
+  setCrypto,
 } from '@iroha2/client'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
 import * as model from '@iroha2/data-model'
-import { cleanConfiguration, cleanSideEffects, setConfiguration, startPeer, StartPeerReturn } from '@iroha2/test-peer'
+import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
 import { Seq } from 'immutable'
 import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
 import { client_config, peer_config, peer_genesis } from '../../config'
@@ -181,7 +179,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   // Checking added asset via query
   const result = await client.requestWithQueryBox(
     pre,
-    build.find.assetByAccountId(client_config.account as model.AccountId),
+    build.find.assetsByAccountId(client_config.account as model.AccountId),
   )
 
   // Assert
@@ -241,12 +239,13 @@ test('When querying for not existing domain, returns FindError', async () => {
   expect(result.as('Err').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
 })
 
-test.only('Multisignature', async () => {
+test('Multisignature', async () => {
   await import('./multisignature')
 })
 
 // Transferring Store asset is not supported
-// TODO add link
+// https://github.com/hyperledger/iroha-2-docs/issues/273
+// TODO rewrite test to transferring something else
 test.skip('Transferring Store asset between accounts', async () => {
   await import('./transfer-store-asset')
 })
