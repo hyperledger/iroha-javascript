@@ -1,27 +1,27 @@
 // TODO all queries, categorised as in `iroha_client` crate
 
-import model from './model'
+import { datamodel } from './model'
 
-export const assetsByAccountId = (accountId: model.AccountId): model.QueryBox =>
-  model.QueryBox(
+export const assetsByAccountId = (accountId: datamodel.AccountId): datamodel.QueryBox =>
+  datamodel.QueryBox(
     'FindAssetsByAccountId',
-    model.FindAssetsByAccountId({
-      account_id: model.EvaluatesToAccountId({
-        expression: model.Expression('Raw', model.Value('Id', model.IdBox('AccountId', accountId))),
+    datamodel.FindAssetsByAccountId({
+      account_id: datamodel.EvaluatesToAccountId({
+        expression: datamodel.Expression('Raw', datamodel.Value('Id', datamodel.IdBox('AccountId', accountId))),
       }),
     }),
   )
 
-export const allDomains = () => model.QueryBox('FindAllDomains', null)
-export const allAccounts = () => model.QueryBox('FindAllAccounts', null)
-export const allAssets = () => model.QueryBox('FindAllAssets', null)
+export const allDomains = () => datamodel.QueryBox('FindAllDomains', null)
+export const allAccounts = () => datamodel.QueryBox('FindAllAccounts', null)
+export const allAssets = () => datamodel.QueryBox('FindAllAssets', null)
 
-export const assetById = (id: model.AssetId): model.QueryBox =>
-  model.QueryBox(
+export const assetById = (id: datamodel.AssetId): datamodel.QueryBox =>
+  datamodel.QueryBox(
     'FindAssetById',
-    model.FindAssetById({
-      id: model.EvaluatesToAssetId({
-        expression: model.Expression('Raw', model.Value('Id', model.IdBox('AssetId', id))),
+    datamodel.FindAssetById({
+      id: datamodel.EvaluatesToAssetId({
+        expression: datamodel.Expression('Raw', datamodel.Value('Id', datamodel.IdBox('AssetId', id))),
       }),
     }),
   )

@@ -1,55 +1,55 @@
-import model from './model'
+import { datamodel } from './model'
 
 export const newAccount = (
-  accountId: model.AccountId,
-  signatories: model.PublicKey[],
+  accountId: datamodel.AccountId,
+  signatories: datamodel.PublicKey[],
   opts?: {
-    metadata?: model.Metadata
+    metadata?: datamodel.Metadata
   },
-): model.IdentifiableBox =>
-  model.IdentifiableBox(
+): datamodel.IdentifiableBox =>
+  datamodel.IdentifiableBox(
     'NewAccount',
-    model.NewAccount({
+    datamodel.NewAccount({
       id: accountId,
-      signatories: model.VecPublicKey(signatories),
+      signatories: datamodel.VecPublicKey(signatories),
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      metadata: opts?.metadata ?? ({ map: new Map() } as model.Metadata),
+      metadata: opts?.metadata ?? ({ map: new Map() } as datamodel.Metadata),
     }),
   )
 
 export const newAssetDefinition = (
-  assetDefinitionId: model.AssetDefinitionId,
-  type: model.AssetValueType,
+  assetDefinitionId: datamodel.AssetDefinitionId,
+  type: datamodel.AssetValueType,
   opts?: {
-    metadata?: model.Metadata
-    mintable?: model.Mintable
+    metadata?: datamodel.Metadata
+    mintable?: datamodel.Mintable
   },
-): model.IdentifiableBox =>
-  model.IdentifiableBox(
+): datamodel.IdentifiableBox =>
+  datamodel.IdentifiableBox(
     'NewAssetDefinition',
-    model.NewAssetDefinition({
+    datamodel.NewAssetDefinition({
       id: assetDefinitionId,
       value_type: type,
-      mintable: opts?.mintable ?? model.Mintable('Not'),
+      mintable: opts?.mintable ?? datamodel.Mintable('Not'),
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      metadata: opts?.metadata ?? ({ map: new Map() } as model.Metadata),
+      metadata: opts?.metadata ?? ({ map: new Map() } as datamodel.Metadata),
     }),
   )
 
 export const newDomain = (
   domainName: string,
   opts?: {
-    metadata?: model.Metadata
+    metadata?: datamodel.Metadata
     logo?: string
   },
-): model.IdentifiableBox =>
-  model.IdentifiableBox(
+): datamodel.IdentifiableBox =>
+  datamodel.IdentifiableBox(
     'NewDomain',
-    model.NewDomain({
-      id: model.DomainId({
+    datamodel.NewDomain({
+      id: datamodel.DomainId({
         name: domainName,
       }),
-      metadata: opts?.metadata ?? model.Metadata({ map: model.MapNameValue(new Map()) }),
-      logo: opts?.logo ? model.OptionIpfsPath('Some', opts.logo) : model.OptionIpfsPath('None'),
+      metadata: opts?.metadata ?? datamodel.Metadata({ map: datamodel.MapNameValue(new Map()) }),
+      logo: opts?.logo ? datamodel.OptionIpfsPath('Some', opts.logo) : datamodel.OptionIpfsPath('None'),
     }),
   )

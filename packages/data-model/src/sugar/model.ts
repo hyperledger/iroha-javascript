@@ -1,2 +1,1 @@
-import * as model from '../__generated__'
-export default model
+export * as datamodel from '../__generated__'

@@ -1,19 +1,19 @@
-import model from './model'
+import { datamodel } from './model'
 
 export const pipeline = (opts?: {
   entityKind?: 'Transaction' | 'Block'
   statusKind?: 'Validating' | 'Rejected' | 'Committed'
-  hash?: model.Hash
-}): model.FilterBox =>
-  model.FilterBox(
+  hash?: datamodel.Hash
+}): datamodel.FilterBox =>
+  datamodel.FilterBox(
     'Pipeline',
-    model.PipelineEventFilter({
+    datamodel.PipelineEventFilter({
       entity_kind: opts?.entityKind
-        ? model.OptionPipelineEntityKind('Some', model.PipelineEntityKind(opts.entityKind))
-        : model.OptionPipelineEntityKind('None'),
+        ? datamodel.OptionPipelineEntityKind('Some', datamodel.PipelineEntityKind(opts.entityKind))
+        : datamodel.OptionPipelineEntityKind('None'),
       status_kind: opts?.statusKind
-        ? model.OptionPipelineStatusKind('Some', model.PipelineStatusKind(opts.statusKind))
-        : model.OptionPipelineStatusKind('None'),
-      hash: opts?.hash ? model.OptionHash('Some', opts.hash) : model.OptionHash('None'),
+        ? datamodel.OptionPipelineStatusKind('Some', datamodel.PipelineStatusKind(opts.statusKind))
+        : datamodel.OptionPipelineStatusKind('None'),
+      hash: opts?.hash ? datamodel.OptionHash('Some', opts.hash) : datamodel.OptionHash('None'),
     }),
   )

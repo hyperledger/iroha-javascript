@@ -1,36 +1,40 @@
-import model from './model'
+import { datamodel } from './model'
 
-export const register = (identifiable: model.IdentifiableBox): model.Instruction =>
-  model.Instruction(
+export const register = (identifiable: datamodel.IdentifiableBox): datamodel.Instruction =>
+  datamodel.Instruction(
     'Register',
-    model.RegisterBox({
-      object: model.EvaluatesToRegistrableBox({
-        expression: model.Expression('Raw', model.Value('Identifiable', identifiable)),
+    datamodel.RegisterBox({
+      object: datamodel.EvaluatesToRegistrableBox({
+        expression: datamodel.Expression('Raw', datamodel.Value('Identifiable', identifiable)),
       }),
     }),
   )
 
-export const mint = (object: model.Value, destination: model.IdBox): model.Instruction =>
-  model.Instruction(
+export const mint = (object: datamodel.Value, destination: datamodel.IdBox): datamodel.Instruction =>
+  datamodel.Instruction(
     'Mint',
-    model.MintBox({
-      object: model.EvaluatesToValue({ expression: model.Expression('Raw', object) }),
-      destination_id: model.EvaluatesToIdBox({
-        expression: model.Expression('Raw', model.Value('Id', destination)),
+    datamodel.MintBox({
+      object: datamodel.EvaluatesToValue({ expression: datamodel.Expression('Raw', object) }),
+      destination_id: datamodel.EvaluatesToIdBox({
+        expression: datamodel.Expression('Raw', datamodel.Value('Id', destination)),
       }),
     }),
   )
 
-export const transfer = (source: model.IdBox, object: model.Value, destination: model.IdBox): model.Instruction =>
-  model.Instruction(
+export const transfer = (
+  source: datamodel.IdBox,
+  object: datamodel.Value,
+  destination: datamodel.IdBox,
+): datamodel.Instruction =>
+  datamodel.Instruction(
     'Transfer',
-    model.TransferBox({
-      source_id: model.EvaluatesToIdBox({
-        expression: model.Expression('Raw', model.Value('Id', source)),
+    datamodel.TransferBox({
+      source_id: datamodel.EvaluatesToIdBox({
+        expression: datamodel.Expression('Raw', datamodel.Value('Id', source)),
       }),
-      destination_id: model.EvaluatesToIdBox({
-        expression: model.Expression('Raw', model.Value('Id', destination)),
+      destination_id: datamodel.EvaluatesToIdBox({
+        expression: datamodel.Expression('Raw', datamodel.Value('Id', destination)),
       }),
-      object: model.EvaluatesToValue({ expression: model.Expression('Raw', object) }),
+      object: datamodel.EvaluatesToValue({ expression: datamodel.Expression('Raw', object) }),
     }),
   )

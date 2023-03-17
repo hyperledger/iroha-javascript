@@ -1,3 +1,3 @@
-import model from './model'
+import { datamodel } from './model'
 
-export const raw = (value: model.Value): model.Expression => model.Expression('Raw', value)
+export const raw = (value: datamodel.Value): datamodel.Expression => datamodel.Expression('Raw', value)
