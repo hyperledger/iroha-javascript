@@ -5,4 +5,5 @@
  */
 
 export * from './__generated__'
+export * as sugar from './sugar/index'
 export * from '@scale-codec/definition-runtime'

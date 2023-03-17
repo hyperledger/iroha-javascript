@@ -1,5 +1,6 @@
 // #region intro
-import { Client, ToriiRequirementsForApiHttp, build } from '@iroha2/client'
+import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
+import * as model from '@iroha2/data-model'
 
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
@@ -9,7 +10,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    build.find.allDomains(),
+    model.sugar.find.allDomains(),
   )
 
   const domains = result
@@ -31,7 +32,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region accounts
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    build.find.allAccounts(),
+    model.sugar.find.allAccounts(),
   )
 
   const accounts = result
@@ -53,7 +54,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region assets
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    build.find.allAssets(),
+    model.sugar.find.allAssets(),
   )
 
   const assets = result

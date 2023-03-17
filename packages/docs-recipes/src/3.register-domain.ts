@@ -1,5 +1,6 @@
 // #region pre
-import { Client, ToriiRequirementsForApiHttp, build } from '@iroha2/client'
+import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
+import * as model from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 
 // --snip--
@@ -11,9 +12,9 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 await client.submitExecutable(
   toriiRequirements,
   pipe(
-    build.identifiable.newDomain('looking_glass'),
-    build.instruction.register,
-    build.executable.instruction,
+    model.sugar.identifiable.newDomain('looking_glass'),
+    model.sugar.instruction.register,
+    model.sugar.executable.instructions,
   ),
 )
 // #endregion do-reg
@@ -23,7 +24,7 @@ async function ensureDomainExistence(domainName: string) {
   // Query all domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    build.find.allDomains(),
+    model.sugar.find.allDomains(),
   )
 
   // Display the request status

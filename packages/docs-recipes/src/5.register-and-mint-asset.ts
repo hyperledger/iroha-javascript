@@ -1,50 +1,50 @@
 // #region pre
 import * as model from '@iroha2/data-model'
-import { Client, ToriiRequirementsForApiHttp, build } from '@iroha2/client'
+import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
 import { pipe } from 'fp-ts/function'
 
 // --snip--
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
 
-const timeDefinitionId = build.assetDefinitionId('time', 'looking_glass')
+const timeDefinitionId = model.sugar.assetDefinitionId('time', 'looking_glass')
 // #endregion pre
 
 // #region register
 await client.submitExecutable(
   toriiRequirements,
   pipe(
-    build.identifiable.newAssetDefinition(
+    model.sugar.identifiable.newAssetDefinition(
       timeDefinitionId, // [!code hl]
       model.AssetValueType('Quantity'),
       {
         mintable: model.Mintable('Infinitely'), // If only we could mint more time.
       },
     ),
-    build.instruction.register,
-    build.executable.instruction,
+    model.sugar.instruction.register,
+    model.sugar.executable.instructions,
   ),
 )
 // #endregion register
 
 {
   // #region mint
-  const mintValue = build.value.numericU32(32)
+  const mintValue = model.sugar.value.numericU32(32)
 
   await client.submitExecutable(
     toriiRequirements,
     pipe(
-      build.instruction.mint(
+      model.sugar.instruction.mint(
         mintValue,
         model.IdBox(
           'AssetId',
-          build.assetId(
-            build.accountId('alice', 'wonderland'),
+          model.sugar.assetId(
+            model.sugar.accountId('alice', 'wonderland'),
             timeDefinitionId, // [!code hl]
           ),
         ),
       ),
-      build.executable.instruction,
+      model.sugar.executable.instructions,
     ),
   )
   // #endregion mint

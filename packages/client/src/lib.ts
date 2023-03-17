@@ -397,6 +397,3 @@ export * from './events'
 export * from './blocks-stream'
 export * from './crypto-singleton'
 export * from './web-socket/types'
-
-// without `/index` Rollup fails to resolve it
-export * as build from './builders/index'

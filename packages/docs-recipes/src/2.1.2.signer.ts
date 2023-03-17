@@ -1,6 +1,6 @@
 import { cryptoTypes } from '@iroha2/crypto-core'
 import { Signer } from '@iroha2/client'
-import { AccountId, DomainId } from '@iroha2/data-model'
+import { AccountId, DomainId, sugar } from '@iroha2/data-model'
 
 // Key pair from previous step
 declare const keyPair: cryptoTypes.KeyPair
@@ -13,5 +13,8 @@ const accountId = AccountId({
     name: 'wonderland',
   }),
 })
+
+// same, but shorter
+const sameAccountId = sugar.accountId('alice', 'wonderland')
 
 const signer = new Signer(accountId, keyPair)

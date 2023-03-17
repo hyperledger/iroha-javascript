@@ -1,7 +1,6 @@
 import {
   Signer,
   Torii,
-  build,
   computeTransactionHash,
   getCryptoAnyway,
   makeQueryPayload,
@@ -19,8 +18,8 @@ import { clientFactory, pipelineStepDelay } from './test-util'
 const crypto = getCryptoAnyway()
 const { client: clientAdmin, pre } = clientFactory()
 
-const MAD_HATTER = build.accountId('mad_hatter', 'wonderland')
-const CASOMILE_DEFINITION_ID = build.assetDefinitionId('casomile', 'wonderland')
+const MAD_HATTER = model.sugar.accountId('mad_hatter', 'wonderland')
+const CASOMILE_DEFINITION_ID = model.sugar.assetDefinitionId('casomile', 'wonderland')
 
 // Generating two key pairs
 
@@ -42,77 +41,65 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
 // Registering the account, the asset definition and the signature check condition
 {
   const registerAccount = pipe(
-    build.identifiable.newAccount(
+    model.sugar.identifiable.newAccount(
       MAD_HATTER,
       // Using only the first key
       [freeScope(() => KEYS[0].publicKey().toDataModel())],
     ),
-    build.instruction.register,
+    model.sugar.instruction.register,
   )
 
   const registerAssetDefinition = pipe(
-    build.identifiable.newAssetDefinition(CASOMILE_DEFINITION_ID, model.AssetValueType('Quantity'), {
+    model.sugar.identifiable.newAssetDefinition(CASOMILE_DEFINITION_ID, model.AssetValueType('Quantity'), {
       mintable: model.Mintable('Infinitely'),
     }),
-    build.instruction.register,
+    model.sugar.instruction.register,
   )
 
-  const setSignatureCondition = pipe(
-    model.MintBox({
-      object: model.EvaluatesToValue({
+  const setSignatureCondition = model.sugar.instruction.mint(
+    model.Value(
+      'SignatureCheckCondition',
+      model.EvaluatesToBool({
         expression: model.Expression(
-          'Raw',
-          model.Value(
-            'SignatureCheckCondition',
-            model.EvaluatesToBool({
+          'ContainsAll',
+          model.ContainsAll({
+            collection: model.EvaluatesToVecValue({
               expression: model.Expression(
-                'ContainsAll',
-                model.ContainsAll({
-                  collection: model.EvaluatesToVecValue({
-                    expression: model.Expression(
-                      'ContextValue',
-                      model.ContextValue({
-                        value_name:
-                          // FIXME magic constant
-                          'transaction_signatories',
-                      }),
-                    ),
-                  }),
-                  elements: model.EvaluatesToVecValue({
-                    expression: model.Expression(
-                      'Raw',
-                      model.Value(
-                        'Vec',
-                        model.VecValue(
-                          freeScope(() =>
-                            KEYS.map((keypair) => model.Value('PublicKey', keypair.publicKey().toDataModel())),
-                          ),
-                        ),
-                      ),
-                    ),
-                  }),
+                'ContextValue',
+                model.ContextValue({
+                  value_name:
+                    // FIXME magic constant
+                    'transaction_signatories',
                 }),
               ),
             }),
-          ),
+            elements: model.EvaluatesToVecValue({
+              expression: model.Expression(
+                'Raw',
+                model.Value(
+                  'Vec',
+                  model.VecValue(
+                    freeScope(() => KEYS.map((keypair) => model.Value('PublicKey', keypair.publicKey().toDataModel()))),
+                  ),
+                ),
+              ),
+            }),
+          }),
         ),
       }),
-      destination_id: model.EvaluatesToIdBox({
-        expression: model.Expression('Raw', model.Value('Id', model.IdBox('AccountId', MAD_HATTER))),
-      }),
-    }),
-    build.instruction.mint,
+    ),
+    model.IdBox('AccountId', MAD_HATTER),
   )
 
   // register Mad Hatter with the admin account
-  await clientAdmin.submitExecutable(pre, build.executable.instruction(registerAccount))
+  await clientAdmin.submitExecutable(pre, model.sugar.executable.instructions(registerAccount))
   await pipelineStepDelay()
 
   // Register the asset definition with the Mad Hatter's account
   await Torii.submit(
     pre,
     pipe(
-      build.executable.instructions([registerAssetDefinition, setSignatureCondition]),
+      model.sugar.executable.instructions([registerAssetDefinition, setSignatureCondition]),
       (executable) => makeTransactionPayload({ executable, accountId: MAD_HATTER }),
       (x) => makeVersionedSignedTransaction(x, signer1),
     ),
@@ -126,19 +113,11 @@ const MINTED = 42
 
 const mintTransactionPayload = makeTransactionPayload({
   executable: pipe(
-    model.MintBox({
-      object: model.EvaluatesToValue({
-        expression: model.Expression('Raw', model.Value('Numeric', model.NumericValue('U32', MINTED))),
-      }),
-      destination_id: model.EvaluatesToIdBox({
-        expression: model.Expression(
-          'Raw',
-          model.Value('Id', model.IdBox('AssetId', build.assetId(MAD_HATTER, CASOMILE_DEFINITION_ID))),
-        ),
-      }),
-    }),
-    build.instruction.mint,
-    build.executable.instruction,
+    model.sugar.instruction.mint(
+      model.sugar.value.numericU32(MINTED),
+      model.IdBox('AssetId', model.sugar.assetId(MAD_HATTER, CASOMILE_DEFINITION_ID)),
+    ),
+    model.sugar.executable.instructions,
   ),
   accountId: MAD_HATTER,
 })
@@ -165,7 +144,7 @@ async function findAsset(): Promise<model.Asset | null> {
   const result = await Torii.request(
     pre,
     pipe(
-      build.find.assetsByAccountId(MAD_HATTER),
+      model.sugar.find.assetsByAccountId(MAD_HATTER),
       (query) => makeQueryPayload({ query, accountId: MAD_HATTER }),
       (payload) => makeVersionedSignedQuery(payload, signer1),
     ),

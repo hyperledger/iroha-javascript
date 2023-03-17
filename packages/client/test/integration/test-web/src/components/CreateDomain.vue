@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { build } from '@iroha2/client'
+import { sugar } from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 import { ref } from 'vue'
 import { client, toriiPre } from '../client'
@@ -10,9 +10,9 @@ const domainName = ref('')
 const { state, run: registerDomain } = useTask(async () => {
   // we can `await` pipe because the last function returns a `Promise`
   await pipe(
-    build.identifiable.newDomain(domainName.value),
-    build.instruction.register,
-    build.executable.instruction,
+    sugar.identifiable.newDomain(domainName.value),
+    sugar.instruction.register,
+    sugar.executable.instructions,
     (exec) => client.submitExecutable(toriiPre, exec),
   )
 })

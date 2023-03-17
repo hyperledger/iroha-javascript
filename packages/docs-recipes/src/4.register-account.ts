@@ -1,10 +1,6 @@
-import {
-  Client,
-  ToriiRequirementsForApiHttp,
-  build,
-  getCryptoAnyway,
-} from '@iroha2/client'
+import { Client, ToriiRequirementsForApiHttp, getCryptoAnyway } from '@iroha2/client'
 import { freeScope } from '@iroha2/crypto-core'
+import * as model from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 
 // --snip--
@@ -26,9 +22,9 @@ const publicKey = freeScope(() => accountKeyPair.publicKey().toDataModel())
 await client.submitExecutable(
   toriiRequirements,
   pipe(
-    build.accountId('white_rabbit', 'looking_glass'),
-    (id) => build.identifiable.newAccount(id, [publicKey]),
-    build.instruction.register,
-    build.executable.instruction,
+    model.sugar.accountId('white_rabbit', 'looking_glass'),
+    (id) => model.sugar.identifiable.newAccount(id, [publicKey]),
+    model.sugar.instruction.register,
+    model.sugar.executable.instructions,
   ),
 )

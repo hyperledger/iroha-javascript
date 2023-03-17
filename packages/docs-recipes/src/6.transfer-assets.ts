@@ -1,28 +1,28 @@
 import * as model from '@iroha2/data-model'
-import { Client, ToriiRequirementsForApiHttp, build } from '@iroha2/client'
+import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
 import { pipe } from 'fp-ts/function'
 
 // --snip--
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
 
-const domainId = build.domainId('wonderland')
+const domainId = model.sugar.domainId('wonderland')
 
-const assetDefinitionId = build.assetDefinitionId('time', domainId)
+const assetDefinitionId = model.sugar.assetDefinitionId('time', domainId)
 
-const amountToTransfer = build.value.numericU32(100)
+const amountToTransfer = model.sugar.value.numericU32(100)
 
-const fromAccount = build.accountId('alice', domainId)
+const fromAccount = model.sugar.accountId('alice', domainId)
 
-const toAccount = build.accountId('mouse', domainId)
+const toAccount = model.sugar.accountId('mouse', domainId)
 
-const transferIsi = build.instruction.transfer(
-  model.IdBox('AssetId', build.assetId(fromAccount, assetDefinitionId)),
+const transferIsi = model.sugar.instruction.transfer(
+  model.IdBox('AssetId', model.sugar.assetId(fromAccount, assetDefinitionId)),
   amountToTransfer,
-  model.IdBox('AssetId', build.assetId(toAccount, assetDefinitionId)),
+  model.IdBox('AssetId', model.sugar.assetId(toAccount, assetDefinitionId)),
 )
 
 await client.submitExecutable(
   toriiRequirements,
-  pipe(transferIsi, build.executable.instruction),
+  pipe(transferIsi, model.sugar.executable.instructions),
 )
