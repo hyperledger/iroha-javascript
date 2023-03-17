@@ -1,6 +1,6 @@
 {
   "name": "@iroha2/data-model",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "module": "dist/esm/lib.mjs",
   "main": "dist/cjs/lib.cjs",
   "types": "dist/types/lib.d.ts",
@@ -24,7 +24,7 @@
     "@scale-codec/definition-runtime": "^4.0.1"
   },
   "devDependencies": {
-    "@iroha2/data-model-schema": "workspace:4.1.0",
+    "@iroha2/data-model-schema": "workspace:5.0.0",
     "@scale-codec/definition-compiler": "^4.0.1",
     "@scale-codec/util": "^1.1.2"
   }

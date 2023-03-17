@@ -76,8 +76,8 @@ importers:
 
   packages/client:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.0
-      '@iroha2/data-model': workspace:4.1.0
+      '@iroha2/crypto-core': workspace:^1.0.1
+      '@iroha2/data-model': workspace:5.0.0
       '@types/debug': ^4.1.7
       '@types/ws': ^8.5.3
       debug: ^4.3.4
@@ -99,8 +99,8 @@ importers:
 
   packages/client/test/integration/test-node:
     specifiers:
-      '@iroha2/client': workspace:^4.1.0
-      '@iroha2/crypto-target-node': workspace:^1.0.0
+      '@iroha2/client': workspace:^5.0.0
+      '@iroha2/crypto-target-node': workspace:^1.0.1
       '@iroha2/test-peer': workspace:^0.0.1
       cross-env: ^7.0.3
       fp-ts: ^2.13.1
@@ -120,10 +120,10 @@ importers:
   packages/client/test/integration/test-web:
     specifiers:
       '@bahmutov/cypress-esbuild-preprocessor': ^2.1.3
-      '@iroha2/client': workspace:^4.1.0
-      '@iroha2/crypto-core': workspace:^1.0.0
-      '@iroha2/crypto-target-web': workspace:^1.0.0
-      '@iroha2/data-model': workspace:^4.1.0
+      '@iroha2/client': workspace:^5.0.0
+      '@iroha2/crypto-core': workspace:^1.0.1
+      '@iroha2/crypto-target-web': workspace:^1.0.1
+      '@iroha2/data-model': workspace:^5.0.0
       '@iroha2/test-peer': workspace:^0.0.1
       '@scale-codec/util': ^1.1.2
       '@vitejs/plugin-vue': ^4.0.0
@@ -164,7 +164,7 @@ importers:
     specifiers:
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
       '@iroha2/crypto-util': workspace:^0.1.0
-      '@iroha2/data-model': workspace:^4.1.0
+      '@iroha2/data-model': workspace:^5.0.0
     dependencies:
       '@iroha2/crypto-util': link:../util
       '@iroha2/data-model': link:../../../data-model
@@ -174,16 +174,16 @@ importers:
   packages/crypto/packages/interface-wrap:
     specifiers:
       '@iroha2/crypto-util': workspace:^0.1.0
-      '@iroha2/data-model': workspace:^4.0.0
+      '@iroha2/data-model': workspace:^5.0.0
     devDependencies:
       '@iroha2/crypto-util': link:../util
       '@iroha2/data-model': link:../../../data-model
 
   packages/crypto/packages/target-bundler:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.0
+      '@iroha2/crypto-core': workspace:^1.0.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
-      '@iroha2/data-model': workspace:^4.1.0
+      '@iroha2/data-model': workspace:^5.0.0
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
@@ -192,9 +192,9 @@ importers:
 
   packages/crypto/packages/target-node:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.0
+      '@iroha2/crypto-core': workspace:^1.0.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
-      '@iroha2/data-model': workspace:^4.1.0
+      '@iroha2/data-model': workspace:^5.0.0
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
@@ -203,9 +203,9 @@ importers:
 
   packages/crypto/packages/target-web:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.0
+      '@iroha2/crypto-core': workspace:^1.0.1
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
-      '@iroha2/data-model': workspace:^4.1.0
+      '@iroha2/data-model': workspace:^5.0.0
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
@@ -249,7 +249,7 @@ importers:
 
   packages/data-model:
     specifiers:
-      '@iroha2/data-model-schema': workspace:4.1.0
+      '@iroha2/data-model-schema': workspace:5.0.0
       '@iroha2/i64-fixnum': workspace:^0.4.2
       '@scale-codec/definition-compiler': ^4.0.1
       '@scale-codec/definition-runtime': ^4.0.1
@@ -286,12 +286,12 @@ importers:
 
   packages/docs-recipes:
     specifiers:
-      '@iroha2/client': workspace:^4.1.0
-      '@iroha2/crypto-core': workspace:^1.0.0
-      '@iroha2/crypto-target-bundler': workspace:^1.0.0
-      '@iroha2/crypto-target-node': workspace:^1.0.0
-      '@iroha2/crypto-target-web': workspace:^1.0.0
-      '@iroha2/data-model': workspace:^4.1.0
+      '@iroha2/client': workspace:^5.0.0
+      '@iroha2/crypto-core': workspace:^1.0.1
+      '@iroha2/crypto-target-bundler': workspace:^1.0.1
+      '@iroha2/crypto-target-node': workspace:^1.0.1
+      '@iroha2/crypto-target-web': workspace:^1.0.1
+      '@iroha2/data-model': workspace:^5.0.0
       fp-ts: ^2.13.1
       node-fetch: ^3.3.0
       undici: ^5.20.0
@@ -322,7 +322,7 @@ importers:
 
   packages/test-peer:
     specifiers:
-      '@iroha2/client': workspace:^4.0.0
+      '@iroha2/client': workspace:^5.0.0
       '@iroha2/iroha-source': workspace:^0.0.0
       '@koa/router': ^10.1.1
       '@types/debug': ^4.1.7

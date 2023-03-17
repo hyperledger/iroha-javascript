@@ -1,5 +1,21 @@
 # @iroha2/client
 
+## 5.0.0
+
+### Major Changes
+
+- d1e5f68: **chore!**: remove deprecated `makeSignedTransaction` and `makeSignedQuery` helpers
+- d1e5f68: **refactor!**: remove `accepted` socket event due to the change in how WebSocket communication is now happening
+
+### Patch Changes
+
+- 3ff768d: **docs**: update target Iroha version (`c4af68c4f7959b154eb5380aa93c894e2e63fe4e`)
+- Updated dependencies [d1e5f68]
+- Updated dependencies [3ff768d]
+- Updated dependencies [d1e5f68]
+  - @iroha2/data-model@5.0.0
+  - @iroha2/crypto-core@1.0.1
+
 ## 4.1.0
 
 ### Minor Changes
