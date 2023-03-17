@@ -72,19 +72,18 @@ test('AddAsset instruction with name length more than limit is not committed', a
   const tooLongAssetName = '0'.repeat(2 ** 14)
   const invalidAssetDefinitionId = model.sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
 
-  await client.submitExecutable(
-    pre,
-    pipe(
-      [normalAssetDefinitionId, invalidAssetDefinitionId].map((id) =>
-        pipe(
-          model.sugar.identifiable.newAssetDefinition(id, model.AssetValueType('BigQuantity')),
-          model.sugar.instruction.register,
-        ),
+  async function register(id: model.AssetDefinitionId) {
+    await client.submitExecutable(
+      pre,
+      pipe(
+        model.sugar.identifiable.newAssetDefinition(id, model.AssetValueType('BigQuantity')),
+        model.sugar.instruction.register,
+        model.sugar.executable.instructions,
       ),
-      model.sugar.executable.instructions,
-    ),
-  )
+    )
+  }
 
+  await Promise.all([register(normalAssetDefinitionId), register(invalidAssetDefinitionId)])
   await pipelineStepDelay()
 
   const queryResult = await client.requestWithQueryBox(pre, model.QueryBox('FindAllAssetsDefinitions', null))
@@ -170,9 +169,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
     .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
 
-  expect(asset).toContainEqual({
-    value: model.AssetValue('Fixed', model.FixedPointI64(DECIMAL)),
-  } satisfies Pick<model.Asset, 'value'>)
+  expect(asset?.value).toEqual(model.AssetValue('Fixed', model.FixedPointI64(DECIMAL)))
 })
 
 test('Registering domain', async () => {
