@@ -1,7 +1,6 @@
 @Library('jenkins-library' )
 
 def pipeline = new org.js.LibPipeline( steps: this,
-    packageManager: "pnpm",
     buildDockerImage: 'build-tools/node:16-corepack-cypress-rust',
     libPushBranches: ['iroha2'],
     npmRegistries: ['https://nexus.iroha.tech/repository/npm-soramitsu/': 'bot-soramitsu-rw'],
