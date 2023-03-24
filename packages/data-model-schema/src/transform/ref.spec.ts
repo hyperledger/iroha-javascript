@@ -29,7 +29,7 @@ describe('Refs transformation', () => {
 
     ['iroha_data_model::events::data::events::Event', 'DataEvent'],
     ['iroha_data_model::events::data::EventFilter', 'DataEventFilter'],
-    ['iroha_data_model::query::Payload', 'QueryPayload'],
+    ['iroha_data_model::query::http::Payload', 'QueryPayload'],
     ['iroha_data_model::transaction::Payload', 'TransactionPayload'],
     ['iroha_data_model::events::EventFilter', 'EventFilter'],
     ['iroha_data_model::events::pipeline::EntityType', 'PipelineEntityType'],

@@ -14,9 +14,8 @@ import {
   PaginatedQueryResult,
   Predicate,
   PredicateBox,
-  PublicKey,
   QueryBox,
-  QueryError,
+  QueryExecutionFailure,
   QueryPayload,
   RustResult,
   Signature,
@@ -79,10 +78,7 @@ export class Signer {
       const publicKey = signature.publicKey()
 
       return Signature({
-        public_key: PublicKey({
-          digest_function: publicKey.digestFunction,
-          payload: publicKey.payload(),
-        }),
+        public_key: publicKey.toDataModel(),
         payload: signature.payload(),
       })
     })
@@ -238,14 +234,14 @@ export type ToriiRequirementsForApiWebSocket = ToriiRequirementsPartUrlApi & Tor
 
 export type ToriiRequirementsForTelemetry = ToriiRequirementsPartUrlTelemetry & ToriiRequirementsPartHttp
 
-export type ToriiQueryResult = RustResult<PaginatedQueryResult, QueryError>
+export type ToriiQueryResult = RustResult<PaginatedQueryResult, QueryExecutionFailure>
 
 export interface ToriiApiHttp {
   submit: (prerequisites: ToriiRequirementsForApiHttp, tx: VersionedSignedTransaction) => Promise<void>
   request: (
     prerequisites: ToriiRequirementsForApiHttp,
     query: VersionedSignedQueryRequest,
-  ) => Promise<RustResult<PaginatedQueryResult, QueryError>>
+  ) => Promise<RustResult<PaginatedQueryResult, QueryExecutionFailure>>
   getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<RustResult<null, string>>
   setPeerConfig: (prerequisites: ToriiRequirementsForApiHttp, params: SetPeerConfigParams) => Promise<void>
 }
@@ -297,7 +293,7 @@ export const Torii: ToriiOmnibus = {
       return variant('Ok', value)
     } else {
       // ERROR
-      const error = QueryError.fromBuffer(bytes)
+      const error = QueryExecutionFailure.fromBuffer(bytes)
       return variant('Err', error)
     }
   },
