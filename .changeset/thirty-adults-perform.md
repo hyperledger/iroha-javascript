@@ -5,4 +5,4 @@
 '@iroha2/crypto-core': minor
 ---
 
-**refactor**: respect new `Algorithm` type & codec from `data-model` and combine it with the crypto's simple `Algorithm` type with is simply a string. Add `Algorithm.toDataModel` and `Algorithm.fromDataModel` methods.
+**refactor**: combine new `Algorithm` type and codec from `data-model` with the crypto's `Algorithm` type, which is simply a string. Add `Algorithm.toDataModel` and `Algorithm.fromDataModel` methods.
