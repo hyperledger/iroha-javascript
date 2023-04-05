@@ -1,4 +1,4 @@
-@Library('jenkins-library' )
+@Library('jenkins-library@feature/dops-2312/corepack' )
 
 def pipeline = new org.js.LibPipeline( steps: this,
     packageManager: "corepack",
