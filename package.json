@@ -1,6 +1,7 @@
 {
   "name": "@iroha2/monorepo",
   "private": true,
+  "packageManager": "pnpm@7",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "postinstall": "pnpm jake prepare:all",
