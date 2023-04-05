@@ -4,6 +4,8 @@ dist
 dist-tsc
 /etc/api/tmp
 /docs/api
+esbuild-kit
+v8-compile-cache-0
 
 .pnpm-debug.log
 .idea
