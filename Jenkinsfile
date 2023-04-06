@@ -1,4 +1,4 @@
-@Library('jenkins-library@feature/dops-2312/corepack' )
+@Library('jenkins-library' )
 
 def pipeline = new org.js.LibPipeline( steps: this,
     packageManager: "pnpm",
