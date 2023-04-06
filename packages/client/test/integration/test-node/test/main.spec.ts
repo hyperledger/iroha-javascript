@@ -1,7 +1,7 @@
 import { Torii, ToriiRequirementsForTelemetry, setCrypto } from '@iroha2/client'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
-import * as model from '@iroha2/data-model'
+import { type RustResult, Logger as ScaleLogger, datamodel, sugar, variant } from '@iroha2/data-model'
 import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
 import { Seq } from 'immutable'
 import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
@@ -11,7 +11,7 @@ import { clientFactory, keyPair, pipelineStepDelay } from './test-util'
 import { pipe } from 'fp-ts/function'
 
 // for debugging convenience
-new model.Logger().mount()
+new ScaleLogger().mount()
 setCrypto(crypto)
 
 let startedPeer: StartPeerReturn | null = null
@@ -61,24 +61,24 @@ afterAll(async () => {
 test('Peer is healthy', async () => {
   const { pre } = clientFactory()
 
-  expect(await Torii.getHealth(pre)).toEqual(model.variant('Ok', null) as model.RustResult<null, any>)
+  expect(await Torii.getHealth(pre)).toEqual(variant('Ok', null) as RustResult<null, any>)
 })
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
   const { client, pre } = clientFactory()
 
-  const normalAssetDefinitionId = model.sugar.assetDefinitionId('xor', 'wonderland')
+  const normalAssetDefinitionId = sugar.assetDefinitionId('xor', 'wonderland')
 
   const tooLongAssetName = '0'.repeat(2 ** 14)
-  const invalidAssetDefinitionId = model.sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
+  const invalidAssetDefinitionId = sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
 
-  async function register(id: model.AssetDefinitionId) {
+  async function register(id: datamodel.AssetDefinitionId) {
     await client.submitExecutable(
       pre,
       pipe(
-        model.sugar.identifiable.newAssetDefinition(id, model.AssetValueType('BigQuantity')),
-        model.sugar.instruction.register,
-        model.sugar.executable.instructions,
+        sugar.identifiable.newAssetDefinition(id, datamodel.AssetValueType('BigQuantity')),
+        sugar.instruction.register,
+        sugar.executable.instructions,
       ),
     )
   }
@@ -86,9 +86,9 @@ test('AddAsset instruction with name length more than limit is not committed', a
   await Promise.all([register(normalAssetDefinitionId), register(invalidAssetDefinitionId)])
   await pipelineStepDelay()
 
-  const queryResult = await client.requestWithQueryBox(pre, model.QueryBox('FindAllAssetsDefinitions', null))
+  const queryResult = await client.requestWithQueryBox(pre, datamodel.QueryBox('FindAllAssetsDefinitions', null))
 
-  const existingDefinitions: model.AssetDefinitionId[] = queryResult
+  const existingDefinitions: datamodel.AssetDefinitionId[] = queryResult
     .as('Ok')
     .result.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('AssetDefinition').id)
@@ -100,23 +100,21 @@ test('AddAsset instruction with name length more than limit is not committed', a
 test('AddAccount instruction with name length more than limit is not committed', async () => {
   const { client, pre } = clientFactory()
 
-  const normal = model.sugar.accountId('bob', 'wonderland')
-  const incorrect = model.sugar.accountId('0'.repeat(2 ** 14), 'wonderland')
+  const normal = sugar.accountId('bob', 'wonderland')
+  const incorrect = sugar.accountId('0'.repeat(2 ** 14), 'wonderland')
 
   await client.submitExecutable(
     pre,
     pipe(
-      [normal, incorrect].map((id) =>
-        pipe(model.sugar.identifiable.newAccount(id, []), model.sugar.instruction.register),
-      ),
-      model.sugar.executable.instructions,
+      [normal, incorrect].map((id) => pipe(sugar.identifiable.newAccount(id, []), sugar.instruction.register)),
+      sugar.executable.instructions,
     ),
   )
   await pipelineStepDelay()
 
-  const queryResult = await client.requestWithQueryBox(pre, model.sugar.find.allAccounts())
+  const queryResult = await client.requestWithQueryBox(pre, sugar.find.allAccounts())
 
-  const existingAccounts: model.AccountId[] = queryResult
+  const existingAccounts: datamodel.AccountId[] = queryResult
     .as('Ok')
     .result.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('Account').id)
@@ -129,16 +127,16 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   const { client, pre } = clientFactory()
 
   // Creating asset by definition
-  const ASSET_DEFINITION_ID = model.sugar.assetDefinitionId('xor', 'wonderland')
+  const ASSET_DEFINITION_ID = sugar.assetDefinitionId('xor', 'wonderland')
 
   await client.submitExecutable(
     pre,
     pipe(
-      model.sugar.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, model.AssetValueType('Fixed'), {
-        mintable: model.Mintable('Infinitely'),
+      sugar.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, datamodel.AssetValueType('Fixed'), {
+        mintable: datamodel.Mintable('Infinitely'),
       }),
-      model.sugar.instruction.register,
-      model.sugar.executable.instructions,
+      sugar.instruction.register,
+      sugar.executable.instructions,
     ),
   )
   await pipelineStepDelay()
@@ -149,11 +147,11 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   await client.submitExecutable(
     pre,
     pipe(
-      model.sugar.instruction.mint(
-        model.sugar.value.numericFixed(model.FixedPointI64(DECIMAL)),
-        model.IdBox('AssetId', model.sugar.assetId(client_config.account as model.AccountId, ASSET_DEFINITION_ID)),
+      sugar.instruction.mint(
+        sugar.value.numericFixed(datamodel.FixedPointI64(DECIMAL)),
+        datamodel.IdBox('AssetId', sugar.assetId(client_config.account as datamodel.AccountId, ASSET_DEFINITION_ID)),
       ),
-      model.sugar.executable.instructions,
+      sugar.executable.instructions,
     ),
   )
   await pipelineStepDelay()
@@ -161,7 +159,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   // Checking added asset via query
   const result = await client.requestWithQueryBox(
     pre,
-    model.sugar.find.assetsByAccountId(client_config.account as model.AccountId),
+    sugar.find.assetsByAccountId(client_config.account as datamodel.AccountId),
   )
 
   // Assert
@@ -169,7 +167,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
     .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
 
-  expect(asset?.value).toEqual(model.AssetValue('Fixed', model.FixedPointI64(DECIMAL)))
+  expect(asset?.value).toEqual(datamodel.AssetValue('Fixed', datamodel.FixedPointI64(DECIMAL)))
 })
 
 test('Registering domain', async () => {
@@ -180,15 +178,15 @@ test('Registering domain', async () => {
       pre,
       pipe(
         //
-        model.sugar.identifiable.newDomain(domainName),
-        model.sugar.instruction.register,
-        model.sugar.executable.instructions,
+        sugar.identifiable.newDomain(domainName),
+        sugar.instruction.register,
+        sugar.executable.instructions,
       ),
     )
   }
 
   async function ensureDomainExistence(domainName: string) {
-    const result = await client.requestWithQueryBox(pre, model.sugar.find.allDomains())
+    const result = await client.requestWithQueryBox(pre, sugar.find.allDomains())
 
     const domain = result
       .as('Ok')
@@ -210,11 +208,8 @@ test('When querying for not existing domain, returns FindError', async () => {
   const result = await client.requestWithQueryBox(
     pre,
     pipe(
-      model.sugar.assetId(
-        model.sugar.accountId('alice', 'wonderland'),
-        model.sugar.assetDefinitionId('XOR', 'wonderland'),
-      ),
-      model.sugar.find.assetById,
+      sugar.assetId(sugar.accountId('alice', 'wonderland'), sugar.assetDefinitionId('XOR', 'wonderland')),
+      sugar.find.assetById,
     ),
   )
 
@@ -237,7 +232,7 @@ describe('Events API', () => {
   test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
     const { pre, client } = clientFactory()
 
-    const filter = model.sugar.filter.pipeline({
+    const filter = sugar.filter.pipeline({
       entityKind: 'Transaction',
       statusKind: 'Committed',
     })
@@ -264,10 +259,10 @@ describe('Events API', () => {
     await client.submitExecutable(
       pre,
       pipe(
-        model.sugar.assetDefinitionId('xor', 'wonderland'),
-        (x) => model.sugar.identifiable.newAssetDefinition(x, model.AssetValueType('BigQuantity')),
-        model.sugar.instruction.register,
-        model.sugar.executable.instructions,
+        sugar.assetDefinitionId('xor', 'wonderland'),
+        (x) => sugar.identifiable.newAssetDefinition(x, datamodel.AssetValueType('BigQuantity')),
+        sugar.instruction.register,
+        sugar.executable.instructions,
       ),
     )
 
@@ -311,10 +306,10 @@ describe('Blocks Stream API', () => {
       await client.submitExecutable(
         pre,
         pipe(
-          model.sugar.assetDefinitionId(assetName, 'wonderland'),
-          (x) => model.sugar.identifiable.newAssetDefinition(x, model.AssetValueType('Quantity')),
-          model.sugar.instruction.register,
-          model.sugar.executable.instructions,
+          sugar.assetDefinitionId(assetName, 'wonderland'),
+          (x) => sugar.identifiable.newAssetDefinition(x, datamodel.AssetValueType('Quantity')),
+          sugar.instruction.register,
+          sugar.executable.instructions,
         ),
       )
 

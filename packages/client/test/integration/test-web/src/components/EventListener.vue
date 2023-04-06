@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SetupEventsReturn, Torii } from '@iroha2/client'
-import * as model from '@iroha2/data-model'
+import { datamodel, sugar } from '@iroha2/data-model'
 import { computed, onBeforeUnmount, shallowReactive, shallowRef } from 'vue'
 import { toriiPre } from '../client'
 
@@ -19,7 +19,7 @@ const currentListener = shallowRef<null | SetupEventsReturn>(null)
 
 const isListening = computed(() => !!currentListener.value)
 
-function displayStatus(status: model.PipelineStatus): string {
+function displayStatus(status: datamodel.PipelineStatus): string {
   switch (status.enum.tag) {
     case 'Validating':
       return 'validating'
@@ -32,7 +32,7 @@ function displayStatus(status: model.PipelineStatus): string {
 
 async function startListening() {
   currentListener.value = await Torii.listenForEvents(toriiPre, {
-    filter: model.sugar.filter.pipeline({ entityKind: 'Transaction', statusKind: 'Committed' }),
+    filter: sugar.filter.pipeline({ entityKind: 'Transaction', statusKind: 'Committed' }),
   })
 
   currentListener.value.ee.on('event', (event) => {

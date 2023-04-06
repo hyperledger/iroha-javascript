@@ -1,31 +1,31 @@
-import * as model from '@iroha2/data-model'
+import { datamodel } from '@iroha2/data-model'
 import { expect } from 'vitest'
 import { clientFactory, pipelineStepDelay } from './test-util'
 
 const { client, pre } = clientFactory()
 
-const instructionToExecutable = (isi: model.Instruction) =>
-  model.Executable('Instructions', model.VecInstruction([isi]))
+const instructionToExecutable = (isi: datamodel.Instruction) =>
+  datamodel.Executable('Instructions', datamodel.VecInstruction([isi]))
 
-const DOMAIN_ID = model.DomainId({ name: 'wonderland' })
+const DOMAIN_ID = datamodel.DomainId({ name: 'wonderland' })
 
 // 1. Registering 2 accounts in the domain
 
-const registerAccountInstruction = (accountId: model.AccountId) =>
-  model.Instruction(
+const registerAccountInstruction = (accountId: datamodel.AccountId) =>
+  datamodel.Instruction(
     'Register',
-    model.RegisterBox({
-      object: model.EvaluatesToRegistrableBox({
-        expression: model.Expression(
+    datamodel.RegisterBox({
+      object: datamodel.EvaluatesToRegistrableBox({
+        expression: datamodel.Expression(
           'Raw',
-          model.Value(
+          datamodel.Value(
             'Identifiable',
-            model.IdentifiableBox(
+            datamodel.IdentifiableBox(
               'NewAccount',
-              model.NewAccount({
+              datamodel.NewAccount({
                 id: accountId,
-                signatories: model.VecPublicKey([]),
-                metadata: model.Metadata({ map: model.MapNameValue(new Map()) }),
+                signatories: datamodel.VecPublicKey([]),
+                metadata: datamodel.Metadata({ map: datamodel.MapNameValue(new Map()) }),
               }),
             ),
           ),
@@ -34,8 +34,8 @@ const registerAccountInstruction = (accountId: model.AccountId) =>
     }),
   )
 
-const ACCOUNT_MAD_HATTER = model.AccountId({ name: 'mad_hatter', domain_id: DOMAIN_ID })
-const ACCOUNT_RABBIT = model.AccountId({ name: 'rabbit', domain_id: DOMAIN_ID })
+const ACCOUNT_MAD_HATTER = datamodel.AccountId({ name: 'mad_hatter', domain_id: DOMAIN_ID })
+const ACCOUNT_RABBIT = datamodel.AccountId({ name: 'rabbit', domain_id: DOMAIN_ID })
 
 await Promise.all(
   [ACCOUNT_MAD_HATTER, ACCOUNT_RABBIT].map((accountId) =>
@@ -47,22 +47,22 @@ await pipelineStepDelay()
 
 // 2. Registering `Store` asset
 
-const registerStoreAssetInstruction = (definitionId: model.AssetDefinitionId) =>
-  model.Instruction(
+const registerStoreAssetInstruction = (definitionId: datamodel.AssetDefinitionId) =>
+  datamodel.Instruction(
     'Register',
-    model.RegisterBox({
-      object: model.EvaluatesToRegistrableBox({
-        expression: model.Expression(
+    datamodel.RegisterBox({
+      object: datamodel.EvaluatesToRegistrableBox({
+        expression: datamodel.Expression(
           'Raw',
-          model.Value(
+          datamodel.Value(
             'Identifiable',
-            model.IdentifiableBox(
+            datamodel.IdentifiableBox(
               'NewAssetDefinition',
-              model.NewAssetDefinition({
+              datamodel.NewAssetDefinition({
                 id: definitionId,
-                value_type: model.AssetValueType('Store'),
-                metadata: model.Metadata({ map: model.MapNameValue(new Map()) }),
-                mintable: model.Mintable('Not'),
+                value_type: datamodel.AssetValueType('Store'),
+                metadata: datamodel.Metadata({ map: datamodel.MapNameValue(new Map()) }),
+                mintable: datamodel.Mintable('Not'),
               }),
             ),
           ),
@@ -71,27 +71,27 @@ const registerStoreAssetInstruction = (definitionId: model.AssetDefinitionId) =>
     }),
   )
 
-const ASSET_DEFINITION_ID = model.AssetDefinitionId({ name: 'xor', domain_id: DOMAIN_ID })
+const ASSET_DEFINITION_ID = datamodel.AssetDefinitionId({ name: 'xor', domain_id: DOMAIN_ID })
 
 await client.submitExecutable(pre, instructionToExecutable(registerStoreAssetInstruction(ASSET_DEFINITION_ID)))
 await pipelineStepDelay()
 
 // 3. Creating the defined asset
 
-const createStoreAssetInstruction = (assetId: model.AssetId, metadata: model.MapNameValue) =>
-  model.Instruction(
+const createStoreAssetInstruction = (assetId: datamodel.AssetId, metadata: datamodel.MapNameValue) =>
+  datamodel.Instruction(
     'Register',
-    model.RegisterBox({
-      object: model.EvaluatesToRegistrableBox({
-        expression: model.Expression(
+    datamodel.RegisterBox({
+      object: datamodel.EvaluatesToRegistrableBox({
+        expression: datamodel.Expression(
           'Raw',
-          model.Value(
+          datamodel.Value(
             'Identifiable',
-            model.IdentifiableBox(
+            datamodel.IdentifiableBox(
               'Asset',
-              model.Asset({
+              datamodel.Asset({
                 id: assetId,
-                value: model.AssetValue('Store', model.Metadata({ map: metadata })),
+                value: datamodel.AssetValue('Store', datamodel.Metadata({ map: metadata })),
               }),
             ),
           ),
@@ -100,9 +100,11 @@ const createStoreAssetInstruction = (assetId: model.AssetId, metadata: model.Map
     }),
   )
 
-const ASSET_ID = model.AssetId({ definition_id: ASSET_DEFINITION_ID, account_id: ACCOUNT_MAD_HATTER })
+const ASSET_ID = datamodel.AssetId({ definition_id: ASSET_DEFINITION_ID, account_id: ACCOUNT_MAD_HATTER })
 
-const ASSET_METADATA = model.MapNameValue(new Map([['roses', model.Value('Numeric', model.NumericValue('U32', 42))]]))
+const ASSET_METADATA = datamodel.MapNameValue(
+  new Map([['roses', datamodel.Value('Numeric', datamodel.NumericValue('U32', 42))]]),
+)
 
 await client.submitExecutable(pre, instructionToExecutable(createStoreAssetInstruction(ASSET_ID, ASSET_METADATA)))
 await pipelineStepDelay()
@@ -110,22 +112,22 @@ await pipelineStepDelay()
 // 4. Transferring asset to Rabbit
 
 const transferStoreAssetInstruction = (
-  sourceId: model.AccountId,
-  destinationId: model.AccountId,
-  assetId: model.AssetId,
+  sourceId: datamodel.AccountId,
+  destinationId: datamodel.AccountId,
+  assetId: datamodel.AssetId,
 ) => {
-  const evaluatesToAccountId = (id: model.AccountId) =>
-    model.EvaluatesToIdBox({
-      expression: model.Expression('Raw', model.Value('Id', model.IdBox('AccountId', id))),
+  const evaluatesToAccountId = (id: datamodel.AccountId) =>
+    datamodel.EvaluatesToIdBox({
+      expression: datamodel.Expression('Raw', datamodel.Value('Id', datamodel.IdBox('AccountId', id))),
     })
 
-  return model.Instruction(
+  return datamodel.Instruction(
     'Transfer',
-    model.TransferBox({
+    datamodel.TransferBox({
       source_id: evaluatesToAccountId(sourceId),
       destination_id: evaluatesToAccountId(destinationId),
-      object: model.EvaluatesToValue({
-        expression: model.Expression('Raw', model.Value('Id', model.IdBox('AssetId', assetId))),
+      object: datamodel.EvaluatesToValue({
+        expression: datamodel.Expression('Raw', datamodel.Value('Id', datamodel.IdBox('AssetId', assetId))),
       }),
     }),
   )
@@ -139,17 +141,17 @@ await pipelineStepDelay()
 
 // 5. Checking results
 
-const findAccountAssetsQueryBox = (accountId: model.AccountId) =>
-  model.QueryBox(
+const findAccountAssetsQueryBox = (accountId: datamodel.AccountId) =>
+  datamodel.QueryBox(
     'FindAssetsByAccountId',
-    model.FindAssetsByAccountId({
-      account_id: model.EvaluatesToAccountId({
-        expression: model.Expression('Raw', model.Value('Id', model.IdBox('AccountId', accountId))),
+    datamodel.FindAssetsByAccountId({
+      account_id: datamodel.EvaluatesToAccountId({
+        expression: datamodel.Expression('Raw', datamodel.Value('Id', datamodel.IdBox('AccountId', accountId))),
       }),
     }),
   )
 
-const result: model.Asset[] = await client
+const result: datamodel.Asset[] = await client
   .requestWithQueryBox(pre, findAccountAssetsQueryBox(ACCOUNT_RABBIT))
   .then((x) =>
     x
@@ -159,8 +161,8 @@ const result: model.Asset[] = await client
   )
 
 expect(result).toEqual([
-  model.Asset({
-    id: model.AssetId({ definition_id: ASSET_DEFINITION_ID, account_id: ACCOUNT_RABBIT }),
-    value: model.AssetValue('Store', model.Metadata({ map: ASSET_METADATA })),
+  datamodel.Asset({
+    id: datamodel.AssetId({ definition_id: ASSET_DEFINITION_ID, account_id: ACCOUNT_RABBIT }),
+    value: datamodel.AssetValue('Store', datamodel.Metadata({ map: ASSET_METADATA })),
   }),
 ])

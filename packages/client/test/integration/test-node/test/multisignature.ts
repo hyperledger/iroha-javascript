@@ -9,7 +9,7 @@ import {
   makeVersionedSignedTransaction,
 } from '@iroha2/client'
 import { freeScope } from '@iroha2/crypto-core'
-import * as model from '@iroha2/data-model'
+import { datamodel, sugar } from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 import { produce } from 'immer'
 import { expect } from 'vitest'
@@ -18,8 +18,8 @@ import { clientFactory, pipelineStepDelay } from './test-util'
 const crypto = getCryptoAnyway()
 const { client: clientAdmin, pre } = clientFactory()
 
-const MAD_HATTER = model.sugar.accountId('mad_hatter', 'wonderland')
-const CASOMILE_DEFINITION_ID = model.sugar.assetDefinitionId('casomile', 'wonderland')
+const MAD_HATTER = sugar.accountId('mad_hatter', 'wonderland')
+const CASOMILE_DEFINITION_ID = sugar.assetDefinitionId('casomile', 'wonderland')
 
 // Generating two key pairs
 
@@ -41,45 +41,47 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
 // Registering the account, the asset definition and the signature check condition
 {
   const registerAccount = pipe(
-    model.sugar.identifiable.newAccount(
+    sugar.identifiable.newAccount(
       MAD_HATTER,
       // Using only the first key
       [freeScope(() => KEYS[0].publicKey().toDataModel())],
     ),
-    model.sugar.instruction.register,
+    sugar.instruction.register,
   )
 
   const registerAssetDefinition = pipe(
-    model.sugar.identifiable.newAssetDefinition(CASOMILE_DEFINITION_ID, model.AssetValueType('Quantity'), {
-      mintable: model.Mintable('Infinitely'),
+    sugar.identifiable.newAssetDefinition(CASOMILE_DEFINITION_ID, datamodel.AssetValueType('Quantity'), {
+      mintable: datamodel.Mintable('Infinitely'),
     }),
-    model.sugar.instruction.register,
+    sugar.instruction.register,
   )
 
-  const setSignatureCondition = model.sugar.instruction.mint(
-    model.Value(
+  const setSignatureCondition = sugar.instruction.mint(
+    datamodel.Value(
       'SignatureCheckCondition',
-      model.EvaluatesToBool({
-        expression: model.Expression(
+      datamodel.EvaluatesToBool({
+        expression: datamodel.Expression(
           'ContainsAll',
-          model.ContainsAll({
-            collection: model.EvaluatesToVecValue({
-              expression: model.Expression(
+          datamodel.ContainsAll({
+            collection: datamodel.EvaluatesToVecValue({
+              expression: datamodel.Expression(
                 'ContextValue',
-                model.ContextValue({
+                datamodel.ContextValue({
                   value_name:
                     // FIXME magic constant
                     'transaction_signatories',
                 }),
               ),
             }),
-            elements: model.EvaluatesToVecValue({
-              expression: model.Expression(
+            elements: datamodel.EvaluatesToVecValue({
+              expression: datamodel.Expression(
                 'Raw',
-                model.Value(
+                datamodel.Value(
                   'Vec',
-                  model.VecValue(
-                    freeScope(() => KEYS.map((keypair) => model.Value('PublicKey', keypair.publicKey().toDataModel()))),
+                  datamodel.VecValue(
+                    freeScope(() =>
+                      KEYS.map((keypair) => datamodel.Value('PublicKey', keypair.publicKey().toDataModel())),
+                    ),
                   ),
                 ),
               ),
@@ -88,18 +90,18 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
         ),
       }),
     ),
-    model.IdBox('AccountId', MAD_HATTER),
+    datamodel.IdBox('AccountId', MAD_HATTER),
   )
 
   // register Mad Hatter with the admin account
-  await clientAdmin.submitExecutable(pre, model.sugar.executable.instructions(registerAccount))
+  await clientAdmin.submitExecutable(pre, sugar.executable.instructions(registerAccount))
   await pipelineStepDelay()
 
   // Register the asset definition with the Mad Hatter's account
   await Torii.submit(
     pre,
     pipe(
-      model.sugar.executable.instructions([registerAssetDefinition, setSignatureCondition]),
+      sugar.executable.instructions([registerAssetDefinition, setSignatureCondition]),
       (executable) => makeTransactionPayload({ executable, accountId: MAD_HATTER }),
       (x) => makeVersionedSignedTransaction(x, signer1),
     ),
@@ -113,11 +115,11 @@ const MINTED = 42
 
 const mintTransactionPayload = makeTransactionPayload({
   executable: pipe(
-    model.sugar.instruction.mint(
-      model.sugar.value.numericU32(MINTED),
-      model.IdBox('AssetId', model.sugar.assetId(MAD_HATTER, CASOMILE_DEFINITION_ID)),
+    sugar.instruction.mint(
+      sugar.value.numericU32(MINTED),
+      datamodel.IdBox('AssetId', sugar.assetId(MAD_HATTER, CASOMILE_DEFINITION_ID)),
     ),
-    model.sugar.executable.instructions,
+    sugar.executable.instructions,
   ),
   accountId: MAD_HATTER,
 })
@@ -126,11 +128,11 @@ const txHash = computeTransactionHash(mintTransactionPayload)
 
 // 1st transaction, signed only with the first key
 
-const tx1 = model.VersionedSignedTransaction(
+const tx1 = datamodel.VersionedSignedTransaction(
   'V1',
-  model.SignedTransaction({
+  datamodel.SignedTransaction({
     payload: mintTransactionPayload,
-    signatures: model.VecSignatureOfTransactionPayload([signer1.sign('array', txHash)]),
+    signatures: datamodel.VecSignatureOfTransactionPayload([signer1.sign('array', txHash)]),
   }),
 )
 
@@ -140,11 +142,11 @@ await pipelineStepDelay()
 // Check that the asset is not minted
 
 // we will use this function twice - now and after the second transaction
-async function findAsset(): Promise<model.Asset | null> {
+async function findAsset(): Promise<datamodel.Asset | null> {
   const result = await Torii.request(
     pre,
     pipe(
-      model.sugar.find.assetsByAccountId(MAD_HATTER),
+      sugar.find.assetsByAccountId(MAD_HATTER),
       (query) => makeQueryPayload({ query, accountId: MAD_HATTER }),
       (payload) => makeVersionedSignedQuery(payload, signer1),
     ),

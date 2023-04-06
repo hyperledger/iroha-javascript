@@ -1,1 +1,1 @@
-export * as datamodel from '../__generated__'
+export * as datamodel from '../datamodel'

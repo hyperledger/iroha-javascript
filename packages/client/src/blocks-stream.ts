@@ -1,6 +1,6 @@
 import Emittery from 'emittery'
 import Debug from 'debug'
-import { VersionedBlockMessage, VersionedBlockSubscriptionRequest, VersionedCommittedBlock } from '@iroha2/data-model'
+import { datamodel } from '@iroha2/data-model'
 import { ENDPOINT_BLOCKS_STREAM } from './const'
 import { SocketEmitMapBase, setupWebSocket } from './util'
 import { IsomorphicWebSocketAdapter } from './web-socket/types'
@@ -14,7 +14,7 @@ export interface SetupBlocksStreamParams {
 }
 
 export interface BlocksStreamEmitteryMap extends SocketEmitMapBase {
-  block: VersionedCommittedBlock
+  block: datamodel.VersionedCommittedBlock
 }
 
 export interface SetupBlocksStreamReturn {
@@ -38,11 +38,15 @@ export async function setupBlocksStream(params: SetupBlocksStreamParams): Promis
   })
 
   ee.on('open', () => {
-    sendRaw(VersionedBlockSubscriptionRequest.toBuffer(VersionedBlockSubscriptionRequest('V1', params.height)))
+    sendRaw(
+      datamodel.VersionedBlockSubscriptionRequest.toBuffer(
+        datamodel.VersionedBlockSubscriptionRequest('V1', params.height),
+      ),
+    )
   })
 
   ee.on('message', (raw) => {
-    const block = VersionedBlockMessage.fromBuffer(raw).enum.content
+    const block = datamodel.VersionedBlockMessage.fromBuffer(raw).enum.content
     ee.emit('block', block)
   })
 
