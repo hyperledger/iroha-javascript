@@ -1,4 +1,4 @@
-# `@iroha/crypto-util`
+# `@iroha2/crypto-util`
 
 Utilities shared across crypto packages.
 

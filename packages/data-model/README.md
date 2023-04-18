@@ -4,7 +4,7 @@ The `@iroha2/data-model` packages contains generated SCALE-definitions for Iroha
 
 ## Target version
 
-This package targets `hyperledger/iroha` at current `iroha2-stable` branch, which has a hash `c4af68c4f7959b154eb5380aa93c894e2e63fe4e`.
+This version of package targets Iroha `v2.0.0-pre-rc.14` (internal release, reference hash: `726f5eabf65a79ea618b4fce62a09cee7a5b13d1`).
 
 ## Installation
 
