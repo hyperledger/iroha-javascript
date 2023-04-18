@@ -1,15 +1,15 @@
-@Library('jenkins-library' )
+@Library('jenkins-library')
 
 def pipeline = new org.js.LibPipeline( steps: this,
     packageManager: "pnpm",
-    buildDockerImage: 'build-tools/node:16-pnpm-nightly',
+    buildDockerImage: 'build-tools/node:16-corepack-cypress-rust',
     libPushBranches: ['iroha2'],
     npmRegistries: ['https://nexus.iroha.tech/repository/npm-soramitsu/': 'bot-soramitsu-rw'],
-    preBuildCmds: ['rm -rf ~/.cargo', 'npm install -g n','n 16.17.0', 'n prune', 'npm i -g pnpm@7.29.1', 'pnpm install --unsafe-perm'],
     buildCmds: [],
     testCmds: ['pnpm jake run-all-checks'],
     pushCmds: ['npm config set registry "https://nexus.iroha.tech/repository/npm-soramitsu/"', 'pnpm jake publish-all'],
     secretScannerExclusion: '.*Cargo.toml\$|.*README.md\$',
-    test: false
+    test: false,
+    corepack: true
    )
 pipeline.runPipeline()
