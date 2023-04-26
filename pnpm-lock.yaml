@@ -74,8 +74,8 @@ importers:
 
   packages/client:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.1
-      '@iroha2/data-model': workspace:5.0.0
+      '@iroha2/crypto-core': workspace:^1.1.0
+      '@iroha2/data-model': workspace:6.0.0
       '@types/debug': ^4.1.7
       '@types/ws': ^8.5.3
       debug: ^4.3.4
@@ -95,8 +95,8 @@ importers:
 
   packages/client/test/integration/test-node:
     specifiers:
-      '@iroha2/client': workspace:^5.0.0
-      '@iroha2/crypto-target-node': workspace:^1.0.1
+      '@iroha2/client': workspace:^6.0.0
+      '@iroha2/crypto-target-node': workspace:^1.1.0
       '@iroha2/test-peer': workspace:^0.0.1
       cross-env: ^7.0.3
       node-fetch: ^3.3.0
@@ -112,10 +112,10 @@ importers:
   packages/client/test/integration/test-web:
     specifiers:
       '@bahmutov/cypress-esbuild-preprocessor': ^2.1.3
-      '@iroha2/client': workspace:^5.0.0
-      '@iroha2/crypto-core': workspace:^1.0.1
-      '@iroha2/crypto-target-web': workspace:^1.0.1
-      '@iroha2/data-model': workspace:^5.0.0
+      '@iroha2/client': workspace:^6.0.0
+      '@iroha2/crypto-core': workspace:^1.1.0
+      '@iroha2/crypto-target-web': workspace:^1.1.0
+      '@iroha2/data-model': workspace:^6.0.0
       '@iroha2/test-peer': workspace:^0.0.1
       '@scale-codec/util': ^1.1.2
       '@vitejs/plugin-vue': ^4.0.0
@@ -154,7 +154,7 @@ importers:
     specifiers:
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
       '@iroha2/crypto-util': workspace:^0.1.0
-      '@iroha2/data-model': workspace:^5.0.0
+      '@iroha2/data-model': workspace:^6.0.0
     dependencies:
       '@iroha2/crypto-util': link:../util
       '@iroha2/data-model': link:../../../data-model
@@ -164,16 +164,16 @@ importers:
   packages/crypto/packages/interface-wrap:
     specifiers:
       '@iroha2/crypto-util': workspace:^0.1.0
-      '@iroha2/data-model': workspace:^5.0.0
+      '@iroha2/data-model': workspace:^6.0.0
     devDependencies:
       '@iroha2/crypto-util': link:../util
       '@iroha2/data-model': link:../../../data-model
 
   packages/crypto/packages/target-bundler:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.1
+      '@iroha2/crypto-core': workspace:^1.1.0
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
-      '@iroha2/data-model': workspace:^5.0.0
+      '@iroha2/data-model': workspace:^6.0.0
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
@@ -182,9 +182,9 @@ importers:
 
   packages/crypto/packages/target-node:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.1
+      '@iroha2/crypto-core': workspace:^1.1.0
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
-      '@iroha2/data-model': workspace:^5.0.0
+      '@iroha2/data-model': workspace:^6.0.0
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
@@ -193,9 +193,9 @@ importers:
 
   packages/crypto/packages/target-web:
     specifiers:
-      '@iroha2/crypto-core': workspace:^1.0.1
+      '@iroha2/crypto-core': workspace:^1.1.0
       '@iroha2/crypto-interface-wrap': workspace:^0.0.0
-      '@iroha2/data-model': workspace:^5.0.0
+      '@iroha2/data-model': workspace:^6.0.0
     dependencies:
       '@iroha2/crypto-core': link:../core
       '@iroha2/data-model': link:../../../data-model
@@ -239,7 +239,7 @@ importers:
 
   packages/data-model:
     specifiers:
-      '@iroha2/data-model-schema': workspace:5.0.0
+      '@iroha2/data-model-schema': workspace:6.0.0
       '@iroha2/i64-fixnum': workspace:^0.4.2
       '@scale-codec/definition-compiler': ^4.0.1
       '@scale-codec/definition-runtime': ^4.0.1
@@ -276,12 +276,12 @@ importers:
 
   packages/docs-recipes:
     specifiers:
-      '@iroha2/client': workspace:^5.0.0
-      '@iroha2/crypto-core': workspace:^1.0.1
-      '@iroha2/crypto-target-bundler': workspace:^1.0.1
-      '@iroha2/crypto-target-node': workspace:^1.0.1
-      '@iroha2/crypto-target-web': workspace:^1.0.1
-      '@iroha2/data-model': workspace:^5.0.0
+      '@iroha2/client': workspace:^6.0.0
+      '@iroha2/crypto-core': workspace:^1.1.0
+      '@iroha2/crypto-target-bundler': workspace:^1.1.0
+      '@iroha2/crypto-target-node': workspace:^1.1.0
+      '@iroha2/crypto-target-web': workspace:^1.1.0
+      '@iroha2/data-model': workspace:^6.0.0
       node-fetch: ^3.3.0
       undici: ^5.20.0
     devDependencies:
@@ -310,14 +310,14 @@ importers:
 
   packages/test-peer:
     specifiers:
-      '@iroha2/client': workspace:^5.0.0
+      '@iroha2/client': workspace:^6.0.0
       '@iroha2/iroha-source': workspace:^0.0.0
       '@koa/router': ^10.1.1
       '@types/debug': ^4.1.7
       '@types/koa': ^2.13.4
+      '@types/koa__router': ^8.0.11
       '@types/koa-bodyparser': ^4.3.5
       '@types/koa-morgan': ^1.0.5
-      '@types/koa__router': ^8.0.11
       '@types/yargs': ^17.0.22
       axios: ^0.24.0
       debug: ^4.3.4
@@ -332,9 +332,9 @@ importers:
       '@koa/router': 10.1.1
       '@types/debug': 4.1.7
       '@types/koa': 2.13.5
+      '@types/koa__router': 8.0.11
       '@types/koa-bodyparser': 4.3.7
       '@types/koa-morgan': 1.0.5
-      '@types/koa__router': 8.0.11
       '@types/yargs': 17.0.22
       axios: 0.24.0_debug@4.3.4
       debug: 4.3.4
@@ -2058,7 +2058,7 @@ packages:
   /axios/0.21.4_debug@4.3.2:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.15.1_debug@4.3.2
+      follow-redirects: 1.15.1_debug@4.3.4
     transitivePeerDependencies:
       - debug
     dev: true
@@ -3660,18 +3660,6 @@ packages:
   /fmt-subs/1.1.1:
     resolution: {integrity: sha512-11qUMl76/5d/gYAtvoBZacQ94DPRKtip989wKVbSb0JD1LWzNg16u47+hLVxmzDqPH74ljlxIyQlbPCAP4XEGQ==}
     dev: false
-
-  /follow-redirects/1.15.1_debug@4.3.2:
-    resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.2
-    dev: true
 
   /follow-redirects/1.15.1_debug@4.3.4:
     resolution: {integrity: sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==}
@@ -5328,6 +5316,7 @@ packages:
   /prettier-eslint-cli/7.1.0_prettier-eslint@15.0.1:
     resolution: {integrity: sha512-kMMvV7Mt6VqdJSb25aCkOA7HTIxy5mii2tzBb1vCSmzlIECOzTP2wRPIeAtBky6WdpfN0n1Zxa4E37Atp1IksA==}
     engines: {node: '>=12.22'}
+    hasBin: true
     peerDependencies:
       prettier-eslint: '*'
     peerDependenciesMeta:
@@ -6394,6 +6383,7 @@ packages:
   /vite/4.1.4:
     resolution: {integrity: sha512-3knk/HsbSTKEin43zHu7jTwYWv81f8kgAL99G5NWBcA1LKvtvcVAC4JjBH1arBunO9kQka+1oGbrMKOjk4ZrBg==}
     engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
     peerDependencies:
       '@types/node': '>= 14'
       less: '*'
@@ -6426,6 +6416,7 @@ packages:
   /vite/4.1.4_@types+node@18.14.2:
     resolution: {integrity: sha512-3knk/HsbSTKEin43zHu7jTwYWv81f8kgAL99G5NWBcA1LKvtvcVAC4JjBH1arBunO9kQka+1oGbrMKOjk4ZrBg==}
     engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
     peerDependencies:
       '@types/node': '>= 14'
       less: '*'
@@ -6459,6 +6450,7 @@ packages:
   /vite/4.1.4_sass@1.54.0:
     resolution: {integrity: sha512-3knk/HsbSTKEin43zHu7jTwYWv81f8kgAL99G5NWBcA1LKvtvcVAC4JjBH1arBunO9kQka+1oGbrMKOjk4ZrBg==}
     engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
     peerDependencies:
       '@types/node': '>= 14'
       less: '*'
@@ -6492,6 +6484,7 @@ packages:
   /vitest/0.29.2:
     resolution: {integrity: sha512-ydK9IGbAvoY8wkg29DQ4ivcVviCaUi3ivuPKfZEVddMTenFHUfB8EEDXQV8+RasEk1ACFLgMUqAaDuQ/Nk+mQA==}
     engines: {node: '>=v14.16.0'}
+    hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@vitest/browser': '*'
@@ -6546,6 +6539,7 @@ packages:
   /vue-demi/0.13.6_vue@3.2.47:
     resolution: {integrity: sha512-02NYpxgyGE2kKGegRPYlNQSL1UWfA/+JqvzhGCOYjhfbLWXU5QQX0+9pAm/R2sCOPKr5NBxVIab7fvFU0B1RxQ==}
     engines: {node: '>=12'}
+    hasBin: true
     requiresBuild: true
     peerDependencies:
       '@vue/composition-api': ^1.0.0-rc.1

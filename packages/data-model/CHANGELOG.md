@@ -1,5 +1,22 @@
 # @iroha2/data-model
 
+## 6.0.0
+
+### Major Changes
+
+- 40516f1: Updated according to Iroha `2.0.0-pre-rc.14` (internal release, reference hash: `726f5eabf65a79ea618b4fce62a09cee7a5b13d1`)
+
+  Notable changes:
+
+  - Renamed structure: ~~`QueryError`~~ `QueryExecutionFailure`
+  - Introduced new enum struct, `Algorithm`. Changed `digest_function: string` field in `PublicKey` and `PrivateKey` to `digest_function: Algorithm`:
+    ```ts
+    PublicKey({
+      digest_function: Algorithm('Ed25519'),
+      // ...
+    })
+    ```
+
 ## 5.0.0
 
 ### Major Changes

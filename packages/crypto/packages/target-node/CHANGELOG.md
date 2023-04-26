@@ -1,5 +1,18 @@
 # @iroha2/crypto-target-node
 
+## 1.1.0
+
+### Minor Changes
+
+- 40516f1: **refactor**: combine new `Algorithm` type and codec from `data-model` with the crypto's `Algorithm` type, which is simply a string. Add `Algorithm.toDataModel` and `Algorithm.fromDataModel` methods.
+
+### Patch Changes
+
+- Updated dependencies [40516f1]
+- Updated dependencies [40516f1]
+  - @iroha2/data-model@6.0.0
+  - @iroha2/crypto-core@1.1.0
+
 ## 1.0.1
 
 ### Patch Changes
