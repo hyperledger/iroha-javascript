@@ -89,8 +89,8 @@ fn create_some_time_based_trigger_isi() -> RegisterBox {
         Action::new(
             Executable::from(vec![MintBox::new(1_u32, asset_id.clone()).into()]),
             Repeats::Indefinitely,
-            asset_id.account_id,
-            FilterBox::Time(TimeEventFilter(ExecutionTime::Schedule(
+            asset_id.account_id().clone(),
+            FilterBox::Time(TimeEventFilter::new(ExecutionTime::Schedule(
                 TimeSchedule::starting_at(Duration::from_secs(4141203402341234))
                     .with_period(Duration::from_millis(3_000)),
             ))),

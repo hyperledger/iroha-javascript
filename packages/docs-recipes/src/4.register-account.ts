@@ -1,6 +1,7 @@
 // #region imports
 import {
   AccountId,
+  Algorithm,
   DomainId,
   EvaluatesToRegistrableBox,
   Expression,
@@ -30,7 +31,7 @@ const pubKey = PublicKey({
   payload: new Uint8Array([
     /* put bytes here */
   ]),
-  digest_function: 'some_digest',
+  digest_function: Algorithm('Ed25519'),
 })
 // #endregion pubkey
 

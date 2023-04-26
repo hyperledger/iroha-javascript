@@ -6,6 +6,30 @@ export type Algorithm = wasmPkg.Algorithm
 
 export const Algorithm = {
   default: (): Algorithm => wasmPkg.algorithm_default(),
+  toDataModel: (algorithm: Algorithm): dataModel.Algorithm => {
+    switch (algorithm) {
+      case 'ed25519':
+        return dataModel.Algorithm('Ed25519')
+      case 'secp256k1':
+        return dataModel.Algorithm('Secp256k1')
+      case 'bls_small':
+        return dataModel.Algorithm('BlsSmall')
+      case 'bls_normal':
+        return dataModel.Algorithm('BlsNormal')
+    }
+  },
+  fromDataModel: (algorithm: dataModel.Algorithm): Algorithm => {
+    switch (algorithm.enum.tag) {
+      case 'Ed25519':
+        return 'ed25519'
+      case 'Secp256k1':
+        return 'secp256k1'
+      case 'BlsSmall':
+        return 'bls_small'
+      case 'BlsNormal':
+        return 'bls_normal'
+    }
+  },
 }
 
 export type DigestFunction = wasmPkg.DigestFunction
@@ -195,7 +219,7 @@ export class PublicKey
   }
 
   public static fromDataModel(publicKey: dataModel.PublicKey): PublicKey {
-    return PublicKey.reproduce(publicKey.digest_function as Algorithm, 'array', publicKey.payload)
+    return PublicKey.reproduce(Algorithm.fromDataModel(publicKey.digest_function), 'array', publicKey.payload)
   }
 
   public toMultihash(): Multihash
@@ -223,7 +247,7 @@ export class PublicKey
 
   public toDataModel(): dataModel.PublicKey {
     return dataModel.PublicKey({
-      digest_function: this.digestFunction,
+      digest_function: Algorithm.toDataModel(this.digestFunction),
       payload: this.payload(),
     })
   }
