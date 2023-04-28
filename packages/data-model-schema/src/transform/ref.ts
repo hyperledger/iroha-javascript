@@ -39,6 +39,7 @@ export function filter(ref: string): boolean {
 
   return match(rawSchemaIdentifierToTree(ref))
     .with({ id: 'HashOf', items: [P.any] }, () => false)
+    .with({ id: 'EvaluatesTo', items: [P.any] }, () => false)
     .otherwise(() => true)
 }
 

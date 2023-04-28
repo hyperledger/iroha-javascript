@@ -10,7 +10,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllDomains', null),
+    QueryBox('FindAllDomains'),
   )
 
   const domains = result
@@ -32,7 +32,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region accounts
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllAccounts', null),
+    QueryBox('FindAllAccounts'),
   )
 
   const accounts = result
@@ -54,7 +54,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region assets
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllAssets', null),
+    QueryBox('FindAllAssets'),
   )
 
   const assets = result

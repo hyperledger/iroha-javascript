@@ -3,17 +3,16 @@ import {
   AccountId,
   Algorithm,
   DomainId,
-  EvaluatesToRegistrableBox,
   Expression,
   IdentifiableBox,
-  Instruction,
-  MapNameValue,
+  InstructionBox,
   Metadata,
   NewAccount,
   PublicKey,
   RegisterBox,
+  SortedMapNameValue,
+  SortedVecPublicKey,
   Value,
-  VecPublicKey,
 } from '@iroha2/data-model'
 // #endregion imports
 
@@ -36,25 +35,23 @@ const pubKey = PublicKey({
 // #endregion pubkey
 
 // #region isi
-const registerAccountInstruction = Instruction(
+const registerAccountInstruction = InstructionBox(
   'Register',
   RegisterBox({
-    object: EvaluatesToRegistrableBox({
-      expression: Expression(
-        'Raw',
-        Value(
-          'Identifiable',
-          IdentifiableBox(
-            'NewAccount',
-            NewAccount({
-              id: accountId, // [!code hl:2]
-              signatories: VecPublicKey([pubKey]),
-              metadata: Metadata({ map: MapNameValue(new Map()) }),
-            }),
-          ),
+    object: Expression(
+      'Raw',
+      Value(
+        'Identifiable',
+        IdentifiableBox(
+          'NewAccount',
+          NewAccount({
+            id: accountId, // [!code hl:2]
+            signatories: SortedVecPublicKey([pubKey]),
+            metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
+          }),
         ),
       ),
-    }),
+    ),
   }),
 )
 // #endregion isi

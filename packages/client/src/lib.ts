@@ -9,22 +9,22 @@ import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
 import {
   AccountId,
   Executable,
-  MapNameValue,
   OptionU32,
   PaginatedQueryResult,
-  Predicate,
   PredicateBox,
   QueryBox,
   QueryExecutionFailure,
   QueryPayload,
   RustResult,
   Signature,
-  SignedQueryRequest,
+  SignedQuery,
   SignedTransaction,
+  SortedMapNameValue,
+  SortedVecSignature,
   TransactionPayload,
-  VecSignatureOfTransactionPayload,
+  ValuePredicate,
   VersionedPaginatedQueryResult,
-  VersionedSignedQueryRequest,
+  VersionedSignedQuery,
   VersionedSignedTransaction,
   variant,
 } from '@iroha2/data-model'
@@ -102,7 +102,7 @@ export interface MakeTransactionPayloadParams {
    * @default // none
    */
   nonce?: number
-  metadata?: MapNameValue
+  metadata?: SortedMapNameValue
 }
 
 const DEFAULT_TRANSACTION_TTL = 100_000n
@@ -113,7 +113,7 @@ export function makeTransactionPayload(params: MakeTransactionPayloadParams): Tr
     instructions: params.executable,
     time_to_live_ms: params.ttl ?? DEFAULT_TRANSACTION_TTL,
     nonce: params?.nonce ? OptionU32('Some', params.nonce) : OptionU32('None'),
-    metadata: params?.metadata ?? MapNameValue(new Map()),
+    metadata: params?.metadata ?? SortedMapNameValue(new Map()),
     creation_time: params.creationTime ?? BigInt(Date.now()),
   })
 }
@@ -136,7 +136,7 @@ export function makeVersionedSignedTransaction(
     'V1',
     SignedTransaction({
       payload,
-      signatures: VecSignatureOfTransactionPayload([signature]),
+      signatures: SortedVecSignature([signature]),
     }),
   )
 }
@@ -175,7 +175,7 @@ export function makeQueryPayload(params: MakeQueryPayloadParams): QueryPayload {
     account_id: params.accountId,
     query: params.query,
     timestamp_ms: params.timestampMs ?? BigInt(Date.now()),
-    filter: params?.filter ?? PredicateBox('Raw', Predicate('Pass')),
+    filter: params?.filter ?? PredicateBox('Raw', ValuePredicate('Pass')),
   })
 }
 
@@ -188,16 +188,16 @@ export function signQuery(payload: QueryPayload, signer: Signer): Signature {
   return signer.sign('array', hash)
 }
 
-export function makeVersionedSignedQuery(payload: QueryPayload, signer: Signer): VersionedSignedQueryRequest {
+export function makeVersionedSignedQuery(payload: QueryPayload, signer: Signer): VersionedSignedQuery {
   const signature = signQuery(payload, signer)
-  return VersionedSignedQueryRequest('V1', SignedQueryRequest({ payload, signature }))
+  return VersionedSignedQuery('V1', SignedQuery({ payload, signature }))
 }
 
 export function queryBoxIntoSignedQuery(params: {
   query: QueryBox
   signer: Signer
   payloadParams?: Except<MakeQueryPayloadParams, 'accountId' | 'query'>
-}): VersionedSignedQueryRequest {
+}): VersionedSignedQuery {
   return makeVersionedSignedQuery(
     makeQueryPayload({
       query: params.query,
@@ -240,7 +240,7 @@ export interface ToriiApiHttp {
   submit: (prerequisites: ToriiRequirementsForApiHttp, tx: VersionedSignedTransaction) => Promise<void>
   request: (
     prerequisites: ToriiRequirementsForApiHttp,
-    query: VersionedSignedQueryRequest,
+    query: VersionedSignedQuery,
   ) => Promise<RustResult<PaginatedQueryResult, QueryExecutionFailure>>
   getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<RustResult<null, string>>
   setPeerConfig: (prerequisites: ToriiRequirementsForApiHttp, params: SetPeerConfigParams) => Promise<void>
@@ -277,7 +277,7 @@ export const Torii: ToriiOmnibus = {
   },
 
   async request(pre, query) {
-    const queryBytes = VersionedSignedQueryRequest.toBuffer(query)
+    const queryBytes = VersionedSignedQuery.toBuffer(query)
     const response = await pre
       .fetch(pre.apiURL + ENDPOINT_QUERY, {
         method: 'POST',

@@ -3,11 +3,9 @@ import {
   AssetDefinitionId,
   AssetId,
   DomainId,
-  EvaluatesToIdBox,
-  EvaluatesToValue,
   Expression,
   IdBox,
-  Instruction,
+  InstructionBox,
   NumericValue,
   TransferBox,
   Value,
@@ -34,28 +32,24 @@ const toAccount = AccountId({
   domain_id: domainId,
 })
 
-const evaluatesToAssetId = (assetId: AssetId): EvaluatesToIdBox =>
-  EvaluatesToIdBox({
-    expression: Expression('Raw', Value('Id', IdBox('AssetId', assetId))),
-  })
+const assetIdExpression = (assetId: AssetId): Expression =>
+  Expression('Raw', Value('Id', IdBox('AssetId', assetId)))
 
-const transferAssetInstruction = Instruction(
+const transferAssetInstruction = InstructionBox(
   'Transfer',
   TransferBox({
-    source_id: evaluatesToAssetId(
+    source_id: assetIdExpression(
       AssetId({
         definition_id: assetDefinitionId,
         account_id: fromAccount,
       }),
     ),
-    destination_id: evaluatesToAssetId(
+    destination_id: assetIdExpression(
       AssetId({
         definition_id: assetDefinitionId,
         account_id: toAccount,
       }),
     ),
-    object: EvaluatesToValue({
-      expression: Expression('Raw', amountToTransfer),
-    }),
+    object: Expression('Raw', amountToTransfer),
   }),
 )

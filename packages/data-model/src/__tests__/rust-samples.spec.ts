@@ -68,28 +68,25 @@ defineCase(
     'Time-based Trigger ISI',
     lib.RegisterBox,
     lib.RegisterBox({
-      object: lib.EvaluatesToRegistrableBox({
-        expression: lib.Expression(
-          'Raw',
-          lib.Value(
-            'Identifiable',
-            lib.IdentifiableBox(
-              'Trigger',
-              lib.TriggerFilterBox({
+      object: lib.Expression(
+        'Raw',
+        lib.Value(
+          'Identifiable',
+          lib.IdentifiableBox(
+            'Trigger',
+            lib.TriggerBox(
+              'Raw',
+              lib.TriggerFilterBoxExecutable({
                 id: lib.TriggerId({ name: 'mint_rose', domain_id: lib.OptionDomainId('None') }),
-                action: lib.ActionFilterBox({
+                action: lib.ActionFilterBoxExecutable({
                   executable: lib.Executable(
                     'Instructions',
-                    lib.VecInstruction([
-                      lib.Instruction(
+                    lib.VecInstructionBox([
+                      lib.InstructionBox(
                         'Mint',
                         lib.MintBox({
-                          object: lib.EvaluatesToValue({
-                            expression: lib.Expression('Raw', lib.Value('Numeric', lib.NumericValue('U32', 1))),
-                          }),
-                          destination_id: lib.EvaluatesToIdBox({
-                            expression: lib.Expression('Raw', lib.Value('Id', lib.IdBox('AssetId', assetId))),
-                          }),
+                          object: lib.Expression('Raw', lib.Value('Numeric', lib.NumericValue('U32', 1))),
+                          destination_id: lib.Expression('Raw', lib.Value('Id', lib.IdBox('AssetId', assetId))),
                         }),
                       ),
                     ]),
@@ -99,20 +96,20 @@ defineCase(
                     'Time',
                     lib.ExecutionTime(
                       'Schedule',
-                      lib.TimeSchedule({
+                      lib.Schedule({
                         start: lib.Duration([4141203402341234n, 0]),
                         period: lib.OptionDuration('Some', lib.Duration([3n, 0])),
                       }),
                     ),
                   ),
                   technical_account: assetId.account_id,
-                  metadata: lib.Metadata({ map: lib.MapNameValue(new Map()) }),
+                  metadata: lib.Metadata({ map: lib.SortedMapNameValue(new Map()) }),
                 }),
               }),
             ),
           ),
         ),
-      }),
+      ),
     }),
   )
 }
@@ -137,28 +134,25 @@ defineCase(
     'Event-based Trigger ISI',
     lib.RegisterBox,
     lib.RegisterBox({
-      object: lib.EvaluatesToRegistrableBox({
-        expression: lib.Expression(
-          'Raw',
-          lib.Value(
-            'Identifiable',
-            lib.IdentifiableBox(
-              'Trigger',
-              lib.TriggerFilterBox({
+      object: lib.Expression(
+        'Raw',
+        lib.Value(
+          'Identifiable',
+          lib.IdentifiableBox(
+            'Trigger',
+            lib.TriggerBox(
+              'Raw',
+              lib.TriggerFilterBoxExecutable({
                 id: lib.TriggerId({ name: 'mint_rose', domain_id: lib.OptionDomainId('None') }),
-                action: lib.ActionFilterBox({
+                action: lib.ActionFilterBoxExecutable({
                   executable: lib.Executable(
                     'Instructions',
-                    lib.VecInstruction([
-                      lib.Instruction(
+                    lib.VecInstructionBox([
+                      lib.InstructionBox(
                         'Mint',
                         lib.MintBox({
-                          object: lib.EvaluatesToValue({
-                            expression: lib.Expression('Raw', lib.Value('Numeric', lib.NumericValue('U32', 1))),
-                          }),
-                          destination_id: lib.EvaluatesToIdBox({
-                            expression: lib.Expression('Raw', lib.Value('Id', lib.IdBox('AssetId', assetId))),
-                          }),
+                          object: lib.Expression('Raw', lib.Value('Numeric', lib.NumericValue('U32', 1))),
+                          destination_id: lib.Expression('Raw', lib.Value('Id', lib.IdBox('AssetId', assetId))),
                         }),
                       ),
                     ]),
@@ -166,9 +160,9 @@ defineCase(
                   repeats: lib.Repeats('Indefinitely'),
                   filter: lib.FilterBox(
                     'Data',
-                    lib.FilterOptEntityFilter(
+                    lib.FilterOptDataEntityFilter(
                       'BySome',
-                      lib.EntityFilter(
+                      lib.DataEntityFilter(
                         'ByAssetDefinition',
                         lib.FilterOptAssetDefinitionFilter(
                           'BySome',
@@ -184,13 +178,13 @@ defineCase(
                     ),
                   ),
                   technical_account: assetId.account_id,
-                  metadata: lib.Metadata({ map: lib.MapNameValue(new Map()) }),
+                  metadata: lib.Metadata({ map: lib.SortedMapNameValue(new Map()) }),
                 }),
               }),
             ),
           ),
         ),
-      }),
+      ),
     }),
   )
 }
@@ -199,7 +193,7 @@ defineCase(
   'Metadata',
   lib.Metadata,
   lib.Metadata({
-    map: lib.MapNameValue(
+    map: lib.SortedMapNameValue(
       new Map([
         // Test will fail if order is violated
         ['authentication', lib.Value('String', '80252ad79c68c01ec8946983411ce3b7cbea21d25f68c8546c687b2a7e2505cc')],

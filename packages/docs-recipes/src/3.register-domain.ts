@@ -2,19 +2,18 @@
 import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
 import {
   DomainId,
-  EvaluatesToRegistrableBox,
   Executable,
   Expression,
   IdentifiableBox,
-  Instruction,
-  MapNameValue,
+  InstructionBox,
   Metadata,
   NewDomain,
   OptionIpfsPath,
   QueryBox,
   RegisterBox,
+  SortedMapNameValue,
   Value,
-  VecInstruction,
+  VecInstructionBox,
 } from '@iroha2/data-model'
 
 // --snip--
@@ -25,29 +24,30 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 // #region reg-domain-fn
 async function registerDomain(domainName: string) {
   const registerBox = RegisterBox({
-    object: EvaluatesToRegistrableBox({
-      expression: Expression(
-        'Raw',
-        Value(
-          'Identifiable',
-          IdentifiableBox(
-            'NewDomain',
-            NewDomain({
-              id: DomainId({
-                name: domainName, // [!code hl]
-              }),
-              metadata: Metadata({ map: MapNameValue(new Map()) }),
-              logo: OptionIpfsPath('None'),
+    object: Expression(
+      'Raw',
+      Value(
+        'Identifiable',
+        IdentifiableBox(
+          'NewDomain',
+          NewDomain({
+            id: DomainId({
+              name: domainName, // [!code hl]
             }),
-          ),
+            metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
+            logo: OptionIpfsPath('None'),
+          }),
         ),
       ),
-    }),
+    ),
   })
 
   await client.submitExecutable(
     toriiRequirements,
-    Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
+    Executable(
+      'Instructions',
+      VecInstructionBox([InstructionBox('Register', registerBox)]),
+    ),
   )
 }
 // #endregion reg-domain-fn
@@ -61,7 +61,7 @@ async function ensureDomainExistence(domainName: string) {
   // Query all domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllDomains', null),
+    QueryBox('FindAllDomains'),
   )
 
   // Display the request status

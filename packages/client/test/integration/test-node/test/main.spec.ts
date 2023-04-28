@@ -15,11 +15,6 @@ import {
   AssetId,
   AssetValueType,
   DomainId,
-  EvaluatesToAccountId,
-  EvaluatesToAssetId,
-  EvaluatesToIdBox,
-  EvaluatesToRegistrableBox,
-  EvaluatesToValue,
   Executable,
   Expression,
   FilterBox,
@@ -28,8 +23,7 @@ import {
   FixedPointI64,
   IdBox,
   IdentifiableBox,
-  Instruction,
-  MapNameValue,
+  InstructionBox,
   Metadata,
   MintBox,
   Mintable,
@@ -48,9 +42,10 @@ import {
   RegisterBox,
   RustResult,
   Logger as ScaleLogger,
+  SortedMapNameValue,
+  SortedVecPublicKey,
   Value,
-  VecInstruction,
-  VecPublicKey,
+  VecInstructionBox,
   variant,
 } from '@iroha2/data-model'
 import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
@@ -104,27 +99,26 @@ async function addAsset({
     pre,
     Executable(
       'Instructions',
-      VecInstruction([
-        Instruction(
+      VecInstructionBox([
+        InstructionBox(
           'Register',
           RegisterBox({
-            object: EvaluatesToRegistrableBox({
-              expression: Expression(
-                'Raw',
-                Value(
-                  'Identifiable',
-                  IdentifiableBox(
-                    'NewAssetDefinition',
-                    NewAssetDefinition({
-                      id: definitionId,
-                      value_type: assetType ?? AssetValueType('BigQuantity'),
-                      metadata: Metadata({ map: MapNameValue(new Map()) }),
-                      mintable: opts?.mintable ?? Mintable('Not'),
-                    }),
-                  ),
+            object: Expression(
+              'Raw',
+              Value(
+                'Identifiable',
+                IdentifiableBox(
+                  'NewAssetDefinition',
+                  NewAssetDefinition({
+                    id: definitionId,
+                    value_type: assetType ?? AssetValueType('BigQuantity'),
+                    metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
+                    mintable: opts?.mintable ?? Mintable('Not'),
+                    logo: OptionIpfsPath('None'),
+                  }),
                 ),
               ),
-            }),
+            ),
           }),
         ),
       ]),
@@ -145,26 +139,24 @@ async function addAccount({
     pre,
     Executable(
       'Instructions',
-      VecInstruction([
-        Instruction(
+      VecInstructionBox([
+        InstructionBox(
           'Register',
           RegisterBox({
-            object: EvaluatesToRegistrableBox({
-              expression: Expression(
-                'Raw',
-                Value(
-                  'Identifiable',
-                  IdentifiableBox(
-                    'NewAccount',
-                    NewAccount({
-                      id: accountId,
-                      signatories: VecPublicKey([]),
-                      metadata: Metadata({ map: MapNameValue(new Map()) }),
-                    }),
-                  ),
+            object: Expression(
+              'Raw',
+              Value(
+                'Identifiable',
+                IdentifiableBox(
+                  'NewAccount',
+                  NewAccount({
+                    id: accountId,
+                    signatories: SortedVecPublicKey([]),
+                    metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
+                  }),
                 ),
               ),
-            }),
+            ),
           }),
         ),
       ]),
@@ -173,7 +165,7 @@ async function addAccount({
 }
 
 function mintIntoExecutable(mint: MintBox) {
-  return Executable('Instructions', VecInstruction([Instruction('Mint', mint)]))
+  return Executable('Instructions', VecInstructionBox([InstructionBox('Mint', mint)]))
 }
 
 async function pipelineStepDelay() {
@@ -252,7 +244,7 @@ test('AddAsset instruction with name length more than limit is not committed', a
 
   await delay(PIPELINE_MS * 2)
 
-  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAssetsDefinitions', null))
+  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAssetsDefinitions'))
 
   const existingDefinitions: AssetDefinitionId[] = queryResult
     .as('Ok')
@@ -282,7 +274,7 @@ test('AddAccount instruction with name length more than limit is not committed',
   await Promise.all([normal, incorrect].map((x) => addAccount({ client, pre, accountId: x })))
   await delay(PIPELINE_MS * 2)
 
-  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAccounts', null))
+  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAccounts'))
 
   const existingAccounts: AccountId[] = queryResult
     .as('Ok')
@@ -318,24 +310,20 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     pre,
     mintIntoExecutable(
       MintBox({
-        object: EvaluatesToValue({
-          expression: Expression('Raw', Value('Numeric', NumericValue('Fixed', FixedPointI64(DECIMAL)))),
-        }),
-        destination_id: EvaluatesToIdBox({
-          expression: Expression(
-            'Raw',
-            Value(
-              'Id',
-              IdBox(
-                'AssetId',
-                AssetId({
-                  account_id: client_config.account as AccountId,
-                  definition_id: ASSET_DEFINITION_ID,
-                }),
-              ),
+        object: Expression('Raw', Value('Numeric', NumericValue('Fixed', FixedPointI64(DECIMAL)))),
+        destination_id: Expression(
+          'Raw',
+          Value(
+            'Id',
+            IdBox(
+              'AssetId',
+              AssetId({
+                account_id: client_config.account as AccountId,
+                definition_id: ASSET_DEFINITION_ID,
+              }),
             ),
           ),
-        }),
+        ),
       }),
     ),
   )
@@ -347,9 +335,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     QueryBox(
       'FindAssetsByAccountId',
       FindAssetsByAccountId({
-        account_id: EvaluatesToAccountId({
-          expression: Expression('Raw', Value('Id', IdBox('AccountId', client_config.account as AccountId))),
-        }),
+        account_id: Expression('Raw', Value('Id', IdBox('AccountId', client_config.account as AccountId))),
       }),
     ),
   )
@@ -369,34 +355,32 @@ test('Registering domain', async () => {
 
   async function registerDomain(domainName: string) {
     const registerBox = RegisterBox({
-      object: EvaluatesToRegistrableBox({
-        expression: Expression(
-          'Raw',
-          Value(
-            'Identifiable',
-            IdentifiableBox(
-              'NewDomain',
-              NewDomain({
-                id: DomainId({
-                  name: domainName,
-                }),
-                metadata: Metadata({ map: MapNameValue(new Map()) }),
-                logo: OptionIpfsPath('None'),
+      object: Expression(
+        'Raw',
+        Value(
+          'Identifiable',
+          IdentifiableBox(
+            'NewDomain',
+            NewDomain({
+              id: DomainId({
+                name: domainName,
               }),
-            ),
+              metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
+              logo: OptionIpfsPath('None'),
+            }),
           ),
         ),
-      }),
+      ),
     })
 
     await client.submitExecutable(
       pre,
-      Executable('Instructions', VecInstruction([Instruction('Register', registerBox)])),
+      Executable('Instructions', VecInstructionBox([InstructionBox('Register', registerBox)])),
     )
   }
 
   async function ensureDomainExistence(domainName: string) {
-    const result = await client.requestWithQueryBox(pre, QueryBox('FindAllDomains', null))
+    const result = await client.requestWithQueryBox(pre, QueryBox('FindAllDomains'))
 
     const domain = result
       .as('Ok')
@@ -420,27 +404,25 @@ test('When querying for not existing domain, returns FindError', async () => {
     QueryBox(
       'FindAssetById',
       FindAssetById({
-        id: EvaluatesToAssetId({
-          expression: Expression(
-            'Raw',
-            Value(
-              'Id',
-              IdBox(
-                'AssetId',
-                AssetId({
-                  account_id: AccountId({
-                    name: 'alice',
-                    domain_id: DomainId({ name: 'wonderland' }),
-                  }),
-                  definition_id: AssetDefinitionId({
-                    name: 'XOR',
-                    domain_id: DomainId({ name: 'wonderland' }),
-                  }),
+        id: Expression(
+          'Raw',
+          Value(
+            'Id',
+            IdBox(
+              'AssetId',
+              AssetId({
+                account_id: AccountId({
+                  name: 'alice',
+                  domain_id: DomainId({ name: 'wonderland' }),
                 }),
-              ),
+                definition_id: AssetDefinitionId({
+                  name: 'XOR',
+                  domain_id: DomainId({ name: 'wonderland' }),
+                }),
+              }),
             ),
           ),
-        }),
+        ),
       }),
     ),
   )

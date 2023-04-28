@@ -3,14 +3,14 @@ import {
   AssetDefinitionId,
   AssetValueType,
   DomainId,
-  EvaluatesToRegistrableBox,
   Expression,
   IdentifiableBox,
-  Instruction,
-  MapNameValue,
+  InstructionBox,
   Metadata,
   Mintable,
+  OptionIpfsPath,
   RegisterBox,
+  SortedMapNameValue,
   Value,
 } from '@iroha2/data-model'
 
@@ -20,18 +20,17 @@ const time = AssetDefinition({
     name: 'time',
     domain_id: DomainId({ name: 'looking_glass' }),
   }),
-  metadata: Metadata({ map: MapNameValue(new Map()) }),
+  metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
   mintable: Mintable('Infinitely'), // If only we could mint more time.
+  logo: OptionIpfsPath('None'),
 })
 
-const register = Instruction(
+const register = InstructionBox(
   'Register',
   RegisterBox({
-    object: EvaluatesToRegistrableBox({
-      expression: Expression(
-        'Raw',
-        Value('Identifiable', IdentifiableBox('AssetDefinition', time)), // [!code hl]
-      ),
-    }),
+    object: Expression(
+      'Raw',
+      Value('Identifiable', IdentifiableBox('AssetDefinition', time)), // [!code hl]
+    ),
   }),
 )
