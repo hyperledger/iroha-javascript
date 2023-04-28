@@ -3,12 +3,12 @@ export interface RustDefinitions {
 }
 
 export type RustTypeDefinitionVariant =
-  | RustMapDefinition
+  | UnitType
   | RustDirectAlias
+  | RustMapDefinition
   | RustVecDefinition
   | RustOptionDefinition
   | RustNamedStructDefinition
-  | RustTupleStructDefinition
   | RustEnumDefinition
   | RustArrayDefinition
   | RustIntDef
@@ -19,29 +19,23 @@ export interface RustMapDefinition {
   Map: {
     key: TypePath
     value: TypePath
-    sorted_by_key: boolean
   }
 }
 
 export interface RustTupleDef {
-  Tuple: {
-    types: TypePath[]
-  }
+  Tuple: TypePath[]
 }
 
 export type RustDirectAlias = TypePath
 
 export interface RustVecDefinition {
-  Vec: {
-    ty: TypePath
-    sorted: boolean
-  }
+  Vec: TypePath
 }
 
 export interface RustArrayDefinition {
   Array: {
     len: number
-    ty: TypePath
+    type: TypePath
   }
 }
 
@@ -50,30 +44,19 @@ export interface RustOptionDefinition {
 }
 
 export interface RustNamedStructDefinition {
-  Struct: {
-    declarations: Array<{
-      name: string
-      ty: TypePath
-    }>
-  }
-}
-
-export interface RustTupleStructDefinition {
-  TupleStruct: {
-    types: Array<TypePath>
-  }
+  Struct: Array<{
+    name: string
+    type: TypePath
+  }>
 }
 
 export interface RustEnumDefinition {
-  Enum: {
-    variants: Array<RustEnumVarDef>
-  }
+  Enum: Array<RustEnumVarDef>
 }
 
 export interface RustEnumVarDef {
   name: string
-  discriminant: number
-  ty: TypePath | null
+  type?: TypePath
 }
 
 export interface RustIntDef {
@@ -88,3 +71,5 @@ export interface RustFixedPointDef {
 }
 
 export type TypePath = string
+
+export type UnitType = null

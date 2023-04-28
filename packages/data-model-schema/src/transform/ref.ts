@@ -1,86 +1,113 @@
 import { pascal } from 'case'
-import Debug from 'debug'
+import { pipe } from 'fp-ts/function'
+import { Set } from 'immutable'
+import invariant from 'tiny-invariant'
+import { P, match } from 'ts-pattern'
+import Debug from '../debug'
 
-const dbg = Debug('iroha2-schema-transform:ref')
+const debug = Debug.extend('transform-ref')
 
 const CACHE = new Map<string, string>()
 
-export function transform(ref: string): string {
-  // Schema contains arrays, but on both
+function transform(ref: string): string {
+  return pipe(ref, rawSchemaIdentifierToTree, transformTree, treeToFinalIdentifier)
+}
 
+function transformWithCache(ref: string): string {
   if (CACHE.has(ref)) return CACHE.get(ref)!
-
-  const output = [transformDefaultRuntimeLibAliases, transformArray, normalizeIdentifier].reduce(
-    (acc, fn) => fn(acc),
-    ref,
-  )
-
-  CACHE.set(ref, output)
-  dbg('transform %o to %o', ref, output)
-
-  return output
+  const transformed = transform(ref)
+  CACHE.set(ref, transformed)
+  debug('transform %o to %o', ref, transformed)
+  return transformed
 }
 
-const STD_ALIASES: Record<string, string> = {
-  String: 'Str',
+export { transformWithCache as transform }
+
+const IGNORE_TYPES = Set<string>([
+  // any ints
+  ...[3, 4, 5, 6, 7]
+    .map((power) => 2 ** power)
+    .map((bits) => [`i${bits}`, `u${bits}`])
+    .flat(),
+  'String',
+  'Bool',
+  'Vec<u8>',
+])
+
+export function filter(ref: string): boolean {
+  if (IGNORE_TYPES.has(ref)) return false
+
+  return match(rawSchemaIdentifierToTree(ref))
+    .with({ id: 'HashOf', items: [P.any] }, () => false)
+    .otherwise(() => true)
 }
 
-function transformDefaultRuntimeLibAliases(ref: string): string {
-  if (ref in STD_ALIASES) {
-    return STD_ALIASES[ref]
-  }
-  if (ref.endsWith('Vec<u8>')) {
-    return 'VecU8'
-  }
-  if (ref.match(/Compact<u128>/)) {
-    return 'Compact'
-  }
-  return ref
+interface Tree {
+  id: string
+  items: Tree[]
 }
 
-function transformArray(ref: string): string {
-  // Arrays in form [x; x] are defined as separated types too,
-  // so no need to move them into additional types
+function rawSchemaIdentifierToTree(src: string): Tree {
+  const ROOT = '__root__'
+  const stack: Tree[] = [{ id: ROOT, items: [] }]
 
-  const match = ref.match(/^\[\s*(.+)\s*;\s*(\d+)\s*]$/)
-  if (match) {
-    const [, ty, count] = match
-
-    return `Array_${ty}_l${count}`
+  for (const [token] of src.matchAll(/(<|>|[\w_]+)/gi)) {
+    if (token === '<') {
+      const lastItem = stack.at(-1)?.items.at(-1)
+      invariant(lastItem, 'should be')
+      stack.push(lastItem)
+    } else if (token === '>') {
+      invariant(stack.pop(), 'should be')
+    } else {
+      const head = stack.at(-1)
+      invariant(head, 'should be')
+      head.items.push({ id: token, items: [] })
+    }
   }
 
-  return ref
+  return match(stack)
+    .with([{ id: ROOT, items: [P.select()] }], (trueRoot) => trueRoot)
+    .otherwise((x) => {
+      console.error('bad state:', x)
+      throw new Error('Bad state')
+    })
 }
 
-/**
- * - Removes module paths
- * - Handles special collision cases like data::Event / pipeline::Event
- * - Transforms Map to VecTuple and Set to Vec
- * - Makes identifiers valid JS identifiers in PascalCase
- */
-function normalizeIdentifier(ref: string): string {
-  const randCase = ref
-    .replace(/::events::data::events::(\w+)/g, '::events_data_events::Data_$1')
-    .replace(/::events::time::ExecutionTime/g, '::events::ExecutionTime')
-    .replace(/::time::(\w+)/g, '::time_$1')
-    .replace(/::events::pipeline::Pipeline(\w+)?/g, '::events::pipeline::_$1')
-    .replace(/::events::pipeline::(\w+)?/g, '::events::pipeline_$1')
-    .replace(/::events::(data|pipeline|execute_trigger)::Event(Filter)?/g, '::events::$1_Event$2')
-    .replace(/::metadata::Limits/g, '::MetadataLimits')
-    .replace(/iroha_data_model::(account|asset|peer|trigger|domain|role)::Id/g, '$1_Id')
-    .replace(/iroha_data_model::asset::DefinitionId/g, 'AssetDefinitionId')
-    .replace(/iroha_data_model::transaction::Payload/g, 'TransactionPayload')
-    .replace(/iroha_data_model::query::http::Payload/g, 'QueryPayload')
-    .replace(/iroha_data_model::expression::If/g, 'IfExpression')
-    .replace(/iroha_data_model::isi::If/g, 'IfInstruction')
-    .replace(/GenericPredicateBox<.+?Predicate>/g, 'PredicateBox')
-    .replace(/iroha_version::error::Error/g, 'VersionError')
-    .replace(/query::(\w+)?Error/g, 'Query$1Error')
-    .replace('AtomicU32Wrapper', 'U32')
-    // removing module paths
-    .replace(/(?:\w+::)*(\w+)/g, '$1')
-    // replacing all non-word chars with underscore
-    .replace(/[^\w]/g, '_')
+function transformTree(tree: Tree): Tree {
+  return match<Tree, Tree>(tree)
+    .with({ id: 'EvaluatesTo' }, () => ({ id: 'Expression', items: [] }))
+    .with({ id: 'Array', items: [P.select('inner'), { id: P.select('len'), items: [] }] }, ({ inner, len }) => {
+      if (Number.isNaN(Number(len))) throw new Error(`Invalid array len: ${len}`)
+      return { id: 'Array', items: [transformTree(inner), { id: `L_${len}`, items: [] }] }
+    })
+    .with({ id: 'Fixed', items: [{ id: 'i64', items: [] }] }, () => ({ id: 'FixedI64', items: [] }))
+    .with({ id: 'String', items: [] }, () => ({ id: 'Str', items: [] }))
+    .with({ id: 'GenericPredicateBox', items: [{ id: 'ValuePredicate', items: [] }] }, () => ({
+      id: 'PredicateBox',
+      items: [],
+    }))
+    .with({ id: 'SignatureOf', items: [P.any] }, () => ({ id: 'Signature', items: [] }))
+    .with({ id: 'SortedVec', items: [{ id: 'SignaturesOf', items: [P.any] }] }, () => ({
+      id: 'SortedSignatures',
+      items: [],
+    }))
+    .with({ id: 'SignaturesOf', items: [P.any] }, () => ({ id: 'SortedSignatures', items: [] }))
+    .with({ id: 'HashOf', items: [P.any] }, () => ({ id: 'Hash', items: [] }))
+    .with({ id: 'Compact', items: [{ id: 'u128' }] }, () => ({ id: 'Compact', items: [] }))
+    .otherwise((x) => ({ id: x.id, items: x.items.map(transformTree) }))
+}
 
-  return pascal(randCase)
+function treeToFinalIdentifier(root: Tree): string {
+  const parts: string[] = []
+
+  const recursion = (tree: Tree): void => {
+    parts.push(tree.id)
+    for (const node of tree.items ?? []) {
+      recursion(node)
+    }
+  }
+
+  recursion(root)
+
+  return pascal(parts.join('_'))
 }

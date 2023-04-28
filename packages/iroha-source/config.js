@@ -3,6 +3,6 @@
  */
 export default {
   origin: 'https://github.com/hyperledger/iroha.git',
-  // `iroha2-dev` as of Mar 17 2023 (rc14 internal release)
-  rev: '726f5eabf65a79ea618b4fce62a09cee7a5b13d1',
+  // `iroha2-dev` as of 27th April 2023 (pre rc15?)
+  rev: 'b1855454ac03603fb62a3a6491b5492ab26f9777',
 }
