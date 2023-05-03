@@ -1,6 +1,5 @@
 /* eslint-disable max-nested-callbacks */
 import type { NamespaceDefinition, TypeDef } from '@scale-codec/definition-compiler'
-import { type RustResult, variant } from '@scale-codec/definition-runtime'
 import Debug from '../debug'
 import { Map } from 'immutable'
 import { P, match } from 'ts-pattern'
@@ -29,71 +28,80 @@ function filterRawEntry(
     .otherwise(() => true)
 }
 
-function transformRustDef(
-  def: Exclude<RustTypeDefinitionVariant, RustFixedPointDef | RustIntDef>,
-): RustResult<TypeDef, string> {
-  return match<typeof def, RustResult<TypeDef, string>>(def)
-    .with({ Array: { type: 'u8', len: P.select() } }, (len) => {
-      return variant('Ok', {
-        t: 'bytes-array',
-        len,
+function transformRustDef(def: Exclude<RustTypeDefinitionVariant, RustFixedPointDef | RustIntDef>): TypeDef {
+  return (
+    match<typeof def, TypeDef>(def)
+      .with({ Array: { type: 'u8', len: P.select() } }, (len) => {
+        return {
+          t: 'bytes-array',
+          len,
+        }
       })
-    })
-    .with({ Array: P.select() }, ({ len, type }) => {
-      return variant('Ok', {
-        t: 'array',
-        len,
-        item: transformRef(type),
+      .with({ Array: P.select() }, ({ len, type }) => {
+        return {
+          t: 'array',
+          len,
+          item: transformRef(type),
+        }
       })
-    })
-    .with({ Map: P.select() }, ({ key, value }) => {
-      return variant('Ok', {
-        t: 'map',
-        key: transformRef(key),
-        value: transformRef(value),
+      .with({ Map: P.select() }, ({ key, value }) => {
+        return {
+          t: 'map',
+          key: transformRef(key),
+          value: transformRef(value),
+        }
       })
-    })
-    .with({ Struct: P.select() }, (fields) => {
-      return variant('Ok', {
-        t: 'struct',
-        fields: fields.map(({ name, type }) => ({
-          name,
-          ref: transformRef(type),
-        })),
+      .with({ Struct: P.select() }, (fields) => {
+        return {
+          t: 'struct',
+          fields: fields.map(({ name, type }) => ({
+            name,
+            ref: transformRef(type),
+          })),
+        }
       })
-    })
-    .with({ Enum: P.select() }, (variants) => {
-      return variant('Ok', {
-        t: 'enum',
-        variants: variants.map(({ name, type }, i) => ({
-          name,
-          discriminant: i,
-          ref: type && transformRef(type),
-        })),
+      // FIXME: https://github.com/hyperledger/iroha/issues/3444
+      //        `VersionedSignedQuery` and `VersionedSignedTransaction` has discriminant starting with 1,
+      //        which is not declared in the schema
+      .with({ Enum: [{ name: 'V1', type: P.select(P.string) }] }, (type) => {
+        return {
+          t: 'enum',
+          variants: [{ name: 'V1', ref: transformRef(type), discriminant: 1 }],
+        }
       })
-    })
-    .with({ Option: P.select() }, (some) => {
-      return variant('Ok', {
-        t: 'option',
-        some: transformRef(some),
+      .with({ Enum: P.select() }, (variants) => {
+        return {
+          t: 'enum',
+          variants: variants.map(({ name, type }, i) => ({
+            name,
+            discriminant: i,
+            ref: type && transformRef(type),
+          })),
+        }
       })
-    })
-    .with({ Vec: P.select() }, (item) => {
-      return variant('Ok', { t: 'vec', item: transformRef(item) })
-    })
-    .with({ Tuple: P.select() }, (items) => {
-      return variant('Ok', {
-        t: 'tuple',
-        items: items.map(transformRef),
+      .with({ Option: P.select() }, (some) => {
+        return {
+          t: 'option',
+          some: transformRef(some),
+        }
       })
-    })
-    .with(null, () => {
-      return variant('Ok', { t: 'alias', ref: 'Unit' })
-    })
-    .with(P.string, (alias) => {
-      return variant('Ok', { t: 'alias', ref: transformRef(alias) })
-    })
-    .exhaustive()
+      .with({ Vec: P.select() }, (item) => {
+        return { t: 'vec', item: transformRef(item) }
+      })
+      .with({ Tuple: P.select() }, (items) => {
+        return {
+          t: 'tuple',
+          items: items.map(transformRef),
+        }
+      })
+      .with(null, () => {
+        return { t: 'alias', ref: 'Unit' }
+      })
+      .with(P.string, (alias) => {
+        return { t: 'alias', ref: transformRef(alias) }
+      })
+      .exhaustive()
+  )
 }
 
 export interface FixedPointParams {
@@ -119,15 +127,8 @@ export function transformSchema(schema: RustDefinitions): TransformReturn {
             acc.fixedPoints.push({ base, ref, decimalPlaces })
           })
           .otherwise((value) => {
-            const def = match(transformRustDef(value))
-              .with({ tag: 'Ok' }, ({ content }) => content)
-              .with({ tag: 'Err' }, ({ content }) => {
-                throw new Error(content)
-              })
-              .exhaustive()
-
+            const def = transformRustDef(value)
             debugEntry('transform %o to %o', value, def)
-
             acc.definition[ref] = def
           })
 

@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import {
   DomainId,
-  EvaluatesToRegistrableBox,
   Executable,
   Expression,
   IdentifiableBox,
-  Instruction,
-  MapNameValue,
+  InstructionBox,
   Metadata,
   NewDomain,
   OptionIpfsPath,
   RegisterBox,
+  SortedMapNameValue,
   Value,
-  VecInstruction,
+  VecInstructionBox,
 } from '@iroha2/data-model'
 import { ref } from 'vue'
 import { client, toriiPre } from '../client'
@@ -25,28 +24,26 @@ const { state, run: registerDomain } = useTask(async () => {
     toriiPre,
     Executable(
       'Instructions',
-      VecInstruction([
-        Instruction(
+      VecInstructionBox([
+        InstructionBox(
           'Register',
           RegisterBox({
-            object: EvaluatesToRegistrableBox({
-              expression: Expression(
-                'Raw',
-                Value(
-                  'Identifiable',
-                  IdentifiableBox(
-                    'NewDomain',
-                    NewDomain({
-                      id: DomainId({
-                        name: domainName.value,
-                      }),
-                      metadata: Metadata({ map: MapNameValue(new Map()) }),
-                      logo: OptionIpfsPath('None'),
+            object: Expression(
+              'Raw',
+              Value(
+                'Identifiable',
+                IdentifiableBox(
+                  'NewDomain',
+                  NewDomain({
+                    id: DomainId({
+                      name: domainName.value,
                     }),
-                  ),
+                    metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
+                    logo: OptionIpfsPath('None'),
+                  }),
                 ),
               ),
-            }),
+            ),
           }),
         ),
       ]),
