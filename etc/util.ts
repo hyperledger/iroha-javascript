@@ -3,6 +3,7 @@ import path from 'path'
 import consola from 'consola'
 import chalk from 'chalk'
 import { cd } from 'zx'
+import url from 'url'
 
 export type SetEntry<T> = T extends Set<infer V> ? V : never
 
@@ -32,4 +33,4 @@ export async function preserveCwd<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-export const ROOT = path.resolve(__dirname, '../')
+export const ROOT = url.fileURLToPath(new URL('../', import.meta.url))
