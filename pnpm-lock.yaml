@@ -340,12 +340,21 @@ importers:
 
   packages/data-model-schema:
     dependencies:
+      '@scale-codec/definition-compiler':
+        specifier: ^4.0.1
+        version: 4.0.1
       '@scale-codec/definition-runtime':
         specifier: ^4.0.1
         version: 4.0.1
+      '@types/debug':
+        specifier: ^4.1.7
+        version: 4.1.7
       camelcase:
         specifier: ^7.0.1
         version: 7.0.1
+      debug:
+        specifier: ^4.3.4
+        version: 4.3.4(supports-color@8.1.1)
       fp-ts:
         specifier: ^2.14.0
         version: 2.14.0
@@ -356,18 +365,6 @@ importers:
       '@iroha2/iroha-source':
         specifier: workspace:^0.0.0
         version: link:../iroha-source
-      '@scale-codec/definition-compiler':
-        specifier: ^4.0.1
-        version: 4.0.1
-      '@scale-codec/util':
-        specifier: ^1.1.2
-        version: 1.1.2
-      '@types/debug':
-        specifier: ^4.1.7
-        version: 4.1.7
-      debug:
-        specifier: ^4.3.4
-        version: 4.3.4(supports-color@8.1.1)
 
   packages/docs-recipes:
     devDependencies:
@@ -1382,7 +1379,6 @@ packages:
       sort-es: 1.6.6
       tarjan-graph: 3.0.0
       ts-pattern: 4.2.1
-    dev: true
 
   /@scale-codec/definition-runtime@4.0.1:
     resolution: {integrity: sha512-fu+zVJYB5qp6CXZofPNANsJQlb6jYYDNIuGnSPEyngP4u5rdN8bK0GUiOgXDJDtOtb1aeD8gRira1+YFHydpUw==}
@@ -1426,7 +1422,6 @@ packages:
     resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
     dependencies:
       '@types/ms': 0.7.31
-    dev: true
 
   /@types/eslint@8.4.5:
     resolution: {integrity: sha512-dhsC09y1gpJWnK+Ff4SGvCuSnk9DaU0BJZSzOwa6GVSg65XtTugLBITDAAzRU5duGBoXBHpdR/9jHGxJjNflJQ==}
@@ -1474,7 +1469,6 @@ packages:
 
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
-    dev: true
 
   /@types/node@12.20.55:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
@@ -4093,7 +4087,6 @@ packages:
 
   /immutable@4.2.4:
     resolution: {integrity: sha512-WDxL3Hheb1JkRN3sQkyujNlL/xRjAo3rJtaU5xeufUauG66JdMr32bLj4gF+vWl84DIA3Zxw7tiAjneYzRRw+w==}
-    dev: true
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -5840,7 +5833,6 @@ packages:
 
   /sort-es@1.6.6:
     resolution: {integrity: sha512-28+kv5wXehxePLk0SQ51qNCegiaBCH+o1QIPkdfkLqhfxovPbw/a0eLy8rdW11VSkZq2U10cwIVhwGoIM6xfAQ==}
-    dev: true
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
@@ -6113,7 +6105,6 @@ packages:
 
   /tarjan-graph@3.0.0:
     resolution: {integrity: sha512-sM1+1ZKnnCtTP9W0DHTMHTlej9buusVHaKiBVecc6tZpBffBeEpE4XdFz7WNs9H1zaYkcgm6MzfyXFxSV2S1rA==}
-    dev: true
 
   /term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
@@ -6201,7 +6192,6 @@ packages:
 
   /ts-pattern@4.2.1:
     resolution: {integrity: sha512-lXCmHZb01QOM9HdCLvisCGUH9ATdKPON9UaUvwe007gJAhuSBhRWIAIowys5QqNxEq6odWctfMIdI96vzjnOMQ==}
-    dev: true
 
   /ts-pattern@4.2.2:
     resolution: {integrity: sha512-qzJMo2pbkUJWusRH5o8xR+xogn6RmvViyUgwBFTtRENLse470clCGjHDf6haWGZ1AOmk8XkEohUoBW8Uut6Scg==}
