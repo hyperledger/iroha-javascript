@@ -1,8 +1,7 @@
 import { Client, Signer } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/native'
 import { crypto } from './crypto'
-import { client_config } from '../../config'
-import { AccountId } from '@iroha2/data-model'
+import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 
 const HOST = window.location.host
 
@@ -14,6 +13,6 @@ export const toriiPre = {
   fetch: fetch.bind(window),
 }
 
-const signer = new Signer(client_config.account as AccountId, crypto.KeyPair.fromJSON(client_config))
+const signer = new Signer(CLIENT_CONFIG.accountId, crypto.KeyPair.fromJSON(CLIENT_CONFIG.keyPair))
 
 export const client = new Client({ signer })

@@ -1,4 +1,4 @@
-import { pascal } from 'case'
+import camelcase from 'camelcase'
 import { pipe } from 'fp-ts/function'
 import { Set } from 'immutable'
 import invariant from 'tiny-invariant'
@@ -75,27 +75,29 @@ function rawSchemaIdentifierToTree(src: string): Tree {
 }
 
 function transformTree(tree: Tree): Tree {
-  return match<Tree, Tree>(tree)
-    .with({ id: 'EvaluatesTo' }, () => ({ id: 'Expression', items: [] }))
-    .with({ id: 'Array', items: [P.select('inner'), { id: P.select('len'), items: [] }] }, ({ inner, len }) => {
-      if (Number.isNaN(Number(len))) throw new Error(`Invalid array len: ${len}`)
-      return { id: 'Array', items: [transformTree(inner), { id: `L_${len}`, items: [] }] }
-    })
-    .with({ id: 'Fixed', items: [{ id: 'i64', items: [] }] }, () => ({ id: 'FixedI64', items: [] }))
-    .with({ id: 'String', items: [] }, () => ({ id: 'Str', items: [] }))
-    .with({ id: 'GenericPredicateBox', items: [{ id: 'ValuePredicate', items: [] }] }, () => ({
-      id: 'PredicateBox',
-      items: [],
-    }))
-    .with({ id: 'SignatureOf', items: [P.any] }, () => ({ id: 'Signature', items: [] }))
-    .with({ id: 'SortedVec', items: [{ id: 'SignaturesOf', items: [P.any] }] }, () => ({
-      id: 'SortedSignatures',
-      items: [],
-    }))
-    .with({ id: 'SignaturesOf', items: [P.any] }, () => ({ id: 'SortedSignatures', items: [] }))
-    .with({ id: 'HashOf', items: [P.any] }, () => ({ id: 'Hash', items: [] }))
-    .with({ id: 'Compact', items: [{ id: 'u128' }] }, () => ({ id: 'Compact', items: [] }))
-    .otherwise((x) => ({ id: x.id, items: x.items.map(transformTree) }))
+  return (
+    match<Tree, Tree>(tree)
+      .with({ id: 'EvaluatesTo' }, () => ({ id: 'Expression', items: [] }))
+      .with({ id: 'Array', items: [P.select('inner'), { id: P.select('len'), items: [] }] }, ({ inner, len }) => {
+        if (Number.isNaN(Number(len))) throw new Error(`Invalid array len: ${len}`)
+        return { id: 'Array', items: [transformTree(inner), { id: `L_${len}`, items: [] }] }
+      })
+      // .with({ id: 'Fixed', items: [{ id: 'i64', items: [] }] }, () => ({ id: 'FixedI64', items: [] }))
+      .with({ id: 'String', items: [] }, () => ({ id: 'Str', items: [] }))
+      .with({ id: 'GenericPredicateBox', items: [{ id: 'ValuePredicate', items: [] }] }, () => ({
+        id: 'PredicateBox',
+        items: [],
+      }))
+      .with({ id: 'SignatureOf', items: [P.any] }, () => ({ id: 'Signature', items: [] }))
+      .with({ id: 'SortedVec', items: [{ id: 'SignaturesOf', items: [P.any] }] }, () => ({
+        id: 'SortedSignatures',
+        items: [],
+      }))
+      .with({ id: 'SignaturesOf', items: [P.any] }, () => ({ id: 'SortedSignatures', items: [] }))
+      .with({ id: 'HashOf', items: [P.any] }, () => ({ id: 'Hash', items: [] }))
+      .with({ id: 'Compact', items: [{ id: 'u128' }] }, () => ({ id: 'Compact', items: [] }))
+      .otherwise((x) => ({ id: x.id, items: x.items.map(transformTree) }))
+  )
 }
 
 function treeToFinalIdentifier(root: Tree): string {
@@ -110,5 +112,5 @@ function treeToFinalIdentifier(root: Tree): string {
 
   recursion(root)
 
-  return pascal(parts.join('_'))
+  return camelcase(parts.join('_'), { pascalCase: true })
 }

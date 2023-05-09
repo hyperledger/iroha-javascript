@@ -1,3 +1,5 @@
+import chalk from 'chalk'
+import consola from 'consola'
 import config from './config-resolved'
 import {
   assertConfigurationIsGitClone,
@@ -7,9 +9,8 @@ import {
   resolveBinaryPath,
   runCargoBuild,
   syncIrohaSymlink,
+  syncSourceRepo,
 } from './util'
-import consola from 'consola'
-import chalk from 'chalk'
 
 export type Binary = 'iroha' | 'kagami'
 
@@ -57,7 +58,7 @@ export async function resolveBinary(
 }
 
 export async function buildBinary(bin: Binary, ignoreBuilt = false): Promise<void> {
-  if (config.t === 'git-clone' && !(await isCloneUpToDate(config))) await clone(config)
+  await syncSourceRepo()
   const path = resolveBinaryPath(config, bin)
   if (ignoreBuilt || !(await isAccessible(path))) await runCargoBuild(bin)
   consola.success(`${chalk.magenta.bold(bin)} is built`)

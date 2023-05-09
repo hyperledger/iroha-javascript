@@ -1,16 +1,15 @@
 import * as testPeerClient from '@iroha2/test-peer/src/api/client'
-import { client_config, peer_config, peer_genesis } from '../../../config'
 
 testPeerClient.setBaseURL('/peer-server')
 
 before(async () => {
-  await testPeerClient.setConfiguration({ config: peer_config, genesis: peer_genesis })
+  await testPeerClient.prepareConfiguration()
 })
 
 beforeEach(async () => {
   await testPeerClient.killPeer()
-  await testPeerClient.cleanSideEffects(peer_config.KURA.BLOCK_STORE_PATH)
-  await testPeerClient.startPeer({ toriiApiURL: client_config.torii.apiURL })
+  await testPeerClient.clearPeerStorage()
+  await testPeerClient.startPeer()
 })
 
 it('Register new domain and wait until commitment', () => {

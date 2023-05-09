@@ -1,12 +1,13 @@
-import { ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration } from './types'
-import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
-import fs from 'fs/promises'
-import del from 'del'
-import consola from 'consola'
 import chalk from 'chalk'
+import consola from 'consola'
+import del from 'del'
+import { type Options as ExecaOptions, execa } from 'execa'
 import makeDir from 'make-dir'
-import { Options as ExecaOptions, execa } from 'execa'
-import path from 'path'
+import { fs, path } from 'zx'
+import url from 'url'
+import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
+import config from './config-resolved'
+import { ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration } from './types'
 
 export async function clone(config: GitCloneConfiguration): Promise<void> {
   consola.info(
@@ -76,7 +77,7 @@ export function assertConfigurationIsGitClone(cfg: ConfigResolved): asserts cfg 
 
 export async function syncIrohaSymlink(config: ConfigResolved) {
   const symlinkDir = IROHA_DIR
-  const symlinkDirRelative = path.relative(path.join(__dirname, '../'), symlinkDir)
+  const symlinkDirRelative = path.relative(url.fileURLToPath(new URL('../', import.meta.url)), symlinkDir)
   const target = config.t === 'git-clone' ? CLONE_DIR : config.absolutePath
   const existingLink = await readlink(symlinkDir)
   if (!(existingLink.t === 'ok' && existingLink.target === target)) {
@@ -85,4 +86,8 @@ export async function syncIrohaSymlink(config: ConfigResolved) {
     await fs.symlink(target, symlinkDir)
     consola.info(chalk`Created symlink {blue ${symlinkDirRelative}} -> {blue ${target}}`)
   }
+}
+
+export async function syncSourceRepo() {
+  if (config.t === 'git-clone' && !(await isCloneUpToDate(config))) await clone(config)
 }

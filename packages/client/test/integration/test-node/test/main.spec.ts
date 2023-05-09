@@ -48,11 +48,11 @@ import {
   VecInstructionBox,
   variant,
 } from '@iroha2/data-model'
-import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
+import { StartPeerReturn, clearAll, clearPeerStorage, prepareConfiguration, startPeer } from '@iroha2/test-peer'
+import { CLIENT_CONFIG, PIPELINE_MS } from '@iroha2/test-configuration'
 import { Seq } from 'immutable'
 import nodeFetch from 'node-fetch'
-import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { PIPELINE_MS, client_config, peer_config, peer_genesis } from '../../config'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { delay } from '../../util'
 
 // for debugging convenience
@@ -60,7 +60,7 @@ new ScaleLogger().mount()
 
 // #region Keys
 
-const keyPair = crypto.KeyPair.fromJSON(client_config)
+const keyPair = crypto.KeyPair.fromJSON(CLIENT_CONFIG.keyPair)
 
 // #endregion
 
@@ -69,13 +69,15 @@ const keyPair = crypto.KeyPair.fromJSON(client_config)
 setCrypto(crypto)
 
 function clientFactory() {
-  const signer = new Signer(client_config.account as AccountId, keyPair)
+  const { accountId } = CLIENT_CONFIG
 
-  const pre = { ...client_config.torii, ws: WS, fetch: nodeFetch as typeof fetch }
+  const signer = new Signer(accountId, keyPair)
+
+  const pre = { ...CLIENT_CONFIG.torii, ws: WS, fetch: nodeFetch as typeof fetch }
 
   const client = new Client({ signer })
 
-  return { signer, pre, client }
+  return { signer, pre, client, accountId }
 }
 
 // #endregion
@@ -189,18 +191,14 @@ async function waitForGenesisCommitted(pre: ToriiRequirementsForTelemetry) {
 
 // and now tests...
 
+beforeAll(async () => {
+  await clearAll()
+  await prepareConfiguration()
+})
+
 beforeEach(async () => {
-  await cleanConfiguration()
-  await cleanSideEffects(peer_config.KURA.BLOCK_STORE_PATH)
-
-  // setup configs for test peer
-  await setConfiguration({
-    config: peer_config,
-    genesis: peer_genesis,
-  })
-
-  startedPeer = await startPeer({ toriiApiURL: client_config.torii.apiURL })
-
+  await clearPeerStorage()
+  startedPeer = await startPeer()
   await waitForGenesisCommitted(clientFactory().pre)
 })
 
@@ -209,8 +207,6 @@ afterEach(async () => {
 })
 
 afterAll(async () => {
-  await cleanConfiguration()
-
   keyPair.free()
   expect(FREE_HEAP.size).toEqual(0)
 })
@@ -286,7 +282,7 @@ test('AddAccount instruction with name length more than limit is not committed',
 })
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and querying for it later', async () => {
-  const { client, pre } = clientFactory()
+  const { client, pre, accountId } = clientFactory()
 
   // Creating asset by definition
   const ASSET_DEFINITION_ID = AssetDefinitionId({
@@ -318,7 +314,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
             IdBox(
               'AssetId',
               AssetId({
-                account_id: client_config.account as AccountId,
+                account_id: accountId,
                 definition_id: ASSET_DEFINITION_ID,
               }),
             ),
@@ -335,7 +331,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     QueryBox(
       'FindAssetsByAccountId',
       FindAssetsByAccountId({
-        account_id: Expression('Raw', Value('Id', IdBox('AccountId', client_config.account as AccountId))),
+        account_id: Expression('Raw', Value('Id', IdBox('AccountId', accountId))),
       }),
     ),
   )

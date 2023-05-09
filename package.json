@@ -1,13 +1,15 @@
 {
   "name": "@iroha2/monorepo",
   "private": true,
-  "packageManager": "pnpm@7.1.6",
+  "packageManager": "pnpm@8.4.0",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "postinstall": "pnpm jake prepare:all",
     "format:fix": "prettier-eslint \"**/*.{ts,js,vue,json}\" --write",
     "lint": "eslint .",
-    "run-all-checks": "pnpm jake run-all-checks"
+    "run-all-checks": "pnpm jake run-all-checks",
+    "typecheck": "pnpm jake type-check",
+    "build-all": "pnpm jake build:all"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
