@@ -40,7 +40,8 @@
     "@iroha2/data-model": "workspace:6.0.0",
     "debug": "^4.3.4",
     "emittery": "^0.10.1",
-    "json-bigint": "^1.0.0"
+    "json-bigint": "^1.0.0",
+    "type-fest": "^3.6.1"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

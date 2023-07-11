@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest'
 import SAMPLES from '../../../data-model-rust-samples/samples.json'
-import * as lib from '../lib'
+import { type Codec, datamodel } from '../lib'
 import { fromHex, toHex } from '@scale-codec/util'
 
 // eslint-disable-next-line max-params
-function defineCase<T>(label: keyof typeof SAMPLES, codec: lib.Codec<T>, value: T) {
+function defineCase<T>(label: keyof typeof SAMPLES, codec: Codec<T>, value: T) {
   const sample = SAMPLES[label]
 
   describe(label, () => {
@@ -20,10 +20,10 @@ function defineCase<T>(label: keyof typeof SAMPLES, codec: lib.Codec<T>, value: 
 
 defineCase(
   'AccountId',
-  lib.AccountId,
-  lib.AccountId({
+  datamodel.AccountId,
+  datamodel.AccountId({
     name: 'alice',
-    domain_id: lib.DomainId({
+    domain_id: datamodel.DomainId({
       name: 'wonderland',
     }),
   }),
@@ -31,34 +31,34 @@ defineCase(
 
 defineCase(
   'DomainId',
-  lib.DomainId,
-  lib.DomainId({
+  datamodel.DomainId,
+  datamodel.DomainId({
     name: 'Hey',
   }),
 )
 
 defineCase(
   'AssetDefinitionId',
-  lib.AssetDefinitionId,
-  lib.AssetDefinitionId({
+  datamodel.AssetDefinitionId,
+  datamodel.AssetDefinitionId({
     name: 'rose',
-    domain_id: lib.DomainId({
+    domain_id: datamodel.DomainId({
       name: 'wonderland',
     }),
   }),
 )
 
 {
-  const assetId = lib.AssetId({
-    account_id: lib.AccountId({
+  const assetId = datamodel.AssetId({
+    account_id: datamodel.AccountId({
       name: 'alice',
-      domain_id: lib.DomainId({
+      domain_id: datamodel.DomainId({
         name: 'wonderland',
       }),
     }),
-    definition_id: lib.AssetDefinitionId({
+    definition_id: datamodel.AssetDefinitionId({
       name: 'rose',
-      domain_id: lib.DomainId({
+      domain_id: datamodel.DomainId({
         name: 'wonderland',
       }),
     }),
@@ -66,44 +66,53 @@ defineCase(
 
   defineCase(
     'Time-based Trigger ISI',
-    lib.RegisterBox,
-    lib.RegisterBox({
-      object: lib.Expression(
-        'Raw',
-        lib.Value(
-          'Identifiable',
-          lib.IdentifiableBox(
-            'Trigger',
-            lib.TriggerBox(
-              'Raw',
-              lib.TriggerFilterBoxExecutable({
-                id: lib.TriggerId({ name: 'mint_rose', domain_id: lib.OptionDomainId('None') }),
-                action: lib.ActionFilterBoxExecutable({
-                  executable: lib.Executable(
+    datamodel.RegisterBox,
+    datamodel.RegisterBox({
+      object: datamodel.EvaluatesToRegistrableBox({
+        expression: datamodel.Expression(
+          'Raw',
+          datamodel.Value(
+            'Identifiable',
+            datamodel.IdentifiableBox(
+              'Trigger',
+              datamodel.TriggerFilterBox({
+                id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
+                action: datamodel.ActionFilterBox({
+                  executable: datamodel.Executable(
                     'Instructions',
-                    lib.VecInstructionBox([
-                      lib.InstructionBox(
+                    datamodel.VecInstructionBox([
+                      datamodel.InstructionBox(
                         'Mint',
-                        lib.MintBox({
-                          object: lib.Expression('Raw', lib.Value('Numeric', lib.NumericValue('U32', 1))),
-                          destination_id: lib.Expression('Raw', lib.Value('Id', lib.IdBox('AssetId', assetId))),
+                        datamodel.MintBox({
+                          object: datamodel.EvaluatesToValue({
+                            expression: datamodel.Expression(
+                              'Raw',
+                              datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
+                            ),
+                          }),
+                          destination_id: datamodel.EvaluatesToIdBox({
+                            expression: datamodel.Expression(
+                              'Raw',
+                              datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
+                            ),
+                          }),
                         }),
                       ),
                     ]),
                   ),
-                  repeats: lib.Repeats('Indefinitely'),
-                  filter: lib.FilterBox(
+                  repeats: datamodel.Repeats('Indefinitely'),
+                  filter: datamodel.FilterBox(
                     'Time',
-                    lib.ExecutionTime(
+                    datamodel.ExecutionTime(
                       'Schedule',
-                      lib.Schedule({
-                        start: lib.Duration([4141203402341234n, 0]),
-                        period: lib.OptionDuration('Some', lib.Duration([3n, 0])),
+                      datamodel.Schedule({
+                        start: datamodel.Duration([4141203402341234n, 0]),
+                        period: datamodel.OptionDuration('Some', datamodel.Duration([3n, 0])),
                       }),
                     ),
                   ),
                   technical_account: assetId.account_id,
-                  metadata: lib.Metadata({ map: lib.SortedMapNameValue(new Map()) }),
+                  metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
                 }),
               }),
             ),
@@ -115,16 +124,16 @@ defineCase(
 }
 
 {
-  const assetId = lib.AssetId({
-    account_id: lib.AccountId({
+  const assetId = datamodel.AssetId({
+    account_id: datamodel.AccountId({
       name: 'alice',
-      domain_id: lib.DomainId({
+      domain_id: datamodel.DomainId({
         name: 'wonderland',
       }),
     }),
-    definition_id: lib.AssetDefinitionId({
+    definition_id: datamodel.AssetDefinitionId({
       name: 'rose',
-      domain_id: lib.DomainId({
+      domain_id: datamodel.DomainId({
         name: 'wonderland',
       }),
     }),
@@ -132,45 +141,54 @@ defineCase(
 
   defineCase(
     'Event-based Trigger ISI',
-    lib.RegisterBox,
-    lib.RegisterBox({
-      object: lib.Expression(
-        'Raw',
-        lib.Value(
-          'Identifiable',
-          lib.IdentifiableBox(
-            'Trigger',
-            lib.TriggerBox(
-              'Raw',
-              lib.TriggerFilterBoxExecutable({
-                id: lib.TriggerId({ name: 'mint_rose', domain_id: lib.OptionDomainId('None') }),
-                action: lib.ActionFilterBoxExecutable({
-                  executable: lib.Executable(
+    datamodel.RegisterBox,
+    datamodel.RegisterBox({
+      object: datamodel.EvaluatesToRegistrableBox({
+        expression: datamodel.Expression(
+          'Raw',
+          datamodel.Value(
+            'Identifiable',
+            datamodel.IdentifiableBox(
+              'Trigger',
+              datamodel.TriggerFilterBox({
+                id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
+                action: datamodel.ActionFilterBox({
+                  executable: datamodel.Executable(
                     'Instructions',
-                    lib.VecInstructionBox([
-                      lib.InstructionBox(
+                    datamodel.VecInstructionBox([
+                      datamodel.InstructionBox(
                         'Mint',
-                        lib.MintBox({
-                          object: lib.Expression('Raw', lib.Value('Numeric', lib.NumericValue('U32', 1))),
-                          destination_id: lib.Expression('Raw', lib.Value('Id', lib.IdBox('AssetId', assetId))),
+                        datamodel.MintBox({
+                          object: datamodel.EvaluatesToValue({
+                            expression: datamodel.Expression(
+                              'Raw',
+                              datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
+                            ),
+                          }),
+                          destination_id: datamodel.EvaluatesToIdBox({
+                            expression: datamodel.Expression(
+                              'Raw',
+                              datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
+                            ),
+                          }),
                         }),
                       ),
                     ]),
                   ),
-                  repeats: lib.Repeats('Indefinitely'),
-                  filter: lib.FilterBox(
+                  repeats: datamodel.Repeats('Indefinitely'),
+                  filter: datamodel.FilterBox(
                     'Data',
-                    lib.FilterOptDataEntityFilter(
+                    datamodel.FilterOptDataEntityFilter(
                       'BySome',
-                      lib.DataEntityFilter(
+                      datamodel.DataEntityFilter(
                         'ByAssetDefinition',
-                        lib.FilterOptAssetDefinitionFilter(
+                        datamodel.FilterOptAssetDefinitionFilter(
                           'BySome',
-                          lib.AssetDefinitionFilter({
-                            origin_filter: lib.FilterOptOriginFilterAssetDefinitionEvent('AcceptAll'),
-                            event_filter: lib.FilterOptAssetDefinitionEventFilter(
+                          datamodel.AssetDefinitionFilter({
+                            origin_filter: datamodel.FilterOptOriginFilterAssetDefinitionEvent('AcceptAll'),
+                            event_filter: datamodel.FilterOptAssetDefinitionEventFilter(
                               'BySome',
-                              lib.AssetDefinitionEventFilter('ByCreated'),
+                              datamodel.AssetDefinitionEventFilter('ByCreated'),
                             ),
                           }),
                         ),
@@ -178,7 +196,7 @@ defineCase(
                     ),
                   ),
                   technical_account: assetId.account_id,
-                  metadata: lib.Metadata({ map: lib.SortedMapNameValue(new Map()) }),
+                  metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
                 }),
               }),
             ),
@@ -191,14 +209,17 @@ defineCase(
 
 defineCase(
   'Metadata',
-  lib.Metadata,
-  lib.Metadata({
-    map: lib.SortedMapNameValue(
+  datamodel.Metadata,
+  datamodel.Metadata({
+    map: datamodel.SortedMapNameValue(
       new Map([
         // Test will fail if order is violated
-        ['authentication', lib.Value('String', '80252ad79c68c01ec8946983411ce3b7cbea21d25f68c8546c687b2a7e2505cc')],
-        ['email', lib.Value('String', 'user123@mail.com')],
-        ['salt', lib.Value('String', 'ABCDEFG')],
+        [
+          'authentication',
+          datamodel.Value('String', '80252ad79c68c01ec8946983411ce3b7cbea21d25f68c8546c687b2a7e2505cc'),
+        ],
+        ['email', datamodel.Value('String', 'user123@mail.com')],
+        ['salt', datamodel.Value('String', 'ABCDEFG')],
       ]),
     ),
   }),

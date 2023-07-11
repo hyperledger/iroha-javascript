@@ -6,28 +6,7 @@
  */
 
 import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
-import {
-  AccountId,
-  Executable,
-  OptionU32,
-  PaginatedQueryResult,
-  PredicateBox,
-  QueryBox,
-  QueryExecutionFailure,
-  QueryPayload,
-  RustResult,
-  Signature,
-  SignedQuery,
-  SignedTransaction,
-  SortedMapNameValue,
-  SortedVecSignature,
-  TransactionPayload,
-  ValuePredicate,
-  VersionedPaginatedQueryResult,
-  VersionedSignedQuery,
-  VersionedSignedTransaction,
-  variant,
-} from '@iroha2/data-model'
+import { RustResult, datamodel, variant } from '@iroha2/data-model'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
 import {
   ENDPOINT_CONFIGURATION,
@@ -65,20 +44,23 @@ export interface PeerStatus {
 
 export class Signer {
   public readonly keyPair: KeyPair
-  public readonly accountId: AccountId
+  public readonly accountId: datamodel.AccountId
 
-  public constructor(accountId: AccountId, keyPair: KeyPair) {
+  public constructor(accountId: datamodel.AccountId, keyPair: KeyPair) {
     this.accountId = accountId
     this.keyPair = keyPair
   }
 
-  public sign(...message: cryptoTypes.BytesInputTuple): Signature {
+  public sign(...message: cryptoTypes.BytesInputTuple): datamodel.Signature {
     return freeScope(() => {
       const signature = this.keyPair.sign(...message)
       const publicKey = signature.publicKey()
 
-      return Signature({
-        public_key: publicKey.toDataModel(),
+      return datamodel.Signature({
+        public_key: datamodel.PublicKey({
+          digest_function: publicKey.digestFunction,
+          payload: publicKey.payload(),
+        }),
         payload: signature.payload(),
       })
     })
@@ -88,8 +70,8 @@ export class Signer {
 // #region Transaction helpers
 
 export interface MakeTransactionPayloadParams {
-  accountId: AccountId
-  executable: Executable
+  accountId: datamodel.AccountId
+  executable: datamodel.Executable
   /**
    * @default 100_000n
    */
@@ -102,50 +84,50 @@ export interface MakeTransactionPayloadParams {
    * @default // none
    */
   nonce?: number
-  metadata?: SortedMapNameValue
+  metadata?: datamodel.MapNameValue
 }
 
 const DEFAULT_TRANSACTION_TTL = 100_000n
 
-export function makeTransactionPayload(params: MakeTransactionPayloadParams): TransactionPayload {
-  return TransactionPayload({
+export function makeTransactionPayload(params: MakeTransactionPayloadParams): datamodel.TransactionPayload {
+  return datamodel.TransactionPayload({
     account_id: params.accountId,
     instructions: params.executable,
     time_to_live_ms: params.ttl ?? DEFAULT_TRANSACTION_TTL,
-    nonce: params?.nonce ? OptionU32('Some', params.nonce) : OptionU32('None'),
-    metadata: params?.metadata ?? SortedMapNameValue(new Map()),
+    nonce: params?.nonce ? datamodel.OptionU32('Some', params.nonce) : datamodel.OptionU32('None'),
+    metadata: params?.metadata ?? datamodel.MapNameValue(new Map()),
     creation_time: params.creationTime ?? BigInt(Date.now()),
   })
 }
 
-export function computeTransactionHash(payload: TransactionPayload): Uint8Array {
-  return cryptoHash('array', TransactionPayload.toBuffer(payload))
+export function computeTransactionHash(payload: datamodel.TransactionPayload): Uint8Array {
+  return cryptoHash('array', datamodel.TransactionPayload.toBuffer(payload))
 }
 
-export function signTransaction(payload: TransactionPayload, signer: Signer): Signature {
+export function signTransaction(payload: datamodel.TransactionPayload, signer: Signer): datamodel.Signature {
   const hash = computeTransactionHash(payload)
   return signer.sign('array', hash)
 }
 
 export function makeVersionedSignedTransaction(
-  payload: TransactionPayload,
+  payload: datamodel.TransactionPayload,
   signer: Signer,
-): VersionedSignedTransaction {
+): datamodel.VersionedSignedTransaction {
   const signature = signTransaction(payload, signer)
-  return VersionedSignedTransaction(
+  return datamodel.VersionedSignedTransaction(
     'V1',
-    SignedTransaction({
+    datamodel.SignedTransaction({
       payload,
-      signatures: SortedVecSignature([signature]),
+      signatures: datamodel.VecSignatureOfTransactionPayload([signature]),
     }),
   )
 }
 
 export function executableIntoSignedTransaction(params: {
   signer: Signer
-  executable: Executable
+  executable: datamodel.Executable
   payloadParams?: Except<MakeTransactionPayloadParams, 'accountId' | 'executable'>
-}): VersionedSignedTransaction {
+}): datamodel.VersionedSignedTransaction {
   return makeVersionedSignedTransaction(
     makeTransactionPayload({
       executable: params.executable,
@@ -161,43 +143,46 @@ export function executableIntoSignedTransaction(params: {
 // #region Query helpers
 
 interface MakeQueryPayloadParams {
-  accountId: AccountId
-  query: QueryBox
+  accountId: datamodel.AccountId
+  query: datamodel.QueryBox
   /**
    * @default PredicateBox('Raw', Predicate('Pass'))
    */
-  filter?: PredicateBox
+  filter?: datamodel.PredicateBox
   timestampMs?: bigint
 }
 
-export function makeQueryPayload(params: MakeQueryPayloadParams): QueryPayload {
-  return QueryPayload({
+export function makeQueryPayload(params: MakeQueryPayloadParams): datamodel.QueryPayload {
+  return datamodel.QueryPayload({
     account_id: params.accountId,
     query: params.query,
     timestamp_ms: params.timestampMs ?? BigInt(Date.now()),
-    filter: params?.filter ?? PredicateBox('Raw', ValuePredicate('Pass')),
+    filter: params?.filter ?? datamodel.PredicateBox('Raw', datamodel.Predicate('Pass')),
   })
 }
 
-export function computeQueryHash(payload: QueryPayload): Uint8Array {
-  return cryptoHash('array', QueryPayload.toBuffer(payload))
+export function computeQueryHash(payload: datamodel.QueryPayload): Uint8Array {
+  return cryptoHash('array', datamodel.QueryPayload.toBuffer(payload))
 }
 
-export function signQuery(payload: QueryPayload, signer: Signer): Signature {
+export function signQuery(payload: datamodel.QueryPayload, signer: Signer): datamodel.Signature {
   const hash = computeQueryHash(payload)
   return signer.sign('array', hash)
 }
 
-export function makeVersionedSignedQuery(payload: QueryPayload, signer: Signer): VersionedSignedQuery {
+export function makeVersionedSignedQuery(
+  payload: datamodel.QueryPayload,
+  signer: Signer,
+): datamodel.VersionedSignedQueryRequest {
   const signature = signQuery(payload, signer)
-  return VersionedSignedQuery('V1', SignedQuery({ payload, signature }))
+  return datamodel.VersionedSignedQueryRequest('V1', datamodel.SignedQueryRequest({ payload, signature }))
 }
 
 export function queryBoxIntoSignedQuery(params: {
-  query: QueryBox
+  query: datamodel.QueryBox
   signer: Signer
   payloadParams?: Except<MakeQueryPayloadParams, 'accountId' | 'query'>
-}): VersionedSignedQuery {
+}): datamodel.VersionedSignedQueryRequest {
   return makeVersionedSignedQuery(
     makeQueryPayload({
       query: params.query,
@@ -234,14 +219,14 @@ export type ToriiRequirementsForApiWebSocket = ToriiRequirementsPartUrlApi & Tor
 
 export type ToriiRequirementsForTelemetry = ToriiRequirementsPartUrlTelemetry & ToriiRequirementsPartHttp
 
-export type ToriiQueryResult = RustResult<PaginatedQueryResult, QueryExecutionFailure>
+export type ToriiQueryResult = RustResult<datamodel.PaginatedQueryResult, datamodel.QueryError>
 
 export interface ToriiApiHttp {
-  submit: (prerequisites: ToriiRequirementsForApiHttp, tx: VersionedSignedTransaction) => Promise<void>
+  submit: (prerequisites: ToriiRequirementsForApiHttp, tx: datamodel.VersionedSignedTransaction) => Promise<void>
   request: (
     prerequisites: ToriiRequirementsForApiHttp,
-    query: VersionedSignedQuery,
-  ) => Promise<RustResult<PaginatedQueryResult, QueryExecutionFailure>>
+    query: datamodel.VersionedSignedQueryRequest,
+  ) => Promise<RustResult<datamodel.PaginatedQueryResult, datamodel.QueryError>>
   getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<RustResult<null, string>>
   setPeerConfig: (prerequisites: ToriiRequirementsForApiHttp, params: SetPeerConfigParams) => Promise<void>
 }
@@ -266,7 +251,7 @@ export type ToriiOmnibus = ToriiApiHttp & ToriiApiWebSocket & ToriiTelemetry
 
 export const Torii: ToriiOmnibus = {
   async submit(pre, tx) {
-    const body = VersionedSignedTransaction.toBuffer(tx)
+    const body = datamodel.VersionedSignedTransaction.toBuffer(tx)
 
     const response = await pre.fetch(pre.apiURL + ENDPOINT_TRANSACTION, {
       body,
@@ -277,7 +262,7 @@ export const Torii: ToriiOmnibus = {
   },
 
   async request(pre, query) {
-    const queryBytes = VersionedSignedQuery.toBuffer(query)
+    const queryBytes = datamodel.VersionedSignedQueryRequest.toBuffer(query)
     const response = await pre
       .fetch(pre.apiURL + ENDPOINT_QUERY, {
         method: 'POST',
@@ -289,11 +274,12 @@ export const Torii: ToriiOmnibus = {
 
     if (response.status === 200) {
       // OK
-      const value: PaginatedQueryResult = VersionedPaginatedQueryResult.fromBuffer(bytes).enum.content
+      const value: datamodel.PaginatedQueryResult =
+        datamodel.VersionedPaginatedQueryResult.fromBuffer(bytes).enum.content
       return variant('Ok', value)
     } else {
       // ERROR
-      const error = QueryExecutionFailure.fromBuffer(bytes)
+      const error = datamodel.QueryError.fromBuffer(bytes)
       return variant('Err', error)
     }
   },
@@ -378,11 +364,11 @@ export class Client {
     this.signer = params.signer
   }
 
-  public async submitExecutable(pre: ToriiRequirementsForApiHttp, executable: Executable) {
+  public async submitExecutable(pre: ToriiRequirementsForApiHttp, executable: datamodel.Executable) {
     return Torii.submit(pre, executableIntoSignedTransaction({ executable, signer: this.signer }))
   }
 
-  public async requestWithQueryBox(pre: ToriiRequirementsForApiHttp, query: QueryBox) {
+  public async requestWithQueryBox(pre: ToriiRequirementsForApiHttp, query: datamodel.QueryBox) {
     return Torii.request(pre, queryBoxIntoSignedQuery({ query, signer: this.signer }))
   }
 }

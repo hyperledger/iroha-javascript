@@ -1,178 +1,18 @@
-import {
-  Client,
-  Signer,
-  Torii,
-  ToriiRequirementsForApiHttp,
-  ToriiRequirementsForTelemetry,
-  setCrypto,
-} from '@iroha2/client'
-import { adapter as WS } from '@iroha2/client/web-socket/node'
+import { Torii, ToriiRequirementsForTelemetry, setCrypto } from '@iroha2/client'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
-import {
-  AccountId,
-  AssetDefinitionId,
-  AssetId,
-  AssetValueType,
-  DomainId,
-  Executable,
-  Expression,
-  FilterBox,
-  FindAssetById,
-  FindAssetsByAccountId,
-  FixedPointI64,
-  IdBox,
-  IdentifiableBox,
-  InstructionBox,
-  Metadata,
-  MintBox,
-  Mintable,
-  NewAccount,
-  NewAssetDefinition,
-  NewDomain,
-  NumericValue,
-  OptionHash,
-  OptionIpfsPath,
-  OptionPipelineEntityKind,
-  OptionPipelineStatusKind,
-  PipelineEntityKind,
-  PipelineEventFilter,
-  PipelineStatusKind,
-  QueryBox,
-  RegisterBox,
-  RustResult,
-  Logger as ScaleLogger,
-  SortedMapNameValue,
-  SortedVecPublicKey,
-  Value,
-  VecInstructionBox,
-  variant,
-} from '@iroha2/data-model'
-import { StartPeerReturn, clearAll, clearPeerStorage, prepareConfiguration, startPeer } from '@iroha2/test-peer'
-import { CLIENT_CONFIG, PIPELINE_MS } from '@iroha2/test-configuration'
+import { type RustResult, Logger as ScaleLogger, datamodel, sugar, variant } from '@iroha2/data-model'
+import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
 import { Seq } from 'immutable'
-import nodeFetch from 'node-fetch'
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
+import { client_config, peer_config, peer_genesis } from '../../config'
 import { delay } from '../../util'
+import { clientFactory, keyPair, pipelineStepDelay } from './test-util'
+import { pipe } from 'fp-ts/function'
 
 // for debugging convenience
 new ScaleLogger().mount()
-
-// #region Keys
-
-const keyPair = crypto.KeyPair.fromJSON(CLIENT_CONFIG.keyPair)
-
-// #endregion
-
-// #region Client
-
 setCrypto(crypto)
-
-function clientFactory() {
-  const { accountId } = CLIENT_CONFIG
-
-  const signer = new Signer(accountId, keyPair)
-
-  const pre = { ...CLIENT_CONFIG.torii, ws: WS, fetch: nodeFetch as typeof fetch }
-
-  const client = new Client({ signer })
-
-  return { signer, pre, client, accountId }
-}
-
-// #endregion
-
-async function addAsset({
-  client,
-  definitionId,
-  opts,
-  assetType,
-  pre,
-}: {
-  client: Client
-  pre: ToriiRequirementsForApiHttp
-  definitionId: AssetDefinitionId
-  assetType?: AssetValueType
-  opts?: {
-    mintable?: Mintable
-  }
-}) {
-  await client.submitExecutable(
-    pre,
-    Executable(
-      'Instructions',
-      VecInstructionBox([
-        InstructionBox(
-          'Register',
-          RegisterBox({
-            object: Expression(
-              'Raw',
-              Value(
-                'Identifiable',
-                IdentifiableBox(
-                  'NewAssetDefinition',
-                  NewAssetDefinition({
-                    id: definitionId,
-                    value_type: assetType ?? AssetValueType('BigQuantity'),
-                    metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
-                    mintable: opts?.mintable ?? Mintable('Not'),
-                    logo: OptionIpfsPath('None'),
-                  }),
-                ),
-              ),
-            ),
-          }),
-        ),
-      ]),
-    ),
-  )
-}
-
-async function addAccount({
-  client,
-  accountId,
-  pre,
-}: {
-  client: Client
-  accountId: AccountId
-  pre: ToriiRequirementsForApiHttp
-}) {
-  await client.submitExecutable(
-    pre,
-    Executable(
-      'Instructions',
-      VecInstructionBox([
-        InstructionBox(
-          'Register',
-          RegisterBox({
-            object: Expression(
-              'Raw',
-              Value(
-                'Identifiable',
-                IdentifiableBox(
-                  'NewAccount',
-                  NewAccount({
-                    id: accountId,
-                    signatories: SortedVecPublicKey([]),
-                    metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
-                  }),
-                ),
-              ),
-            ),
-          }),
-        ),
-      ]),
-    ),
-  )
-}
-
-function mintIntoExecutable(mint: MintBox) {
-  return Executable('Instructions', VecInstructionBox([InstructionBox('Mint', mint)]))
-}
-
-async function pipelineStepDelay() {
-  await delay(PIPELINE_MS * 2)
-}
 
 let startedPeer: StartPeerReturn | null = null
 
@@ -221,28 +61,28 @@ test('Peer is healthy', async () => {
 test('AddAsset instruction with name length more than limit is not committed', async () => {
   const { client, pre } = clientFactory()
 
-  const normalAssetDefinitionId = AssetDefinitionId({
-    name: 'xor',
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  await addAsset({ client, pre, definitionId: normalAssetDefinitionId })
+  const normalAssetDefinitionId = sugar.assetDefinitionId('xor', 'wonderland')
 
   const tooLongAssetName = '0'.repeat(2 ** 14)
-  const invalidAssetDefinitionId = AssetDefinitionId({
-    name: tooLongAssetName,
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  await addAsset({ client, pre, definitionId: invalidAssetDefinitionId })
+  const invalidAssetDefinitionId = sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
 
-  await delay(PIPELINE_MS * 2)
+  async function register(id: datamodel.AssetDefinitionId) {
+    await client.submitExecutable(
+      pre,
+      pipe(
+        sugar.identifiable.newAssetDefinition(id, datamodel.AssetValueType('BigQuantity')),
+        sugar.instruction.register,
+        sugar.executable.instructions,
+      ),
+    )
+  }
 
-  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAssetsDefinitions'))
+  await Promise.all([register(normalAssetDefinitionId), register(invalidAssetDefinitionId)])
+  await pipelineStepDelay()
 
-  const existingDefinitions: AssetDefinitionId[] = queryResult
+  const queryResult = await client.requestWithQueryBox(pre, datamodel.QueryBox('FindAllAssetsDefinitions', null))
+
+  const existingDefinitions: datamodel.AssetDefinitionId[] = queryResult
     .as('Ok')
     .result.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('AssetDefinition').id)
@@ -254,25 +94,21 @@ test('AddAsset instruction with name length more than limit is not committed', a
 test('AddAccount instruction with name length more than limit is not committed', async () => {
   const { client, pre } = clientFactory()
 
-  const normal = AccountId({
-    name: 'bob',
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  const incorrect = AccountId({
-    name: '0'.repeat(2 ** 14),
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
+  const normal = sugar.accountId('bob', 'wonderland')
+  const incorrect = sugar.accountId('0'.repeat(2 ** 14), 'wonderland')
 
-  await Promise.all([normal, incorrect].map((x) => addAccount({ client, pre, accountId: x })))
-  await delay(PIPELINE_MS * 2)
+  await client.submitExecutable(
+    pre,
+    pipe(
+      [normal, incorrect].map((id) => pipe(sugar.identifiable.newAccount(id, []), sugar.instruction.register)),
+      sugar.executable.instructions,
+    ),
+  )
+  await pipelineStepDelay()
 
-  const queryResult = await client.requestWithQueryBox(pre, QueryBox('FindAllAccounts'))
+  const queryResult = await client.requestWithQueryBox(pre, sugar.find.allAccounts())
 
-  const existingAccounts: AccountId[] = queryResult
+  const existingAccounts: datamodel.AccountId[] = queryResult
     .as('Ok')
     .result.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('Account').id)
@@ -285,42 +121,31 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   const { client, pre, accountId } = clientFactory()
 
   // Creating asset by definition
-  const ASSET_DEFINITION_ID = AssetDefinitionId({
-    name: 'xor',
-    domain_id: DomainId({
-      name: 'wonderland',
-    }),
-  })
-  await addAsset({
-    client,
+  const ASSET_DEFINITION_ID = sugar.assetDefinitionId('xor', 'wonderland')
+
+  await client.submitExecutable(
     pre,
-    definitionId: ASSET_DEFINITION_ID,
-    assetType: AssetValueType('Fixed'),
-    opts: { mintable: Mintable('Infinitely') },
-  })
+    pipe(
+      sugar.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, datamodel.AssetValueType('Fixed'), {
+        mintable: datamodel.Mintable('Infinitely'),
+      }),
+      sugar.instruction.register,
+      sugar.executable.instructions,
+    ),
+  )
   await pipelineStepDelay()
 
   // Adding mint
   const DECIMAL = '512.5881'
+
   await client.submitExecutable(
     pre,
-    mintIntoExecutable(
-      MintBox({
-        object: Expression('Raw', Value('Numeric', NumericValue('Fixed', FixedPointI64(DECIMAL)))),
-        destination_id: Expression(
-          'Raw',
-          Value(
-            'Id',
-            IdBox(
-              'AssetId',
-              AssetId({
-                account_id: accountId,
-                definition_id: ASSET_DEFINITION_ID,
-              }),
-            ),
-          ),
-        ),
-      }),
+    pipe(
+      sugar.instruction.mint(
+        sugar.value.numericFixed(datamodel.FixedPointI64(DECIMAL)),
+        datamodel.IdBox('AssetId', sugar.assetId(client_config.account as datamodel.AccountId, ASSET_DEFINITION_ID)),
+      ),
+      sugar.executable.instructions,
     ),
   )
   await pipelineStepDelay()
@@ -328,12 +153,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   // Checking added asset via query
   const result = await client.requestWithQueryBox(
     pre,
-    QueryBox(
-      'FindAssetsByAccountId',
-      FindAssetsByAccountId({
-        account_id: Expression('Raw', Value('Id', IdBox('AccountId', accountId))),
-      }),
-    ),
+    sugar.find.assetsByAccountId(client_config.account as datamodel.AccountId),
   )
 
   // Assert
@@ -341,42 +161,26 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
     .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
 
-  expect(asset).toBeTruthy()
-  expect(asset!.value.enum.tag === 'Fixed').toBe(true)
-  expect(asset!.value.enum.as('Fixed')).toBe(DECIMAL)
+  expect(asset?.value).toEqual(datamodel.AssetValue('Fixed', datamodel.FixedPointI64(DECIMAL)))
 })
 
 test('Registering domain', async () => {
   const { client, pre } = clientFactory()
 
   async function registerDomain(domainName: string) {
-    const registerBox = RegisterBox({
-      object: Expression(
-        'Raw',
-        Value(
-          'Identifiable',
-          IdentifiableBox(
-            'NewDomain',
-            NewDomain({
-              id: DomainId({
-                name: domainName,
-              }),
-              metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
-              logo: OptionIpfsPath('None'),
-            }),
-          ),
-        ),
-      ),
-    })
-
     await client.submitExecutable(
       pre,
-      Executable('Instructions', VecInstructionBox([InstructionBox('Register', registerBox)])),
+      pipe(
+        //
+        sugar.identifiable.newDomain(domainName),
+        sugar.instruction.register,
+        sugar.executable.instructions,
+      ),
     )
   }
 
   async function ensureDomainExistence(domainName: string) {
-    const result = await client.requestWithQueryBox(pre, QueryBox('FindAllDomains'))
+    const result = await client.requestWithQueryBox(pre, sugar.find.allDomains())
 
     const domain = result
       .as('Ok')
@@ -397,29 +201,9 @@ test('When querying for not existing domain, returns FindError', async () => {
 
   const result = await client.requestWithQueryBox(
     pre,
-    QueryBox(
-      'FindAssetById',
-      FindAssetById({
-        id: Expression(
-          'Raw',
-          Value(
-            'Id',
-            IdBox(
-              'AssetId',
-              AssetId({
-                account_id: AccountId({
-                  name: 'alice',
-                  domain_id: DomainId({ name: 'wonderland' }),
-                }),
-                definition_id: AssetDefinitionId({
-                  name: 'XOR',
-                  domain_id: DomainId({ name: 'wonderland' }),
-                }),
-              }),
-            ),
-          ),
-        ),
-      }),
+    pipe(
+      sugar.assetId(sugar.accountId('alice', 'wonderland'), sugar.assetDefinitionId('XOR', 'wonderland')),
+      sugar.find.assetById,
     ),
   )
 
@@ -427,18 +211,25 @@ test('When querying for not existing domain, returns FindError', async () => {
   expect(result.as('Err').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
 })
 
+test('Multisignature', async () => {
+  await import('./multisignature')
+})
+
+// Transferring Store asset is not supported
+// https://github.com/hyperledger/iroha-2-docs/issues/273
+// TODO rewrite test to transferring something else
+test.skip('Transferring Store asset between accounts', async () => {
+  await import('./transfer-store-asset')
+})
+
 describe('Events API', () => {
   test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
     const { pre, client } = clientFactory()
 
-    const filter = FilterBox(
-      'Pipeline',
-      PipelineEventFilter({
-        entity_kind: OptionPipelineEntityKind('Some', PipelineEntityKind('Transaction')),
-        status_kind: OptionPipelineStatusKind('Some', PipelineStatusKind('Committed')),
-        hash: OptionHash('None'),
-      }),
-    )
+    const filter = sugar.filter.pipeline({
+      entityKind: 'Transaction',
+      statusKind: 'Committed',
+    })
 
     // Listening
 
@@ -459,16 +250,15 @@ describe('Events API', () => {
     })
 
     // Triggering transaction
-    await addAsset({
-      client,
+    await client.submitExecutable(
       pre,
-      definitionId: AssetDefinitionId({
-        name: 'xor',
-        domain_id: DomainId({
-          name: 'wonderland',
-        }),
-      }),
-    })
+      pipe(
+        sugar.assetDefinitionId('xor', 'wonderland'),
+        (x) => sugar.identifiable.newAssetDefinition(x, datamodel.AssetValueType('BigQuantity')),
+        sugar.instruction.register,
+        sugar.executable.instructions,
+      ),
+    )
 
     // Waiting for resolving
     await new Promise<void>((resolve, reject) => {
@@ -509,16 +299,15 @@ describe('Blocks Stream API', () => {
       const blockPromise = stream.ee.once('block')
 
       // triggering block creation
-      await addAsset({
-        client,
+      await client.submitExecutable(
         pre,
-        definitionId: AssetDefinitionId({
-          name: assetName,
-          domain_id: DomainId({
-            name: 'wonderland',
-          }),
-        }),
-      })
+        pipe(
+          sugar.assetDefinitionId(assetName, 'wonderland'),
+          (x) => sugar.identifiable.newAssetDefinition(x, datamodel.AssetValueType('Quantity')),
+          sugar.instruction.register,
+          sugar.executable.instructions,
+        ),
+      )
 
       // waiting for it
       await blockPromise

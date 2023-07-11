@@ -8,8 +8,8 @@
     "format:fix": "prettier-eslint \"**/*.{ts,js,vue,json}\" --write",
     "lint": "eslint .",
     "run-all-checks": "pnpm jake run-all-checks",
-    "typecheck": "pnpm jake type-check",
-    "build-all": "pnpm jake build:all"
+    "build:all": "pnpm jake build:all",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
@@ -28,6 +28,7 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-vue": "^9.11.0",
     "execa": "^7.0.0",
+    "fp-ts": "^2.13.1",
     "immutable": "^4.2.4",
     "jake": "^10.8.5",
     "make-dir": "^3.1.0",

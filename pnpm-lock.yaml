@@ -52,6 +52,9 @@ importers:
       execa:
         specifier: ^7.0.0
         version: 7.0.0
+      fp-ts:
+        specifier: ^2.13.1
+        version: 2.14.0
       immutable:
         specifier: ^4.2.4
         version: 4.2.4
@@ -96,7 +99,7 @@ importers:
         version: 5.0.4
       vite:
         specifier: ^4.3.3
-        version: 4.3.3(sass@1.54.0)
+        version: 4.3.3(@types/node@18.16.1)
       vitest:
         specifier: ^0.30.1
         version: 0.30.1
@@ -121,6 +124,9 @@ importers:
       json-bigint:
         specifier: ^1.0.0
         version: 1.0.0
+      type-fest:
+        specifier: ^3.6.1
+        version: 3.9.0
     devDependencies:
       '@types/debug':
         specifier: ^4.1.7
@@ -149,12 +155,18 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      fp-ts:
+        specifier: ^2.13.1
+        version: 2.14.0
+      immer:
+        specifier: ^9.0.19
+        version: 9.0.19
       node-fetch:
         specifier: ^3.3.0
         version: 3.3.0
       vite:
         specifier: ^4.3.3
-        version: 4.3.3(sass@1.54.0)
+        version: 4.3.3(@types/node@18.16.1)
 
   packages/client/test/integration/test-web:
     devDependencies:
@@ -200,6 +212,9 @@ importers:
       esbuild:
         specifier: ^0.17.10
         version: 0.17.10
+      fp-ts:
+        specifier: ^2.13.1
+        version: 2.14.0
       sass:
         specifier: ^1.52.1
         version: 1.54.0
@@ -315,7 +330,7 @@ importers:
         version: 1.14.0
       vite:
         specifier: ^4.3.3
-        version: 4.3.3(sass@1.54.0)
+        version: 4.3.3(@types/node@18.16.1)
 
   packages/data-model:
     dependencies:
@@ -386,6 +401,9 @@ importers:
       '@iroha2/data-model':
         specifier: workspace:^6.0.0
         version: link:../data-model
+      fp-ts:
+        specifier: ^2.13.1
+        version: 2.14.0
       node-fetch:
         specifier: ^3.3.0
         version: 3.3.0
@@ -3712,7 +3730,6 @@ packages:
 
   /fp-ts@2.14.0:
     resolution: {integrity: sha512-QLagLSYAgMA00pZzUzeksH/78Sd14y7+Gc2A8Yaja3/IpGOFMdm/gYBuDMxYqLsJ58iT5lz+bJb953RAeFfp1A==}
-    dev: false
 
   /from@0.1.7:
     resolution: {integrity: sha512-twe20eF1OxVxp/ML/kq2p1uc6KvFK/+vs8WjEbeKmV2He22MKm7YF2ANIt+EOqhJ5L3K/SuuPhk0hWQDjOM23g==}
@@ -4079,6 +4096,10 @@ packages:
   /ignore@5.2.4:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
+    dev: true
+
+  /immer@9.0.19:
+    resolution: {integrity: sha512-eY+Y0qcsB4TZKwgQzLaE/lqYMlKhv5J9dyd2RhhtGhNo2njPXDqU9XPfcNfa3MIDsdtZt5KlkIsirlo4dHsWdQ==}
     dev: true
 
   /immutable@4.1.0:
@@ -6303,7 +6324,6 @@ packages:
   /type-fest@3.9.0:
     resolution: {integrity: sha512-hR8JP2e8UiH7SME5JZjsobBlEiatFoxpzCP+R3ZeCo7kAaG1jXQE5X/buLzogM6GJu8le9Y4OcfNuIQX0rZskA==}
     engines: {node: '>=14.16'}
-    dev: true
 
   /typed-array-length@1.0.4:
     resolution: {integrity: sha512-KjZypGq+I/H7HI5HlOoGHkWUUGq+Q0TPhQurLbyrVrvnKTBgzLhIJ7j6J/XTQOi0d1RjyZ0wdas8bKs2p0x3Ng==}

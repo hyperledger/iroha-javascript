@@ -1,59 +1,22 @@
 // #region pre
 import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
-import {
-  DomainId,
-  Executable,
-  Expression,
-  IdentifiableBox,
-  InstructionBox,
-  Metadata,
-  NewDomain,
-  OptionIpfsPath,
-  QueryBox,
-  RegisterBox,
-  SortedMapNameValue,
-  Value,
-  VecInstructionBox,
-} from '@iroha2/data-model'
+import { sugar } from '@iroha2/data-model'
+import { pipe } from 'fp-ts/function'
 
 // --snip--
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
 // #endregion pre
 
-// #region reg-domain-fn
-async function registerDomain(domainName: string) {
-  const registerBox = RegisterBox({
-    object: Expression(
-      'Raw',
-      Value(
-        'Identifiable',
-        IdentifiableBox(
-          'NewDomain',
-          NewDomain({
-            id: DomainId({
-              name: domainName, // [!code hl]
-            }),
-            metadata: Metadata({ map: SortedMapNameValue(new Map()) }),
-            logo: OptionIpfsPath('None'),
-          }),
-        ),
-      ),
-    ),
-  })
-
-  await client.submitExecutable(
-    toriiRequirements,
-    Executable(
-      'Instructions',
-      VecInstructionBox([InstructionBox('Register', registerBox)]),
-    ),
-  )
-}
-// #endregion reg-domain-fn
-
 // #region do-reg
-await registerDomain('looking_glass')
+await client.submitExecutable(
+  toriiRequirements,
+  pipe(
+    sugar.identifiable.newDomain('looking_glass'),
+    sugar.instruction.register,
+    sugar.executable.instructions,
+  ),
+)
 // #endregion do-reg
 
 // #region ensure-fn
@@ -61,7 +24,7 @@ async function ensureDomainExistence(domainName: string) {
   // Query all domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllDomains'),
+    sugar.find.allDomains(),
   )
 
   // Display the request status

@@ -1,14 +1,14 @@
 {
   "name": "@iroha2/data-model",
   "version": "6.0.0",
-  "module": "dist/lib.mjs",
-  "main": "dist/lib.cjs",
-  "types": "dist/lib.d.ts",
+  "module": "dist/esm/lib.mjs",
+  "main": "dist/cjs/lib.cjs",
+  "types": "dist/types/lib.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/lib.mjs",
-      "require": "./dist/lib.cjs",
-      "types": "./dist/lib.d.ts"
+      "import": "./dist/esm/lib.mjs",
+      "require": "./dist/cjs/lib.cjs",
+      "types": "./dist/types/lib.d.ts"
     }
   },
   "files": [
