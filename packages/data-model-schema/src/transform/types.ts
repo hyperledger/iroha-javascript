@@ -55,7 +55,8 @@ export interface RustEnumDefinition {
 }
 
 export interface RustEnumVarDef {
-  name: string
+  tag: string
+  discriminant: number
   type?: TypePath
 }
 

@@ -54,13 +54,10 @@ export class Signer {
   public sign(...message: cryptoTypes.BytesInputTuple): datamodel.Signature {
     return freeScope(() => {
       const signature = this.keyPair.sign(...message)
-      const publicKey = signature.publicKey()
+      const publicKey = signature.publicKey().toDataModel()
 
       return datamodel.Signature({
-        public_key: datamodel.PublicKey({
-          digest_function: publicKey.digestFunction,
-          payload: publicKey.payload(),
-        }),
+        public_key: publicKey,
         payload: signature.payload(),
       })
     })
@@ -72,9 +69,6 @@ export class Signer {
 export interface MakeTransactionPayloadParams {
   accountId: datamodel.AccountId
   executable: datamodel.Executable
-  /**
-   * @default 100_000n
-   */
   ttl?: bigint
   /**
    * @default Date.now()
@@ -84,19 +78,19 @@ export interface MakeTransactionPayloadParams {
    * @default // none
    */
   nonce?: number
-  metadata?: datamodel.MapNameValue
+  metadata?: datamodel.SortedMapNameValue
 }
 
-const DEFAULT_TRANSACTION_TTL = 100_000n
+// const DEFAULT_TRANSACTION_TTL = 100_000n
 
 export function makeTransactionPayload(params: MakeTransactionPayloadParams): datamodel.TransactionPayload {
   return datamodel.TransactionPayload({
-    account_id: params.accountId,
+    authority: params.accountId,
     instructions: params.executable,
-    time_to_live_ms: params.ttl ?? DEFAULT_TRANSACTION_TTL,
-    nonce: params?.nonce ? datamodel.OptionU32('Some', params.nonce) : datamodel.OptionU32('None'),
-    metadata: params?.metadata ?? datamodel.MapNameValue(new Map()),
-    creation_time: params.creationTime ?? BigInt(Date.now()),
+    time_to_live_ms: params.ttl ? datamodel.OptionNonZeroU64('Some', params.ttl) : datamodel.OptionNonZeroU64('None'),
+    nonce: params?.nonce ? datamodel.OptionNonZeroU32('Some', params.nonce) : datamodel.OptionNonZeroU32('None'),
+    metadata: params?.metadata ?? datamodel.SortedMapNameValue(new Map()),
+    creation_time_ms: params.creationTime ?? BigInt(Date.now()),
   })
 }
 
@@ -118,7 +112,7 @@ export function makeVersionedSignedTransaction(
     'V1',
     datamodel.SignedTransaction({
       payload,
-      signatures: datamodel.VecSignatureOfTransactionPayload([signature]),
+      signatures: datamodel.SortedSignatures({ signatures: datamodel.SortedVecSignature([signature]) }),
     }),
   )
 }
@@ -154,10 +148,10 @@ interface MakeQueryPayloadParams {
 
 export function makeQueryPayload(params: MakeQueryPayloadParams): datamodel.QueryPayload {
   return datamodel.QueryPayload({
-    account_id: params.accountId,
+    authority: params.accountId,
     query: params.query,
     timestamp_ms: params.timestampMs ?? BigInt(Date.now()),
-    filter: params?.filter ?? datamodel.PredicateBox('Raw', datamodel.Predicate('Pass')),
+    filter: params?.filter ?? datamodel.PredicateBox('Raw', datamodel.ValuePredicate('Pass')),
   })
 }
 
@@ -173,16 +167,16 @@ export function signQuery(payload: datamodel.QueryPayload, signer: Signer): data
 export function makeVersionedSignedQuery(
   payload: datamodel.QueryPayload,
   signer: Signer,
-): datamodel.VersionedSignedQueryRequest {
+): datamodel.VersionedSignedQuery {
   const signature = signQuery(payload, signer)
-  return datamodel.VersionedSignedQueryRequest('V1', datamodel.SignedQueryRequest({ payload, signature }))
+  return datamodel.VersionedSignedQuery('V1', datamodel.SignedQuery({ payload, signature }))
 }
 
 export function queryBoxIntoSignedQuery(params: {
   query: datamodel.QueryBox
   signer: Signer
   payloadParams?: Except<MakeQueryPayloadParams, 'accountId' | 'query'>
-}): datamodel.VersionedSignedQueryRequest {
+}): datamodel.VersionedSignedQuery {
   return makeVersionedSignedQuery(
     makeQueryPayload({
       query: params.query,
@@ -219,14 +213,14 @@ export type ToriiRequirementsForApiWebSocket = ToriiRequirementsPartUrlApi & Tor
 
 export type ToriiRequirementsForTelemetry = ToriiRequirementsPartUrlTelemetry & ToriiRequirementsPartHttp
 
-export type ToriiQueryResult = RustResult<datamodel.PaginatedQueryResult, datamodel.QueryError>
+export type ToriiQueryResult = RustResult<datamodel.PaginatedQueryResult, datamodel.ValidationFail>
 
 export interface ToriiApiHttp {
   submit: (prerequisites: ToriiRequirementsForApiHttp, tx: datamodel.VersionedSignedTransaction) => Promise<void>
   request: (
     prerequisites: ToriiRequirementsForApiHttp,
-    query: datamodel.VersionedSignedQueryRequest,
-  ) => Promise<RustResult<datamodel.PaginatedQueryResult, datamodel.QueryError>>
+    query: datamodel.VersionedSignedQuery,
+  ) => Promise<ToriiQueryResult>
   getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<RustResult<null, string>>
   setPeerConfig: (prerequisites: ToriiRequirementsForApiHttp, params: SetPeerConfigParams) => Promise<void>
 }
@@ -262,7 +256,7 @@ export const Torii: ToriiOmnibus = {
   },
 
   async request(pre, query) {
-    const queryBytes = datamodel.VersionedSignedQueryRequest.toBuffer(query)
+    const queryBytes = datamodel.VersionedSignedQuery.toBuffer(query)
     const response = await pre
       .fetch(pre.apiURL + ENDPOINT_QUERY, {
         method: 'POST',
@@ -272,6 +266,8 @@ export const Torii: ToriiOmnibus = {
 
     const bytes = new Uint8Array(await response.arrayBuffer())
 
+    console.log(response, { bytes })
+
     if (response.status === 200) {
       // OK
       const value: datamodel.PaginatedQueryResult =
@@ -279,7 +275,7 @@ export const Torii: ToriiOmnibus = {
       return variant('Ok', value)
     } else {
       // ERROR
-      const error = datamodel.QueryError.fromBuffer(bytes)
+      const error = datamodel.ValidationFail.fromBuffer(bytes)
       return variant('Err', error)
     }
   },

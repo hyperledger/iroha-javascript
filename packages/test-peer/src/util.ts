@@ -44,12 +44,12 @@ export async function waitUntilPeerIsHealthy(
   }
 }
 
-interface CheckedConfig {
+export interface CheckedConfig {
   KURA: { BLOCK_STORE_PATH: typeof BLOCK_STORE_PATH_RELATIVE }
 }
 
-interface CheckedGenesis {
-  validator: { validator_path: typeof VALIDATOR_WASM_PATH_RELATIVE }
+export interface CheckedGenesis {
+  validator: typeof VALIDATOR_WASM_PATH_RELATIVE
 }
 
 interface SetConfigurationCheckedParams<C extends CheckedConfig, G extends CheckedGenesis> {

@@ -10,7 +10,7 @@ import { BLOCK_STORE_PATH_RELATIVE, TMP_DIR, VALIDATOR_WASM_PATH_RELATIVE } from
 import debug from './dbg'
 import { rmForce, setConfigurationChecked, waitUntilPeerIsHealthy } from './util'
 import VALIDATOR_WASM from '@iroha2/iroha-source/src/subentries/validator'
-import { CLIENT_CONFIG, PEER_CONFIG_PATCHED, PEER_GENESIS } from '@iroha2/test-configuration'
+import { CLIENT_CONFIG, PEER_CONFIG, PEER_GENESIS } from '@iroha2/test-configuration'
 
 /**
  * Time within to check if peer is up and running
@@ -147,12 +147,12 @@ export async function prepareConfiguration() {
   await setConfigurationChecked({
     // parsing with type-level check
     peerGenesis: match(PEER_GENESIS)
-      .with({ validator: { validator_path: VALIDATOR_WASM_PATH_RELATIVE } as const }, (x) => x)
+      .with({ validator: VALIDATOR_WASM_PATH_RELATIVE }, (x) => x)
       .otherwise(() => {
         throw new Error('Invalid genesis')
       }),
-    peerConfig: match(PEER_CONFIG_PATCHED)
-      .with({ KURA: { BLOCK_STORE_PATH: BLOCK_STORE_PATH_RELATIVE } as const }, (x) => x)
+    peerConfig: match(PEER_CONFIG)
+      .with({ KURA: { BLOCK_STORE_PATH: BLOCK_STORE_PATH_RELATIVE } }, (x) => x)
       .otherwise(() => {
         throw new Error('Invalid peer config')
       }),

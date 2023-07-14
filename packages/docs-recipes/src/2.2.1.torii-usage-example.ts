@@ -2,7 +2,7 @@ import { Torii } from '@iroha2/client'
 import { datamodel } from '@iroha2/data-model'
 
 // --snip--
-declare const query: datamodel.VersionedSignedQueryRequest
+declare const query: datamodel.VersionedSignedQuery
 
 const result = await Torii.request(
   {

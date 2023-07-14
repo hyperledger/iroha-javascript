@@ -68,34 +68,31 @@ defineCase(
     'Time-based Trigger ISI',
     datamodel.RegisterBox,
     datamodel.RegisterBox({
-      object: datamodel.EvaluatesToRegistrableBox({
-        expression: datamodel.Expression(
-          'Raw',
-          datamodel.Value(
-            'Identifiable',
-            datamodel.IdentifiableBox(
-              'Trigger',
-              datamodel.TriggerFilterBox({
+      object: datamodel.Expression(
+        'Raw',
+        datamodel.Value(
+          'Identifiable',
+          datamodel.IdentifiableBox(
+            'Trigger',
+            datamodel.TriggerBox(
+              'Raw',
+              datamodel.TriggerFilterBoxExecutable({
                 id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
-                action: datamodel.ActionFilterBox({
+                action: datamodel.ActionFilterBoxExecutable({
                   executable: datamodel.Executable(
                     'Instructions',
                     datamodel.VecInstructionBox([
                       datamodel.InstructionBox(
                         'Mint',
                         datamodel.MintBox({
-                          object: datamodel.EvaluatesToValue({
-                            expression: datamodel.Expression(
-                              'Raw',
-                              datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
-                            ),
-                          }),
-                          destination_id: datamodel.EvaluatesToIdBox({
-                            expression: datamodel.Expression(
-                              'Raw',
-                              datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
-                            ),
-                          }),
+                          object: datamodel.Expression(
+                            'Raw',
+                            datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
+                          ),
+                          destination_id: datamodel.Expression(
+                            'Raw',
+                            datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
+                          ),
                         }),
                       ),
                     ]),
@@ -111,7 +108,7 @@ defineCase(
                       }),
                     ),
                   ),
-                  technical_account: assetId.account_id,
+                  authority: assetId.account_id,
                   metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
                 }),
               }),
@@ -143,34 +140,31 @@ defineCase(
     'Event-based Trigger ISI',
     datamodel.RegisterBox,
     datamodel.RegisterBox({
-      object: datamodel.EvaluatesToRegistrableBox({
-        expression: datamodel.Expression(
-          'Raw',
-          datamodel.Value(
-            'Identifiable',
-            datamodel.IdentifiableBox(
-              'Trigger',
-              datamodel.TriggerFilterBox({
+      object: datamodel.Expression(
+        'Raw',
+        datamodel.Value(
+          'Identifiable',
+          datamodel.IdentifiableBox(
+            'Trigger',
+            datamodel.TriggerBox(
+              'Raw',
+              datamodel.TriggerFilterBoxExecutable({
                 id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
-                action: datamodel.ActionFilterBox({
+                action: datamodel.ActionFilterBoxExecutable({
                   executable: datamodel.Executable(
                     'Instructions',
                     datamodel.VecInstructionBox([
                       datamodel.InstructionBox(
                         'Mint',
                         datamodel.MintBox({
-                          object: datamodel.EvaluatesToValue({
-                            expression: datamodel.Expression(
-                              'Raw',
-                              datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
-                            ),
-                          }),
-                          destination_id: datamodel.EvaluatesToIdBox({
-                            expression: datamodel.Expression(
-                              'Raw',
-                              datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
-                            ),
-                          }),
+                          object: datamodel.Expression(
+                            'Raw',
+                            datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
+                          ),
+                          destination_id: datamodel.Expression(
+                            'Raw',
+                            datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
+                          ),
                         }),
                       ),
                     ]),
@@ -195,7 +189,7 @@ defineCase(
                       ),
                     ),
                   ),
-                  technical_account: assetId.account_id,
+                  authority: assetId.account_id,
                   metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
                 }),
               }),

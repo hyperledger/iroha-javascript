@@ -11,7 +11,7 @@ export const newAccount = (
     'NewAccount',
     datamodel.NewAccount({
       id: accountId,
-      signatories: datamodel.VecPublicKey(signatories),
+      signatories: datamodel.SortedVecPublicKey(signatories),
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       metadata: opts?.metadata ?? ({ map: new Map() } as datamodel.Metadata),
     }),
@@ -23,6 +23,10 @@ export const newAssetDefinition = (
   opts?: {
     metadata?: datamodel.Metadata
     mintable?: datamodel.Mintable
+    /**
+     * IPFS path
+     */
+    logo?: string
   },
 ): datamodel.IdentifiableBox =>
   datamodel.IdentifiableBox(
@@ -33,6 +37,7 @@ export const newAssetDefinition = (
       mintable: opts?.mintable ?? datamodel.Mintable('Not'),
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       metadata: opts?.metadata ?? ({ map: new Map() } as datamodel.Metadata),
+      logo: opts?.logo ? datamodel.OptionIpfsPath('Some', opts.logo) : datamodel.OptionIpfsPath('None'),
     }),
   )
 
@@ -49,7 +54,16 @@ export const newDomain = (
       id: datamodel.DomainId({
         name: domainName,
       }),
-      metadata: opts?.metadata ?? datamodel.Metadata({ map: datamodel.MapNameValue(new Map()) }),
+      metadata: opts?.metadata ?? datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
       logo: opts?.logo ? datamodel.OptionIpfsPath('Some', opts.logo) : datamodel.OptionIpfsPath('None'),
+    }),
+  )
+
+export const asset = (assetId: datamodel.AssetId, value: datamodel.AssetValue): datamodel.IdentifiableBox =>
+  datamodel.IdentifiableBox(
+    'Asset',
+    datamodel.Asset({
+      id: assetId,
+      value,
     }),
   )

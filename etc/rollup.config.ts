@@ -261,24 +261,20 @@ async function* generateRolls(): AsyncGenerator<RollupOptions> {
         const dist = packageRoot(pkg, 'dist')
         const external = (await loadProductionDependencies(pkg)).toArray()
 
+        const preserveModulesOpts = { preserveModules: true, preserveModulesRoot: packageRoot(pkg, 'ts-build') }
+
         yield {
           input: input(pkg, 'js'),
           external,
           plugins: commonJsPlugins(),
-          output: [
-            output('esm', path.join(dist, 'esm'), {
-              preserveModules: true,
-              preserveModulesRoot: packageRoot(pkg, 'ts-build'),
-            }),
-            output('cjs', path.join(dist, 'cjs')),
-          ],
+          output: [output('esm', path.join(dist, 'esm'), preserveModulesOpts), output('cjs', path.join(dist, 'cjs'))],
         }
 
         yield {
           input: input(pkg, 'dts'),
           external,
           plugins: [PluginDts()],
-          output: output('types', path.join(dist, 'types')),
+          output: output('types', path.join(dist, 'types'), preserveModulesOpts),
         }
       })
       .with('i64-fixnum', 'crypto-util', async function* (pkg) {

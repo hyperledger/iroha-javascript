@@ -87,7 +87,10 @@ fn create_some_time_based_trigger_isi() -> RegisterBox {
     RegisterBox::new(Trigger::new(
         TriggerId::from_str("mint_rose").unwrap(),
         Action::new(
-            Executable::from(vec![MintBox::new(1_u32, asset_id.clone()).into()]),
+            Executable::from(vec![InstructionBox::from(MintBox::new(
+                1_u32,
+                asset_id.clone(),
+            ))]),
             Repeats::Indefinitely,
             asset_id.account_id().clone(),
             FilterBox::Time(TimeEventFilter::new(ExecutionTime::Schedule(
@@ -107,7 +110,7 @@ fn create_some_event_based_trigger_isi() -> RegisterBox {
     RegisterBox::new(Trigger::new(
         TriggerId::from_str("mint_rose").unwrap(),
         Action::new(
-            Executable::from(vec![instruction.into()]),
+            Executable::from(vec![InstructionBox::from(instruction)]),
             Repeats::Indefinitely,
             account_id,
             FilterBox::Data(BySome(DataEntityFilter::ByAssetDefinition(BySome(
@@ -151,4 +154,18 @@ fn create_metadata() -> Metadata {
         )
         .set("email", Value::String("user123@mail.com".to_owned()))
         .set("salt", Value::String("ABCDEFG".to_owned()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use iroha_data_model::query::error::QueryExecutionFail;
+    use parity_scale_codec::Decode;
+
+    #[test]
+    fn dbg_trigger_isi() {
+        let value = create_some_time_based_trigger_isi();
+
+        dbg!(&value);
+    }
 }

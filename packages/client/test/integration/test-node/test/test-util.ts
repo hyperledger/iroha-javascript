@@ -1,23 +1,24 @@
 import nodeFetch from 'node-fetch'
-import { PIPELINE_MS, client_config } from '../../config'
+import { PIPELINE_MS, CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { delay } from '../../util'
 import { Client, Signer } from '@iroha2/client'
-import * as Iroha from '@iroha2/data-model'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
 import { crypto } from '@iroha2/crypto-target-node'
 
-export const keyPair = crypto.KeyPair.fromJSON(client_config)
+export const keyPair = crypto.KeyPair.fromJSON(CLIENT_CONFIG.keyPair)
 
 export async function pipelineStepDelay() {
-  await delay(PIPELINE_MS)
+  await delay(2_000) // FIXME: why so long?
 }
 
 export function clientFactory() {
-  const signer = new Signer(client_config.account as Iroha.AccountId, keyPair)
+  const { accountId } = CLIENT_CONFIG
 
-  const pre = { ...client_config.torii, ws: WS, fetch: nodeFetch as typeof fetch }
+  const signer = new Signer(accountId, keyPair)
+
+  const pre = { ...CLIENT_CONFIG.torii, ws: WS, fetch: nodeFetch as typeof fetch }
 
   const client = new Client({ signer })
 
-  return { signer, pre, client }
+  return { signer, pre, client, accountId }
 }

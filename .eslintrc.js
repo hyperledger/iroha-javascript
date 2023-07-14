@@ -1,5 +1,8 @@
 module.exports = {
   extends: ['alloy', 'alloy/typescript'],
+  parserOptions: {
+    project: './tsconfig.base.json'
+  },
   rules: {
     'no-promise-executor-return': 'off',
     'spaced-comment': ['error', 'always', { markers: ['/'] }],

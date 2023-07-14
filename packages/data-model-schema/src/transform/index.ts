@@ -72,9 +72,9 @@ function transformRustDef(def: Exclude<RustTypeDefinitionVariant, RustFixedPoint
       .with({ Enum: P.select() }, (variants) => {
         return {
           t: 'enum',
-          variants: variants.map(({ name, type }, i) => ({
-            name,
-            discriminant: i,
+          variants: variants.map(({ tag, type, discriminant }) => ({
+            name: tag,
+            discriminant,
             ref: type && transformRef(type),
           })),
         }

@@ -6,19 +6,19 @@ export type Algorithm = wasmPkg.Algorithm
 
 export const Algorithm = {
   default: (): Algorithm => wasmPkg.algorithm_default(),
-  toDataModel: (algorithm: Algorithm): dataModel.Algorithm => {
+  toDataModel: (algorithm: Algorithm): datamodel.Algorithm => {
     switch (algorithm) {
       case 'ed25519':
-        return dataModel.Algorithm('Ed25519')
+        return datamodel.Algorithm('Ed25519')
       case 'secp256k1':
-        return dataModel.Algorithm('Secp256k1')
+        return datamodel.Algorithm('Secp256k1')
       case 'bls_small':
-        return dataModel.Algorithm('BlsSmall')
+        return datamodel.Algorithm('BlsSmall')
       case 'bls_normal':
-        return dataModel.Algorithm('BlsNormal')
+        return datamodel.Algorithm('BlsNormal')
     }
   },
-  fromDataModel: (algorithm: dataModel.Algorithm): Algorithm => {
+  fromDataModel: (algorithm: datamodel.Algorithm): Algorithm => {
     switch (algorithm.enum.tag) {
       case 'Ed25519':
         return 'ed25519'

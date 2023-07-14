@@ -1,4 +1,4 @@
-import CLIENT_CLI_CONFIG from '../../.iroha/configs/client_cli/config.json'
+import CLIENT_CLI_CONFIG from '../../.iroha/configs/client/config.json'
 import PEER_CONFIG from '../../.iroha/configs/peer/config.json'
 import PEER_GENESIS from '../../.iroha/configs/peer/genesis.json'
 

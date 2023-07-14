@@ -2,19 +2,19 @@ import { Torii, ToriiRequirementsForTelemetry, setCrypto } from '@iroha2/client'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
 import { type RustResult, Logger as ScaleLogger, datamodel, sugar, variant } from '@iroha2/data-model'
-import { StartPeerReturn, cleanConfiguration, cleanSideEffects, setConfiguration, startPeer } from '@iroha2/test-peer'
+import * as TestPeer from '@iroha2/test-peer'
+import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { Seq } from 'immutable'
-import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
-import { client_config, peer_config, peer_genesis } from '../../config'
+import { afterAll, afterEach, beforeEach, beforeAll, describe, expect, test } from 'vitest'
 import { delay } from '../../util'
 import { clientFactory, keyPair, pipelineStepDelay } from './test-util'
 import { pipe } from 'fp-ts/function'
 
 // for debugging convenience
-new ScaleLogger().mount()
+new ScaleLogger({ logDecodeSuccesses: true }).mount()
 setCrypto(crypto)
 
-let startedPeer: StartPeerReturn | null = null
+let startedPeer: TestPeer.StartPeerReturn | null = null
 
 async function killStartedPeer() {
   await startedPeer?.kill()
@@ -32,13 +32,13 @@ async function waitForGenesisCommitted(pre: ToriiRequirementsForTelemetry) {
 // and now tests...
 
 beforeAll(async () => {
-  await clearAll()
-  await prepareConfiguration()
+  await TestPeer.clearAll()
+  await TestPeer.prepareConfiguration()
 })
 
 beforeEach(async () => {
-  await clearPeerStorage()
-  startedPeer = await startPeer()
+  await TestPeer.clearPeerStorage()
+  startedPeer = await TestPeer.startPeer()
   await waitForGenesisCommitted(clientFactory().pre)
 })
 
@@ -80,7 +80,7 @@ test('AddAsset instruction with name length more than limit is not committed', a
   await Promise.all([register(normalAssetDefinitionId), register(invalidAssetDefinitionId)])
   await pipelineStepDelay()
 
-  const queryResult = await client.requestWithQueryBox(pre, datamodel.QueryBox('FindAllAssetsDefinitions', null))
+  const queryResult = await client.requestWithQueryBox(pre, sugar.find.allAssetsDefinitions())
 
   const existingDefinitions: datamodel.AssetDefinitionId[] = queryResult
     .as('Ok')
@@ -118,7 +118,7 @@ test('AddAccount instruction with name length more than limit is not committed',
 })
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and querying for it later', async () => {
-  const { client, pre, accountId } = clientFactory()
+  const { client, pre } = clientFactory()
 
   // Creating asset by definition
   const ASSET_DEFINITION_ID = sugar.assetDefinitionId('xor', 'wonderland')
@@ -143,7 +143,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
     pipe(
       sugar.instruction.mint(
         sugar.value.numericFixed(datamodel.FixedPointI64(DECIMAL)),
-        datamodel.IdBox('AssetId', sugar.assetId(client_config.account as datamodel.AccountId, ASSET_DEFINITION_ID)),
+        datamodel.IdBox('AssetId', sugar.assetId(CLIENT_CONFIG.accountId, ASSET_DEFINITION_ID)),
       ),
       sugar.executable.instructions,
     ),
@@ -151,10 +151,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   await pipelineStepDelay()
 
   // Checking added asset via query
-  const result = await client.requestWithQueryBox(
-    pre,
-    sugar.find.assetsByAccountId(client_config.account as datamodel.AccountId),
-  )
+  const result = await client.requestWithQueryBox(pre, sugar.find.assetsByAccountId(CLIENT_CONFIG.accountId))
 
   // Assert
   const asset = Seq(result.as('Ok').result.enum.as('Vec'))
@@ -208,7 +205,7 @@ test('When querying for not existing domain, returns FindError', async () => {
   )
 
   expect(result.tag === 'Err').toBe(true)
-  expect(result.as('Err').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
+  expect(result.as('Err').enum.as('QueryFailed').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
 })
 
 test('Multisignature', async () => {

@@ -10,7 +10,7 @@ const AVAILABLE_FIXED_POINTS = new Set(['I64P9'])
 const EXTENSION_MODULE = './extension'
 
 async function main() {
-  consola.log(chalk`Converting {blue.bold input.json} to compiler-compatible format...`)
+  consola.log(chalk`Converting {blue.bold SCHEMA} from {yellow.bold \`@iroha2/data-model-schema\`} to compiler-compatible format...`)
   const { definition, fixedPoints } = transformSchema(SCHEMA)
 
   definition['NonZeroU8'] = {

@@ -25,7 +25,10 @@ export function simplifyUnits(schema: NamespaceDefinition, params: { unitType: s
       const met = new Set<string>()
       let i = alias
       while (i.ref !== params.unitType) {
-        if (met.has(i.ref)) throw new Error('dont expect recursive types')
+        if (met.has(i.ref)) {
+            console.log('Met types so far:', met)
+            throw new Error('dont expect recursive types')
+        }
         met.add(i.ref)
 
         const other = map.get(i.ref)
