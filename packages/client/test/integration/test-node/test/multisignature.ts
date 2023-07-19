@@ -13,10 +13,11 @@ import { datamodel, sugar } from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 import { produce } from 'immer'
 import { expect } from 'vitest'
-import { clientFactory, pipelineStepDelay } from './test-util'
+import { clientFactory } from './test-util'
 
 const crypto = getCryptoAnyway()
-const { client: clientAdmin, pre } = clientFactory()
+const { client: clientAdmin, pre, getBlocksListener } = clientFactory()
+const blocks = await getBlocksListener()
 
 const MAD_HATTER = sugar.accountId('mad_hatter', 'wonderland')
 const CASOMILE_DEFINITION_ID = sugar.assetDefinitionId('casomile', 'wonderland')
@@ -60,47 +61,48 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
     datamodel.Value(
       'SignatureCheckCondition',
       datamodel.Expression(
-          'ContainsAll',
-          datamodel.ContainsAll({
-            collection:datamodel.Expression(
-                'ContextValue',
-                datamodel.ContextValue({
-                  value_name:
-                    // FIXME magic constant
-                    'transaction_signatories',
-                }),
-              ),
-            elements: datamodel.Expression(
-                'Raw',
-                datamodel.Value(
-                  'Vec',
-                  datamodel.VecValue(
-                    freeScope(() =>
-                      KEYS.map((keypair) => datamodel.Value('PublicKey', keypair.publicKey().toDataModel())),
-                    ),
-                  ),
-                ),
-              ),
+        'ContainsAll',
+        datamodel.ContainsAll({
+          collection: datamodel.Expression(
+            'ContextValue',
+            datamodel.ContextValue({
+              value_name:
+                // FIXME magic constant
+                'transaction_signatories',
             }),
-        ),
+          ),
+          elements: datamodel.Expression(
+            'Raw',
+            datamodel.Value(
+              'Vec',
+              datamodel.VecValue(
+                freeScope(() => KEYS.map((keypair) => datamodel.Value('PublicKey', keypair.publicKey().toDataModel()))),
+              ),
+            ),
+          ),
+        }),
+      ),
     ),
     datamodel.IdBox('AccountId', MAD_HATTER),
   )
 
   // register Mad Hatter with the admin account
-  await clientAdmin.submitExecutable(pre, sugar.executable.instructions(registerAccount))
-  await pipelineStepDelay()
+
+  await blocks.wait(async () => {
+    await clientAdmin.submitExecutable(pre, sugar.executable.instructions(registerAccount))
+  })
 
   // Register the asset definition with the Mad Hatter's account
-  await Torii.submit(
-    pre,
-    pipe(
-      sugar.executable.instructions([registerAssetDefinition, setSignatureCondition]),
-      (executable) => makeTransactionPayload({ executable, accountId: MAD_HATTER }),
-      (x) => makeVersionedSignedTransaction(x, signer1),
-    ),
-  )
-  await pipelineStepDelay()
+  await blocks.wait(async () => {
+    await Torii.submit(
+      pre,
+      pipe(
+        sugar.executable.instructions([registerAssetDefinition, setSignatureCondition]),
+        (executable) => makeTransactionPayload({ executable, accountId: MAD_HATTER }),
+        (x) => makeVersionedSignedTransaction(x, signer1),
+      ),
+    )
+  })
 }
 
 // Preparing MST transaction payload
@@ -126,12 +128,14 @@ const tx1 = datamodel.VersionedSignedTransaction(
   'V1',
   datamodel.SignedTransaction({
     payload: mintTransactionPayload,
-    signatures: datamodel.SortedSignatures({signatures: datamodel.SortedVecSignature([signer1.sign('array', txHash)])}),
+    signatures: datamodel.SortedSignatures({
+      signatures: datamodel.SortedVecSignature([signer1.sign('array', txHash)]),
+    }),
   }),
 )
 
 await Torii.submit(pre, tx1)
-await pipelineStepDelay()
+// we don't wait for block commit here, because the tx should be signed completely first
 
 // Check that the asset is not minted
 
@@ -169,8 +173,9 @@ const tx2 =
     draft.enum.content.signatures.signatures.push(signer2.sign('array', txHash))
   })
 
-await Torii.submit(pre, tx2)
-await pipelineStepDelay()
+await blocks.wait(async () => {
+  await Torii.submit(pre, tx2)
+})
 
 // Checking results after the second transaction
 

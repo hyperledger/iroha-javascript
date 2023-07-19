@@ -1,15 +1,10 @@
 import nodeFetch from 'node-fetch'
-import { PIPELINE_MS, CLIENT_CONFIG } from '@iroha2/test-configuration'
-import { delay } from '../../util'
-import { Client, Signer } from '@iroha2/client'
+import { CLIENT_CONFIG } from '@iroha2/test-configuration'
+import { Client, Signer, Torii } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
 import { crypto } from '@iroha2/crypto-target-node'
 
 export const keyPair = crypto.KeyPair.fromJSON(CLIENT_CONFIG.keyPair)
-
-export async function pipelineStepDelay() {
-  await delay(2_000) // FIXME: why so long?
-}
 
 export function clientFactory() {
   const { accountId } = CLIENT_CONFIG
@@ -20,5 +15,22 @@ export function clientFactory() {
 
   const client = new Client({ signer })
 
-  return { signer, pre, client, accountId }
+  const getBlocksListener = async () => {
+    const stream = await Torii.listenForBlocksStream(pre, {
+      // 1 is genesis block, which is committed before each test
+      height: 2n,
+    })
+
+    return {
+      /**
+       * Do an operation that should trigger a block commit, and wait until the block
+       * is emitted
+       */
+      async wait(fn: () => Promise<void>) {
+        await Promise.all([stream.ee.once('block'), fn()])
+      },
+    }
+  }
+
+  return { signer, pre, client, accountId, getBlocksListener }
 }

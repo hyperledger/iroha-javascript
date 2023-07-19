@@ -49,7 +49,7 @@ export async function resolveBinary(
   const binaryPath = resolveBinaryPath(config, bin)
 
   if (!skipUpdate) {
-    await runCargoBuild(bin)
+    await runCargoBuild(bin, config.profile)
   } else if (!(await isAccessible(binaryPath))) {
     throw new Error('The binary is not built')
   }
@@ -60,6 +60,6 @@ export async function resolveBinary(
 export async function buildBinary(bin: Binary, ignoreBuilt = false): Promise<void> {
   await syncSourceRepo()
   const path = resolveBinaryPath(config, bin)
-  if (ignoreBuilt || !(await isAccessible(path))) await runCargoBuild(bin)
+  if (ignoreBuilt || !(await isAccessible(path))) await runCargoBuild(bin, config.profile)
   consola.success(`${chalk.magenta.bold(bin)} is built`)
 }

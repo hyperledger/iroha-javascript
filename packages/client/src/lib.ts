@@ -266,8 +266,6 @@ export const Torii: ToriiOmnibus = {
 
     const bytes = new Uint8Array(await response.arrayBuffer())
 
-    console.log(response, { bytes })
-
     if (response.status === 200) {
       // OK
       const value: datamodel.PaginatedQueryResult =

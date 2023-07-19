@@ -5,13 +5,13 @@ import { type RustResult, Logger as ScaleLogger, datamodel, sugar, variant } fro
 import * as TestPeer from '@iroha2/test-peer'
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { Seq } from 'immutable'
-import { afterAll, afterEach, beforeEach, beforeAll, describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { delay } from '../../util'
-import { clientFactory, keyPair, pipelineStepDelay } from './test-util'
+import { clientFactory, keyPair } from './test-util'
 import { pipe } from 'fp-ts/function'
 
 // for debugging convenience
-new ScaleLogger({ logDecodeSuccesses: true }).mount()
+new ScaleLogger().mount()
 setCrypto(crypto)
 
 let startedPeer: TestPeer.StartPeerReturn | null = null
@@ -59,26 +59,31 @@ test('Peer is healthy', async () => {
 })
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
-  const { client, pre } = clientFactory()
+  const { client, pre, getBlocksListener } = clientFactory()
+  const blocks = await getBlocksListener()
 
   const normalAssetDefinitionId = sugar.assetDefinitionId('xor', 'wonderland')
 
   const tooLongAssetName = '0'.repeat(2 ** 14)
   const invalidAssetDefinitionId = sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
 
-  async function register(id: datamodel.AssetDefinitionId) {
-    await client.submitExecutable(
-      pre,
-      pipe(
-        sugar.identifiable.newAssetDefinition(id, datamodel.AssetValueType('BigQuantity')),
-        sugar.instruction.register,
-        sugar.executable.instructions,
-      ),
-    )
-  }
+  await blocks.wait(async () => {
+    await Promise.all(
+      // we should register these assets as separate transactions, because the invalid
+      // one will be rejected
+      [normalAssetDefinitionId, invalidAssetDefinitionId].map(async (id) => {
+        await client.submitExecutable(
+          pre,
 
-  await Promise.all([register(normalAssetDefinitionId), register(invalidAssetDefinitionId)])
-  await pipelineStepDelay()
+          pipe(
+            sugar.identifiable.newAssetDefinition(id, datamodel.AssetValueType('BigQuantity')),
+            sugar.instruction.register,
+            sugar.executable.instructions,
+          ),
+        )
+      }),
+    )
+  })
 
   const queryResult = await client.requestWithQueryBox(pre, sugar.find.allAssetsDefinitions())
 
@@ -92,19 +97,21 @@ test('AddAsset instruction with name length more than limit is not committed', a
 })
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
-  const { client, pre } = clientFactory()
+  const { client, pre, getBlocksListener } = clientFactory()
+  const blocks = await getBlocksListener()
 
   const normal = sugar.accountId('bob', 'wonderland')
   const incorrect = sugar.accountId('0'.repeat(2 ** 14), 'wonderland')
 
-  await client.submitExecutable(
-    pre,
-    pipe(
-      [normal, incorrect].map((id) => pipe(sugar.identifiable.newAccount(id, []), sugar.instruction.register)),
-      sugar.executable.instructions,
-    ),
-  )
-  await pipelineStepDelay()
+  await blocks.wait(async () => {
+    await client.submitExecutable(
+      pre,
+      pipe(
+        [normal, incorrect].map((id) => pipe(sugar.identifiable.newAccount(id, []), sugar.instruction.register)),
+        sugar.executable.instructions,
+      ),
+    )
+  })
 
   const queryResult = await client.requestWithQueryBox(pre, sugar.find.allAccounts())
 
@@ -118,37 +125,28 @@ test('AddAccount instruction with name length more than limit is not committed',
 })
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and querying for it later', async () => {
-  const { client, pre } = clientFactory()
+  const { client, pre, getBlocksListener } = clientFactory()
+  const blocks = await getBlocksListener()
 
   // Creating asset by definition
   const ASSET_DEFINITION_ID = sugar.assetDefinitionId('xor', 'wonderland')
 
-  await client.submitExecutable(
-    pre,
-    pipe(
-      sugar.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, datamodel.AssetValueType('Fixed'), {
-        mintable: datamodel.Mintable('Infinitely'),
-      }),
-      sugar.instruction.register,
-      sugar.executable.instructions,
-    ),
+  const registerAsset = pipe(
+    sugar.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, datamodel.AssetValueType('Fixed'), {
+      mintable: datamodel.Mintable('Infinitely'),
+    }),
+    sugar.instruction.register,
   )
-  await pipelineStepDelay()
 
-  // Adding mint
   const DECIMAL = '512.5881'
-
-  await client.submitExecutable(
-    pre,
-    pipe(
-      sugar.instruction.mint(
-        sugar.value.numericFixed(datamodel.FixedPointI64(DECIMAL)),
-        datamodel.IdBox('AssetId', sugar.assetId(CLIENT_CONFIG.accountId, ASSET_DEFINITION_ID)),
-      ),
-      sugar.executable.instructions,
-    ),
+  const mintAsset = sugar.instruction.mint(
+    sugar.value.numericFixed(datamodel.FixedPointI64(DECIMAL)),
+    datamodel.IdBox('AssetId', sugar.assetId(CLIENT_CONFIG.accountId, ASSET_DEFINITION_ID)),
   )
-  await pipelineStepDelay()
+
+  await blocks.wait(async () => {
+    await client.submitExecutable(pre, pipe([registerAsset, mintAsset], sugar.executable.instructions))
+  })
 
   // Checking added asset via query
   const result = await client.requestWithQueryBox(pre, sugar.find.assetsByAccountId(CLIENT_CONFIG.accountId))
@@ -162,7 +160,8 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
 })
 
 test('Registering domain', async () => {
-  const { client, pre } = clientFactory()
+  const { client, pre, getBlocksListener } = clientFactory()
+  const blocks = await getBlocksListener()
 
   async function registerDomain(domainName: string) {
     await client.submitExecutable(
@@ -188,8 +187,10 @@ test('Registering domain', async () => {
     if (!domain) throw new Error('Not found')
   }
 
-  await registerDomain('test')
-  await pipelineStepDelay()
+  await blocks.wait(async () => {
+    await registerDomain('test')
+  })
+
   await ensureDomainExistence('test')
 })
 
@@ -210,13 +211,6 @@ test('When querying for not existing domain, returns FindError', async () => {
 
 test('Multisignature', async () => {
   await import('./multisignature')
-})
-
-// Transferring Store asset is not supported
-// https://github.com/hyperledger/iroha-2-docs/issues/273
-// TODO rewrite test to transferring something else
-test.skip('Transferring Store asset between accounts', async () => {
-  await import('./transfer-store-asset')
 })
 
 describe('Events API', () => {
@@ -285,11 +279,11 @@ describe.skip('Setting configuration', () => {
 })
 
 describe('Blocks Stream API', () => {
-  // Doesn't work - https://github.com/hyperledger/iroha/issues/3162
-  test.skip('When committing 3 blocks sequentially, nothing fails', async () => {
+  test('When committing 3 blocks sequentially, nothing fails', async () => {
     const { pre, client } = clientFactory()
 
-    const stream = await Torii.listenForBlocksStream(pre, { height: 0n })
+    const stream = await Torii.listenForBlocksStream(pre, { height: 2n })
+    const closePromise = stream.ee.once('close')
 
     for (const assetName of ['xor', 'val', 'vat']) {
       // listening for some block
@@ -307,7 +301,10 @@ describe('Blocks Stream API', () => {
       )
 
       // waiting for it
-      await blockPromise
+      await new Promise<void>((resolve, reject) => {
+        closePromise.then(() => reject(new Error('The connection should not be closed within this loop')))
+        blockPromise.then(() => resolve())
+      })
     }
 
     await stream.stop()

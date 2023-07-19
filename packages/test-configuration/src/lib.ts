@@ -1,7 +1,145 @@
-import { CLIENT_CLI_CONFIG, PEER_GENESIS } from '@iroha2/iroha-source/src/subentries/configs'
+import { CLIENT_CLI_CONFIG } from '@iroha2/iroha-source/src/subentries/configs'
 import { datamodel } from '@iroha2/data-model'
 
-export { PEER_GENESIS }
+export const PEER_GENESIS = {
+  transactions: [
+    [
+      {
+        Register: {
+          NewDomain: {
+            id: 'wonderland',
+            logo: null,
+            metadata: {
+              key: {
+                String: 'value',
+              },
+            },
+          },
+        },
+      },
+      {
+        Register: {
+          NewAccount: {
+            id: 'alice@wonderland',
+            signatories: ['ed01207233BFC89DCBD68C19FDE6CE6158225298EC1131B6A130D1AEB454C1AB5183C0'],
+            metadata: {
+              key: {
+                String: 'value',
+              },
+            },
+          },
+        },
+      },
+      {
+        Register: {
+          NewAccount: {
+            id: 'bob@wonderland',
+            signatories: ['ed01207233BFC89DCBD68C19FDE6CE6158225298EC1131B6A130D1AEB454C1AB5183C0'],
+            metadata: {
+              key: {
+                String: 'value',
+              },
+            },
+          },
+        },
+      },
+      {
+        Register: {
+          NewAssetDefinition: {
+            id: 'rose#wonderland',
+            value_type: 'Quantity',
+            mintable: 'Infinitely',
+            logo: null,
+            metadata: {},
+          },
+        },
+      },
+      {
+        Register: {
+          NewDomain: {
+            id: 'garden_of_live_flowers',
+            logo: null,
+            metadata: {},
+          },
+        },
+      },
+      {
+        Register: {
+          NewAccount: {
+            id: 'carpenter@garden_of_live_flowers',
+            signatories: ['ed01207233BFC89DCBD68C19FDE6CE6158225298EC1131B6A130D1AEB454C1AB5183C0'],
+            metadata: {},
+          },
+        },
+      },
+      {
+        Register: {
+          NewAssetDefinition: {
+            id: 'cabbage#garden_of_live_flowers',
+            value_type: 'Quantity',
+            mintable: 'Infinitely',
+            logo: null,
+            metadata: {},
+          },
+        },
+      },
+      {
+        Mint: {
+          U32: 13,
+          destination_id: {
+            AssetId: 'rose##alice@wonderland',
+          },
+        },
+      },
+      {
+        Mint: {
+          U32: 44,
+          destination_id: {
+            AssetId: 'cabbage#garden_of_live_flowers#alice@wonderland',
+          },
+        },
+      },
+      {
+        Grant: {
+          PermissionToken: {
+            definition_id: 'can_set_parameters',
+            params: {},
+          },
+          destination_id: {
+            AccountId: 'alice@wonderland',
+          },
+        },
+      },
+      {
+        Register: {
+          NewRole: {
+            id: 'ALICE_METADATA_ACCESS',
+            permissions: [
+              {
+                definition_id: 'can_remove_key_value_in_user_account',
+                params: {
+                  account_id: {
+                    AccountId: 'alice@wonderland',
+                  },
+                },
+              },
+              {
+                definition_id: 'can_set_key_value_in_user_account',
+                params: {
+                  account_id: {
+                    AccountId: 'alice@wonderland',
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+    ],
+  ],
+  validator: './validator.wasm',
+}
+
 
 interface PrivateKey {
   digest_function: string
@@ -29,12 +167,12 @@ export const PEER_CONFIG = {
     },
   },
   SUMERAGI: {
-    BLOCK_TIME_MS: 100,
-    COMMIT_TIME_LIMIT_MS: 200,
+    BLOCK_TIME_MS: 0,
+    COMMIT_TIME_LIMIT_MS: 0,
   },
   KURA: {
     BLOCK_STORE_PATH: './storage',
-  },
+  }
 }
 
 const parseAccountId = (acc: string): datamodel.AccountId => {

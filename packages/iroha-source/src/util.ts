@@ -7,7 +7,7 @@ import { fs, path } from 'zx'
 import url from 'url'
 import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
 import config from './config-resolved'
-import { ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration } from './types'
+import {BuildProfile, ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration} from './types'
 
 export async function clone(config: GitCloneConfiguration): Promise<void> {
   consola.info(
@@ -48,12 +48,16 @@ export async function isCloneUpToDate(config: GitCloneConfiguration): Promise<bo
 }
 
 export function resolveBinaryPath(cfg: ConfigResolved, bin: string): string {
-  return path.join(IROHA_DIR, 'target/release', bin)
+  return path.join(IROHA_DIR, `target/${cfg.profile === 'release' ? 'release' : 'debug'}`, bin)
 }
 
-export async function runCargoBuild(crate: string): Promise<void> {
-  consola.info(`Running "cargo build" for "${crate}"`)
-  await execa('cargo', ['build', '--release', '--package', crate], { stdio: 'inherit', cwd: IROHA_DIR })
+export async function runCargoBuild(crate: string, profile: BuildProfile): Promise<void> {
+  const args = ['build']
+  profile === 'release' && args.push('--release')
+  args.push('--package', crate)
+  const process = execa('cargo', args, { stdio: 'inherit', cwd: IROHA_DIR })
+  consola.info(`Spawn %o`, process.spawnargs)
+  await process
 }
 
 export async function isAccessible(path: string, mode?: number): Promise<boolean> {

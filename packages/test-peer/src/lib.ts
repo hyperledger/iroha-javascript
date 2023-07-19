@@ -15,8 +15,8 @@ import { CLIENT_CONFIG, PEER_CONFIG, PEER_GENESIS } from '@iroha2/test-configura
 /**
  * Time within to check if peer is up and running
  */
-const HEALTH_CHECK_TIMEOUT = 500
-const HEALTH_CHECK_INTERVAL = 50
+const HEALTH_CHECK_TIMEOUT = 1_000
+const HEALTH_CHECK_INTERVAL = 40
 
 export interface StartPeerParams {
   /**
