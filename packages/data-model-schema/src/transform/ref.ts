@@ -41,6 +41,7 @@ export function filter(ref: string): boolean {
     .with({ id: 'HashOf', items: [P.any] }, () => false)
     .with({ id: 'EvaluatesTo', items: [P.any] }, () => false)
     .with({ id: 'bool' }, () => false)
+    .with({ id: 'SignaturesOf' }, () => false)
     .otherwise(() => true)
 }
 
@@ -90,11 +91,7 @@ function transformTree(tree: Tree): Tree {
         items: [],
       }))
       .with({ id: 'SignatureOf', items: [P.any] }, () => ({ id: 'Signature', items: [] }))
-      .with({ id: 'SortedVec', items: [{ id: 'SignaturesOf', items: [P.any] }] }, () => ({
-        id: 'SortedSignatures',
-        items: [],
-      }))
-      .with({ id: 'SignaturesOf', items: [P.any] }, () => ({ id: 'SortedSignatures', items: [] }))
+      .with({ id: 'SignaturesOf', items: [P.any] }, () => ({ id: 'SortedVecSignature', items: [] }))
       .with({ id: 'HashOf', items: [P.any] }, () => ({ id: 'Hash', items: [] }))
       .with({ id: 'Compact', items: [{ id: 'u128' }] }, () => ({ id: 'Compact', items: [] }))
       .otherwise((x) => ({ id: x.id, items: x.items.map(transformTree) }))

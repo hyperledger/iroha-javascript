@@ -128,9 +128,7 @@ const tx1 = datamodel.VersionedSignedTransaction(
   'V1',
   datamodel.SignedTransaction({
     payload: mintTransactionPayload,
-    signatures: datamodel.SortedSignatures({
-      signatures: datamodel.SortedVecSignature([signer1.sign('array', txHash)]),
-    }),
+    signatures: datamodel.SortedVecSignature([signer1.sign('array', txHash)]),
   }),
 )
 
@@ -170,7 +168,7 @@ const tx2 =
   // we use `produce` from `immer` library
   // it allows us to produce a new value from `tx1` without touching it in a declarative way
   produce(tx1, (draft) => {
-    draft.enum.content.signatures.signatures.push(signer2.sign('array', txHash))
+    draft.enum.content.signatures.push(signer2.sign('array', txHash))
   })
 
 await blocks.wait(async () => {

@@ -14,7 +14,7 @@ describe('Refs transformation', () => {
     ['Map<AccountId, AssetId>', 'MapAccountIdAssetId'],
     ['Map<String, EvaluatesTo>', 'MapStrExpression'],
     ['SignatureOf<TransactionPayload>', 'Signature'],
-    ['SignaturesOf<CommittedBlock>', 'SortedSignatures'],
+    ['SignaturesOf<CommittedBlock>', 'SortedVecSignature'],
     ['SortedVec<SignatureOf<CommittedBlock>>', 'SortedVecSignature'],
     ['Fixed<i64>', 'FixedI64'],
     ['Vec<GenericPredicateBox<ValuePredicate>>', 'VecPredicateBox'],

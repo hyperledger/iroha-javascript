@@ -112,7 +112,7 @@ export function makeVersionedSignedTransaction(
     'V1',
     datamodel.SignedTransaction({
       payload,
-      signatures: datamodel.SortedSignatures({ signatures: datamodel.SortedVecSignature([signature]) }),
+      signatures: datamodel.SortedVecSignature([signature]),
     }),
   )
 }
