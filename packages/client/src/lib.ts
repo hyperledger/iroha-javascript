@@ -69,7 +69,7 @@ export class Signer {
 export interface MakeTransactionPayloadParams {
   accountId: datamodel.AccountId
   executable: datamodel.Executable
-  ttl?: bigint
+  ttl?: datamodel.NonZeroU64
   /**
    * @default Date.now()
    */
@@ -77,7 +77,7 @@ export interface MakeTransactionPayloadParams {
   /**
    * @default // none
    */
-  nonce?: number
+  nonce?: datamodel.NonZeroU32
   metadata?: datamodel.SortedMapNameValue
 }
 
@@ -87,7 +87,7 @@ export function makeTransactionPayload(params: MakeTransactionPayloadParams): da
   return datamodel.TransactionPayload({
     authority: params.accountId,
     instructions: params.executable,
-    time_to_live_ms: params.ttl ? datamodel.OptionNonZeroU64('Some', params.ttl) : datamodel.OptionNonZeroU64('None'),
+    time_to_live_ms: params.ttl ? datamodel.OptionNonZeroU64('Some',  params.ttl) : datamodel.OptionNonZeroU64('None'),
     nonce: params?.nonce ? datamodel.OptionNonZeroU32('Some', params.nonce) : datamodel.OptionNonZeroU32('None'),
     metadata: params?.metadata ?? datamodel.SortedMapNameValue(new Map()),
     creation_time_ms: params.creationTime ?? BigInt(Date.now()),

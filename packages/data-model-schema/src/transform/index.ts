@@ -3,7 +3,7 @@ import type { NamespaceDefinition, TypeDef } from '@scale-codec/definition-compi
 import Debug from '../debug'
 import { Map } from 'immutable'
 import { P, match } from 'ts-pattern'
-import { filter as filterRef, transform as transformRef } from './ref'
+import { filter as filterRef, transform as transformRef, tryParseNonZero } from './ref'
 import { simplifyUnits } from './simplify-units'
 import type { RustDefinitions, RustFixedPointDef, RustIntDef, RustTypeDefinitionVariant } from './types'
 
@@ -113,32 +113,50 @@ export interface FixedPointParams {
 export interface TransformReturn {
   definition: NamespaceDefinition
   fixedPoints: FixedPointParams[]
+  nonZero: NonZeroParams[]
+}
+
+export interface NonZeroParams {
+  /**
+   * Like `u32` or `u64`
+   */
+  base: string
 }
 
 export function transformSchema(schema: RustDefinitions): TransformReturn {
-  const { definition: almostReady, fixedPoints } = Map(schema)
+  const {
+    definition: almostReady,
+    fixedPoints,
+    nonZero,
+  } = Map(schema)
     .filter(filterRawEntry)
     .reduce<TransformReturn>(
       (acc, value, key) => {
-        const ref = transformRef(key)
+        const maybeNonZero = tryParseNonZero(key)
+        if (maybeNonZero) {
+          acc.nonZero.push(maybeNonZero)
+        } else {
+          const ref = transformRef(key)
 
-        match(value)
-          .with({ FixedPoint: P.select() }, ({ base, decimal_places: decimalPlaces }) => {
-            acc.fixedPoints.push({ base, ref, decimalPlaces })
-          })
-          .otherwise((value) => {
-            const def = transformRustDef(value)
-            debugEntry('transform %o to %o', value, def)
-            acc.definition[ref] = def
-          })
+          match(value)
+            .with({ FixedPoint: P.select() }, ({ base, decimal_places: decimalPlaces }) => {
+              acc.fixedPoints.push({ base, ref, decimalPlaces })
+            })
+            .otherwise((value) => {
+              const def = transformRustDef(value)
+              debugEntry('transform %o to %o', value, def)
+              acc.definition[ref] = def
+            })
+        }
 
         return acc
       },
-      { definition: {}, fixedPoints: [] },
+      { definition: {}, fixedPoints: [], nonZero: [] },
     )
 
   return {
     definition: simplifyUnits(almostReady, { unitType: 'Unit' }),
     fixedPoints,
+    nonZero,
   }
 }

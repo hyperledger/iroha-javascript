@@ -9,7 +9,7 @@ const debug = Debug('@iroha2/client:blocks-stream')
 
 export interface SetupBlocksStreamParams {
   toriiApiURL: string
-  height: bigint
+  height: datamodel.NonZeroU64
   adapter: IsomorphicWebSocketAdapter
 }
 

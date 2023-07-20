@@ -10,7 +10,7 @@ const debug = Debug.extend('transform-ref')
 const CACHE = new Map<string, string>()
 
 function transform(ref: string): string {
-  return pipe(ref, rawSchemaIdentifierToTree, transformTree, treeToFinalIdentifier)
+  return pipe(ref, parseId, transformTree, treeToFinalIdentifier)
 }
 
 function transformWithCache(ref: string): string {
@@ -37,7 +37,7 @@ const IGNORE_TYPES = Set<string>([
 export function filter(ref: string): boolean {
   if (IGNORE_TYPES.has(ref)) return false
 
-  return match(rawSchemaIdentifierToTree(ref))
+  return match(parseId(ref))
     .with({ id: 'HashOf', items: [P.any] }, () => false)
     .with({ id: 'EvaluatesTo', items: [P.any] }, () => false)
     .with({ id: 'bool' }, () => false)
@@ -45,12 +45,18 @@ export function filter(ref: string): boolean {
     .otherwise(() => true)
 }
 
+export function tryParseNonZero(ref: string): null | { base: string } {
+  return match(parseId(ref))
+    .with({ id: 'NonZero', items: [{ id: P.select('base'), items: [] }] }, (x) => x)
+    .otherwise(() => null)
+}
+
 interface Tree {
   id: string
   items: Tree[]
 }
 
-function rawSchemaIdentifierToTree(src: string): Tree {
+function parseId(src: string): Tree {
   const ROOT = '__root__'
   const stack: Tree[] = [{ id: ROOT, items: [] }]
 
