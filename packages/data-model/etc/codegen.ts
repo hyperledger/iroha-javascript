@@ -15,8 +15,8 @@ async function main() {
   )
   const { definition, fixedPoints, nonZero } = transformSchema(SCHEMA)
 
-  for (const { base } of nonZero) {
-    definition[`NonZero${base.toUpperCase()}`] = { t: 'import', module: EXTENSION_MODULE }
+  for (const { ty } of nonZero) {
+    definition[ty] = { t: 'import', module: EXTENSION_MODULE }
   }
 
   for (const { decimalPlaces, base, ref } of fixedPoints) {

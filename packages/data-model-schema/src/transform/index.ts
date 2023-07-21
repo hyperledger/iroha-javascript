@@ -118,9 +118,9 @@ export interface TransformReturn {
 
 export interface NonZeroParams {
   /**
-   * Like `u32` or `u64`
+   * Like `NonZeroU32`
    */
-  base: string
+  ty: string
 }
 
 export function transformSchema(schema: RustDefinitions): TransformReturn {

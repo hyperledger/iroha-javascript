@@ -18,5 +18,5 @@ test('NonZero<u32> is handled properly', () => {
       some: 'NonZeroU32',
     },
   })
-  expect(nonZero).toEqual([{ base: 'u32' }])
+  expect(nonZero).toEqual([{ ty: 'NonZeroU32' }])
 })

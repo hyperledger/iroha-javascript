@@ -45,9 +45,9 @@ export function filter(ref: string): boolean {
     .otherwise(() => true)
 }
 
-export function tryParseNonZero(ref: string): null | { base: string } {
+export function tryParseNonZero(ref: string): null | { ty: string } {
   return match(parseId(ref))
-    .with({ id: 'NonZero', items: [{ id: P.select('base'), items: [] }] }, (x) => x)
+    .with({ id: 'NonZero', items: [P.any] }, (x) => ({ ty: treeToFinalIdentifier(x) }))
     .otherwise(() => null)
 }
 
