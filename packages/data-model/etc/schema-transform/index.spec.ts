@@ -1,9 +1,9 @@
 import { expect, test } from 'vitest'
 import { transformSchema } from './index'
-import type { RustDefinitions } from './types'
+import type { Schema } from '@iroha2/data-model-schema'
 
 test('NonZero<u32> is handled properly', () => {
-  const SCHEMA: RustDefinitions = {
+  const SCHEMA: Schema = {
     'NonZero<u32>': 'u32',
     'Option<NonZero<u32>>': {
       Option: 'NonZero<u32>',

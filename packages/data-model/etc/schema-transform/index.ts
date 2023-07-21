@@ -1,20 +1,20 @@
 /* eslint-disable max-nested-callbacks */
 import type { NamespaceDefinition, TypeDef } from '@scale-codec/definition-compiler'
-import Debug from '../debug'
+import Debug from './debug'
 import { Map } from 'immutable'
 import { P, match } from 'ts-pattern'
 import { filter as filterRef, transform as transformRef, tryParseNonZero } from './ref'
 import { simplifyUnits } from './simplify-units'
-import type { RustDefinitions, RustFixedPointDef, RustIntDef, RustTypeDefinitionVariant } from './types'
+import type { FixedPointDefinition, IntDefinition, Schema, SchemaTypeDefinition } from '@iroha2/data-model-schema'
 
 const debugRoot = Debug.extend('transform')
 const debugFilter = debugRoot.extend('filter')
 const debugEntry = debugRoot.extend('entry')
 
 function filterRawEntry(
-  value: RustTypeDefinitionVariant,
+  value: SchemaTypeDefinition,
   key: string,
-): value is Exclude<RustTypeDefinitionVariant, RustIntDef> {
+): value is Exclude<SchemaTypeDefinition, IntDefinition> {
   if (!filterRef(key)) {
     debugFilter('ignore %o: ref filter', key)
     return false
@@ -28,7 +28,7 @@ function filterRawEntry(
     .otherwise(() => true)
 }
 
-function transformRustDef(def: Exclude<RustTypeDefinitionVariant, RustFixedPointDef | RustIntDef>): TypeDef {
+function transformRustDef(def: Exclude<SchemaTypeDefinition, FixedPointDefinition | IntDefinition>): TypeDef {
   return (
     match<typeof def, TypeDef>(def)
       .with({ Array: { type: 'u8', len: P.select() } }, (len) => {
@@ -123,7 +123,7 @@ export interface NonZeroParams {
   ty: string
 }
 
-export function transformSchema(schema: RustDefinitions): TransformReturn {
+export function transformSchema(schema: Schema): TransformReturn {
   const {
     definition: almostReady,
     fixedPoints,

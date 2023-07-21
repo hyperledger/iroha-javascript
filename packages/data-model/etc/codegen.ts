@@ -3,7 +3,8 @@ import consola from 'consola'
 import chalk from 'chalk'
 import fs from 'fs/promises'
 import { renderNamespaceDefinition } from '@scale-codec/definition-compiler'
-import { SCHEMA, transformSchema } from '@iroha2/data-model-schema'
+import { SCHEMA } from '@iroha2/data-model-schema'
+import { transformSchema } from './schema-transform'
 import { CODEGEN_OUTPUT_FILE } from './meta'
 
 const AVAILABLE_FIXED_POINTS = new Set(['I64P9'])

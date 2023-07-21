@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/function'
 import { Set } from 'immutable'
 import invariant from 'tiny-invariant'
 import { P, match } from 'ts-pattern'
-import Debug from '../debug'
+import Debug from './debug'
 
 const debug = Debug.extend('transform-ref')
 
