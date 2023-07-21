@@ -3,10 +3,5 @@
   "compilerOptions": {
     "allowJs": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.js",
-    ".eslintrc.js",
-    "**/*.vue"
-  ]
+  "include": ["**/*.ts", "**/*.js", ".eslintrc.js", "**/*.vue"]
 }

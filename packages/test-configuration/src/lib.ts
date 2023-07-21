@@ -140,7 +140,6 @@ export const PEER_GENESIS = {
   validator: './validator.wasm',
 }
 
-
 interface PrivateKey {
   digest_function: string
   payload: string
@@ -172,7 +171,7 @@ export const PEER_CONFIG = {
   },
   KURA: {
     BLOCK_STORE_PATH: './storage',
-  }
+  },
 }
 
 const parseAccountId = (acc: string): datamodel.AccountId => {

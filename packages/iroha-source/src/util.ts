@@ -7,7 +7,7 @@ import { fs, path } from 'zx'
 import url from 'url'
 import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
 import config from './config-resolved'
-import {BuildProfile, ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration} from './types'
+import { BuildProfile, ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration } from './types'
 
 export async function clone(config: GitCloneConfiguration): Promise<void> {
   consola.info(
