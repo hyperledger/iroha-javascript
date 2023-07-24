@@ -4,7 +4,7 @@ Client for Iroha 2, which is used to submit requests to Iroha peer.
 
 ## Target version
 
-This version of package targets Iroha `v2.0.0-pre-rc.14` (internal release, reference hash: `726f5eabf65a79ea618b4fce62a09cee7a5b13d1`).
+This version of package targets Iroha [`v2.0.0-pre-rc.17`](https://github.com/hyperledger/iroha/tree/f958afef8c9561af61cc30aab9f8b3eb0c497fa4).
 
 ## Installation
 
