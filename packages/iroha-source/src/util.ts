@@ -38,10 +38,9 @@ export async function isCloneUpToDate(config: GitCloneConfiguration): Promise<bo
     consola.info('Iroha repo clone exists, but is not up-to-date')
     return false
   } catch (err) {
-    consola.error(
-      'Unable to read Iroha repo clone metadata:',
-      err,
-      chalk`\n\nAssuming the {red clone as not up-to-date}`,
+    consola.info(
+      `Error while reading the metadata of the cloned repo. Assuming the clone as not up-to-date.` +
+        `\nActual error: ${String(err)}`,
     )
     return false
   }
