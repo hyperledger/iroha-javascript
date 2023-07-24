@@ -61,6 +61,7 @@ interface SetConfigurationCheckedParams<C extends CheckedConfig, G extends Check
 export async function setConfigurationChecked<C extends CheckedConfig, G extends CheckedGenesis>(
   params: SetConfigurationCheckedParams<C, G>,
 ) {
+  await fs.ensureDir(TMP_DIR)
   await Promise.all([
     saveDataAsJSON(params.peerConfig, path.join(TMP_DIR, 'config.json')),
     saveDataAsJSON(params.peerGenesis, path.join(TMP_DIR, 'genesis.json')),
