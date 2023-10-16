@@ -113,65 +113,6 @@ export const PEER_GENESIS = {
         },
       },
       {
-        Sequence: [
-          {
-            NewParameter: {
-              Parameter: '?MaxTransactionsInBlock=512',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?BlockTime=2000',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?CommitTimeLimit=4000',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?TransactionLimits=4096,4194304_TL',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?WSVAssetMetadataLimits=1048576,4096_ML',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?WSVAssetDefinitionMetadataLimits=1048576,4096_ML',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?WSVAccountMetadataLimits=1048576,4096_ML',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?WSVDomainMetadataLimits=1048576,4096_ML',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?WSVIdentLengthLimits=1,128_LL',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?WASMFuelLimit=23000000',
-            },
-          },
-          {
-            NewParameter: {
-              Parameter: '?WASMMaxMemory=524288000',
-            },
-          },
-        ],
-      },
-      {
         Register: {
           NewRole: {
             id: 'ALICE_METADATA_ACCESS',
@@ -194,7 +135,7 @@ export const PEER_GENESIS = {
       },
     ],
   ],
-  validator: './validator.wasm',
+  executor: './executor.wasm',
 }
 
 export const PEER_CONFIG = {
@@ -206,7 +147,6 @@ export const PEER_CONFIG = {
   },
   TORII: {
     API_URL: '127.0.0.1:8080',
-    TELEMETRY_URL: '127.0.0.1:8081',
     P2P_ADDR: '127.0.0.1:1337',
   },
   GENESIS: {

@@ -1,4 +1,4 @@
-import { Torii, ToriiRequirementsForTelemetry, setCrypto } from '@iroha2/client'
+import { Torii, setCrypto, type ToriiRequirementsForApiHttp } from '@iroha2/client'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
 import { type RustResult, Logger as ScaleLogger, datamodel, sugar, variant } from '@iroha2/data-model'
@@ -21,11 +21,11 @@ async function killStartedPeer() {
   startedPeer = null
 }
 
-async function waitForGenesisCommitted(pre: ToriiRequirementsForTelemetry) {
+async function waitForGenesisCommitted(pre: ToriiRequirementsForApiHttp) {
   while (true) {
     const { blocks } = await Torii.getStatus(pre)
     if (blocks >= 1) return
-    await delay(250)
+    await delay(50)
   }
 }
 
@@ -89,7 +89,7 @@ test('AddAsset instruction with name length more than limit is not committed', a
 
   const existingDefinitions: datamodel.AssetDefinitionId[] = queryResult
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('AssetDefinition').id)
 
   expect(existingDefinitions).toContainEqual(normalAssetDefinitionId)
@@ -117,7 +117,7 @@ test('AddAccount instruction with name length more than limit is not committed',
 
   const existingAccounts: datamodel.AccountId[] = queryResult
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((val) => val.enum.as('Identifiable').enum.as('Account').id)
 
   expect(existingAccounts).toContainEqual(normal)
@@ -152,7 +152,7 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
   const result = await client.requestWithQueryBox(pre, sugar.find.assetsByAccountId(CLIENT_CONFIG.accountId))
 
   // Assert
-  const asset = Seq(result.as('Ok').result.enum.as('Vec'))
+  const asset = Seq(result.as('Ok').batch.enum.as('Vec'))
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
     .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
 
@@ -180,7 +180,7 @@ test('Registering domain', async () => {
 
     const domain = result
       .as('Ok')
-      .result.enum.as('Vec')
+      .batch.enum.as('Vec')
       .map((x) => x.enum.as('Identifiable').enum.as('Domain'))
       .find((x) => x.id.name === domainName)
 
@@ -282,7 +282,7 @@ describe('Blocks Stream API', () => {
   test('When committing 3 blocks sequentially, nothing fails', async () => {
     const { pre, client } = clientFactory()
 
-    const stream = await Torii.listenForBlocksStream(pre, { height: 2n })
+    const stream = await Torii.listenForBlocksStream(pre, { height: datamodel.NonZeroU64(2n) })
     const closePromise = stream.ee.once('close')
 
     for (const assetName of ['xor', 'val', 'vat']) {

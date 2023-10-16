@@ -8,7 +8,6 @@ const HOST = window.location.host
 export const toriiPre = {
   // proxified with vite
   apiURL: `http://${HOST}/torii/api`,
-  telemetryURL: `http://${HOST}/torii/telemetry`,
   ws: WS,
   fetch: fetch.bind(window),
 }

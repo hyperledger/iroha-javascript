@@ -49,7 +49,7 @@ export interface CheckedConfig {
 }
 
 export interface CheckedGenesis {
-  validator: typeof EXECUTOR_WASM_PATH_RELATIVE
+  executor: typeof EXECUTOR_WASM_PATH_RELATIVE
 }
 
 interface SetConfigurationCheckedParams<C extends CheckedConfig, G extends CheckedGenesis> {

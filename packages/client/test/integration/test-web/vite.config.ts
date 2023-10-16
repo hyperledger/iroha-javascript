@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 // import path from 'path'
-import { PORT_PEER_API, PORT_PEER_SERVER, PORT_PEER_TELEMETRY, PORT_VITE } from './etc/meta'
+import { PORT_PEER_API, PORT_PEER_SERVER, PORT_VITE } from './etc/meta'
 
 // const resolveInPkgSrc = (unscopedName: string, ...paths: string[]) =>
 //   path.resolve(__dirname, '../../../../', unscopedName, ...paths)
@@ -25,11 +25,6 @@ export default defineConfig({
         ws: true,
         target: `http://127.0.0.1:${PORT_PEER_API}`,
         rewrite: (path) => path.replace(/^\/torii\/api/, ''),
-      },
-      '/torii/telemetry': {
-        ws: true,
-        target: `http://127.0.0.1:${PORT_PEER_TELEMETRY}`,
-        rewrite: (path) => path.replace(/^\/torii\/telemetry/, ''),
       },
       '/peer-server': {
         ws: true,

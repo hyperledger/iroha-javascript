@@ -5,8 +5,8 @@ import {
   getCryptoAnyway,
   makeQueryPayload,
   makeTransactionPayload,
-  makeVersionedSignedQuery,
-  makeVersionedSignedTransaction,
+  makeSignedQuery,
+  makeSignedTransaction,
 } from '@iroha2/client'
 import { freeScope } from '@iroha2/crypto-core'
 import { datamodel, sugar } from '@iroha2/data-model'
@@ -60,27 +60,9 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
   const setSignatureCondition = sugar.instruction.mint(
     datamodel.Value(
       'SignatureCheckCondition',
-      datamodel.Expression(
-        'ContainsAll',
-        datamodel.ContainsAll({
-          collection: datamodel.Expression(
-            'ContextValue',
-            datamodel.ContextValue({
-              value_name:
-                // FIXME magic constant
-                'transaction_signatories',
-            }),
-          ),
-          elements: datamodel.Expression(
-            'Raw',
-            datamodel.Value(
-              'Vec',
-              datamodel.VecValue(
-                freeScope(() => KEYS.map((keypair) => datamodel.Value('PublicKey', keypair.publicKey().toDataModel()))),
-              ),
-            ),
-          ),
-        }),
+      datamodel.SignatureCheckCondition(
+        'AllAccountSignaturesAnd',
+        datamodel.VecPublicKey(freeScope(() => KEYS.map((keypair) => keypair.publicKey().toDataModel()))),
       ),
     ),
     datamodel.IdBox('AccountId', MAD_HATTER),
@@ -99,7 +81,7 @@ const signer2 = new Signer(MAD_HATTER, KEYS[1])
       pipe(
         sugar.executable.instructions([registerAssetDefinition, setSignatureCondition]),
         (executable) => makeTransactionPayload({ executable, accountId: MAD_HATTER }),
-        (x) => makeVersionedSignedTransaction(x, signer1),
+        (x) => makeSignedTransaction(x, signer1),
       ),
     )
   })
@@ -124,9 +106,9 @@ const txHash = computeTransactionHash(mintTransactionPayload)
 
 // 1st transaction, signed only with the first key
 
-const tx1 = datamodel.VersionedSignedTransaction(
+const tx1 = datamodel.SignedTransaction(
   'V1',
-  datamodel.SignedTransaction({
+  datamodel.SignedTransactionV1({
     payload: mintTransactionPayload,
     signatures: datamodel.SortedVecSignature([signer1.sign('array', txHash)]),
   }),
@@ -144,13 +126,13 @@ async function findAsset(): Promise<datamodel.Asset | null> {
     pipe(
       sugar.find.assetsByAccountId(MAD_HATTER),
       (query) => makeQueryPayload({ query, accountId: MAD_HATTER }),
-      (payload) => makeVersionedSignedQuery(payload, signer1),
+      (payload) => makeSignedQuery(payload, signer1),
     ),
   )
 
   const asset = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
     .find((x) => x.id.definition_id.name === CASOMILE_DEFINITION_ID.name)
 

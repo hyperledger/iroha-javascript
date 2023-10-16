@@ -147,7 +147,7 @@ export async function prepareConfiguration() {
   await setConfigurationChecked({
     // parsing with type-level check
     peerGenesis: match(PEER_GENESIS)
-      .with({ validator: EXECUTOR_WASM_PATH_RELATIVE }, (x) => x)
+      .with({ executor: EXECUTOR_WASM_PATH_RELATIVE }, (x) => x)
       .otherwise(() => {
         throw new Error('Invalid genesis')
       }),
