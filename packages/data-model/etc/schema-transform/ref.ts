@@ -100,6 +100,10 @@ function transformTree(tree: Tree): Tree {
       .with({ id: 'SignaturesOf', items: [P.any] }, () => ({ id: 'SortedVecSignature', items: [] }))
       .with({ id: 'HashOf', items: [P.any] }, () => ({ id: 'Hash', items: [] }))
       .with({ id: 'Compact', items: [{ id: 'u128' }] }, () => ({ id: 'Compact', items: [] }))
+      .with({ id: P.union('Action', 'Trigger'), items: [{ id: 'TriggeringFilterBox', items: [] }] }, ({ id }) => ({
+        id,
+        items: [],
+      }))
       .otherwise((x) => ({ id: x.id, items: x.items.map(transformTree) }))
   )
 }

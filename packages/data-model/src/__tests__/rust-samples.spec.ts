@@ -66,53 +66,50 @@ defineCase(
 
   defineCase(
     'Time-based Trigger ISI',
-    datamodel.RegisterBox,
-    datamodel.RegisterBox({
+    datamodel.RegisterExpr,
+    datamodel.RegisterExpr({
       object: datamodel.Expression(
         'Raw',
         datamodel.Value(
           'Identifiable',
           datamodel.IdentifiableBox(
             'Trigger',
-            datamodel.TriggerBox(
-              'Raw',
-              datamodel.TriggerFilterBoxExecutable({
-                id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
-                action: datamodel.ActionFilterBoxExecutable({
-                  executable: datamodel.Executable(
-                    'Instructions',
-                    datamodel.VecInstructionBox([
-                      datamodel.InstructionBox(
-                        'Mint',
-                        datamodel.MintBox({
-                          object: datamodel.Expression(
-                            'Raw',
-                            datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
-                          ),
-                          destination_id: datamodel.Expression(
-                            'Raw',
-                            datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
-                          ),
-                        }),
-                      ),
-                    ]),
-                  ),
-                  repeats: datamodel.Repeats('Indefinitely'),
-                  filter: datamodel.FilterBox(
-                    'Time',
-                    datamodel.ExecutionTime(
-                      'Schedule',
-                      datamodel.Schedule({
-                        start: datamodel.Duration([4141203402341234n, 0]),
-                        period: datamodel.OptionDuration('Some', datamodel.Duration([3n, 0])),
+            datamodel.Trigger({
+              id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
+              action: datamodel.Action({
+                executable: datamodel.Executable(
+                  'Instructions',
+                  datamodel.VecInstructionExpr([
+                    datamodel.InstructionExpr(
+                      'Mint',
+                      datamodel.MintExpr({
+                        object: datamodel.Expression(
+                          'Raw',
+                          datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
+                        ),
+                        destination_id: datamodel.Expression(
+                          'Raw',
+                          datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
+                        ),
                       }),
                     ),
+                  ]),
+                ),
+                repeats: datamodel.Repeats('Indefinitely'),
+                filter: datamodel.TriggeringFilterBox(
+                  'Time',
+                  datamodel.ExecutionTime(
+                    'Schedule',
+                    datamodel.Schedule({
+                      start: datamodel.Duration([4141203402341234n, 0]),
+                      period: datamodel.OptionDuration('Some', datamodel.Duration([3n, 0])),
+                    }),
                   ),
-                  authority: assetId.account_id,
-                  metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
-                }),
+                ),
+                authority: assetId.account_id,
+                metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
               }),
-            ),
+            }),
           ),
         ),
       ),
@@ -138,62 +135,59 @@ defineCase(
 
   defineCase(
     'Event-based Trigger ISI',
-    datamodel.RegisterBox,
-    datamodel.RegisterBox({
+    datamodel.RegisterExpr,
+    datamodel.RegisterExpr({
       object: datamodel.Expression(
         'Raw',
         datamodel.Value(
           'Identifiable',
           datamodel.IdentifiableBox(
             'Trigger',
-            datamodel.TriggerBox(
-              'Raw',
-              datamodel.TriggerFilterBoxExecutable({
-                id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
-                action: datamodel.ActionFilterBoxExecutable({
-                  executable: datamodel.Executable(
-                    'Instructions',
-                    datamodel.VecInstructionBox([
-                      datamodel.InstructionBox(
-                        'Mint',
-                        datamodel.MintBox({
-                          object: datamodel.Expression(
-                            'Raw',
-                            datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
-                          ),
-                          destination_id: datamodel.Expression(
-                            'Raw',
-                            datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
+            datamodel.Trigger({
+              id: datamodel.TriggerId({ name: 'mint_rose', domain_id: datamodel.OptionDomainId('None') }),
+              action: datamodel.Action({
+                executable: datamodel.Executable(
+                  'Instructions',
+                  datamodel.VecInstructionExpr([
+                    datamodel.InstructionExpr(
+                      'Mint',
+                      datamodel.MintExpr({
+                        object: datamodel.Expression(
+                          'Raw',
+                          datamodel.Value('Numeric', datamodel.NumericValue('U32', 1)),
+                        ),
+                        destination_id: datamodel.Expression(
+                          'Raw',
+                          datamodel.Value('Id', datamodel.IdBox('AssetId', assetId)),
+                        ),
+                      }),
+                    ),
+                  ]),
+                ),
+                repeats: datamodel.Repeats('Indefinitely'),
+                filter: datamodel.TriggeringFilterBox(
+                  'Data',
+                  datamodel.FilterOptDataEntityFilter(
+                    'BySome',
+                    datamodel.DataEntityFilter(
+                      'ByAssetDefinition',
+                      datamodel.FilterOptAssetDefinitionFilter(
+                        'BySome',
+                        datamodel.AssetDefinitionFilter({
+                          origin_filter: datamodel.FilterOptOriginFilterAssetDefinitionEvent('AcceptAll'),
+                          event_filter: datamodel.FilterOptAssetDefinitionEventFilter(
+                            'BySome',
+                            datamodel.AssetDefinitionEventFilter('ByCreated'),
                           ),
                         }),
                       ),
-                    ]),
-                  ),
-                  repeats: datamodel.Repeats('Indefinitely'),
-                  filter: datamodel.FilterBox(
-                    'Data',
-                    datamodel.FilterOptDataEntityFilter(
-                      'BySome',
-                      datamodel.DataEntityFilter(
-                        'ByAssetDefinition',
-                        datamodel.FilterOptAssetDefinitionFilter(
-                          'BySome',
-                          datamodel.AssetDefinitionFilter({
-                            origin_filter: datamodel.FilterOptOriginFilterAssetDefinitionEvent('AcceptAll'),
-                            event_filter: datamodel.FilterOptAssetDefinitionEventFilter(
-                              'BySome',
-                              datamodel.AssetDefinitionEventFilter('ByCreated'),
-                            ),
-                          }),
-                        ),
-                      ),
                     ),
                   ),
-                  authority: assetId.account_id,
-                  metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
-                }),
+                ),
+                authority: assetId.account_id,
+                metadata: datamodel.Metadata({ map: datamodel.SortedMapNameValue(new Map()) }),
               }),
-            ),
+            }),
           ),
         ),
       ),

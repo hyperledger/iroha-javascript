@@ -6,10 +6,9 @@ import makeDir from 'make-dir'
 import { fs, path } from 'zx'
 import url from 'url'
 import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
-import config from './config-resolved'
-import { BuildProfile, ConfigResolved, ConfigResolvedGitClone, GitCloneConfiguration } from './types'
+import {BaseConfig, RawGitCloneConfiguration, ResolvedConfig, ResolvedConfigGitClone} from './types'
 
-export async function clone(config: GitCloneConfiguration): Promise<void> {
+export async function clone(config: RawGitCloneConfiguration): Promise<void> {
   consola.info(
     `Cloning Git repo with origin ${chalk.green.bold(config.origin)} ` +
       `at revision ${chalk.magenta.bold(config.rev)} into ${chalk.blue.bold(CLONE_DIR)}`,
@@ -31,14 +30,14 @@ export async function clone(config: GitCloneConfiguration): Promise<void> {
   consola.success('Iroha Git repo is cloned')
 }
 
-export async function isCloneUpToDate(config: GitCloneConfiguration): Promise<boolean> {
+export async function isCloneUpToDate(config: RawGitCloneConfiguration): Promise<boolean> {
   try {
-    const meta: GitCloneConfiguration = await import(IROHA_DIR_CLONE_META_DIR_FILE)
+    const meta: RawGitCloneConfiguration = await import(IROHA_DIR_CLONE_META_DIR_FILE)
     if (meta.origin === config.origin && meta.rev === config.rev) return true
-    consola.info('Iroha repo clone exists, but is not up-to-date')
+    consola.debug('Iroha repo clone exists, but is not up-to-date')
     return false
   } catch (err) {
-    consola.info(
+    consola.debug(
       `Error while reading the metadata of the cloned repo. Assuming the clone as not up-to-date.` +
         `\nActual error: ${String(err)}`,
     )
@@ -46,16 +45,19 @@ export async function isCloneUpToDate(config: GitCloneConfiguration): Promise<bo
   }
 }
 
-export function resolveBinaryPath(cfg: ConfigResolved, bin: string): string {
-  return path.join(IROHA_DIR, `target/${cfg.profile === 'release' ? 'release' : 'debug'}`, bin)
+export function resolveBinaryPath(cfg: ResolvedConfig, bin: string): string {
+  return path.join(IROHA_DIR, `target/${cfg.release ? 'release' : 'debug'}`, bin)
 }
 
-export async function runCargoBuild(crate: string, profile: BuildProfile): Promise<void> {
+export async function runCargoBuild(
+  crate: string,
+  config: BaseConfig,
+): Promise<void> {
   const args = ['build']
-  profile === 'release' && args.push('--release')
+  config.release && args.push('--release')
   args.push('--package', crate)
   const process = execa('cargo', args, { stdio: 'inherit', cwd: IROHA_DIR })
-  consola.info(`Spawn %o`, process.spawnargs)
+  consola.debug(`Spawn %o`, process.spawnargs)
   await process
 }
 
@@ -73,24 +75,24 @@ async function readlink(path: string): Promise<{ t: 'ok'; target: string } | { t
     .catch(() => ({ t: 'err' }))
 }
 
-export function assertConfigurationIsGitClone(cfg: ConfigResolved): asserts cfg is ConfigResolvedGitClone {
+export function assertConfigurationIsGitClone(cfg: ResolvedConfig): asserts cfg is ResolvedConfigGitClone {
   if (cfg.t !== 'git-clone')
     throw new Error(`Expected to work with git-clone configuration, but got cfg with type of "${cfg.t}"`)
 }
 
-export async function syncIrohaSymlink(config: ConfigResolved) {
+export async function syncIrohaSymlink(config: ResolvedConfig) {
   const symlinkDir = IROHA_DIR
   const symlinkDirRelative = path.relative(url.fileURLToPath(new URL('../', import.meta.url)), symlinkDir)
   const target = config.t === 'git-clone' ? CLONE_DIR : config.absolutePath
   const existingLink = await readlink(symlinkDir)
   if (!(existingLink.t === 'ok' && existingLink.target === target)) {
     await del(symlinkDir, { force: true })
-    consola.info(chalk`Removed existing {blue ${symlinkDirRelative}}`)
+    consola.debug(chalk`Removed existing {blue ${symlinkDirRelative}}`)
     await fs.symlink(target, symlinkDir)
-    consola.info(chalk`Created symlink {blue ${symlinkDirRelative}} -> {blue ${target}}`)
+    consola.debug(chalk`Created symlink {blue ${symlinkDirRelative}} -> {blue ${target}}`)
   }
 }
 
-export async function syncSourceRepo() {
+export async function syncSourceRepo(config: ResolvedConfig) {
   if (config.t === 'git-clone' && !(await isCloneUpToDate(config))) await clone(config)
 }

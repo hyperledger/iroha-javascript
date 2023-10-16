@@ -6,10 +6,10 @@ import readline from 'readline'
 import invariant from 'tiny-invariant'
 import { match } from 'ts-pattern'
 import { fs } from 'zx'
-import { BLOCK_STORE_PATH_RELATIVE, TMP_DIR, VALIDATOR_WASM_PATH_RELATIVE } from '../etc/meta'
+import { BLOCK_STORE_PATH_RELATIVE, EXECUTOR_WASM_PATH_RELATIVE, TMP_DIR } from '../etc/meta'
 import debug from './dbg'
 import { rmForce, setConfigurationChecked, waitUntilPeerIsHealthy } from './util'
-import VALIDATOR_WASM from '@iroha2/iroha-source/src/subentries/validator'
+import EXECUTOR_WASM from '@iroha2/iroha-source/src/subentries/executor'
 import { CLIENT_CONFIG, PEER_CONFIG, PEER_GENESIS } from '@iroha2/test-configuration'
 
 /**
@@ -147,7 +147,7 @@ export async function prepareConfiguration() {
   await setConfigurationChecked({
     // parsing with type-level check
     peerGenesis: match(PEER_GENESIS)
-      .with({ validator: VALIDATOR_WASM_PATH_RELATIVE }, (x) => x)
+      .with({ validator: EXECUTOR_WASM_PATH_RELATIVE }, (x) => x)
       .otherwise(() => {
         throw new Error('Invalid genesis')
       }),
@@ -157,7 +157,7 @@ export async function prepareConfiguration() {
         throw new Error('Invalid peer config')
       }),
 
-    validatorWasm: VALIDATOR_WASM,
+    executorWasm: EXECUTOR_WASM,
   })
 }
 

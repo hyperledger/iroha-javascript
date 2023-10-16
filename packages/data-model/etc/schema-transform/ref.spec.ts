@@ -22,6 +22,8 @@ describe('Refs transformation', () => {
     ['NonTrivial<GenericPredicateBox<ValuePredicate>>', 'NonTrivialPredicateBox'],
     ['HashOf<VersionedCommittedBlock>', 'Hash'],
     ['Compact<u128>', 'Compact'],
+    ['Trigger<TriggeringFilterBox>', 'Trigger'],
+    ['Action<TriggeringFilterBox>', 'Action'],
   ])('%s transformed into %s', (input, output) => {
     expect(transform(input)).toEqual(output)
   })

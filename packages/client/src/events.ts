@@ -41,15 +41,11 @@ export async function setupEvents(params: SetupEventsParams): Promise<SetupEvent
   })
 
   ee.on('open', () => {
-    sendRaw(
-      datamodel.VersionedEventSubscriptionRequest.toBuffer(
-        datamodel.VersionedEventSubscriptionRequest('V1', params.filter),
-      ),
-    )
+    sendRaw(datamodel.EventSubscriptionRequest.toBuffer(params.filter))
   })
 
   ee.on('message', (raw) => {
-    const event = datamodel.VersionedEventMessage.fromBuffer(raw).enum.content
+    const event = datamodel.EventMessage.fromBuffer(raw)
     ee.emit('event', event)
   })
 

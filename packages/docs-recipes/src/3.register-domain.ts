@@ -33,7 +33,7 @@ async function ensureDomainExistence(domainName: string) {
   // Obtain the domain
   const domain = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Domain'))
     .find((x) => x.id.name === domainName) // [!code hl]
 

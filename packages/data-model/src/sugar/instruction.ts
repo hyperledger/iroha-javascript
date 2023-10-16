@@ -1,17 +1,17 @@
 import { datamodel } from './model'
 
-export const register = (identifiable: datamodel.IdentifiableBox): datamodel.InstructionBox =>
-  datamodel.InstructionBox(
+export const register = (identifiable: datamodel.IdentifiableBox): datamodel.InstructionExpr =>
+  datamodel.InstructionExpr(
     'Register',
-    datamodel.RegisterBox({
+    datamodel.RegisterExpr({
       object: datamodel.Expression('Raw', datamodel.Value('Identifiable', identifiable)),
     }),
   )
 
-export const mint = (object: datamodel.Value, destination: datamodel.IdBox): datamodel.InstructionBox =>
-  datamodel.InstructionBox(
+export const mint = (object: datamodel.Value, destination: datamodel.IdBox): datamodel.InstructionExpr =>
+  datamodel.InstructionExpr(
     'Mint',
-    datamodel.MintBox({
+    datamodel.MintExpr({
       object: datamodel.Expression('Raw', object),
       destination_id: datamodel.Expression('Raw', datamodel.Value('Id', destination)),
     }),
@@ -21,10 +21,10 @@ export const transfer = (
   source: datamodel.IdBox,
   object: datamodel.Value,
   destination: datamodel.IdBox,
-): datamodel.InstructionBox =>
-  datamodel.InstructionBox(
+): datamodel.InstructionExpr =>
+  datamodel.InstructionExpr(
     'Transfer',
-    datamodel.TransferBox({
+    datamodel.TransferExpr({
       source_id: datamodel.Expression('Raw', datamodel.Value('Id', source)),
       destination_id: datamodel.Expression('Raw', datamodel.Value('Id', destination)),
       object: datamodel.Expression('Raw', object),

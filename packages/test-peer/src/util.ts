@@ -1,7 +1,7 @@
 import del from 'del'
 import { fs, path } from 'zx'
 import { Torii } from '@iroha2/client'
-import { BLOCK_STORE_PATH_RELATIVE, TMP_DIR, VALIDATOR_WASM_PATH_RELATIVE } from '../etc/meta'
+import { BLOCK_STORE_PATH_RELATIVE, EXECUTOR_WASM_PATH_RELATIVE, TMP_DIR } from '../etc/meta'
 import debug from './dbg'
 
 export async function saveDataAsJSON(data: unknown, destination: string): Promise<void> {
@@ -49,13 +49,13 @@ export interface CheckedConfig {
 }
 
 export interface CheckedGenesis {
-  validator: typeof VALIDATOR_WASM_PATH_RELATIVE
+  validator: typeof EXECUTOR_WASM_PATH_RELATIVE
 }
 
 interface SetConfigurationCheckedParams<C extends CheckedConfig, G extends CheckedGenesis> {
   peerConfig: C
   peerGenesis: G
-  validatorWasm: Buffer
+  executorWasm: Buffer
 }
 
 export async function setConfigurationChecked<C extends CheckedConfig, G extends CheckedGenesis>(
@@ -65,7 +65,7 @@ export async function setConfigurationChecked<C extends CheckedConfig, G extends
   await Promise.all([
     saveDataAsJSON(params.peerConfig, path.join(TMP_DIR, 'config.json')),
     saveDataAsJSON(params.peerGenesis, path.join(TMP_DIR, 'genesis.json')),
-    fs.writeFile(path.join(TMP_DIR, VALIDATOR_WASM_PATH_RELATIVE), params.validatorWasm),
+    fs.writeFile(path.join(TMP_DIR, EXECUTOR_WASM_PATH_RELATIVE), params.executorWasm),
   ])
   debug('configuration is set')
 }

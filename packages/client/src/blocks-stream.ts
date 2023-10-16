@@ -14,7 +14,7 @@ export interface SetupBlocksStreamParams {
 }
 
 export interface BlocksStreamEmitteryMap extends SocketEmitMapBase {
-  block: datamodel.VersionedCommittedBlock
+  block: datamodel.SignedBlockV1
 }
 
 export interface SetupBlocksStreamReturn {
@@ -38,15 +38,11 @@ export async function setupBlocksStream(params: SetupBlocksStreamParams): Promis
   })
 
   ee.on('open', () => {
-    sendRaw(
-      datamodel.VersionedBlockSubscriptionRequest.toBuffer(
-        datamodel.VersionedBlockSubscriptionRequest('V1', params.height),
-      ),
-    )
+    sendRaw(datamodel.BlockSubscriptionRequest.toBuffer(params.height))
   })
 
   ee.on('message', (raw) => {
-    const block = datamodel.VersionedBlockMessage.fromBuffer(raw).enum.content
+    const block = datamodel.BlockMessage.fromBuffer(raw).enum.content
     ee.emit('block', block)
   })
 

@@ -15,7 +15,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 
   const domains = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Domain'))
 
   for (const domain of domains) {
@@ -37,7 +37,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 
   const accounts = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Account'))
 
   for (const account of accounts) {
@@ -59,7 +59,7 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
 
   const assets = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
 
   for (const asset of assets) {

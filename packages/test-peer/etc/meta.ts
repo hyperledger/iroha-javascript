@@ -9,4 +9,4 @@ export const TMP_IROHA_BIN = path.resolve(TMP_DIR, 'iroha')
 
 export const BLOCK_STORE_PATH_RELATIVE = './storage'
 
-export const VALIDATOR_WASM_PATH_RELATIVE = './validator.wasm'
+export const EXECUTOR_WASM_PATH_RELATIVE = './executor.wasm'

@@ -85,7 +85,7 @@ export const PEER_GENESIS = {
       },
       {
         Mint: {
-          U32: 13,
+          object: '13_u32',
           destination_id: {
             AssetId: 'rose##alice@wonderland',
           },
@@ -93,7 +93,7 @@ export const PEER_GENESIS = {
       },
       {
         Mint: {
-          U32: 44,
+          object: '44_u32',
           destination_id: {
             AssetId: 'cabbage#garden_of_live_flowers#alice@wonderland',
           },
@@ -101,9 +101,11 @@ export const PEER_GENESIS = {
       },
       {
         Grant: {
-          PermissionToken: {
-            definition_id: 'can_set_parameters',
-            params: {},
+          object: {
+            PermissionToken: {
+              definition_id: 'CanSetParameters',
+              payload: null,
+            },
           },
           destination_id: {
             AccountId: 'alice@wonderland',
@@ -111,24 +113,79 @@ export const PEER_GENESIS = {
         },
       },
       {
+        Sequence: [
+          {
+            NewParameter: {
+              Parameter: '?MaxTransactionsInBlock=512',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?BlockTime=2000',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?CommitTimeLimit=4000',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?TransactionLimits=4096,4194304_TL',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?WSVAssetMetadataLimits=1048576,4096_ML',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?WSVAssetDefinitionMetadataLimits=1048576,4096_ML',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?WSVAccountMetadataLimits=1048576,4096_ML',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?WSVDomainMetadataLimits=1048576,4096_ML',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?WSVIdentLengthLimits=1,128_LL',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?WASMFuelLimit=23000000',
+            },
+          },
+          {
+            NewParameter: {
+              Parameter: '?WASMMaxMemory=524288000',
+            },
+          },
+        ],
+      },
+      {
         Register: {
           NewRole: {
             id: 'ALICE_METADATA_ACCESS',
             permissions: [
               {
-                definition_id: 'can_remove_key_value_in_user_account',
-                params: {
-                  account_id: {
-                    AccountId: 'alice@wonderland',
-                  },
+                definition_id: 'CanRemoveKeyValueInUserAccount',
+                payload: {
+                  account_id: 'alice@wonderland',
                 },
               },
               {
-                definition_id: 'can_set_key_value_in_user_account',
-                params: {
-                  account_id: {
-                    AccountId: 'alice@wonderland',
-                  },
+                definition_id: 'CanSetKeyValueInUserAccount',
+                payload: {
+                  account_id: 'alice@wonderland',
                 },
               },
             ],
@@ -138,11 +195,6 @@ export const PEER_GENESIS = {
     ],
   ],
   validator: './validator.wasm',
-}
-
-interface PrivateKey {
-  digest_function: string
-  payload: string
 }
 
 export const PEER_CONFIG = {
@@ -180,14 +232,13 @@ const parseAccountId = (acc: string): datamodel.AccountId => {
 }
 
 const {
-  TORII: { API_URL: TORII_API_URL, TELEMETRY_URL: TORII_TELEMETRY_URL },
+  TORII: { API_URL: TORII_API_ADDRESS },
   SUMERAGI: { BLOCK_TIME_MS, COMMIT_TIME_LIMIT_MS },
 } = PEER_CONFIG
 
 export const CLIENT_CONFIG = {
   torii: {
-    apiURL: 'http://' + TORII_API_URL,
-    telemetryURL: 'http://' + TORII_TELEMETRY_URL,
+    apiURL: 'http://' + TORII_API_ADDRESS,
   },
   accountId: parseAccountId(CLIENT_CLI_CONFIG.ACCOUNT_ID),
   keyPair: {
@@ -196,4 +247,5 @@ export const CLIENT_CONFIG = {
   },
 }
 
+// https://github.com/hyperledger/iroha/blob/b7e5bf0925951df066de31d486165c66a3d65cee/config/src/sumeragi.rs#L106-L112
 export const PIPELINE_MS = BLOCK_TIME_MS + COMMIT_TIME_LIMIT_MS
