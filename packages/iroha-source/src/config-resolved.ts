@@ -12,7 +12,6 @@ const resolved: ResolvedConfig = match(CFG)
     (cfgPath): ResolvedConfig => ({
       t: 'path',
       absolutePath: path.resolve(dirname, '../', cfgPath.path),
-      release: cfgPath.release,
     }),
   )
   .with({ origin: P.string }, (cfgGitClone): ResolvedConfig => ({ t: 'git-clone', ...cfgGitClone }))

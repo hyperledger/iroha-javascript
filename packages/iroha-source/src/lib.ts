@@ -46,10 +46,10 @@ export async function resolveBinary(
 
   await syncIrohaSymlink(config)
 
-  const binaryPath = resolveBinaryPath(config, bin)
+  const binaryPath = resolveBinaryPath(bin)
 
   if (!skipUpdate) {
-    await runCargoBuild(bin, config)
+    await runCargoBuild(bin)
   } else if (!(await isAccessible(binaryPath))) {
     throw new Error('The binary is not built')
   }
@@ -59,7 +59,7 @@ export async function resolveBinary(
 
 export async function buildBinary(bin: Binary, ignoreBuilt = false): Promise<void> {
   await syncSourceRepo(config)
-  const path = resolveBinaryPath(config, bin)
-  if (ignoreBuilt || !(await isAccessible(path))) await runCargoBuild(bin, config)
+  const path = resolveBinaryPath(bin)
+  if (ignoreBuilt || !(await isAccessible(path))) await runCargoBuild(bin)
   consola.success(`${chalk.magenta.bold(bin)} is built`)
 }

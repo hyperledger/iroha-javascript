@@ -6,7 +6,8 @@ import makeDir from 'make-dir'
 import { fs, path } from 'zx'
 import url from 'url'
 import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
-import {BaseConfig, RawGitCloneConfiguration, ResolvedConfig, ResolvedConfigGitClone} from './types'
+import { PROFILE_ENV, PROFILE } from './cargo-profile'
+import { RawGitCloneConfiguration, ResolvedConfig, ResolvedConfigGitClone } from './types'
 
 export async function clone(config: RawGitCloneConfiguration): Promise<void> {
   consola.info(
@@ -45,18 +46,16 @@ export async function isCloneUpToDate(config: RawGitCloneConfiguration): Promise
   }
 }
 
-export function resolveBinaryPath(cfg: ResolvedConfig, bin: string): string {
-  return path.join(IROHA_DIR, `target/${cfg.release ? 'release' : 'debug'}`, bin)
+export function resolveBinaryPath(bin: string): string {
+  return path.join(IROHA_DIR, `target/${PROFILE}`, bin)
 }
 
-export async function runCargoBuild(
-  crate: string,
-  config: BaseConfig,
-): Promise<void> {
-  const args = ['build']
-  config.release && args.push('--release')
-  args.push('--package', crate)
-  const process = execa('cargo', args, { stdio: 'inherit', cwd: IROHA_DIR })
+export async function runCargoBuild(crate: string): Promise<void> {
+  const process = execa('cargo', ['build', '--profile', PROFILE, '--package', crate, '--timings'], {
+    stdio: 'inherit',
+    cwd: IROHA_DIR,
+    env: PROFILE_ENV,
+  })
   consola.debug(`Spawn %o`, process.spawnargs)
   await process
 }

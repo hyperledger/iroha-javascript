@@ -1,8 +1,5 @@
-export interface BaseConfig {
-  release?: boolean
-}
 
-export interface RawGitCloneConfiguration extends BaseConfig {
+export interface RawGitCloneConfiguration  {
   /**
    * Origin git repo, e.g. `https://github.com/hyperledger/iroha.git`
    */
@@ -17,7 +14,7 @@ export interface RawGitCloneConfiguration extends BaseConfig {
  * If this configuration is used, Iroha will not be cloned, but used as-is
  * without any changes
  */
-export interface RawPathConfiguration extends BaseConfig {
+export interface RawPathConfiguration  {
   /**
    * Local path to the iroha source repo
    */
@@ -28,7 +25,7 @@ export type RawConfig = RawGitCloneConfiguration | RawPathConfiguration
 
 export type ResolvedConfig = ResolvedConfigGitClone | ResolvedConfigPath
 
-export interface ResolvedConfigPath extends BaseConfig {
+export interface ResolvedConfigPath {
   t: 'path'
   absolutePath: string
 }
