@@ -6,7 +6,7 @@
  */
 
 import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
-import { RustResult, WalkerImpl, datamodel, variant } from '@iroha2/data-model'
+import { RustResult, datamodel, variant } from '@iroha2/data-model'
 import { Except } from 'type-fest'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
 import {
@@ -172,6 +172,19 @@ export function queryBoxIntoSignedQuery(params: {
 // #endregion
 
 // #region TORII
+
+export interface PeerStatus {
+  peers: bigint | number
+  blocks: bigint | number
+  txs_accepted: bigint | number
+  txs_rejected: bigint | number
+  uptime: {
+    secs: bigint | number
+    nanos: number
+  }
+  view_changes: bigint | number
+  queue_size: bigint | number
+}
 
 export interface ToriiRequirementsPartUrlApi {
   apiURL: string
