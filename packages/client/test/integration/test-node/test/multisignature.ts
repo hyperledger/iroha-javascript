@@ -4,9 +4,9 @@ import {
   computeTransactionHash,
   getCryptoAnyway,
   makeQueryPayload,
-  makeTransactionPayload,
   makeSignedQuery,
   makeSignedTransaction,
+  makeTransactionPayload,
 } from '@iroha2/client'
 import { freeScope } from '@iroha2/crypto-core'
 import { datamodel, sugar } from '@iroha2/data-model'

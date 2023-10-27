@@ -1,4 +1,4 @@
-import { Torii, setCrypto, type ToriiRequirementsForApiHttp } from '@iroha2/client'
+import { Torii, type ToriiRequirementsForApiHttp, setCrypto } from '@iroha2/client'
 import { FREE_HEAP } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
 import { type RustResult, Logger as ScaleLogger, datamodel, sugar, variant } from '@iroha2/data-model'

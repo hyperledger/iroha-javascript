@@ -6,7 +6,7 @@ import makeDir from 'make-dir'
 import { fs, path } from 'zx'
 import url from 'url'
 import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
-import { PROFILE_ENV, PROFILE } from './cargo-profile'
+import { PROFILE, PROFILE_ENV } from './cargo-profile'
 import { RawGitCloneConfiguration, ResolvedConfig, ResolvedConfigGitClone } from './types'
 
 export async function clone(config: RawGitCloneConfiguration): Promise<void> {
