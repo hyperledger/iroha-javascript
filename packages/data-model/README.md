@@ -4,7 +4,7 @@ The `@iroha2/data-model` packages contains generated SCALE-definitions for Iroha
 
 ## Target version
 
-This version of package targets Iroha [`v2.0.0-pre-rc.17`](https://github.com/hyperledger/iroha/tree/f958afef8c9561af61cc30aab9f8b3eb0c497fa4).
+This version of package targets [Iroha `2.0.0-pre-rc.20`](https://github.com/hyperledger/iroha/tree/51d687607fad067fc855e266edc684d4fb33e7de).
 
 ## Installation
 
