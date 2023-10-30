@@ -18,7 +18,7 @@ export async function clone(config: RawGitCloneConfiguration): Promise<void> {
   await del(CLONE_DIR, { force: true })
   await makeDir(CLONE_DIR)
   const EXECA_OPTS: ExecaOptions = { cwd: CLONE_DIR, stdio: 'inherit' }
-  await execa('git', ['init'], EXECA_OPTS)
+  await execa('git', ['init', '--quiet'], EXECA_OPTS)
   await execa('git', ['remote', 'add', 'origin', config.origin], EXECA_OPTS)
   await execa('git', ['fetch', 'origin', config.rev], EXECA_OPTS)
   await execa('git', ['reset', '--hard', 'FETCH_HEAD'], EXECA_OPTS)
@@ -54,7 +54,12 @@ export async function runCargoBuild(crate: string): Promise<void> {
   const process = execa('cargo', ['build', '-Zlints', '--profile', PROFILE, '--package', crate, '--timings'], {
     stdio: 'inherit',
     cwd: IROHA_DIR,
-    env: PROFILE_ENV,
+    env: {
+      ...PROFILE_ENV,
+      // Temporary workaround until https://github.com/hyperledger/iroha/pull/4015
+      // is not backported into `iroha2-stable`
+      RUSTFLAGS: '-A missing-docs',
+    },
   })
   consola.debug(`Spawn %o`, process.spawnargs)
   await process
