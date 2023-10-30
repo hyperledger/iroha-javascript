@@ -6,7 +6,6 @@ import makeDir from 'make-dir'
 import { fs, path } from 'zx'
 import url from 'url'
 import { CLONE_DIR, IROHA_DIR, IROHA_DIR_CLONE_META_DIR_FILE } from '../etc/meta'
-import { PROFILE, PROFILE_ENV } from './cargo-profile'
 import { RawGitCloneConfiguration, ResolvedConfig, ResolvedConfigGitClone } from './types'
 
 export async function clone(config: RawGitCloneConfiguration): Promise<void> {
@@ -47,15 +46,14 @@ export async function isCloneUpToDate(config: RawGitCloneConfiguration): Promise
 }
 
 export function resolveBinaryPath(bin: string): string {
-  return path.join(IROHA_DIR, `target/${PROFILE}`, bin)
+  return path.join(IROHA_DIR, `target/release`, bin)
 }
 
 export async function runCargoBuild(crate: string): Promise<void> {
-  const process = execa('cargo', ['build', '-Zlints', '--profile', PROFILE, '--package', crate, '--timings'], {
+  const process = execa('cargo', ['build', '-Zlints', '--release', '--package', crate, '--timings'], {
     stdio: 'inherit',
     cwd: IROHA_DIR,
     env: {
-      ...PROFILE_ENV,
       // Temporary workaround until https://github.com/hyperledger/iroha/pull/4015
       // is not backported into `iroha2-stable`
       RUSTFLAGS: '-A missing-docs',
