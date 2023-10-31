@@ -14,5 +14,5 @@ const toriiRequirements: ToriiRequirementsForApiHttp & ToriiRequirementsForApiWe
     ws: WS,
     // type assertion is acceptable here
     // you can pass `undiciFetch` here as well
-    fetch: nodeFetch as typeof fetch,
+    fetch: nodeFetch as unknown as typeof fetch,
   }
