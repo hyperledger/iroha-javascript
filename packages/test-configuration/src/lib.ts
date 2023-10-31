@@ -164,6 +164,10 @@ export const PEER_CONFIG = {
   KURA: {
     BLOCK_STORE_PATH: './storage',
   },
+  // TODO: remove
+  LOGGER: {
+    MAX_LOG_LEVEL: 'TRACE'
+  }
 }
 
 const parseAccountId = (acc: string): datamodel.AccountId => {
