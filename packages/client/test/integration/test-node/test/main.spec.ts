@@ -52,16 +52,8 @@ afterAll(async () => {
 })
 
 // Actually it is already tested within `@iroha2/test-peer`
-test.only('Peer is healthy', async () => {
+test('Peer is healthy', async () => {
   const { pre } = clientFactory()
-
-  fetch(pre.apiURL + '/health')
-    .then((x) => {
-      console.log('fetch result', x)
-    })
-    .catch((e) => {
-      console.log('fetch error', e)
-    })
 
   expect(await Torii.getHealth(pre)).toEqual(variant('Ok', null) as RustResult<null, any>)
 })
