@@ -1,4 +1,3 @@
-import nodeFetch from 'node-fetch'
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { Client, Signer, Torii } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
@@ -11,7 +10,7 @@ export function clientFactory() {
 
   const signer = new Signer(accountId, keyPair)
 
-  const pre = { ...CLIENT_CONFIG.torii, ws: WS, fetch: nodeFetch as typeof fetch }
+  const pre = { ...CLIENT_CONFIG.torii, ws: WS, fetch }
 
   const client = new Client({ signer })
 
