@@ -50,7 +50,7 @@ export function resolveBinaryPath(bin: string): string {
 }
 
 export async function runCargoBuild(crate: string): Promise<void> {
-  const process = execa('cargo', ['build', '-Zlints', '--release', '--package', crate, '--timings'], {
+  const process = execa('cargo', ['build', '-Zlints', '--release', '--package', crate], {
     stdio: 'inherit',
     cwd: IROHA_DIR,
     env: {
