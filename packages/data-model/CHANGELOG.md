@@ -1,5 +1,64 @@
 # @iroha2/data-model
 
+## 7.0.0
+
+### Major Changes
+
+- e0459fa: **Target [Iroha `2.0.0-pre-rc.20`](https://github.com/hyperledger/iroha/tree/51d687607fad067fc855e266edc684d4fb33e7de)**
+- e0459fa: **feat!**: enhance schema transformation.
+
+  - Support new schema format
+  - Remove null aliases. Mostly, it simplifies `QueryBox` enum, e.g. instead of `QueryBox('FindAllAccounts', null)` it is now enough to write `QueryBox('FindAllAccounts')`
+  - Filter several single-field structures in order to avoid extra nesting. This includes:
+    - `EvaluatesTo<..>`
+    - `SignaturesOf<..>`
+  - Simplify `HashOf<..>` to `Hash`
+  - Handle `NonZero<..>` integers properly
+
+- e0459fa: **refactor!**: join all data-model types as `datamodel` namespace export
+
+  ##### What is the change
+
+  Previously, all data-model types were imported directly from the package:
+
+  ```ts
+  import { AccountId, DomainId } from '@iroha2/data-model'
+
+  const acc = AccountId({
+    name: 'alice',
+    domain_id: DomainId({
+      name: 'wonderland',
+    }),
+  })
+  ```
+
+  Now all data-model types are joined into a single `datamodel` namespace:
+
+  ```ts
+  import { datamodel } from '@iroha2/data-model'
+
+  const acc = datamodel.AccountId({
+    name: 'alice',
+    domain_id: datamodel.DomainId({
+      name: 'wonderland',
+    }),
+  })
+  ```
+
+  ##### Why the change was made
+
+  - To make it easier to distinguish data-model related exports from other utilities as there used to be too many root-level package exports, not always related to each other.
+  - To make data model more compatible with how it is presented in Java SDK
+
+  ##### How the consumer should update their code
+
+  The consumer should replace all data-model imports with `datamodel.*`.
+
+### Minor Changes
+
+- e0459fa: **build**: preserve modules for ESM and types target; update `exports` mapping in `package.json`
+- e0459fa: **feat**: introduce `sugar` namespace to do common data-model operations more conveniently (wip)
+
 ## 6.0.0
 
 ### Major Changes

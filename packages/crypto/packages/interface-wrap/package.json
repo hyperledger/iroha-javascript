@@ -5,6 +5,6 @@
   "main": "src/lib.ts",
   "devDependencies": {
     "@iroha2/crypto-util": "workspace:^0.1.0",
-    "@iroha2/data-model": "workspace:^6.0.0"
+    "@iroha2/data-model": "workspace:^7.0.0"
   }
 }

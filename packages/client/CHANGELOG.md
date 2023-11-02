@@ -1,5 +1,22 @@
 # @iroha2/client
 
+## 7.0.0
+
+### Major Changes
+
+- e0459fa: **Target [Iroha `2.0.0-pre-rc.20`](https://github.com/hyperledger/iroha/tree/51d687607fad067fc855e266edc684d4fb33e7de)**
+
+### Patch Changes
+
+- e0459fa: refactor: follow the update of the data model
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+  - @iroha2/data-model@7.0.0
+  - @iroha2/crypto-core@1.1.1
+
 ## 6.0.0
 
 ### Major Changes

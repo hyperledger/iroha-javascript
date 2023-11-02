@@ -1,5 +1,16 @@
 # @iroha2/crypto-core
 
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+- Updated dependencies [e0459fa]
+  - @iroha2/data-model@7.0.0
+
 ## 1.1.0
 
 ### Minor Changes

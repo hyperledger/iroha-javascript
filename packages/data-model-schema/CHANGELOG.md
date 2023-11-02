@@ -1,5 +1,13 @@
 # @iroha2/data-model-schema
 
+## 7.0.0
+
+### Major Changes
+
+- e0459fa: **Target [Iroha `2.0.0-pre-rc.20`](https://github.com/hyperledger/iroha/tree/51d687607fad067fc855e266edc684d4fb33e7de)**
+- e0459fa: **refactor!**: move schema-transform code back to `@iroha2/data-model` internal utilities
+- e0459fa: **feat!**: update schema and its types; update type names
+
 ## 6.0.0
 
 ### Major Changes
