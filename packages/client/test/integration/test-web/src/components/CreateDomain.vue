@@ -1,19 +1,6 @@
 <script setup lang="ts">
-import {
-  DomainId,
-  EvaluatesToRegistrableBox,
-  Executable,
-  Expression,
-  IdentifiableBox,
-  Instruction,
-  MapNameValue,
-  Metadata,
-  NewDomain,
-  OptionIpfsPath,
-  RegisterBox,
-  Value,
-  VecInstruction,
-} from '@iroha2/data-model'
+import { sugar } from '@iroha2/data-model'
+import { pipe } from 'fp-ts/function'
 import { ref } from 'vue'
 import { client, toriiPre } from '../client'
 import { useTask } from '@vue-kakuyaku/core'
@@ -21,36 +8,12 @@ import { useTask } from '@vue-kakuyaku/core'
 const domainName = ref('')
 
 const { state, run: registerDomain } = useTask(async () => {
-  await client.submitExecutable(
-    toriiPre,
-    Executable(
-      'Instructions',
-      VecInstruction([
-        Instruction(
-          'Register',
-          RegisterBox({
-            object: EvaluatesToRegistrableBox({
-              expression: Expression(
-                'Raw',
-                Value(
-                  'Identifiable',
-                  IdentifiableBox(
-                    'NewDomain',
-                    NewDomain({
-                      id: DomainId({
-                        name: domainName.value,
-                      }),
-                      metadata: Metadata({ map: MapNameValue(new Map()) }),
-                      logo: OptionIpfsPath('None'),
-                    }),
-                  ),
-                ),
-              ),
-            }),
-          }),
-        ),
-      ]),
-    ),
+  // we can `await` pipe because the last function returns a `Promise`
+  await pipe(
+    sugar.identifiable.newDomain(domainName.value),
+    sugar.instruction.register,
+    sugar.executable.instructions,
+    (exec) => client.submitExecutable(toriiPre, exec),
   )
 })
 </script>

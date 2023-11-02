@@ -4,7 +4,7 @@ The `@iroha2/data-model` packages contains generated SCALE-definitions for Iroha
 
 ## Target version
 
-This version of package targets Iroha `v2.0.0-pre-rc.14` (internal release, reference hash: `726f5eabf65a79ea618b4fce62a09cee7a5b13d1`).
+This version of package targets [Iroha `2.0.0-pre-rc.20`](https://github.com/hyperledger/iroha/tree/51d687607fad067fc855e266edc684d4fb33e7de).
 
 ## Installation
 
@@ -23,6 +23,10 @@ To install `data-model` with `npm`/`pnpm`:
    ```bash
    npm i @iroha2/data-model
    ```
+
+## Usage
+
+TODO: write extended usage documentation
 
 ## Known issues
 

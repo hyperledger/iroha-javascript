@@ -1,14 +1,20 @@
 import { P, match } from 'ts-pattern'
-import { ConfigResolved } from './types'
+import { ResolvedConfig } from './types'
 import CFG from '../config'
 import path from 'path'
+import url from 'url'
 
-const resolved: ConfigResolved = match(CFG)
+const dirname = url.fileURLToPath(new URL('.', import.meta.url))
+
+const resolved: ResolvedConfig = match(CFG)
   .with(
     { path: P.string },
-    (cfgPath): ConfigResolved => ({ t: 'path', absolutePath: path.resolve(__dirname, '../', cfgPath.path) }),
+    (cfgPath): ResolvedConfig => ({
+      t: 'path',
+      absolutePath: path.resolve(dirname, '../', cfgPath.path),
+    }),
   )
-  .with({ origin: P.string }, (cfgGitClone): ConfigResolved => ({ t: 'git-clone', ...cfgGitClone }))
+  .with({ origin: P.string }, (cfgGitClone): ResolvedConfig => ({ t: 'git-clone', ...cfgGitClone }))
   .exhaustive()
 
 export default resolved

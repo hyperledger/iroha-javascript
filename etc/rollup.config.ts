@@ -1,12 +1,19 @@
-import { Plugin, RollupOptions, defineConfig } from 'rollup'
-import dts from 'rollup-plugin-dts'
-import replace from '@rollup/plugin-replace'
+import { InputOption, OutputOptions, Plugin, RollupOptions, defineConfig } from 'rollup'
+import PluginDtsBase from 'rollup-plugin-dts'
+import PluginReplace from '@rollup/plugin-replace'
 import { glob } from 'zx'
 import { match } from 'ts-pattern'
 import path from 'path'
-import { Set } from 'immutable'
 import fs from 'fs/promises'
-import { PACKAGES_TO_ROLLUP, loadProductionDependencies, packageRoot, scopePackage } from './meta'
+import { pipe } from 'fp-ts/function'
+import {
+  PACKAGES_TO_ROLLUP,
+  PackageAny,
+  loadProductionDependencies,
+  packageEntry,
+  packageRoot,
+  scopePackage,
+} from './meta'
 import {
   INTERFACE_WRAP_PROXY_TO_WASM_PKG_ROLLUP_ID,
   IrohaCryptoTarget,
@@ -16,14 +23,46 @@ import {
   wasmPackOutDirForTarget,
   wasmPkgWithTargetRollupId,
 } from './meta-crypto'
+import { SetOptional } from 'type-fest'
 
-function replaceVitest() {
-  return replace({
+function PluginDts() {
+  return PluginDtsBase({ respectExternal: true })
+}
+
+function PluginReplaceVitest() {
+  return PluginReplace({
     preventAssignment: true,
     values: {
       'import.meta.vitest': 'undefined',
     },
   })
+}
+
+function commonJsPlugins(): Plugin[] {
+  return [PluginReplaceVitest()]
+}
+
+function output<T extends SetOptional<OutputOptions, 'format' | 'entryFileNames'>>(
+  format: 'esm' | 'cjs' | 'types',
+  dir: string,
+  extension?: T,
+) {
+  const base = (
+    format === 'types'
+      ? { format: 'esm', dir }
+      : { format, dir, entryFileNames: '[name].' + ({ esm: 'mjs', cjs: 'cjs' } as const)[format] }
+  ) satisfies OutputOptions
+
+  return {
+    ...base,
+    ...extension,
+  }
+}
+
+function input(pkg: Exclude<PackageAny, 'client'>, kind: 'js' | 'dts'): InputOption {
+  return {
+    lib: packageEntry(pkg, kind),
+  }
 }
 
 async function readWasmPkgAssets(target: WasmPackTarget): Promise<{ fileName: string; content: Buffer }[]> {
@@ -40,7 +79,7 @@ async function readWasmPkgAssets(target: WasmPackTarget): Promise<{ fileName: st
   )
 }
 
-function wasmPkg(target: WasmPackTarget, mode: 'types' | 'esm-reexport' | 'cjs-in-esm'): Plugin {
+function PluginWasmPkg(target: WasmPackTarget, mode: 'types' | 'esm-reexport' | 'cjs-in-esm'): Plugin {
   const WASM_PKG_TARGET_ROLLUP_ID = wasmPkgWithTargetRollupId(target)
   const WASM_PKG_ASSETS_DIR = `wasm-pkg`
   const WASM_PKG_COPIED_ENTRY_EXTERNAL = `./${WASM_PKG_ASSETS_DIR}/${WASM_PACK_OUT_NAME}`
@@ -110,7 +149,7 @@ function wasmPkg(target: WasmPackTarget, mode: 'types' | 'esm-reexport' | 'cjs-i
  * Rollup plugin to redirect imports from `@iroha2/crypto-util` to `@iroha2/crypto-core`, since the core package
  * re-exports everything from the util one.
  */
-function redirectCryptoUtilToCore(): Plugin {
+function PluginRedirectCryptoUtilToCore(): Plugin {
   return {
     name: 'redirect-from-crypto-util-to-crypto-core',
     resolveId(id) {
@@ -126,18 +165,9 @@ function redirectCryptoUtilToCore(): Plugin {
  *
  * For consistency TS-compiled JavaScript is imported too
  */
-function resolveCryptoInterfaceWrapEntry(entry: 'types' | 'js'): Plugin {
+function PluginResolveCryptoInterfaceWrapEntry(entry: 'types' | 'js'): Plugin {
   const PKG = 'crypto-interface-wrap' as const
-  const root = packageRoot(PKG)
-  const resolveTo = path.join(
-    root,
-    'dist-tsc',
-    'lib' +
-      match(entry)
-        .with('types', () => '.d.ts')
-        .with('js', () => '.js')
-        .exhaustive(),
-  )
+  const resolveTo = packageEntry(PKG, ({ types: 'dts', js: 'js' } as const)[entry])
   const pkgFull = scopePackage(PKG)
 
   return {
@@ -148,91 +178,42 @@ function resolveCryptoInterfaceWrapEntry(entry: 'types' | 'js'): Plugin {
   }
 }
 
-/**
- * @param root the root of the package
- * @param entry the file relative to `${root}/src`, without extension
- * @param externalSet
- */
-function simpleOptions(root: string, entry: string, externalSet: Set<string>) {
-  const inputBase = path.join(root, 'dist-tsc', entry)
-  const outputBase = path.join(root, 'dist', entry)
-  const external = externalSet.toArray()
-
-  return {
-    types: {
-      input: `${inputBase}.d.ts`,
-      external,
-      plugins: [replaceVitest(), dts({ respectExternal: true })],
-      output: { format: 'esm', file: `${outputBase}.d.ts` },
-    } satisfies RollupOptions,
-    js: {
-      input: `${inputBase}.js`,
-      external,
-      plugins: [replaceVitest()],
-      output: [
-        { format: 'esm', file: `${outputBase}.mjs` },
-        { format: 'cjs', file: `${outputBase}.cjs` },
-      ],
-    } satisfies RollupOptions,
-  }
-}
-
-function* simpleOptionsAsGen(...args: Parameters<typeof simpleOptions>): Generator<RollupOptions> {
-  const { types, js } = simpleOptions(...args)
-  yield types
-  yield js
-}
-
 async function* rollupCryptoTarget(
   target: IrohaCryptoTarget,
   ...formats: ('types' | 'esm' | 'cjs')[]
 ): AsyncGenerator<RollupOptions> {
   const pkg = `crypto-target-${target}` as const
-  const root = packageRoot(pkg)
-  const deps = await loadProductionDependencies(pkg)
-
-  const inputBase = path.join(root, `dist-tsc/lib`)
-  const outputBase = path.join(root, `dist/lib`)
+  const dist = packageRoot(pkg, 'dist')
+  const external = (await loadProductionDependencies(pkg)).toArray()
 
   for (const format of formats) {
     yield match(format)
-      .with(
-        'types',
-        (): RollupOptions => ({
-          input: `${inputBase}.d.ts`,
-          external: deps.toArray(),
+      .with('types', (): RollupOptions => {
+        return {
+          input: input(pkg, 'dts'),
+          external,
           plugins: [
-            resolveCryptoInterfaceWrapEntry('types'),
-            redirectCryptoUtilToCore(),
-            wasmPkg(IrohaCryptoTarget.toWasmPackTarget(target), 'types'),
-            dts({ respectExternal: true }),
+            PluginResolveCryptoInterfaceWrapEntry('types'),
+            PluginRedirectCryptoUtilToCore(),
+            PluginWasmPkg(IrohaCryptoTarget.toWasmPackTarget(target), 'types'),
+            PluginDts(),
           ],
-          output: {
-            format: 'esm',
-            file: `${outputBase}.d.ts`,
-          },
-        }),
-      )
+          output: output('types', dist),
+        }
+      })
       .with('esm', 'cjs', (format): RollupOptions => {
         const isNodeEsm = target === 'node' && format === 'esm'
 
         return {
-          input: `${inputBase}.js`,
-          external: deps.toArray(),
+          input: input(pkg, 'js'),
+          external,
           plugins: [
-            resolveCryptoInterfaceWrapEntry('js'),
-            redirectCryptoUtilToCore(),
-            wasmPkg(IrohaCryptoTarget.toWasmPackTarget(target), isNodeEsm ? 'cjs-in-esm' : 'esm-reexport'),
+            PluginResolveCryptoInterfaceWrapEntry('js'),
+            PluginRedirectCryptoUtilToCore(),
+            PluginWasmPkg(IrohaCryptoTarget.toWasmPackTarget(target), isNodeEsm ? 'cjs-in-esm' : 'esm-reexport'),
+            ...commonJsPlugins(),
           ],
-          output: {
-            format,
-            file:
-              outputBase +
-              match(format)
-                .with('esm', () => '.mjs')
-                .with('cjs', () => `.cjs`)
-                .exhaustive(),
-          },
+          output: output(format, dist),
         }
       })
       .exhaustive()
@@ -241,35 +222,99 @@ async function* rollupCryptoTarget(
 
 async function* generateRolls(): AsyncGenerator<RollupOptions> {
   for (const pkg of PACKAGES_TO_ROLLUP.toList().sort()) {
-    yield* match(pkg)
-      .with('client', async function* (pkg): AsyncGenerator<RollupOptions> {
-        const root = packageRoot(pkg)
-        const deps = (await loadProductionDependencies(pkg)).remove('json-bigint').add('json-bigint/lib/parse.js')
-        const depsWithSelf = deps.add(scopePackage(pkg))
+    yield* match<typeof pkg, AsyncGenerator<RollupOptions>>(pkg)
+      .with('client', async function* (pkg) {
+        const rootTsBuild = packageRoot(pkg, 'ts-build')
+        const dist = packageRoot(pkg, 'dist')
+        const external = (await loadProductionDependencies(pkg))
+          .remove('json-bigint')
+          .add('json-bigint/lib/parse.js')
+          .add(scopePackage(pkg))
+          .toArray()
 
-        yield* simpleOptionsAsGen(root, 'lib', deps)
-        yield* simpleOptionsAsGen(root, 'web-socket/native', depsWithSelf)
-        yield* simpleOptionsAsGen(root, 'web-socket/node', depsWithSelf)
+        const ENTRIES = ['lib', 'web-socket/native', 'web-socket/node'] as const
+
+        const entryInput = (entry: (typeof ENTRIES)[number], ext: 'js' | 'd.ts'): string =>
+          path.join(rootTsBuild, `${entry}.${ext}`)
+
+        yield {
+          input: pipe(
+            ENTRIES.map((x) => [x, entryInput(x, 'js')] as const),
+            Object.fromEntries,
+          ),
+          external,
+          plugins: commonJsPlugins(),
+          output: [output('esm', dist), output('cjs', dist)],
+        }
+
+        yield {
+          input: pipe(
+            ENTRIES.map((x) => [x, entryInput(x, 'd.ts')] as const),
+            Object.fromEntries,
+          ),
+          external,
+          plugins: [PluginDts()],
+          output: output('types', dist),
+        }
       })
-      .with('data-model', 'i64-fixnum', 'crypto-util', async function* (pkg): AsyncGenerator<RollupOptions> {
-        const root = packageRoot(pkg)
-        const deps = await loadProductionDependencies(pkg)
+      .with('data-model', async function* (pkg) {
+        const dist = packageRoot(pkg, 'dist')
+        const external = (await loadProductionDependencies(pkg)).toArray()
 
-        yield* simpleOptionsAsGen(root, 'lib', deps)
+        const preserveModulesOpts = { preserveModules: true, preserveModulesRoot: packageRoot(pkg, 'ts-build') }
+
+        yield {
+          input: input(pkg, 'js'),
+          external,
+          plugins: commonJsPlugins(),
+          output: [output('esm', path.join(dist, 'esm'), preserveModulesOpts), output('cjs', path.join(dist, 'cjs'))],
+        }
+
+        yield {
+          input: input(pkg, 'dts'),
+          external,
+          plugins: [PluginDts()],
+          output: output('types', path.join(dist, 'types'), preserveModulesOpts),
+        }
+      })
+      .with('i64-fixnum', 'crypto-util', async function* (pkg) {
+        const dist = packageRoot(pkg, 'dist')
+        const external = (await loadProductionDependencies(pkg)).toArray()
+
+        yield {
+          input: input(pkg, 'js'),
+          external,
+          plugins: commonJsPlugins(),
+          output: [output('esm', dist), output('cjs', dist)],
+        }
+
+        yield {
+          input: input(pkg, 'dts'),
+          external,
+          plugins: [PluginDts()],
+          output: output('types', dist),
+        }
       })
       .with('crypto-target-node', () => rollupCryptoTarget('node', 'types', 'esm', 'cjs'))
       .with('crypto-target-web', () => rollupCryptoTarget('web', 'types', 'esm'))
       .with('crypto-target-bundler', () => rollupCryptoTarget('bundler', 'types', 'esm'))
-      .with('crypto-core', async function* (pkg): AsyncGenerator<RollupOptions> {
-        const root = packageRoot(pkg)
-        const deps = await loadProductionDependencies(pkg)
+      .with('crypto-core', async function* (pkg) {
+        const dist = packageRoot(pkg, 'dist')
+        const external = (await loadProductionDependencies(pkg)).toArray()
 
-        const { types, js } = simpleOptions(root, 'lib', deps)
-        types.plugins.unshift(resolveCryptoInterfaceWrapEntry('types'), wasmPkg('nodejs', 'types'))
-        js.plugins.unshift(resolveCryptoInterfaceWrapEntry('js'))
+        yield {
+          input: input('crypto-core', 'js'),
+          external,
+          plugins: [PluginResolveCryptoInterfaceWrapEntry('js'), ...commonJsPlugins()],
+          output: [output('esm', dist), output('cjs', dist)],
+        }
 
-        yield types
-        yield js
+        yield {
+          input: input('crypto-core', 'dts'),
+          external,
+          plugins: [PluginResolveCryptoInterfaceWrapEntry('types'), PluginWasmPkg('nodejs', 'types'), PluginDts()],
+          output: output('types', dist),
+        }
       })
       .exhaustive()
   }

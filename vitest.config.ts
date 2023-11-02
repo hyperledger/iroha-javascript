@@ -1,7 +1,8 @@
 import { defineConfig } from 'vitest/config'
 import path from 'path'
+import url from 'url'
 
-const resolve = (...paths: string[]) => path.resolve(__dirname, ...paths)
+const resolve = (...paths: string[]) => path.resolve(url.fileURLToPath(new URL('.', import.meta.url)), ...paths)
 
 // Config for global monorepo unit-testing
 export default defineConfig({

@@ -1,3 +1,6 @@
 import path from 'path'
+import url from 'url'
 
-export const COMPILED_SCHEMA_FILE = path.resolve(__dirname, './../src/__schema__.json')
+const dirname = url.fileURLToPath(new URL('.', import.meta.url))
+
+export const COMPILED_SCHEMA_FILE = path.resolve(dirname, './../src/__schema__.json')

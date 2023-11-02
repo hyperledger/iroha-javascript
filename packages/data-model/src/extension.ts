@@ -1,14 +1,4 @@
-import {
-  Codec,
-  Decode,
-  Encode,
-  decodeI64,
-  decodeU8,
-  encodeFactory,
-  encodeI64,
-  encodeU8,
-  trackableCodec,
-} from '@scale-codec/definition-runtime'
+import * as runtime from '@scale-codec/definition-runtime'
 import { bigintToF64Str, f64StrToBigint } from '@iroha2/i64-fixnum'
 
 declare const __opaqueTag: unique symbol
@@ -21,18 +11,18 @@ function fixedPointCodec<T extends string>(
   name: string,
   precision: number,
   parse: ParseFn<string, T>,
-): Codec<T, T> & ParseFn<string, T> {
-  const codec = trackableCodec<T>(
+): runtime.Codec<T, T> & ParseFn<string, T> {
+  const codec = runtime.trackableCodec<T>(
     name,
-    encodeFactory(
+    runtime.encodeFactory(
       (value, walker) => {
-        encodeI64(f64StrToBigint(value, precision), walker)
+        runtime.encodeI64(f64StrToBigint(value, precision), walker)
       },
       // i64 is always fixed 8-bytes len
       () => 8,
     ),
     (walker) => {
-      const bi = decodeI64(walker)
+      const bi = runtime.decodeI64(walker)
       return bigintToF64Str(bi, precision) as T
     },
   )
@@ -41,25 +31,28 @@ function fixedPointCodec<T extends string>(
 }
 
 // eslint-disable-next-line max-params
-function nonZeroNumCodec<T extends number>(
+function nonZeroNumCodec<T extends number | bigint, U extends T>(
   name: string,
-  encode: Encode<number>,
-  decode: Decode<number>,
-  parse: ParseFn<number, T>,
-): Codec<T> & ParseFn<number, T> {
-  const codec = trackableCodec(name, encode, decode) as Codec<T>
+  encode: runtime.Encode<T>,
+  decode: runtime.Decode<T>,
+): runtime.Codec<U> & ParseFn<T, U> {
+  const codec = runtime.trackableCodec(name, encode, decode) as runtime.Codec<U>
+
+  const parse: ParseFn<T, U> = (raw) => {
+    if (raw <= 0) throw new TypeError(`Invalid ${name}: expected a non-zero value, got: ${raw}`)
+    return raw as U
+  }
+
   return Object.assign(parse, codec)
 }
 
 type FixedPointI64P9 = LocalOpaque<'FixedPointI64P9', string>
-
 const FixedPointI64P9 = fixedPointCodec<FixedPointI64P9>('FixedPointI64P9', 9, (x) => x as FixedPointI64P9)
 
-type NonZeroU8 = LocalOpaque<'NonZeroU8', number>
+type NonZeroU32 = LocalOpaque<'NonZeroU32', number>
+const NonZeroU32 = nonZeroNumCodec<number, NonZeroU32>('NonZeroU32', runtime.encodeU32, runtime.decodeU32)
 
-const NonZeroU8 = nonZeroNumCodec<NonZeroU8>('NonZeroU8', encodeU8, decodeU8, (num) => {
-  if (num <= 0) throw new Error(`Expected "${num}" to be non-zero u8`)
-  return num as NonZeroU8
-})
+type NonZeroU64 = LocalOpaque<'NonZeroU64', bigint>
+const NonZeroU64 = nonZeroNumCodec<bigint, NonZeroU64>('NonZeroU64', runtime.encodeU64, runtime.decodeU64)
 
-export { FixedPointI64P9, NonZeroU8 }
+export { FixedPointI64P9, NonZeroU32, NonZeroU64 }

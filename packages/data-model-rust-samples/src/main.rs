@@ -78,19 +78,21 @@ fn to_hex(val: &Vec<u8>) -> String {
     parts.join(" ")
 }
 
-fn create_some_time_based_trigger_isi() -> RegisterBox {
+fn create_some_time_based_trigger_isi() -> RegisterExpr {
     let asset_id = AssetId::new(
         AssetDefinitionId::from_str("rose#wonderland").unwrap(),
         AccountId::from_str("alice@wonderland").unwrap(),
     );
 
-    RegisterBox::new(Trigger::new(
-        TriggerId::from_str("mint_rose").unwrap(),
+    let mint: InstructionExpr = MintExpr::new(1_u32, asset_id.clone()).into();
+
+    RegisterExpr::new(Trigger::new(
+        "mint_rose".parse().expect("valid"),
         Action::new(
-            Executable::from(vec![MintBox::new(1_u32, asset_id.clone()).into()]),
+            vec![mint],
             Repeats::Indefinitely,
             asset_id.account_id().clone(),
-            FilterBox::Time(TimeEventFilter::new(ExecutionTime::Schedule(
+            TriggeringFilterBox::Time(TimeEventFilter::new(ExecutionTime::Schedule(
                 TimeSchedule::starting_at(Duration::from_secs(4141203402341234))
                     .with_period(Duration::from_millis(3_000)),
             ))),
@@ -98,19 +100,19 @@ fn create_some_time_based_trigger_isi() -> RegisterBox {
     ))
 }
 
-fn create_some_event_based_trigger_isi() -> RegisterBox {
+fn create_some_event_based_trigger_isi() -> RegisterExpr {
     let asset_definition_id = "rose#wonderland".parse().unwrap();
     let account_id = <Account as Identifiable>::Id::from_str("alice@wonderland").unwrap();
     let asset_id = AssetId::new(asset_definition_id, account_id.clone());
-    let instruction = MintBox::new(1_u32, asset_id.clone());
+    let mint: InstructionExpr = MintExpr::new(1_u32, asset_id.clone()).into();
 
-    RegisterBox::new(Trigger::new(
-        TriggerId::from_str("mint_rose").unwrap(),
+    RegisterExpr::new(Trigger::new(
+        "mint_rose".parse().expect("valid"),
         Action::new(
-            Executable::from(vec![instruction.into()]),
+            vec![mint],
             Repeats::Indefinitely,
             account_id,
-            FilterBox::Data(BySome(DataEntityFilter::ByAssetDefinition(BySome(
+            TriggeringFilterBox::Data(BySome(DataEntityFilter::ByAssetDefinition(BySome(
                 AssetDefinitionFilter::new(
                     AcceptAll,
                     BySome(AssetDefinitionEventFilter::ByCreated),
@@ -151,4 +153,16 @@ fn create_metadata() -> Metadata {
         )
         .set("email", Value::String("user123@mail.com".to_owned()))
         .set("salt", Value::String("ABCDEFG".to_owned()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dbg_trigger_isi() {
+        let value = create_some_time_based_trigger_isi();
+
+        dbg!(&value);
+    }
 }

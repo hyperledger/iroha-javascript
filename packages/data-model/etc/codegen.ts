@@ -3,19 +3,21 @@ import consola from 'consola'
 import chalk from 'chalk'
 import fs from 'fs/promises'
 import { renderNamespaceDefinition } from '@scale-codec/definition-compiler'
-import { SCHEMA, transformSchema } from '@iroha2/data-model-schema'
+import { SCHEMA } from '@iroha2/data-model-schema'
+import { transformSchema } from './schema-transform'
 import { CODEGEN_OUTPUT_FILE } from './meta'
 
 const AVAILABLE_FIXED_POINTS = new Set(['I64P9'])
 const EXTENSION_MODULE = './extension'
 
 async function main() {
-  consola.log(chalk`Converting {blue.bold input.json} to compiler-compatible format...`)
-  const { definition, fixedPoints } = transformSchema(SCHEMA)
+  consola.log(
+    chalk`Converting {blue.bold SCHEMA} from {yellow.bold \`@iroha2/data-model-schema\`} to compiler-compatible format...`,
+  )
+  const { definition, fixedPoints, nonZero } = transformSchema(SCHEMA)
 
-  definition['NonZeroU8'] = {
-    t: 'import',
-    module: EXTENSION_MODULE,
+  for (const { ty } of nonZero) {
+    definition[ty] = { t: 'import', module: EXTENSION_MODULE }
   }
 
   for (const { decimalPlaces, base, ref } of fixedPoints) {

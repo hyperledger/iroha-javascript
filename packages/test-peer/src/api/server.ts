@@ -1,81 +1,97 @@
-import Koa from 'koa'
-import Router from '@koa/router'
-import Morgan from 'koa-morgan'
-import BodyParser from 'koa-bodyparser'
-import consola from 'consola'
-import chalk from 'chalk'
-import invariant from 'tiny-invariant'
+import * as h3 from 'h3'
+import { listen } from 'listhen'
+import pinoHttp from 'pino-http'
+import pino from 'pino'
+import { P, match } from 'ts-pattern'
 
 import * as lib from '../lib'
 
 export async function run(port = 8765) {
-  const app = new Koa()
-  const router = new Router()
+  let peer: lib.StartPeerReturn | undefined
 
-  let peer: lib.StartPeerReturn | null = null
+  const app = h3.createApp()
 
-  router
-    .post('/configuration', async (ctx) => {
-      await lib.setConfiguration(ctx.request.body)
-      ctx.status = 204
-    })
-    .delete('/configuration', async (ctx) => {
-      await lib.cleanConfiguration()
-      ctx.status = 204
-    })
-    .delete('/side-effects', async (ctx) => {
-      const store = ctx.query.kura_block_store_path
-      invariant(typeof store === 'string', `add 'kura_block_store_path' param`)
+  const router = h3
+    .createRouter()
+    .post(
+      '/prepare-configuration',
+      h3.eventHandler(async (event) => {
+        await lib.prepareConfiguration()
 
-      await lib.cleanSideEffects(store)
-      ctx.status = 204
-    })
-    .post('/peer/start', async (ctx) => {
-      if (peer) {
-        ctx.throw(400, 'Kill first')
-      }
+        h3.setResponseStatus(event, 204)
+        await h3.send(event)
+      }),
+    )
+    .post(
+      '/clear/all',
+      h3.eventHandler(async (event) => {
+        await lib.clearAll()
+        h3.setResponseStatus(event, 204)
+        await h3.send(event)
+      }),
+    )
+    .post(
+      '/clear/peer-storage',
+      h3.eventHandler(async (event) => {
+        await lib.clearPeerStorage()
+        h3.setResponseStatus(event, 204)
+        await h3.send(event)
+      }),
+    )
+    .post(
+      '/peer/start',
+      h3.eventHandler(async (event) => {
+        if (peer) {
+          h3.setResponseStatus(event, 400)
+          return 'Kill first'
+        }
 
-      const queryGenesis = ctx.query.genesis
-      const withGenesis = queryGenesis === 'false' ? false : true
+        console.log(event.context)
 
-      const queryToriiApiURL = ctx.query.torii_api_url
-      if (!(typeof queryToriiApiURL === 'string')) throw new Error(`add a single 'torii_api_url' query param`)
+        const parsed = match(h3.getQuery(event))
+          .with(
+            {
+              genesis: P.select('genesisStr', P.union('false', 'true')),
+            },
+            ({ genesisStr }) => {
+              return { withGenesis: genesisStr === 'true' }
+            },
+          )
+          .otherwise(() => {
+            throw new Error('Invalid params')
+          })
 
-      peer = await lib.startPeer({ withGenesis, toriiApiURL: queryToriiApiURL })
+        peer = await lib.startPeer(parsed)
 
-      ctx.status = 204
-    })
-    .post('/peer/kill', async (ctx) => {
-      if (!peer) {
-        ctx.status = 204
-        ctx.body = 'Not alive'
-        return
-      }
+        h3.setResponseStatus(event, 204)
+        await h3.send(event)
+      }),
+    )
+    .post(
+      '/peer/kill',
+      h3.eventHandler(async (event) => {
+        if (!peer) {
+          h3.setResponseStatus(event, 204)
+          return 'Not alive'
+        }
 
-      await peer.kill()
-      peer = null
+        await peer.kill()
+        peer = undefined
 
-      ctx.status = 204
-    })
-    .get('/peer/is-alive', async (ctx) => {
-      ctx.body = peer?.isAlive() ?? false
-    })
-
-  app.on('error', (err, ctx) => {
-    consola.error('Error occured: %o %o', err, ctx)
-  })
+        h3.setResponseStatus(event, 204)
+        await h3.send(event)
+      }),
+    )
+    .get(
+      '/peer/is-alive',
+      h3.eventHandler(async () => {
+        return { isAlive: peer?.isAlive() ?? false }
+      }),
+    )
 
   app
-    // Pipeline
-    .use(Morgan('dev'))
-    .use(BodyParser())
-    .use(router.routes())
-    .use(router.allowedMethods())
+    .use(h3.eventHandler(h3.fromNodeMiddleware(pinoHttp({ logger: pino({ transport: { target: 'pino-pretty' } }) }))))
+    .use(router)
 
-  await new Promise<void>((resolve) => {
-    app.listen(port, () => {
-      resolve()
-      consola.info(chalk`Test peer server is listening on {blue ${port}}`)
-    })
-  })
+  await listen(h3.toNodeListener(app), { port })
 }

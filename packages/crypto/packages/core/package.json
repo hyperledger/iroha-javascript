@@ -1,9 +1,8 @@
 {
   "name": "@iroha2/crypto-core",
   "version": "1.1.0",
-  "license": "Apache 2.0",
-  "main": "dist/lib.cjs",
   "module": "dist/lib.mjs",
+  "main": "dist/lib.cjs",
   "types": "dist/lib.d.ts",
   "exports": {
     ".": {

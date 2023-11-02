@@ -7,9 +7,11 @@
   "devDependencies": {
     "@iroha2/client": "workspace:^6.0.0",
     "@iroha2/crypto-target-node": "workspace:^1.1.0",
+    "@iroha2/test-configuration": "workspace:^",
     "@iroha2/test-peer": "workspace:^0.0.1",
     "cross-env": "^7.0.3",
-    "node-fetch": "^3.3.0",
-    "vite": "^4.1.4"
+    "fp-ts": "^2.13.1",
+    "immer": "^9.0.19",
+    "vite": "^4.5.0"
   }
 }

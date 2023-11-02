@@ -1,61 +1,28 @@
-import {
-  AccountId,
-  AssetDefinitionId,
-  AssetId,
-  DomainId,
-  EvaluatesToIdBox,
-  EvaluatesToValue,
-  Expression,
-  IdBox,
-  Instruction,
-  NumericValue,
-  TransferBox,
-  Value,
-} from '@iroha2/data-model'
+import { datamodel, sugar } from '@iroha2/data-model'
+import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
+import { pipe } from 'fp-ts/function'
 
-const domainId = DomainId({
-  name: 'wonderland',
-})
+// --snip--
+declare const client: Client
+declare const toriiRequirements: ToriiRequirementsForApiHttp
 
-const assetDefinitionId = AssetDefinitionId({
-  name: 'time',
-  domain_id: domainId,
-})
+const domainId = sugar.domainId('wonderland')
 
-const amountToTransfer = Value('Numeric', NumericValue('U32', 100))
+const assetDefinitionId = sugar.assetDefinitionId('time', domainId)
 
-const fromAccount = AccountId({
-  name: 'alice',
-  domain_id: domainId,
-})
+const amountToTransfer = sugar.value.numericU32(100)
 
-const toAccount = AccountId({
-  name: 'mouse',
-  domain_id: domainId,
-})
+const fromAccount = sugar.accountId('alice', domainId)
 
-const evaluatesToAssetId = (assetId: AssetId): EvaluatesToIdBox =>
-  EvaluatesToIdBox({
-    expression: Expression('Raw', Value('Id', IdBox('AssetId', assetId))),
-  })
+const toAccount = sugar.accountId('mouse', domainId)
 
-const transferAssetInstruction = Instruction(
-  'Transfer',
-  TransferBox({
-    source_id: evaluatesToAssetId(
-      AssetId({
-        definition_id: assetDefinitionId,
-        account_id: fromAccount,
-      }),
-    ),
-    destination_id: evaluatesToAssetId(
-      AssetId({
-        definition_id: assetDefinitionId,
-        account_id: toAccount,
-      }),
-    ),
-    object: EvaluatesToValue({
-      expression: Expression('Raw', amountToTransfer),
-    }),
-  }),
+const transferIsi = sugar.instruction.transfer(
+  datamodel.IdBox('AssetId', sugar.assetId(fromAccount, assetDefinitionId)),
+  amountToTransfer,
+  datamodel.IdBox('AssetId', sugar.assetId(toAccount, assetDefinitionId)),
+)
+
+await client.submitExecutable(
+  toriiRequirements,
+  pipe(transferIsi, sugar.executable.instructions),
 )

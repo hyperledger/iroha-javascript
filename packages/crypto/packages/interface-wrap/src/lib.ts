@@ -1,24 +1,24 @@
 import { wasmPkg } from '@iroha2/crypto-interface-wrap/~wasm-pack-proxy'
 import { Free, FreeGuard, FreeScope, GetInnerTrackObject, freeScope } from '@iroha2/crypto-util'
-import * as dataModel from '@iroha2/data-model'
+import { datamodel } from '@iroha2/data-model'
 
 export type Algorithm = wasmPkg.Algorithm
 
 export const Algorithm = {
   default: (): Algorithm => wasmPkg.algorithm_default(),
-  toDataModel: (algorithm: Algorithm): dataModel.Algorithm => {
+  toDataModel: (algorithm: Algorithm): datamodel.Algorithm => {
     switch (algorithm) {
       case 'ed25519':
-        return dataModel.Algorithm('Ed25519')
+        return datamodel.Algorithm('Ed25519')
       case 'secp256k1':
-        return dataModel.Algorithm('Secp256k1')
+        return datamodel.Algorithm('Secp256k1')
       case 'bls_small':
-        return dataModel.Algorithm('BlsSmall')
+        return datamodel.Algorithm('BlsSmall')
       case 'bls_normal':
-        return dataModel.Algorithm('BlsNormal')
+        return datamodel.Algorithm('BlsNormal')
     }
   },
-  fromDataModel: (algorithm: dataModel.Algorithm): Algorithm => {
+  fromDataModel: (algorithm: datamodel.Algorithm): Algorithm => {
     switch (algorithm.enum.tag) {
       case 'Ed25519':
         return 'ed25519'
@@ -186,7 +186,7 @@ export class PrivateKey
 
 export class PublicKey
   extends SingleFreeWrap<wasmPkg.PublicKey>
-  implements HasDigestFunction<Algorithm>, HasPayload, SerializeDataModel<dataModel.PublicKey>, SerializeJSON<string>
+  implements HasDigestFunction<Algorithm>, HasPayload, SerializeDataModel<datamodel.PublicKey>, SerializeJSON<string>
 {
   public static fromMultihash(
     ...multihash: [kind: 'hex', hex: string] | [kind: 'instance', instance: Multihash]
@@ -218,7 +218,7 @@ export class PublicKey
     return new PublicKey(wasmPkg.PublicKey.reproduce(digestFunction, bytesInputTupleToEnum(payload)))
   }
 
-  public static fromDataModel(publicKey: dataModel.PublicKey): PublicKey {
+  public static fromDataModel(publicKey: datamodel.PublicKey): PublicKey {
     return PublicKey.reproduce(Algorithm.fromDataModel(publicKey.digest_function), 'array', publicKey.payload)
   }
 
@@ -245,8 +245,8 @@ export class PublicKey
     return this.toMultihash('hex')
   }
 
-  public toDataModel(): dataModel.PublicKey {
-    return dataModel.PublicKey({
+  public toDataModel(): datamodel.PublicKey {
+    return datamodel.PublicKey({
       digest_function: Algorithm.toDataModel(this.digestFunction),
       payload: this.payload(),
     })
@@ -331,7 +331,7 @@ export class KeyPair
 
 export class Signature
   extends SingleFreeWrap<wasmPkg.Signature>
-  implements HasPayload, SerializeDataModel<dataModel.Signature>
+  implements HasPayload, SerializeDataModel<datamodel.Signature>
 {
   public static signWithKeyPair(keyPair: KeyPair, ...message: BytesInputTuple): Signature {
     return new Signature(wasmPkg.Signature.sign_with_key_pair(keyPair.underlying, bytesInputTupleToEnum(message)))
@@ -348,7 +348,7 @@ export class Signature
     return new Signature(wasmPkg.Signature.reproduce(publicKey.underlying, bytesInputTupleToEnum(payload)))
   }
 
-  public static fromDataModel(signature: dataModel.Signature): Signature {
+  public static fromDataModel(signature: datamodel.Signature): Signature {
     return freeScope((scope) => {
       const publicKey = PublicKey.fromDataModel(signature.public_key)
       const result = Signature.reproduce(publicKey, 'array', signature.payload)
@@ -371,9 +371,9 @@ export class Signature
     return mode === 'hex' ? this.underlying.payload_hex() : this.underlying.payload()
   }
 
-  public toDataModel(): dataModel.Signature {
+  public toDataModel(): datamodel.Signature {
     return freeScope(() =>
-      dataModel.Signature({
+      datamodel.Signature({
         public_key: this.publicKey().toDataModel(),
         payload: this.payload(),
       }),

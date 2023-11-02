@@ -1,60 +1,30 @@
-// #region imports
-import {
-  AccountId,
-  Algorithm,
-  DomainId,
-  EvaluatesToRegistrableBox,
-  Expression,
-  IdentifiableBox,
-  Instruction,
-  MapNameValue,
-  Metadata,
-  NewAccount,
-  PublicKey,
-  RegisterBox,
-  Value,
-  VecPublicKey,
-} from '@iroha2/data-model'
-// #endregion imports
+import { Client, ToriiRequirementsForApiHttp, getCryptoAnyway } from '@iroha2/client'
+import { freeScope } from '@iroha2/crypto-core'
+import { sugar } from '@iroha2/data-model'
+import { pipe } from 'fp-ts/function'
 
-// #region account
-const accountId = AccountId({
-  name: 'white_rabbit',
-  domain_id: DomainId({
-    name: 'looking_glass',
-  }),
+// --snip--
+declare const client: Client
+declare const toriiRequirements: ToriiRequirementsForApiHttp
+
+const crypto = getCryptoAnyway()
+
+// generating the key pair
+const accountKeyPair = freeScope((scope) => {
+  const pair = crypto.KeyGenConfiguration.default().useSeed('hex', 'abcd1122').generate()
+  scope.forget(pair)
+  return pair
 })
-// #endregion account
 
-// #region pubkey
-const pubKey = PublicKey({
-  payload: new Uint8Array([
-    /* put bytes here */
-  ]),
-  digest_function: Algorithm('Ed25519'),
-})
-// #endregion pubkey
+// extracting the public key
+const publicKey = freeScope(() => accountKeyPair.publicKey().toDataModel())
 
-// #region isi
-const registerAccountInstruction = Instruction(
-  'Register',
-  RegisterBox({
-    object: EvaluatesToRegistrableBox({
-      expression: Expression(
-        'Raw',
-        Value(
-          'Identifiable',
-          IdentifiableBox(
-            'NewAccount',
-            NewAccount({
-              id: accountId, // [!code hl:2]
-              signatories: VecPublicKey([pubKey]),
-              metadata: Metadata({ map: MapNameValue(new Map()) }),
-            }),
-          ),
-        ),
-      ),
-    }),
-  }),
+await client.submitExecutable(
+  toriiRequirements,
+  pipe(
+    sugar.accountId('white_rabbit', 'looking_glass'),
+    (id) => sugar.identifiable.newAccount(id, [publicKey]),
+    sugar.instruction.register,
+    sugar.executable.instructions,
+  ),
 )
-// #endregion isi

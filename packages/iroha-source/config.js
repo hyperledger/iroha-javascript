@@ -1,8 +1,8 @@
 /**
- * @type {import('./src/types').Configuration}
+ * @type {import('./src/types').RawConfig}
  */
 export default {
   origin: 'https://github.com/hyperledger/iroha.git',
-  // `iroha2-dev` as of Mar 17 2023 (rc14 internal release)
-  rev: '726f5eabf65a79ea618b4fce62a09cee7a5b13d1',
+  // `iroha2-stable` as of 17 Oct 2023 (RC20)
+  rev: '51d687607fad067fc855e266edc684d4fb33e7de',
 }

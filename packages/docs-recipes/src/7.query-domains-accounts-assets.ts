@@ -1,6 +1,6 @@
 // #region intro
 import { Client, ToriiRequirementsForApiHttp } from '@iroha2/client'
-import { QueryBox } from '@iroha2/data-model'
+import { sugar } from '@iroha2/data-model'
 
 declare const client: Client
 declare const toriiRequirements: ToriiRequirementsForApiHttp
@@ -10,12 +10,12 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region domains
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllDomains', null),
+    sugar.find.allDomains(),
   )
 
   const domains = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Domain'))
 
   for (const domain of domains) {
@@ -32,12 +32,12 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region accounts
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllAccounts', null),
+    sugar.find.allAccounts(),
   )
 
   const accounts = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Account'))
 
   for (const account of accounts) {
@@ -54,12 +54,12 @@ declare const toriiRequirements: ToriiRequirementsForApiHttp
   // #region assets
   const result = await client.requestWithQueryBox(
     toriiRequirements,
-    QueryBox('FindAllAssets', null),
+    sugar.find.allAssets(),
   )
 
   const assets = result
     .as('Ok')
-    .result.enum.as('Vec')
+    .batch.enum.as('Vec')
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
 
   for (const asset of assets) {

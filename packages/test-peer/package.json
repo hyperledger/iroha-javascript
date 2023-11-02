@@ -5,24 +5,21 @@
   "main": "src/lib.ts",
   "scripts": {
     "cli": "DEBUG=* tsx etc/cli",
-    "cli:config": "pnpm cli config:set-from-client-tests"
+    "cli:config": "pnpm cli config-from-client-tests"
   },
   "devDependencies": {
     "@iroha2/client": "workspace:^6.0.0",
     "@iroha2/iroha-source": "workspace:^0.0.0",
-    "@koa/router": "^10.1.1",
+    "@iroha2/test-configuration": "workspace:^",
     "@types/debug": "^4.1.7",
-    "@types/koa": "^2.13.4",
-    "@types/koa-bodyparser": "^4.3.5",
-    "@types/koa-morgan": "^1.0.5",
-    "@types/koa__router": "^8.0.11",
     "@types/yargs": "^17.0.22",
     "axios": "^0.24.0",
     "debug": "^4.3.4",
-    "koa": "^2.13.4",
-    "koa-bodyparser": "^4.3.0",
-    "koa-morgan": "^1.0.1",
-    "node-fetch": "^3.3.0",
+    "h3": "^1.6.5",
+    "listhen": "^1.0.4",
+    "pino": "^8.14.1",
+    "pino-http": "^8.3.3",
+    "pino-pretty": "^10.0.0",
     "yargs": "^17.6.2"
   }
 }

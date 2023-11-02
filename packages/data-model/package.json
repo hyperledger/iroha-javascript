@@ -1,14 +1,14 @@
 {
   "name": "@iroha2/data-model",
   "version": "6.0.0",
-  "module": "dist/lib.mjs",
-  "main": "dist/lib.cjs",
-  "types": "dist/lib.d.ts",
+  "module": "dist/esm/lib.mjs",
+  "main": "dist/cjs/lib.cjs",
+  "types": "dist/types/lib.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/lib.mjs",
-      "require": "./dist/lib.cjs",
-      "types": "./dist/lib.d.ts"
+      "import": "./dist/esm/lib.mjs",
+      "require": "./dist/cjs/lib.cjs",
+      "types": "./dist/types/lib.d.ts"
     }
   },
   "files": [
@@ -24,8 +24,13 @@
     "@scale-codec/definition-runtime": "^4.0.1"
   },
   "devDependencies": {
-    "@iroha2/data-model-schema": "workspace:6.0.0",
+    "@iroha2/data-model-schema": "workspace:*",
     "@scale-codec/definition-compiler": "^4.0.1",
-    "@scale-codec/util": "^1.1.2"
+    "@scale-codec/util": "^1.1.2",
+    "@types/debug": "^4.1.7",
+    "camelcase": "^7.0.1",
+    "debug": "^4.3.4",
+    "fp-ts": "^2.16.0",
+    "tiny-invariant": "^1.3.1"
   }
 }

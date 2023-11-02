@@ -2,7 +2,7 @@
 
 def pipeline = new org.js.LibPipeline( steps: this,
     packageManager: "pnpm",
-    buildDockerImage: 'build-tools/node:16-corepack-cypress-rust',
+    buildDockerImage: 'build-tools/node:20-pnpm-nightly-2023-06',
     libPushBranches: ['iroha2'],
     npmRegistries: ['https://nexus.iroha.tech/repository/npm-soramitsu/': 'bot-soramitsu-rw'],
     buildCmds: [],

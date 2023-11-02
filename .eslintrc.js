@@ -1,5 +1,8 @@
 module.exports = {
   extends: ['alloy', 'alloy/typescript'],
+  parserOptions: {
+    project: './tsconfig.eslint.json',
+  },
   rules: {
     'no-promise-executor-return': 'off',
     'spaced-comment': ['error', 'always', { markers: ['/'] }],
@@ -28,10 +31,15 @@ module.exports = {
     // ESLint Vue from web tests
     {
       files: ['**/packages/client/test/integration/test-web/src/**/*.vue'],
-      extends: ['plugin:vue/vue3-recommended'],
+      extends: [
+        'plugin:vue/vue3-recommended',
+        // no real need to apply type checked linting rules for integration tests
+        'plugin:@typescript-eslint/disable-type-checked',
+      ],
       parserOptions: {
         ecmaVersion: 2020,
         parser: '@typescript-eslint/parser',
+        extraFileExtensions: ['.vue'],
       },
       rules: {
         'vue/html-indent': ['warn', 2],

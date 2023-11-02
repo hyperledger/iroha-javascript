@@ -1,26 +1,24 @@
-import { TMP_DIR } from '../etc/meta'
-import path from 'path'
-import { execa } from 'execa'
-import { fs } from 'zx'
-import { rmForce, saveDataAsJSON, waitUntilPeerIsHealthy } from './util'
-import readline from 'readline'
-import debug from './dbg'
 import { resolveBinary } from '@iroha2/iroha-source'
+import { execa } from 'execa'
 import makeDir from 'make-dir'
+import path from 'path'
+import readline from 'readline'
 import invariant from 'tiny-invariant'
+import { match } from 'ts-pattern'
+import { fs } from 'zx'
+import { BLOCK_STORE_PATH_RELATIVE, EXECUTOR_WASM_PATH_RELATIVE, TMP_DIR } from '../etc/meta'
+import debug from './dbg'
+import { rmForce, setConfigurationChecked, waitUntilPeerIsHealthy } from './util'
+import EXECUTOR_WASM from '@iroha2/iroha-source/src/subentries/executor'
+import { CLIENT_CONFIG, PEER_CONFIG, PEER_GENESIS } from '@iroha2/test-configuration'
 
 /**
  * Time within to check if peer is up and running
  */
-const HEALTH_CHECK_TIMEOUT = 500
-const HEALTH_CHECK_INTERVAL = 50
+const HEALTH_CHECK_TIMEOUT = 1_500
+const HEALTH_CHECK_INTERVAL = 200
 
 export interface StartPeerParams {
-  /**
-   * Required to check started peer's
-   */
-  toriiApiURL: string
-
   /**
    * @default true
    */
@@ -77,7 +75,7 @@ function readableToDebug(input: NodeJS.ReadableStream, prefix: string) {
  *
  * **Note:** Iroha binary must be pre-built.
  */
-export async function startPeer(params: StartPeerParams): Promise<StartPeerReturn> {
+export async function startPeer(params?: StartPeerParams): Promise<StartPeerReturn> {
   const iroha = (await resolveBinary('iroha', { skipUpdate: true })).path
 
   await reportTmpContents()
@@ -109,7 +107,7 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
   })
 
   const healthCheckAbort = new AbortController()
-  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(params.toriiApiURL, {
+  const irohaIsHealthyPromise = waitUntilPeerIsHealthy(CLIENT_CONFIG.torii.apiURL, {
     checkInterval: HEALTH_CHECK_INTERVAL,
     checkTimeout: HEALTH_CHECK_TIMEOUT,
     abort: healthCheckAbort.signal,
@@ -145,35 +143,37 @@ export async function startPeer(params: StartPeerParams): Promise<StartPeerRetur
   }
 }
 
-/**
- * Set config files
- */
-export async function setConfiguration(configs: IrohaConfiguration): Promise<void> {
-  await prepareTempDir()
+export async function prepareConfiguration() {
+  await setConfigurationChecked({
+    // parsing with type-level check
+    peerGenesis: match(PEER_GENESIS)
+      .with({ executor: EXECUTOR_WASM_PATH_RELATIVE }, (x) => x)
+      .otherwise(() => {
+        throw new Error('Invalid genesis')
+      }),
+    peerConfig: match(PEER_CONFIG)
+      .with({ KURA: { BLOCK_STORE_PATH: BLOCK_STORE_PATH_RELATIVE } }, (x) => x)
+      .otherwise(() => {
+        throw new Error('Invalid peer config')
+      }),
 
-  for (const key of ['genesis', 'config'] as const) {
-    const data = configs[key]
-    const path = resolveTempJsonConfigFile(key)
-    await saveDataAsJSON(data, path)
-  }
-
-  debug('configuration is set: %o', configs)
+    executorWasm: EXECUTOR_WASM,
+  })
 }
 
 /**
- * Clean config files
+ * Clear working peer directory completely
  */
-export async function cleanConfiguration(): Promise<void> {
-  const rmTarget = path.resolve(TMP_DIR, '*.json')
-  await rmForce(rmTarget)
-  debug('configuration is cleaned')
+export async function clearAll(): Promise<void> {
+  const deleted = await rmForce(path.join(TMP_DIR, '*'))
+  debug('working dir is cleared: %o', deleted)
 }
 
 /**
- * Clear all side effects from last peer startup. Use it before each peer startup if you want to isolate states.
+ * Clear peer storage. Use it before each peer startup if you want to isolate states.
  */
-export async function cleanSideEffects(kuraBlockStorePath: string) {
-  const rmTarget = path.resolve(TMP_DIR, kuraBlockStorePath)
-  await rmForce(rmTarget)
-  debug('Blocks are cleaned at %o', kuraBlockStorePath)
+export async function clearPeerStorage() {
+  const rmTarget = path.resolve(TMP_DIR, BLOCK_STORE_PATH_RELATIVE)
+  const deleted = await rmForce(rmTarget)
+  debug('Blocks are cleaned: %o', deleted)
 }
