@@ -1,6 +1,6 @@
 # `@iroha2/data-model-schema`
 
-The `@iroha2/data-model-schema` contains the source data model schema of Iroha 2, and its type definitions.
+The `@iroha2/data-model-schema` contains the source data model schema of Iroha 2 and its type definitions.
 
 **Note:** this package is a pure TypeScript package, i.e. it is not pre-bundled, but it exports source TypeScript files. It works fine out-of-the-box with tools like Vite or `tsx`.
 

@@ -45,7 +45,7 @@ Check out [Hyperledger Iroha 2 Tutorial](https://hyperledger.github.io/iroha-2-d
 
 Make sure you have installed **Node.js v16.17 or v18**. As for a package manager, this project uses [PNPM](https://pnpm.io/).
 
-Also make sure you have installed the following **Rust toolchain**:
+Also make sure you have installed the following version of **Rust toolchain**:
 
 ```bash
 rustup default nightly-2023-06-25

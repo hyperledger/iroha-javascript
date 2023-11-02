@@ -6,7 +6,7 @@
 
 ##### What is the change
 
-If previously all data-model types were imported directly from the package:
+Previously, all data-model types were imported directly from the package:
 
 ```ts
 import { AccountId, DomainId } from '@iroha2/data-model'
@@ -34,10 +34,9 @@ const acc = datamodel.AccountId({
 
 ##### Why the change was made
 
-For a couple of reasons:
 
-- There were too many root-level package exports, not always related to each other. Now it should be easier to distinguish data-model related exports from other utilities.
-- To be more compatible with how data model is presented in Java SDK
+- To make it easier to distinguish data-model related exports from other utilities as there used to be too many root-level package exports, not always related to each other.
+- To make data model more compatible with how it is presented in Java SDK
 
 ##### How the consumer should update their code
 
