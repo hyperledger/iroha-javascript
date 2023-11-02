@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.0",
+    "@changesets/cli": "^2.26.2",
     "@esbuild-kit/cjs-loader": "^2.4.1",
     "@iroha2/test-peer": "workspace:^0.0.1",
     "@rollup/plugin-replace": "^5.0.2",
