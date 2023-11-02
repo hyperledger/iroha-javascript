@@ -262,9 +262,7 @@ describe('Events API', () => {
   })
 })
 
-// FIXME: https://github.com/hyperledger/iroha/issues/3445
-//        Iroha doesn't handle this endpoint properly now
-describe.skip('Setting configuration', () => {
+describe('Setting configuration', () => {
   test('When setting correct peer configuration, there is no error', async () => {
     const { pre } = clientFactory()
 
