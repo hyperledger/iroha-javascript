@@ -60,15 +60,6 @@ function transformRustDef(def: Exclude<SchemaTypeDefinition, FixedPointDefinitio
           })),
         }
       })
-      // FIXME: https://github.com/hyperledger/iroha/issues/3444
-      //        `VersionedSignedQuery` and `VersionedSignedTransaction` has discriminant starting with 1,
-      //        which is not declared in the schema
-      .with({ Enum: [{ name: 'V1', type: P.select(P.string) }] }, (type) => {
-        return {
-          t: 'enum',
-          variants: [{ name: 'V1', ref: transformRef(type), discriminant: 1 }],
-        }
-      })
       .with({ Enum: P.select() }, (variants) => {
         return {
           t: 'enum',
