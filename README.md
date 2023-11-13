@@ -41,6 +41,25 @@ The packages are published under the `@iroha2` scope into Iroha Nexus Registry. 
 
 Check out [Hyperledger Iroha 2 Tutorial](https://hyperledger.github.io/iroha-2-docs/) that introduces you to Iroha 2 concepts and features and provides you with a step-by-step guide for JavaScript/TypeScript.
 
+## Versioning Table
+
+Here is the mapping between Iroha versions and `@iroha2/data-model` package versions:
+
+|     Iroha Version | `@iroha2/data-model` Version | Iroha LTS |
+| ----------------: | :--------------------------- | :-------- |
+| `2.0.0-pre-rc.20` | `^7.0`                       | LTS       |
+| `2.0.0-pre-rc.14` | `^6.0`                       |           |
+| `2.0.0-pre-rc.13` | `^5.0`                       |           |
+|  `2.0.0-pre-rc.9` | `^4.0`                       | LTS       |
+|  `2.0.0-pre-rc.6` | `^3.0`, `^2.0`, `~1.4`       | LTS       |
+|  `2.0.0-pre-rc.5` | `~1.3`                       |           |
+|  `2.0.0-pre-rc.4` | `~1.2`                       |           |
+|  `2.0.0-pre-rc.3` | `~1.1`                       |           |
+|  `2.0.0-pre-rc.2` | `~1.0`                       |           |
+|  `2.0.0-pre-rc.1` | `0.5`                        |           |
+
+**Note:** After version `1.2` versions of `@iroha2/data-model` and `@iroha2/client` packages are the same. E.g. for `@iroha/data-model` of version `1.2` the according version of `@iroha2/client` package is also `1.2`.
+
 ## Maintenance
 
 Make sure you have installed **Node.js v16.17 or v18**. As for a package manager, this project uses [PNPM](https://pnpm.io/).
