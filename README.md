@@ -45,18 +45,18 @@ Check out [Hyperledger Iroha 2 Tutorial](https://hyperledger.github.io/iroha-2-d
 
 Here is the mapping between Iroha versions and `@iroha2/data-model` package versions:
 
-|     Iroha Version | `@iroha2/data-model` Version | Iroha LTS |
-| ----------------: | :--------------------------- | :-------- |
-| `2.0.0-pre-rc.20` | `^7.0`                       | LTS       |
-| `2.0.0-pre-rc.14` | `^6.0`                       |           |
-| `2.0.0-pre-rc.13` | `^5.0`                       |           |
-|  `2.0.0-pre-rc.9` | `^4.0`                       | LTS       |
-|  `2.0.0-pre-rc.6` | `^3.0`, `^2.0`, `~1.4`       | LTS       |
-|  `2.0.0-pre-rc.5` | `~1.3`                       |           |
-|  `2.0.0-pre-rc.4` | `~1.2`                       |           |
-|  `2.0.0-pre-rc.3` | `~1.1`                       |           |
-|  `2.0.0-pre-rc.2` | `~1.0`                       |           |
-|  `2.0.0-pre-rc.1` | `0.5`                        |           |
+| `@iroha2/data-model` Version | Iroha Version                    |
+| ---------------------------: | :------------------------------- |
+|                       `^7.0` | `2.0.0-pre-rc.20` <sup>LTS</sup> |
+|                       `^6.0` | `2.0.0-pre-rc.14`                |
+|                       `^5.0` | `2.0.0-pre-rc.13`                |
+|                       `^4.0` | `2.0.0-pre-rc.9` <sup>LTS</sup>  |
+|       `^3.0`, `^2.0`, `~1.4` | `2.0.0-pre-rc.6` <sup>LTS</sup>  |
+|                       `~1.3` | `2.0.0-pre-rc.5`                 |
+|                       `~1.2` | `2.0.0-pre-rc.4`                 |
+|                       `~1.1` | `2.0.0-pre-rc.3`                 |
+|                       `~1.0` | `2.0.0-pre-rc.2`                 |
+|                        `0.5` | `2.0.0-pre-rc.1`                 |
 
 **Note:** After version `1.2` versions of `@iroha2/data-model` and `@iroha2/client` packages are the same. E.g. for `@iroha/data-model` of version `1.2` the according version of `@iroha2/client` package is also `1.2`.
 
