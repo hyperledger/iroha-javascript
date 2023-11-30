@@ -11,9 +11,6 @@ export class AddAssetQuantity extends jspb.Message {
   getAmount(): string;
   setAmount(value: string): void;
 
-  getTitle(): string;
-  setTitle(value: string): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AddAssetQuantity.AsObject;
   static toObject(includeInstance: boolean, msg: AddAssetQuantity): AddAssetQuantity.AsObject;
@@ -28,7 +25,6 @@ export namespace AddAssetQuantity {
   export type AsObject = {
     assetId: string,
     amount: string,
-    title: string,
   }
 }
 
@@ -419,9 +415,6 @@ export class SubtractAssetQuantity extends jspb.Message {
   getAmount(): string;
   setAmount(value: string): void;
 
-  getTitle(): string;
-  setTitle(value: string): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): SubtractAssetQuantity.AsObject;
   static toObject(includeInstance: boolean, msg: SubtractAssetQuantity): SubtractAssetQuantity.AsObject;
@@ -436,7 +429,6 @@ export namespace SubtractAssetQuantity {
   export type AsObject = {
     assetId: string,
     amount: string,
-    title: string,
   }
 }
 
