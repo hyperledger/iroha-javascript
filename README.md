@@ -33,7 +33,7 @@ With node.js you should create connection to iroha by using `QueryService` and `
 **IROHA_ADDRESS** - Address of iroha grpc (usually ends on 50051) Ex. `http://localhost:50051`
 
 ``` javascript
-import grpc from 'grpc'
+import grpc from '@grpc/grpc-js'
 import {
   QueryService_v1Client as QueryService,
   CommandService_v1Client as CommandService
