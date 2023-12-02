@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 'use strict';
-var grpc = require('grpc');
+var grpc = require('@grpc/grpc-js');
 var endpoint_pb = require('./endpoint_pb.js');
 var transaction_pb = require('./transaction_pb.js');
 var queries_pb = require('./queries_pb.js');

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import grpc from 'grpc'
+import grpc from '@grpc/grpc-js'
 
 import {
   QueryService_v1Client as QueryService
