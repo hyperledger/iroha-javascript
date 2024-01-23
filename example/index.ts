@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 // for usage with grpc package use endpoint_grpc_pb file
-import grpc from 'grpc'
+import grpc from '@grpc/grpc-js'
 import {
   QueryService_v1Client as QueryService,
   CommandService_v1Client as CommandService
