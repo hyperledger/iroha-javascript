@@ -25,7 +25,8 @@ $ yarn add iroha-helpers
 ```
 
 # Example
-In an `example` directory you can find `index.ts` and `chain.ts` files. These files demonstrate main features of iroha-helpers. In the `chain.ts` you can find how to build transaction with several commands and how to deal with batch. 
+In an `example` directory you can find [`index.ts`](./example/index.ts) and [`chain.ts`](./example/chain.ts) files.
+These files demonstrate main features of iroha-helpers. In the [`chain.ts`](./example/chain.ts) you can find how to build transaction with several commands and how to deal with batch. 
 
 ## Node.js
 With node.js you should create connection to iroha by using `QueryService` and `CommandService` from `endpoint_grpc_pb`. Also you should provide grpc credentials as a second argument.
