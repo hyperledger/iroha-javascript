@@ -1,5 +1,6 @@
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
+use core::fmt::Display;
 
 use wasm_bindgen::prelude::*;
 
@@ -18,12 +19,6 @@ pub fn set_panic_hook() {
 /// Makes it possible to use `?`
 pub struct JsErrorWrap(String);
 
-// impl From<FromHexError> for JsErrorWrap {
-//     fn from(value: FromHexError) -> Self {
-//         Self(format!("Failed to parse hex: {value}"))
-//     }
-// }
-
 impl<T> From<T> for JsErrorWrap
 where
     T: ToString,
@@ -39,10 +34,20 @@ impl From<JsErrorWrap> for JsError {
     }
 }
 
-pub fn decode_hex(hex: String) -> Result<Vec<u8>, JsError> {
-    let hex = hex::decode(hex).map_err(JsErrorWrap::from)?;
-    Ok(hex)
+pub trait JsErrorResultExt<T> {
+    fn wrap_js_error(self) -> Result<T, JsError>;
 }
+
+impl<T, E: Display> JsErrorResultExt<T> for Result<T, E> {
+    fn wrap_js_error(self) -> Result<T, JsError> {
+        self.map_err(|e| JsError::new(&e.to_string()))
+    }
+}
+
+// pub fn decode_hex(hex: String) -> Result<Vec<u8>, JsError> {
+//     let hex = hex::decode(hex).map_err(JsErrorWrap::from)?;
+//     Ok(hex)
+// }
 
 #[wasm_bindgen]
 extern "C" {
