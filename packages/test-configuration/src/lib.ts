@@ -183,7 +183,12 @@ export const CLIENT_CONFIG = {
   accountId: parseAccountId(CLIENT_CLI_CONFIG.ACCOUNT_ID),
   keyPair: {
     public_key: CLIENT_CLI_CONFIG.PUBLIC_KEY,
-    private_key: CLIENT_CLI_CONFIG.PRIVATE_KEY,
+    private_key:
+      // This renaming is already happened in crypto, but not yet in the upstream Iroha version.
+      {
+        algorithm: CLIENT_CLI_CONFIG.PRIVATE_KEY.digest_function,
+        payload: CLIENT_CLI_CONFIG.PRIVATE_KEY.payload,
+      },
   },
 }
 

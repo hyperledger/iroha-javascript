@@ -178,6 +178,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c7f02d4ea65f2c1853089ffd8d2787bdbc63de2f0d29dedbcf8ccdfa0ccd4cf"
 
 [[package]]
+name = "base64"
+version = "0.21.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9d297deb1925b89f2ccc13d7635fa0714f12c87adce1c75356b39ca9b7178567"
+
+[[package]]
 name = "base64ct"
 version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -247,6 +253,16 @@ dependencies = [
  "cipher",
  "poly1305",
  "zeroize",
+]
+
+[[package]]
+name = "chrono"
+version = "0.4.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5bc015644b92d5890fab7489e49d21f879d5c990186827d42ec511919404f38b"
+dependencies = [
+ "num-traits",
+ "serde",
 ]
 
 [[package]]
@@ -384,6 +400,15 @@ checksum = "fffa369a668c8af7dbf8b5e56c9f744fbd399949ed171606040001947de40b1c"
 dependencies = [
  "const-oid",
  "zeroize",
+]
+
+[[package]]
+name = "deranged"
+version = "0.3.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b42b6fa04a440b495c8b04d0e71b707c585f83cb9cb28cf8cd0d976c315e31b4"
+dependencies = [
+ "powerfmt",
 ]
 
 [[package]]
@@ -555,8 +580,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "190092ea657667030ac6a35e305e62fc4dd69fd98ac98631e5d3a2b1575a12b5"
 dependencies = [
  "cfg-if 1.0.0",
+ "js-sys",
  "libc",
  "wasi",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -663,7 +690,7 @@ dependencies = [
 [[package]]
 name = "iroha_crypto"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/hyperledger/iroha.git?branch=iroha2-dev#effdf37d4b1fa6c37802128a78a43e30717b7147"
+source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#8dfaa53fefe7d35c004b03601984d100580df901"
 dependencies = [
  "aead",
  "arrayref",
@@ -700,6 +727,7 @@ name = "iroha_crypto_wasm"
 version = "0.2.0"
 dependencies = [
  "console_error_panic_hook",
+ "getrandom",
  "hex",
  "iroha_crypto",
  "itertools 0.12.1",
@@ -714,7 +742,7 @@ dependencies = [
 [[package]]
 name = "iroha_derive"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/hyperledger/iroha.git?branch=iroha2-dev#effdf37d4b1fa6c37802128a78a43e30717b7147"
+source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#8dfaa53fefe7d35c004b03601984d100580df901"
 dependencies = [
  "darling",
  "manyhow",
@@ -726,7 +754,7 @@ dependencies = [
 [[package]]
 name = "iroha_macro"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/hyperledger/iroha.git?branch=iroha2-dev#effdf37d4b1fa6c37802128a78a43e30717b7147"
+source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#8dfaa53fefe7d35c004b03601984d100580df901"
 dependencies = [
  "iroha_derive",
 ]
@@ -734,7 +762,7 @@ dependencies = [
 [[package]]
 name = "iroha_primitives"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/hyperledger/iroha.git?branch=iroha2-dev#effdf37d4b1fa6c37802128a78a43e30717b7147"
+source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#8dfaa53fefe7d35c004b03601984d100580df901"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -752,7 +780,7 @@ dependencies = [
 [[package]]
 name = "iroha_primitives_derive"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/hyperledger/iroha.git?branch=iroha2-dev#effdf37d4b1fa6c37802128a78a43e30717b7147"
+source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#8dfaa53fefe7d35c004b03601984d100580df901"
 dependencies = [
  "manyhow",
  "proc-macro2",
@@ -763,7 +791,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/hyperledger/iroha.git?branch=iroha2-dev#effdf37d4b1fa6c37802128a78a43e30717b7147"
+source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#8dfaa53fefe7d35c004b03601984d100580df901"
 dependencies = [
  "fixnum",
  "iroha_schema_derive",
@@ -773,7 +801,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema_derive"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/hyperledger/iroha.git?branch=iroha2-dev#effdf37d4b1fa6c37802128a78a43e30717b7147"
+source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#8dfaa53fefe7d35c004b03601984d100580df901"
 dependencies = [
  "darling",
  "manyhow",
@@ -897,6 +925,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "num-conv"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
+
+[[package]]
 name = "num-integer"
 version = "0.1.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -982,6 +1016,12 @@ dependencies = [
  "opaque-debug",
  "universal-hash",
 ]
+
+[[package]]
+name = "powerfmt"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "439ee305def115ba05938db6eb1644ff94165c5ab5e9420d1c1bcedbba909391"
 
 [[package]]
 name = "ppv-lite86"
@@ -1180,9 +1220,14 @@ version = "3.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "15d167997bd841ec232f5b2b8e0e26606df2e7caa4c31b95ea9ca52b200bd270"
 dependencies = [
+ "base64",
+ "chrono",
+ "hex",
  "serde",
  "serde_derive",
+ "serde_json",
  "serde_with_macros",
+ "time",
 ]
 
 [[package]]
@@ -1316,6 +1361,25 @@ dependencies = [
  "quote",
  "syn 2.0.50",
 ]
+
+[[package]]
+name = "time"
+version = "0.3.34"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c8248b6521bb14bc45b4067159b9b6ad792e2d6d754d6c41fb50e29fefe38749"
+dependencies = [
+ "deranged",
+ "num-conv",
+ "powerfmt",
+ "serde",
+ "time-core",
+]
+
+[[package]]
+name = "time-core"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef927ca75afb808a4d64dd374f00a2adf8d0fcff8e7b184af886c3c87ec4a3f3"
 
 [[package]]
 name = "toml_datetime"

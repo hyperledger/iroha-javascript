@@ -1,5 +1,6 @@
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { Client, Signer, Torii } from '@iroha2/client'
+import { datamodel } from '@iroha2/data-model'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
 import { crypto } from '@iroha2/crypto-target-node'
 
@@ -17,7 +18,7 @@ export function clientFactory() {
   const getBlocksListener = async () => {
     const stream = await Torii.listenForBlocksStream(pre, {
       // 1 is genesis block, which is committed before each test
-      height: 2n,
+      height: datamodel.NonZeroU64(2n),
     })
 
     return {

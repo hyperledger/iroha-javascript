@@ -5,7 +5,7 @@
  * Events, Status & Health check.
  */
 
-import { cryptoTypes, freeScope } from '@iroha2/crypto-core'
+import { Bytes, cryptoTypes, freeScope } from '@iroha2/crypto-core'
 import { RustResult, datamodel, variant } from '@iroha2/data-model'
 import { Except } from 'type-fest'
 import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
@@ -39,9 +39,9 @@ export class Signer {
     this.keyPair = keyPair
   }
 
-  public sign(...message: cryptoTypes.BytesInputTuple): datamodel.Signature {
+  public sign(message: Bytes): datamodel.Signature {
     return freeScope(() => {
-      const signature = this.keyPair.sign(...message)
+      const signature = this.keyPair.sign(message)
       const publicKey = signature.publicKey().toDataModel()
 
       return datamodel.Signature({
@@ -81,12 +81,12 @@ export function makeTransactionPayload(params: MakeTransactionPayloadParams): da
 }
 
 export function computeTransactionHash(payload: datamodel.TransactionPayload): Uint8Array {
-  return cryptoHash('array', datamodel.TransactionPayload.toBuffer(payload))
+  return cryptoHash(Bytes.array(datamodel.TransactionPayload.toBuffer(payload)))
 }
 
 export function signTransaction(payload: datamodel.TransactionPayload, signer: Signer): datamodel.Signature {
   const hash = computeTransactionHash(payload)
-  return signer.sign('array', hash)
+  return signer.sign(Bytes.array(hash))
 }
 
 export function makeSignedTransaction(
@@ -141,12 +141,12 @@ export function makeQueryPayload(params: MakeQueryPayloadParams): datamodel.Quer
 }
 
 export function computeQueryHash(payload: datamodel.QueryPayload): Uint8Array {
-  return cryptoHash('array', datamodel.QueryPayload.toBuffer(payload))
+  return cryptoHash(Bytes.array(datamodel.QueryPayload.toBuffer(payload)))
 }
 
 export function signQuery(payload: datamodel.QueryPayload, signer: Signer): datamodel.Signature {
   const hash = computeQueryHash(payload)
-  return signer.sign('array', hash)
+  return signer.sign(Bytes.array(hash))
 }
 
 export function makeSignedQuery(payload: datamodel.QueryPayload, signer: Signer): datamodel.SignedQuery {

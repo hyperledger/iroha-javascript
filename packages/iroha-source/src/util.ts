@@ -56,7 +56,7 @@ export async function runCargoBuild(crate: string): Promise<void> {
     env: {
       // Temporary workaround until https://github.com/hyperledger/iroha/pull/4015
       // is not backported into `iroha2-stable`
-      RUSTFLAGS: '-A missing-docs',
+      RUSTFLAGS: '-A missing-docs -A unused',
     },
   })
   consola.debug(`Spawn %o`, process.spawnargs)
@@ -73,7 +73,7 @@ export async function isAccessible(path: string, mode?: number): Promise<boolean
 async function readlink(path: string): Promise<{ t: 'ok'; target: string } | { t: 'err' }> {
   return fs
     .readlink(path)
-    .then((target) => ({ t: 'ok', target } as const))
+    .then((target) => ({ t: 'ok', target }) as const)
     .catch(() => ({ t: 'err' }))
 }
 

@@ -6,9 +6,10 @@
     "@iroha2/crypto-target-node": "workspace:^1.0.0"
   },
   "scripts": {
-    "test": "run-s run:cjs run:mjs test:unit",
+    "test": "run-s test:types run:cjs run:mjs test:unit",
     "run:cjs": "node test/run.cjs",
     "run:mjs": "node test/run.mjs",
-    "test:unit": "vitest run main.spec"
+    "test:unit": "vitest run main.spec",
+    "test:types": "tsc --noEmit"
   }
 }
