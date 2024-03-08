@@ -83,26 +83,35 @@ export class KeyPair {
 */
   static from_json(value: KeyPairJson): KeyPair;
 /**
+* Generate a random key pair
+*
+* # Errors
+* If passed algorithm is not valid.
+* @param {Algorithm | undefined} [algorithm]
+* @returns {KeyPair}
+*/
+  static random(algorithm?: Algorithm): KeyPair;
+/**
 * Construct a key pair from its components
 *
 * # Errors
-* If public and private key don’t match, i.e. if they don’t make a pair
+* If public and private keys don’t match, i.e. if they don’t make a pair
 * @param {PublicKey} public_key
 * @param {PrivateKey} private_key
 * @returns {KeyPair}
 */
-  static from_raw(public_key: PublicKey, private_key: PrivateKey): KeyPair;
+  static from_raw_parts(public_key: PublicKey, private_key: PrivateKey): KeyPair;
 /**
 * @param {Binary} seed
 * @param {Algorithm | undefined} [algorithm]
 * @returns {KeyPair}
 */
-  static generate_from_seed(seed: Binary, algorithm?: Algorithm): KeyPair;
+  static derive_from_seed(seed: Binary, algorithm?: Algorithm): KeyPair;
 /**
 * @param {PrivateKey} key
 * @returns {KeyPair}
 */
-  static generate_from_private_key(key: PrivateKey): KeyPair;
+  static derive_from_private_key(key: PrivateKey): KeyPair;
 /**
 * @returns {PublicKey}
 */
@@ -113,7 +122,7 @@ export class KeyPair {
   private_key(): PrivateKey;
 /**
 * # Errors
-* Fails if serialization fails
+* Fails if serialisation fails
 * @returns {KeyPairJson}
 */
   to_json(): KeyPairJson;
@@ -140,7 +149,7 @@ export class PrivateKey {
 * @param {Binary} payload
 * @returns {PrivateKey}
 */
-  static from_raw(algorithm: Algorithm, payload: Binary): PrivateKey;
+  static from_bytes(algorithm: Algorithm, payload: Binary): PrivateKey;
 /**
 * @returns {Uint8Array}
 */
@@ -151,7 +160,7 @@ export class PrivateKey {
   payload_hex(): string;
 /**
 * # Errors
-* Fails is serialization fails
+* Fails is serialisation fails
 * @returns {PrivateKeyJson}
 */
   to_json(): PrivateKeyJson;
@@ -178,7 +187,7 @@ export class PublicKey {
 * @param {Binary} payload
 * @returns {PublicKey}
 */
-  static from_raw(algorithm: Algorithm, payload: Binary): PublicKey;
+  static from_bytes(algorithm: Algorithm, payload: Binary): PublicKey;
 /**
 * @param {PrivateKey} key
 * @returns {PublicKey}
@@ -206,13 +215,13 @@ export class PublicKey {
   readonly algorithm: Algorithm;
 }
 /**
-* Represents signature of the data (`Block` or `Transaction` for example).
+* Represents the signature of the data
 */
 export class Signature {
   free(): void;
 /**
 * # Errors
-* If failed to deserialize JSON
+* If failed to deserialise JSON
 * @param {SignatureJson} value
 * @returns {Signature}
 */
@@ -226,7 +235,7 @@ export class Signature {
 * @param {Binary} payload
 * @returns {Signature}
 */
-  static from_raw(public_key: PublicKey, payload: Binary): Signature;
+  static from_bytes(public_key: PublicKey, payload: Binary): Signature;
 /**
 * Creates new signature by signing the payload via the key pair's private key.
 *

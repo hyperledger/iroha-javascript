@@ -11,7 +11,7 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-iroha_crypto = { git = "https://github.com/0x009922/iroha.git", branch = "4339-crypto-refactor", default-features = false }
+iroha_crypto = { git = "https://github.com/0x009922/iroha.git", branch = "4339-crypto-refactor", default-features = false, features = ["rand"] }
 getrandom = { version = "0.2", features = ["js"] }
 
 wasm-bindgen = "0.2.91"

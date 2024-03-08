@@ -26,8 +26,8 @@ const CASOMILE_DEFINITION_ID = sugar.assetDefinitionId('casomile', 'wonderland')
 
 const KEYS = freeScope((scope) => {
   const keys = [
-    crypto.KeyPair.generateFromSeed(Bytes.hex('001122')),
-    crypto.KeyPair.generateFromSeed(Bytes.hex('332211')),
+    crypto.KeyPair.deriveFromSeed(Bytes.hex('001122')),
+    crypto.KeyPair.deriveFromSeed(Bytes.hex('332211')),
   ] as const
 
   for (const x of keys) scope.forget(x)

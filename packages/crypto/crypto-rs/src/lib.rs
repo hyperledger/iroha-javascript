@@ -133,10 +133,10 @@ impl PublicKey {
 
     /// # Errors
     /// Fails if parsing of algorithm or payload byte input fails
-    pub fn from_raw(algorithm: AlgorithmJsStr, payload: BytesJs) -> JsResult<PublicKey> {
+    pub fn from_bytes(algorithm: AlgorithmJsStr, payload: BytesJs) -> JsResult<PublicKey> {
         let payload: Vec<u8> = payload.try_into()?;
         let inner =
-            iroha_crypto::PublicKey::from_raw(algorithm.try_into()?, &payload).wrap_js_error()?;
+            iroha_crypto::PublicKey::from_bytes(algorithm.try_into()?, &payload).wrap_js_error()?;
         Ok(Self(inner))
     }
 
@@ -160,7 +160,7 @@ impl PublicKey {
     }
 
     pub fn payload(&self) -> Vec<u8> {
-        self.0.to_raw().1
+        self.0.to_bytes().1
     }
 
     pub fn payload_hex(&self) -> String {
@@ -208,10 +208,10 @@ impl PrivateKey {
 
     /// # Errors
     /// Fails if parsing of digest function or payload byte input fails
-    pub fn from_raw(algorithm: AlgorithmJsStr, payload: BytesJs) -> JsResult<PrivateKey> {
+    pub fn from_bytes(algorithm: AlgorithmJsStr, payload: BytesJs) -> JsResult<PrivateKey> {
         let payload: Vec<u8> = payload.try_into()?;
-        let inner =
-            iroha_crypto::PrivateKey::from_raw(algorithm.try_into()?, &payload).wrap_js_error()?;
+        let inner = iroha_crypto::PrivateKey::from_bytes(algorithm.try_into()?, &payload)
+            .wrap_js_error()?;
         Ok(Self(inner))
     }
 
@@ -221,7 +221,7 @@ impl PrivateKey {
     }
 
     pub fn payload(&self) -> Vec<u8> {
-        self.0.to_raw().1
+        self.0.to_bytes().1
     }
 
     pub fn payload_hex(&self) -> String {
@@ -229,7 +229,7 @@ impl PrivateKey {
     }
 
     /// # Errors
-    /// Fails is serialization fails
+    /// Fails is serialisation fails
     pub fn to_json(&self) -> JsResult<PrivateKeyJson> {
         self.try_into()
     }
@@ -273,33 +273,41 @@ impl KeyPair {
         Self::try_from(value)
     }
 
+    /// Generate a random key pair
+    ///
+    /// # Errors
+    /// If passed algorithm is not valid.
+    pub fn random(algorithm: Option<AlgorithmJsStr>) -> JsResult<KeyPair> {
+        let algorithm = algorithm
+            .map(iroha_crypto::Algorithm::try_from)
+            .transpose()?
+            .unwrap_or_default();
+        let inner = iroha_crypto::KeyPair::random_with_algorithm(algorithm);
+        Ok(Self(inner))
+    }
+
     /// Construct a key pair from its components
     ///
     /// # Errors
-    /// If public and private key don’t match, i.e. if they don’t make a pair
-    pub fn from_raw(public_key: &PublicKey, private_key: &PrivateKey) -> JsResult<KeyPair> {
-        let inner = iroha_crypto::KeyPair::new(public_key.0.clone(), private_key.0.clone())
-            .wrap_js_error()?;
+    /// If public and private keys don’t match, i.e. if they don’t make a pair
+    pub fn from_raw_parts(public_key: &PublicKey, private_key: &PrivateKey) -> JsResult<KeyPair> {
+        let inner =
+            iroha_crypto::KeyPair::from_raw_parts(public_key.0.clone(), private_key.0.clone())
+                .wrap_js_error()?;
         Ok(Self(inner))
     }
 
-    pub fn generate_from_seed(
-        seed: BytesJs,
-        algorithm: Option<AlgorithmJsStr>,
-    ) -> JsResult<KeyPair> {
-        let mut cfg = iroha_crypto::KeyGenConfiguration::from_seed(seed.try_into()?);
-        if let Some(value) = algorithm {
-            cfg = cfg.with_algorithm(value.try_into()?);
-        }
-        let inner = iroha_crypto::KeyPair::generate_with_configuration(cfg);
+    pub fn derive_from_seed(seed: BytesJs, algorithm: Option<AlgorithmJsStr>) -> JsResult<KeyPair> {
+        let algorithm = algorithm
+            .map(iroha_crypto::Algorithm::try_from)
+            .transpose()?
+            .unwrap_or_default();
+        let inner = iroha_crypto::KeyPair::from_seed(seed.try_into()?, algorithm);
         Ok(Self(inner))
     }
 
-    pub fn generate_from_private_key(
-        key: &PrivateKey,
-    ) -> JsResult<KeyPair> {
-        let cfg = iroha_crypto::KeyGenConfiguration::from_private_key(key.0.clone());
-        let inner = iroha_crypto::KeyPair::generate_with_configuration(cfg);
+    pub fn derive_from_private_key(key: &PrivateKey) -> JsResult<KeyPair> {
+        let inner = iroha_crypto::KeyPair::from(key.0.clone());
         Ok(Self(inner))
     }
 
@@ -319,13 +327,13 @@ impl KeyPair {
     }
 
     /// # Errors
-    /// Fails if serialization fails
+    /// Fails if serialisation fails
     pub fn to_json(&self) -> JsResult<KeyPairJson> {
         self.try_into()
     }
 }
 
-/// Represents signature of the data (`Block` or `Transaction` for example).
+/// Represents the signature of the data
 #[derive(Debug, Clone)]
 #[wasm_bindgen]
 pub struct Signature(iroha_crypto::Signature);
@@ -335,7 +343,6 @@ extern "C" {
     #[wasm_bindgen(typescript_type = "SignatureJson")]
     pub type SignatureJson;
 }
-
 
 impl TryFrom<SignatureJson> for Signature {
     type Error = JsError;
@@ -359,7 +366,7 @@ impl TryFrom<&Signature> for SignatureJson {
 #[wasm_bindgen]
 impl Signature {
     /// # Errors
-    /// If failed to deserialize JSON
+    /// If failed to deserialise JSON
     pub fn from_json(value: SignatureJson) -> JsResult<Signature> {
         Self::try_from(value)
     }
@@ -368,9 +375,9 @@ impl Signature {
     ///
     /// # Errors
     /// - Invalid bytes input
-    pub fn from_raw(public_key: &PublicKey, payload: BytesJs) -> JsResult<Signature> {
+    pub fn from_bytes(public_key: &PublicKey, payload: BytesJs) -> JsResult<Signature> {
         let payload: Vec<u8> = payload.try_into()?;
-        let inner = iroha_crypto::Signature::from_raw(public_key.0.clone(), &payload);
+        let inner = iroha_crypto::Signature::from_bytes(public_key.0.clone(), &payload);
         Ok(Self(inner))
     }
 

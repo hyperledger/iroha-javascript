@@ -10,39 +10,47 @@ afterAll(() => {
 })
 
 describe('KeyPair generation', () => {
-  test('Generates KeyPair from seed as expected', () => {
+  test('Derives from a seed as expected', () => {
     const SEED_BYTES = [49, 50, 51, 52]
 
-    const json = freeScope(() => crypto.KeyPair.generateFromSeed(Bytes.array(Uint8Array.from(SEED_BYTES))).toJSON())
+    const json = freeScope(() => crypto.KeyPair.deriveFromSeed(Bytes.array(Uint8Array.from(SEED_BYTES))).toJSON())
 
     expect(json).toMatchInlineSnapshot(`
-    {
-      "private_key": {
-        "algorithm": "ed25519",
-        "payload": "01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7",
-      },
-      "public_key": "ed0120F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7",
-    }
-  `)
+      {
+        "private_key": {
+          "algorithm": "ed25519",
+          "payload": "01F2DB2416255E79DB67D5AC807E55459ED8754F07586864948AEA00F6F81763F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7",
+        },
+        "public_key": "ed0120F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7",
+      }
+    `)
   })
 
-  test('Generates KeyPair from a private key as expected', () => {
+  test('Derives from a private key as expected', () => {
     const SAMPLE = {
       algorithm: 'ed25519',
       payload:
         '01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7',
     } satisfies crypto.PrivateKeyJson
 
-    expect(freeScope(() => crypto.KeyPair.generateFromPrivateKey(crypto.PrivateKey.fromJSON(SAMPLE)).toJSON()))
+    expect(freeScope(() => crypto.KeyPair.deriveFromPrivateKey(crypto.PrivateKey.fromJSON(SAMPLE)).toJSON()))
       .toMatchInlineSnapshot(`
-      {
-        "private_key": {
-          "algorithm": "ed25519",
-          "payload": "01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7",
-        },
-        "public_key": "ed0120F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7",
-      }
-    `)
+        {
+          "private_key": {
+            "algorithm": "ed25519",
+            "payload": "01F2DB2416255E79DB67D5AC807E55459ED8754F07586864948AEA00F6F81763F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7",
+          },
+          "public_key": "ed0120F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7",
+        }
+      `)
+  })
+
+  test('Generates randomly, in an expected, but also unexpected way', () => {
+    const pair = freeScope(() => crypto.KeyPair.random().toJSON())
+
+    expect(pair).toHaveProperty('public_key')
+    expect(pair).toHaveProperty('private_key.algorithm', 'ed25519')
+    expect(pair).toHaveProperty('private_key.payload')
   })
 })
 
@@ -69,7 +77,7 @@ describe('Given a multihash', () => {
 describe('Signature verification', () => {
   function pairFactory() {
     return freeScope((scope) => {
-      const pair = crypto.KeyPair.generateFromSeed(Bytes.hex('aa1108'))
+      const pair = crypto.KeyPair.deriveFromSeed(Bytes.hex('aa1108'))
       scope.forget(pair)
       return pair
     })
@@ -122,7 +130,7 @@ describe('JSON representation', () => {
     const SAMPLE = {
       algorithm: 'ed25519',
       payload:
-        '01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7',
+        '01F2DB2416255E79DB67D5AC807E55459ED8754F07586864948AEA00F6F81763F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7',
     }
 
     freeScope(() => {
@@ -135,7 +143,7 @@ describe('JSON representation', () => {
       private_key: {
         algorithm: 'ed25519',
         payload:
-          '01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7',
+          '01F2DB2416255E79DB67D5AC807E55459ED8754F07586864948AEA00F6F81763F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7',
       },
       public_key: 'ed0120F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7',
     }
@@ -159,7 +167,7 @@ describe('JSON representation', () => {
     const SAMPLE = {
       public_key: 'ed0120797507786F9C6A4DE91B5462B8A6F7BF9AB21C22B853E9C992C2EF68DA5307F9',
       payload:
-        'd0fbac97dcc1c859c110dcf3c55ecff6c28dd49b6e5560e2175a7f308a2214d3d4666c37f0ebfbeb24341a15e606d71780f992f151652adba39fe87e831a2000',
+        'D0FBAC97DCC1C859C110DCF3C55ECFF6C28DD49B6E5560E2175A7F308A2214D3D4666C37F0EBFBEB24341A15E606D71780F992F151652ADBA39FE87E831A2000',
     }
 
     freeScope(() => {
@@ -171,7 +179,7 @@ describe('JSON representation', () => {
 describe('Data Model representation', () => {
   test('Signature serializes as expected', () => {
     freeScope(() => {
-      const cryptoSignature = crypto.KeyPair.generateFromSeed(bytesHex('001122')).sign(bytesHex('112233'))
+      const cryptoSignature = crypto.KeyPair.deriveFromSeed(bytesHex('001122')).sign(bytesHex('112233'))
       const dataModelSignature = cryptoSignature.toDataModel()
 
       expect(cryptoSignature.payload()).toEqual(dataModelSignature.payload)
@@ -205,7 +213,7 @@ describe('Raw conversion', () => {
 
   test('Construct PrivateKey', () => {
     const json = freeScope(() =>
-      crypto.PrivateKey.fromRaw(
+      crypto.PrivateKey.fromBytes(
         'ed25519',
         bytesHex(
           '01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7',
@@ -216,14 +224,14 @@ describe('Raw conversion', () => {
     expect(json).toMatchInlineSnapshot(`
       {
         "algorithm": "ed25519",
-        "payload": "01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7",
+        "payload": "01F2DB2416255E79DB67D5AC807E55459ED8754F07586864948AEA00F6F81763F149BB4B59FEB0ACE3074F10C65E179880EA2C4FE4E0D6022B1E82C33C3278C7",
       }
     `)
   })
 
   test('Fail to construct PrivateKey', () => {
     expect(() =>
-      crypto.PrivateKey.fromRaw(
+      crypto.PrivateKey.fromBytes(
         'secp256k1',
         bytesHex(
           '01f2db2416255e79db67d5ac807e55459ed8754f07586864948aea00f6f81763f149bb4b59feb0ace3074f10c65e179880ea2c4fe4e0d6022b1e82c33c3278c7',
@@ -234,15 +242,15 @@ describe('Raw conversion', () => {
 
   test('Construct KeyPair', () => {
     const json = freeScope(() => {
-      const kp = crypto.KeyPair.generateFromSeed(bytesHex('deadbeef'))
-      return crypto.KeyPair.fromRaw(kp.publicKey(), kp.privateKey()).toJSON()
+      const kp = crypto.KeyPair.deriveFromSeed(bytesHex('deadbeef'))
+      return crypto.KeyPair.fromRawParts(kp.publicKey(), kp.privateKey()).toJSON()
     })
 
     expect(json).toMatchInlineSnapshot(`
       {
         "private_key": {
           "algorithm": "ed25519",
-          "payload": "5dc9d5612f1f29ae846b12fc3cf59e831195ac4320dda2df7f2fa452a30fc5e1d05cdb30231bd9a257253e485432f44b139595981e04996dd795f38a1b4a011a",
+          "payload": "5DC9D5612F1F29AE846B12FC3CF59E831195AC4320DDA2DF7F2FA452A30FC5E1D05CDB30231BD9A257253E485432F44B139595981E04996DD795F38A1B4A011A",
         },
         "public_key": "ed0120D05CDB30231BD9A257253E485432F44B139595981E04996DD795F38A1B4A011A",
       }
@@ -252,11 +260,11 @@ describe('Raw conversion', () => {
   test('Fail to construct KeyPair', () => {
     expect(() =>
       freeScope(() => {
-        const kp1 = crypto.KeyPair.generateFromSeed(bytesHex('deadbeef'), { algorithm: 'bls_normal' })
-        const kp2 = crypto.KeyPair.generateFromSeed(bytesHex('beefdead'))
+        const kp1 = crypto.KeyPair.deriveFromSeed(bytesHex('deadbeef'), { algorithm: 'bls_normal' })
+        const kp2 = crypto.KeyPair.deriveFromSeed(bytesHex('beefdead'))
 
         // should fail here:
-        crypto.KeyPair.fromRaw(kp1.publicKey(), kp2.privateKey())
+        crypto.KeyPair.fromRawParts(kp1.publicKey(), kp2.privateKey())
       }),
     ).toThrowErrorMatchingInlineSnapshot('"Key generation failed. Mismatch of key algorithms"')
   })
@@ -265,11 +273,11 @@ describe('Raw conversion', () => {
     const SAMPLE_JSON = {
       public_key: 'ed0120797507786F9C6A4DE91B5462B8A6F7BF9AB21C22B853E9C992C2EF68DA5307F9',
       payload:
-        'd0fbac97dcc1c859c110dcf3c55ecff6c28dd49b6e5560e2175a7f308a2214d3d4666c37f0ebfbeb24341a15e606d71780f992f151652adba39fe87e831a2000',
+        'D0FBAC97DCC1C859C110DCF3C55ECFF6C28DD49B6E5560E2175A7F308A2214D3D4666C37F0EBFBEB24341A15E606D71780F992F151652ADBA39FE87E831A2000',
     }
 
     const actual_json = freeScope(() =>
-      crypto.Signature.fromRaw(
+      crypto.Signature.fromBytes(
         crypto.PublicKey.fromMultihash(SAMPLE_JSON.public_key),
         bytesHex(SAMPLE_JSON.payload),
       ).toJSON(),
@@ -277,4 +285,7 @@ describe('Raw conversion', () => {
 
     expect(actual_json).toEqual(SAMPLE_JSON)
   })
+
+  // TODO
+  test.todo('Failed to construct Signature... is it possible?')
 })

@@ -113,8 +113,8 @@ export class PrivateKey
     return new PrivateKey(pair.inner.private_key())
   }
 
-  public static fromRaw(algorithm: Algorithm, payload: Bytes): PrivateKey {
-    return new PrivateKey(wasmPkg.PrivateKey.from_raw(algorithm, payload.wasm))
+  public static fromBytes(algorithm: Algorithm, payload: Bytes): PrivateKey {
+    return new PrivateKey(wasmPkg.PrivateKey.from_bytes(algorithm, payload.wasm))
   }
 
   public get algorithm(): Algorithm {
@@ -158,7 +158,7 @@ export class PublicKey
   }
 
   public static fromRaw(algorithm: Algorithm, payload: Bytes): PublicKey {
-    return new PublicKey(wasmPkg.PublicKey.from_raw(algorithm, payload.wasm))
+    return new PublicKey(wasmPkg.PublicKey.from_bytes(algorithm, payload.wasm))
   }
 
   public static fromDataModel(publicKey: datamodel.PublicKey): PublicKey {
@@ -194,7 +194,7 @@ export class PublicKey
   }
 }
 
-export interface GenerateFromSeedOptions {
+export interface WithAlgorithm {
   /**
    * @default 'ed25519'
    */
@@ -207,18 +207,23 @@ export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasAlgor
     return new KeyPair(pair)
   }
 
-  public static generateFromSeed(seed: Bytes, options?: GenerateFromSeedOptions): KeyPair {
-    const pair = wasmPkg.KeyPair.generate_from_seed(seed.wasm, options?.algorithm)
+  public static random(options?: WithAlgorithm): KeyPair {
+    const pair = wasmPkg.KeyPair.random(options?.algorithm)
     return new KeyPair(pair)
   }
 
-  public static generateFromPrivateKey(private_key: PrivateKey): KeyPair {
-    const pair = wasmPkg.KeyPair.generate_from_private_key(private_key.inner)
+  public static deriveFromSeed(seed: Bytes, options?: WithAlgorithm): KeyPair {
+    const pair = wasmPkg.KeyPair.derive_from_seed(seed.wasm, options?.algorithm)
     return new KeyPair(pair)
   }
 
-  public static fromRaw(publicKey: PublicKey, privateKey: PrivateKey): KeyPair {
-    return new KeyPair(wasmPkg.KeyPair.from_raw(publicKey.inner, privateKey.inner))
+  public static deriveFromPrivateKey(private_key: PrivateKey): KeyPair {
+    const pair = wasmPkg.KeyPair.derive_from_private_key(private_key.inner)
+    return new KeyPair(pair)
+  }
+
+  public static fromRawParts(publicKey: PublicKey, privateKey: PrivateKey): KeyPair {
+    return new KeyPair(wasmPkg.KeyPair.from_raw_parts(publicKey.inner, privateKey.inner))
   }
 
   public get algorithm(): Algorithm {
@@ -249,8 +254,8 @@ export class Signature
   /**
    * Create a signature from its payload and public key. This function **does not sign the payload**.
    */
-  public static fromRaw(publicKey: PublicKey, payload: Bytes): Signature {
-    return new Signature(wasmPkg.Signature.from_raw(publicKey.inner, payload.wasm))
+  public static fromBytes(publicKey: PublicKey, payload: Bytes): Signature {
+    return new Signature(wasmPkg.Signature.from_bytes(publicKey.inner, payload.wasm))
   }
 
   public static fromJSON(json: wasmPkg.SignatureJson): Signature {
@@ -260,7 +265,7 @@ export class Signature
   public static fromDataModel(signature: datamodel.Signature): Signature {
     return freeScope((scope) => {
       const publicKey = PublicKey.fromDataModel(signature.public_key)
-      const result = Signature.fromRaw(publicKey, Bytes.array(signature.payload))
+      const result = Signature.fromBytes(publicKey, Bytes.array(signature.payload))
       scope.forget(result)
       return result
     })

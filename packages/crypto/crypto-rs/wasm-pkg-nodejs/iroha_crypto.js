@@ -378,20 +378,43 @@ class KeyPair {
         }
     }
     /**
+    * Generate a random key pair
+    *
+    * # Errors
+    * If passed algorithm is not valid.
+    * @param {Algorithm | undefined} [algorithm]
+    * @returns {KeyPair}
+    */
+    static random(algorithm) {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.keypair_random(retptr, isLikeNone(algorithm) ? 0 : addHeapObject(algorithm));
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r2 = getInt32Memory0()[retptr / 4 + 2];
+            if (r2) {
+                throw takeObject(r1);
+            }
+            return KeyPair.__wrap(r0);
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
     * Construct a key pair from its components
     *
     * # Errors
-    * If public and private key don’t match, i.e. if they don’t make a pair
+    * If public and private keys don’t match, i.e. if they don’t make a pair
     * @param {PublicKey} public_key
     * @param {PrivateKey} private_key
     * @returns {KeyPair}
     */
-    static from_raw(public_key, private_key) {
+    static from_raw_parts(public_key, private_key) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             _assertClass(public_key, PublicKey);
             _assertClass(private_key, PrivateKey);
-            wasm.keypair_from_raw(retptr, public_key.__wbg_ptr, private_key.__wbg_ptr);
+            wasm.keypair_from_raw_parts(retptr, public_key.__wbg_ptr, private_key.__wbg_ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -408,10 +431,10 @@ class KeyPair {
     * @param {Algorithm | undefined} [algorithm]
     * @returns {KeyPair}
     */
-    static generate_from_seed(seed, algorithm) {
+    static derive_from_seed(seed, algorithm) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.keypair_generate_from_seed(retptr, addHeapObject(seed), isLikeNone(algorithm) ? 0 : addHeapObject(algorithm));
+            wasm.keypair_derive_from_seed(retptr, addHeapObject(seed), isLikeNone(algorithm) ? 0 : addHeapObject(algorithm));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -427,11 +450,11 @@ class KeyPair {
     * @param {PrivateKey} key
     * @returns {KeyPair}
     */
-    static generate_from_private_key(key) {
+    static derive_from_private_key(key) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             _assertClass(key, PrivateKey);
-            wasm.keypair_generate_from_private_key(retptr, key.__wbg_ptr);
+            wasm.keypair_derive_from_private_key(retptr, key.__wbg_ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -466,7 +489,7 @@ class KeyPair {
     }
     /**
     * # Errors
-    * Fails if serialization fails
+    * Fails if serialisation fails
     * @returns {KeyPairJson}
     */
     to_json() {
@@ -542,10 +565,10 @@ class PrivateKey {
     * @param {Binary} payload
     * @returns {PrivateKey}
     */
-    static from_raw(algorithm, payload) {
+    static from_bytes(algorithm, payload) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.privatekey_from_raw(retptr, addHeapObject(algorithm), addHeapObject(payload));
+            wasm.privatekey_from_bytes(retptr, addHeapObject(algorithm), addHeapObject(payload));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -601,7 +624,7 @@ class PrivateKey {
     }
     /**
     * # Errors
-    * Fails is serialization fails
+    * Fails is serialisation fails
     * @returns {PrivateKeyJson}
     */
     to_json() {
@@ -679,10 +702,10 @@ class PublicKey {
     * @param {Binary} payload
     * @returns {PublicKey}
     */
-    static from_raw(algorithm, payload) {
+    static from_bytes(algorithm, payload) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.publickey_from_raw(retptr, addHeapObject(algorithm), addHeapObject(payload));
+            wasm.publickey_from_bytes(retptr, addHeapObject(algorithm), addHeapObject(payload));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -791,7 +814,7 @@ const SignatureFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_signature_free(ptr >>> 0));
 /**
-* Represents signature of the data (`Block` or `Transaction` for example).
+* Represents the signature of the data
 */
 class Signature {
 
@@ -816,7 +839,7 @@ class Signature {
     }
     /**
     * # Errors
-    * If failed to deserialize JSON
+    * If failed to deserialise JSON
     * @param {SignatureJson} value
     * @returns {Signature}
     */
@@ -844,11 +867,11 @@ class Signature {
     * @param {Binary} payload
     * @returns {Signature}
     */
-    static from_raw(public_key, payload) {
+    static from_bytes(public_key, payload) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             _assertClass(public_key, PublicKey);
-            wasm.signature_from_raw(retptr, public_key.__wbg_ptr, addHeapObject(payload));
+            wasm.signature_from_bytes(retptr, public_key.__wbg_ptr, addHeapObject(payload));
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];
@@ -1061,10 +1084,48 @@ module.exports.__wbindgen_object_clone_ref = function(arg0) {
     return addHeapObject(ret);
 };
 
+module.exports.__wbg_crypto_d05b68a3572bb8ca = function(arg0) {
+    const ret = getObject(arg0).crypto;
+    return addHeapObject(ret);
+};
+
+module.exports.__wbg_process_b02b3570280d0366 = function(arg0) {
+    const ret = getObject(arg0).process;
+    return addHeapObject(ret);
+};
+
+module.exports.__wbg_versions_c1cb42213cedf0f5 = function(arg0) {
+    const ret = getObject(arg0).versions;
+    return addHeapObject(ret);
+};
+
+module.exports.__wbg_node_43b1089f407e4ec2 = function(arg0) {
+    const ret = getObject(arg0).node;
+    return addHeapObject(ret);
+};
+
+module.exports.__wbg_msCrypto_10fc94afee92bd76 = function(arg0) {
+    const ret = getObject(arg0).msCrypto;
+    return addHeapObject(ret);
+};
+
+module.exports.__wbg_require_9a7e0f667ead4995 = function() { return handleError(function () {
+    const ret = module.require;
+    return addHeapObject(ret);
+}, arguments) };
+
 module.exports.__wbindgen_is_function = function(arg0) {
     const ret = typeof(getObject(arg0)) === 'function';
     return ret;
 };
+
+module.exports.__wbg_randomFillSync_b70ccbdf4926a99d = function() { return handleError(function (arg0, arg1) {
+    getObject(arg0).randomFillSync(takeObject(arg1));
+}, arguments) };
+
+module.exports.__wbg_getRandomValues_7e42b4fb8779dc6d = function() { return handleError(function (arg0, arg1) {
+    getObject(arg0).getRandomValues(getObject(arg1));
+}, arguments) };
 
 module.exports.__wbindgen_jsval_loose_eq = function(arg0, arg1) {
     const ret = getObject(arg0) == getObject(arg1);
@@ -1096,6 +1157,11 @@ module.exports.__wbg_get_0ee8ea3c7c984c45 = function(arg0, arg1) {
 module.exports.__wbg_length_161c0d89c6535c1d = function(arg0) {
     const ret = getObject(arg0).length;
     return ret;
+};
+
+module.exports.__wbg_newnoargs_cfecb3965268594c = function(arg0, arg1) {
+    const ret = new Function(getStringFromWasm0(arg0, arg1));
+    return addHeapObject(ret);
 };
 
 module.exports.__wbg_next_586204376d2ed373 = function(arg0) {
@@ -1138,6 +1204,26 @@ module.exports.__wbg_new_632630b5cec17f21 = function() {
     return addHeapObject(ret);
 };
 
+module.exports.__wbg_self_05040bd9523805b9 = function() { return handleError(function () {
+    const ret = self.self;
+    return addHeapObject(ret);
+}, arguments) };
+
+module.exports.__wbg_window_adc720039f2cb14f = function() { return handleError(function () {
+    const ret = window.window;
+    return addHeapObject(ret);
+}, arguments) };
+
+module.exports.__wbg_globalThis_622105db80c1457d = function() { return handleError(function () {
+    const ret = globalThis.globalThis;
+    return addHeapObject(ret);
+}, arguments) };
+
+module.exports.__wbg_global_f56b013ed9bcf359 = function() { return handleError(function () {
+    const ret = global.global;
+    return addHeapObject(ret);
+}, arguments) };
+
 module.exports.__wbg_isArray_e783c41d0dd19b44 = function(arg0) {
     const ret = Array.isArray(getObject(arg0));
     return ret;
@@ -1154,6 +1240,11 @@ module.exports.__wbg_instanceof_ArrayBuffer_9221fa854ffb71b5 = function(arg0) {
     return ret;
 };
 
+module.exports.__wbg_call_67f2111acd2dfdb6 = function() { return handleError(function (arg0, arg1, arg2) {
+    const ret = getObject(arg0).call(getObject(arg1), getObject(arg2));
+    return addHeapObject(ret);
+}, arguments) };
+
 module.exports.__wbg_isSafeInteger_a23a66ee7c41b273 = function(arg0) {
     const ret = Number.isSafeInteger(getObject(arg0));
     return ret;
@@ -1166,6 +1257,11 @@ module.exports.__wbg_entries_488960b196cfb6a5 = function(arg0) {
 
 module.exports.__wbg_buffer_b914fb8b50ebbc3e = function(arg0) {
     const ret = getObject(arg0).buffer;
+    return addHeapObject(ret);
+};
+
+module.exports.__wbg_newwithbyteoffsetandlength_0de9ee56e9f6ee6e = function(arg0, arg1, arg2) {
+    const ret = new Uint8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0);
     return addHeapObject(ret);
 };
 
@@ -1192,6 +1288,16 @@ module.exports.__wbg_instanceof_Uint8Array_c299a4ee232e76ba = function(arg0) {
     }
     const ret = result;
     return ret;
+};
+
+module.exports.__wbg_newwithlength_0d03cef43b68a530 = function(arg0) {
+    const ret = new Uint8Array(arg0 >>> 0);
+    return addHeapObject(ret);
+};
+
+module.exports.__wbg_subarray_adc418253d76e2f1 = function(arg0, arg1, arg2) {
+    const ret = getObject(arg0).subarray(arg1 >>> 0, arg2 >>> 0);
+    return addHeapObject(ret);
 };
 
 module.exports.__wbg_new_abda76e883ba8a5f = function() {

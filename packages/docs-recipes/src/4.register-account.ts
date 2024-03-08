@@ -11,7 +11,7 @@ const crypto = getCryptoAnyway()
 
 // generating the key pair
 const accountKeyPair = freeScope((scope) => {
-  const pair = crypto.KeyPair.generateFromSeed(Bytes.hex('abcd1122'))
+  const pair = crypto.KeyPair.deriveFromSeed(Bytes.hex('abcd1122'))
   scope.forget(pair)
   return pair
 })

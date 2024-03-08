@@ -2,7 +2,7 @@ import { Bytes, FREE_HEAP, freeScope } from '@iroha2/crypto-core'
 import { crypto } from '@iroha2/crypto-target-node'
 
 const keyPair = freeScope((scope) => {
-  const kp = crypto.KeyPair.generateFromSeed(Bytes.hex('0102'))
+  const kp = crypto.KeyPair.deriveFromSeed(Bytes.hex('0102'))
 
   console.log(FREE_HEAP.size) // => 2 (key gen configuration and key pair)
 

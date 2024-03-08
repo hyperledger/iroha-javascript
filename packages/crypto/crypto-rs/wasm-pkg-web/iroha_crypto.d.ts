@@ -83,26 +83,35 @@ export class KeyPair {
 */
   static from_json(value: KeyPairJson): KeyPair;
 /**
+* Generate a random key pair
+*
+* # Errors
+* If passed algorithm is not valid.
+* @param {Algorithm | undefined} [algorithm]
+* @returns {KeyPair}
+*/
+  static random(algorithm?: Algorithm): KeyPair;
+/**
 * Construct a key pair from its components
 *
 * # Errors
-* If public and private key don’t match, i.e. if they don’t make a pair
+* If public and private keys don’t match, i.e. if they don’t make a pair
 * @param {PublicKey} public_key
 * @param {PrivateKey} private_key
 * @returns {KeyPair}
 */
-  static from_raw(public_key: PublicKey, private_key: PrivateKey): KeyPair;
+  static from_raw_parts(public_key: PublicKey, private_key: PrivateKey): KeyPair;
 /**
 * @param {Binary} seed
 * @param {Algorithm | undefined} [algorithm]
 * @returns {KeyPair}
 */
-  static generate_from_seed(seed: Binary, algorithm?: Algorithm): KeyPair;
+  static derive_from_seed(seed: Binary, algorithm?: Algorithm): KeyPair;
 /**
 * @param {PrivateKey} key
 * @returns {KeyPair}
 */
-  static generate_from_private_key(key: PrivateKey): KeyPair;
+  static derive_from_private_key(key: PrivateKey): KeyPair;
 /**
 * @returns {PublicKey}
 */
@@ -113,7 +122,7 @@ export class KeyPair {
   private_key(): PrivateKey;
 /**
 * # Errors
-* Fails if serialization fails
+* Fails if serialisation fails
 * @returns {KeyPairJson}
 */
   to_json(): KeyPairJson;
@@ -140,7 +149,7 @@ export class PrivateKey {
 * @param {Binary} payload
 * @returns {PrivateKey}
 */
-  static from_raw(algorithm: Algorithm, payload: Binary): PrivateKey;
+  static from_bytes(algorithm: Algorithm, payload: Binary): PrivateKey;
 /**
 * @returns {Uint8Array}
 */
@@ -151,7 +160,7 @@ export class PrivateKey {
   payload_hex(): string;
 /**
 * # Errors
-* Fails is serialization fails
+* Fails is serialisation fails
 * @returns {PrivateKeyJson}
 */
   to_json(): PrivateKeyJson;
@@ -178,7 +187,7 @@ export class PublicKey {
 * @param {Binary} payload
 * @returns {PublicKey}
 */
-  static from_raw(algorithm: Algorithm, payload: Binary): PublicKey;
+  static from_bytes(algorithm: Algorithm, payload: Binary): PublicKey;
 /**
 * @param {PrivateKey} key
 * @returns {PublicKey}
@@ -206,13 +215,13 @@ export class PublicKey {
   readonly algorithm: Algorithm;
 }
 /**
-* Represents signature of the data (`Block` or `Transaction` for example).
+* Represents the signature of the data
 */
 export class Signature {
   free(): void;
 /**
 * # Errors
-* If failed to deserialize JSON
+* If failed to deserialise JSON
 * @param {SignatureJson} value
 * @returns {Signature}
 */
@@ -226,7 +235,7 @@ export class Signature {
 * @param {Binary} payload
 * @returns {Signature}
 */
-  static from_raw(public_key: PublicKey, payload: Binary): Signature;
+  static from_bytes(public_key: PublicKey, payload: Binary): Signature;
 /**
 * Creates new signature by signing the payload via the key pair's private key.
 *
@@ -278,7 +287,7 @@ export interface InitOutput {
   readonly hash_bytes_hex: (a: number, b: number) => void;
   readonly __wbg_publickey_free: (a: number) => void;
   readonly publickey_from_multihash_hex: (a: number, b: number, c: number) => void;
-  readonly publickey_from_raw: (a: number, b: number, c: number) => void;
+  readonly publickey_from_bytes: (a: number, b: number, c: number) => void;
   readonly publickey_from_private_key: (a: number) => number;
   readonly publickey_to_multihash_hex: (a: number, b: number) => void;
   readonly publickey_to_json: (a: number, b: number) => void;
@@ -286,23 +295,24 @@ export interface InitOutput {
   readonly publickey_payload_hex: (a: number, b: number) => void;
   readonly __wbg_privatekey_free: (a: number) => void;
   readonly privatekey_from_json: (a: number, b: number) => void;
-  readonly privatekey_from_raw: (a: number, b: number, c: number) => void;
+  readonly privatekey_from_bytes: (a: number, b: number, c: number) => void;
   readonly privatekey_algorithm: (a: number) => number;
   readonly privatekey_payload: (a: number, b: number) => void;
   readonly privatekey_payload_hex: (a: number, b: number) => void;
   readonly privatekey_to_json: (a: number, b: number) => void;
   readonly __wbg_keypair_free: (a: number) => void;
   readonly keypair_from_json: (a: number, b: number) => void;
-  readonly keypair_from_raw: (a: number, b: number, c: number) => void;
-  readonly keypair_generate_from_seed: (a: number, b: number, c: number) => void;
-  readonly keypair_generate_from_private_key: (a: number, b: number) => void;
+  readonly keypair_random: (a: number, b: number) => void;
+  readonly keypair_from_raw_parts: (a: number, b: number, c: number) => void;
+  readonly keypair_derive_from_seed: (a: number, b: number, c: number) => void;
+  readonly keypair_derive_from_private_key: (a: number, b: number) => void;
   readonly keypair_algorithm: (a: number) => number;
   readonly keypair_public_key: (a: number) => number;
   readonly keypair_private_key: (a: number) => number;
   readonly keypair_to_json: (a: number, b: number) => void;
   readonly __wbg_signature_free: (a: number) => void;
   readonly signature_from_json: (a: number, b: number) => void;
-  readonly signature_from_raw: (a: number, b: number, c: number) => void;
+  readonly signature_from_bytes: (a: number, b: number, c: number) => void;
   readonly signature_new: (a: number, b: number, c: number) => void;
   readonly signature_verify: (a: number, b: number, c: number) => void;
   readonly signature_payload: (a: number, b: number) => void;

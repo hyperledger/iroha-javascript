@@ -10,6 +10,6 @@ const keyPair1 = crypto.KeyPair.fromJSON({
   },
 })
 
-const keyPair2 = crypto.KeyPair.generateFromSeed(Bytes.hex('001122'))
+const keyPair2 = crypto.KeyPair.deriveFromSeed(Bytes.hex('001122'))
 
-const keyPair3 = crypto.KeyPair.generateFromPrivateKey(keyPair2.privateKey())
+const keyPair3 = crypto.KeyPair.deriveFromPrivateKey(keyPair2.privateKey())
