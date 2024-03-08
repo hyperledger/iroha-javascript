@@ -19,6 +19,7 @@ module.exports = {
   },
   globals: {
     BigInt: true,
+    globalThis: true
   },
   overrides: [
     {
