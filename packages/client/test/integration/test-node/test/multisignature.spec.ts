@@ -1,3 +1,5 @@
+/* eslint-disable max-nested-callbacks */
+
 import {
   Signer,
   Torii,
@@ -12,7 +14,7 @@ import { freeScope } from '@iroha2/crypto-core'
 import { datamodel, sugar } from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 import { produce } from 'immer'
-import { expect, describe, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { clientFactory, freeOnTestFinished, setupPeerTestsLifecycle } from './util'
 
 setupPeerTestsLifecycle()

@@ -72,8 +72,11 @@ export async function isAccessible(path: string, mode?: number): Promise<boolean
 
 async function readlink(path: string): Promise<{ t: 'ok'; target: string } | { t: 'err' }> {
   return fs
-    .readlink(path)
-    .then((target) => ({ t: 'ok', target } as const))
+    .readlink(path, { encoding: 'utf-8' })
+    .then((target) => {
+      if (typeof target !== 'string') throw new Error('expected a string')
+      return { t: 'ok', target } as const
+    })
     .catch(() => ({ t: 'err' }))
 }
 

@@ -5,7 +5,7 @@
 
 import * as allure from 'allure-vitest'
 import { pipe } from 'fp-ts/function'
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { clientFactory, setupPeerTestsLifecycle } from './util'
 import { datamodel, sugar } from '@iroha2/data-model'
 

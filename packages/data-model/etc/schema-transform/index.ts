@@ -29,70 +29,68 @@ function filterRawEntry(
 }
 
 function transformRustDef(def: Exclude<SchemaTypeDefinition, FixedPointDefinition | IntDefinition>): TypeDef {
-  return (
-    match<typeof def, TypeDef>(def)
-      .with({ Array: { type: 'u8', len: P.select() } }, (len) => {
-        return {
-          t: 'bytes-array',
-          len,
-        }
-      })
-      .with({ Array: P.select() }, ({ len, type }) => {
-        return {
-          t: 'array',
-          len,
-          item: transformRef(type),
-        }
-      })
-      .with({ Map: P.select() }, ({ key, value }) => {
-        return {
-          t: 'map',
-          key: transformRef(key),
-          value: transformRef(value),
-        }
-      })
-      .with({ Struct: P.select() }, (fields) => {
-        return {
-          t: 'struct',
-          fields: fields.map(({ name, type }) => ({
-            name,
-            ref: transformRef(type),
-          })),
-        }
-      })
-      .with({ Enum: P.select() }, (variants) => {
-        return {
-          t: 'enum',
-          variants: variants.map(({ tag, type, discriminant }) => ({
-            name: tag,
-            discriminant,
-            ref: type && transformRef(type),
-          })),
-        }
-      })
-      .with({ Option: P.select() }, (some) => {
-        return {
-          t: 'option',
-          some: transformRef(some),
-        }
-      })
-      .with({ Vec: P.select() }, (item) => {
-        return { t: 'vec', item: transformRef(item) }
-      })
-      .with({ Tuple: P.select() }, (items) => {
-        return {
-          t: 'tuple',
-          items: items.map(transformRef),
-        }
-      })
-      .with(null, () => {
-        return { t: 'alias', ref: 'Unit' }
-      })
-      .with(P.string, (alias) => {
-        return { t: 'alias', ref: transformRef(alias) }
-      })
-      .exhaustive()
-  )
+  return match<typeof def, TypeDef>(def)
+    .with({ Array: { type: 'u8', len: P.select() } }, (len) => {
+      return {
+        t: 'bytes-array',
+        len,
+      }
+    })
+    .with({ Array: P.select() }, ({ len, type }) => {
+      return {
+        t: 'array',
+        len,
+        item: transformRef(type),
+      }
+    })
+    .with({ Map: P.select() }, ({ key, value }) => {
+      return {
+        t: 'map',
+        key: transformRef(key),
+        value: transformRef(value),
+      }
+    })
+    .with({ Struct: P.select() }, (fields) => {
+      return {
+        t: 'struct',
+        fields: fields.map(({ name, type }) => ({
+          name,
+          ref: transformRef(type),
+        })),
+      }
+    })
+    .with({ Enum: P.select() }, (variants) => {
+      return {
+        t: 'enum',
+        variants: variants.map(({ tag, type, discriminant }) => ({
+          name: tag,
+          discriminant,
+          ref: type && transformRef(type),
+        })),
+      }
+    })
+    .with({ Option: P.select() }, (some) => {
+      return {
+        t: 'option',
+        some: transformRef(some),
+      }
+    })
+    .with({ Vec: P.select() }, (item) => {
+      return { t: 'vec', item: transformRef(item) }
+    })
+    .with({ Tuple: P.select() }, (items) => {
+      return {
+        t: 'tuple',
+        items: items.map(transformRef),
+      }
+    })
+    .with(null, () => {
+      return { t: 'alias', ref: 'Unit' }
+    })
+    .with(P.string, (alias) => {
+      return { t: 'alias', ref: transformRef(alias) }
+    })
+    .exhaustive()
 }
 
 export interface FixedPointParams {

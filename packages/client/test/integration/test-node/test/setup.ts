@@ -2,7 +2,7 @@ import { FREE_HEAP } from '@iroha2/crypto-core'
 import { setCrypto } from '@iroha2/client'
 import { crypto } from '@iroha2/crypto-target-node'
 import { Logger as ScaleLogger } from '@iroha2/data-model'
-import { afterAll, expect, beforeAll } from 'vitest'
+import { afterAll, beforeAll, expect } from 'vitest'
 
 declare global {
   // eslint-disable-next-line no-var,no-inner-declarations

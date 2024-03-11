@@ -1,5 +1,4 @@
-
-export interface RawGitCloneConfiguration  {
+export interface RawGitCloneConfiguration {
   /**
    * Origin git repo, e.g. `https://github.com/hyperledger/iroha.git`
    */
@@ -14,7 +13,7 @@ export interface RawGitCloneConfiguration  {
  * If this configuration is used, Iroha will not be cloned, but used as-is
  * without any changes
  */
-export interface RawPathConfiguration  {
+export interface RawPathConfiguration {
   /**
    * Local path to the iroha source repo
    */
