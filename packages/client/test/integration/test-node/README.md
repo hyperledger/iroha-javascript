@@ -10,7 +10,7 @@ are defined at [`compatibility.spec.ts`](./test/compatibility.spec.ts).
 The easiest way to run tests:
 
 ```shell
-# run this commands anywhere in the repo
+# run these commands anywhere in the repo
 
 # install packages, once
 pnpm i
@@ -22,6 +22,6 @@ pnpm jake test:prepare-client-integration
 pnpm --filter client-test-node test
 ```
 
-Allure reports are stored after tests run at `./allure-reports` directory.
+Allure reports are stored after tests run at `./allure-results` directory.
 **Note:** these reports contain _all_ tests, not only compatibility tests results.
 So, be sure to filter the results by their metadata before submitting them to TestOps.
