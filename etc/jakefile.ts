@@ -105,7 +105,9 @@ namespace('test', () => {
     await $`pnpm --filter monorepo-crypto test`
   })
 
-  task('client-integration', ['build:all'], async () => {
+  task('prepare-client-integration', ['build:all'])
+
+  task('client-integration', ['prepare-client-integration'], async () => {
     await $`pnpm --filter client test:integration`
   })
 
