@@ -243,7 +243,7 @@ describe('Raw conversion', () => {
   test('Construct KeyPair', () => {
     const json = freeScope(() => {
       const kp = crypto.KeyPair.deriveFromSeed(bytesHex('deadbeef'))
-      return crypto.KeyPair.fromRawParts(kp.publicKey(), kp.privateKey()).toJSON()
+      return crypto.KeyPair.fromParts(kp.publicKey(), kp.privateKey()).toJSON()
     })
 
     expect(json).toMatchInlineSnapshot(`
@@ -264,7 +264,7 @@ describe('Raw conversion', () => {
         const kp2 = crypto.KeyPair.deriveFromSeed(bytesHex('beefdead'))
 
         // should fail here:
-        crypto.KeyPair.fromRawParts(kp1.publicKey(), kp2.privateKey())
+        crypto.KeyPair.fromParts(kp1.publicKey(), kp2.privateKey())
       }),
     ).toThrowErrorMatchingInlineSnapshot('"Key generation failed. Mismatch of key algorithms"')
   })

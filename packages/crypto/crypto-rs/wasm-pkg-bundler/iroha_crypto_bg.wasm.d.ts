@@ -25,7 +25,7 @@ export function privatekey_to_json(a: number, b: number): void;
 export function __wbg_keypair_free(a: number): void;
 export function keypair_from_json(a: number, b: number): void;
 export function keypair_random(a: number, b: number): void;
-export function keypair_from_raw_parts(a: number, b: number, c: number): void;
+export function keypair_from_parts(a: number, b: number, c: number): void;
 export function keypair_derive_from_seed(a: number, b: number, c: number): void;
 export function keypair_derive_from_private_key(a: number, b: number): void;
 export function keypair_algorithm(a: number): number;

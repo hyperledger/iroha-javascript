@@ -222,8 +222,8 @@ export class KeyPair extends SingleFreeWrap<wasmPkg.KeyPair> implements HasAlgor
     return new KeyPair(pair)
   }
 
-  public static fromRawParts(publicKey: PublicKey, privateKey: PrivateKey): KeyPair {
-    return new KeyPair(wasmPkg.KeyPair.from_raw_parts(publicKey.inner, privateKey.inner))
+  public static fromParts(publicKey: PublicKey, privateKey: PrivateKey): KeyPair {
+    return new KeyPair(wasmPkg.KeyPair.from_parts(publicKey.inner, privateKey.inner))
   }
 
   public get algorithm(): Algorithm {

@@ -100,7 +100,7 @@ export class KeyPair {
 * @param {PrivateKey} private_key
 * @returns {KeyPair}
 */
-  static from_raw_parts(public_key: PublicKey, private_key: PrivateKey): KeyPair;
+  static from_parts(public_key: PublicKey, private_key: PrivateKey): KeyPair;
 /**
 * @param {Binary} seed
 * @param {Algorithm | undefined} [algorithm]

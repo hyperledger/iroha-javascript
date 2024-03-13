@@ -100,7 +100,7 @@ export class KeyPair {
 * @param {PrivateKey} private_key
 * @returns {KeyPair}
 */
-  static from_raw_parts(public_key: PublicKey, private_key: PrivateKey): KeyPair;
+  static from_parts(public_key: PublicKey, private_key: PrivateKey): KeyPair;
 /**
 * @param {Binary} seed
 * @param {Algorithm | undefined} [algorithm]
@@ -303,7 +303,7 @@ export interface InitOutput {
   readonly __wbg_keypair_free: (a: number) => void;
   readonly keypair_from_json: (a: number, b: number) => void;
   readonly keypair_random: (a: number, b: number) => void;
-  readonly keypair_from_raw_parts: (a: number, b: number, c: number) => void;
+  readonly keypair_from_parts: (a: number, b: number, c: number) => void;
   readonly keypair_derive_from_seed: (a: number, b: number, c: number) => void;
   readonly keypair_derive_from_private_key: (a: number, b: number) => void;
   readonly keypair_algorithm: (a: number) => number;

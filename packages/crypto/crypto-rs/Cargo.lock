@@ -676,7 +676,7 @@ dependencies = [
 [[package]]
 name = "iroha_crypto"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "aead",
  "arrayref",
@@ -728,7 +728,7 @@ dependencies = [
 [[package]]
 name = "iroha_derive"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "darling",
  "manyhow",
@@ -740,7 +740,7 @@ dependencies = [
 [[package]]
 name = "iroha_macro"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "iroha_derive",
 ]
@@ -748,7 +748,7 @@ dependencies = [
 [[package]]
 name = "iroha_numeric"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -762,7 +762,7 @@ dependencies = [
 [[package]]
 name = "iroha_primitives"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "derive_more",
  "displaydoc",
@@ -780,7 +780,7 @@ dependencies = [
 [[package]]
 name = "iroha_primitives_derive"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "iroha_numeric",
  "manyhow",
@@ -792,7 +792,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "iroha_schema_derive",
  "serde",
@@ -801,7 +801,7 @@ dependencies = [
 [[package]]
 name = "iroha_schema_derive"
 version = "2.0.0-pre-rc.20"
-source = "git+https://github.com/0x009922/iroha.git?branch=4339-crypto-refactor#c21a1f80505e1ddede0827f457bd885e7eb3a638"
+source = "git+https://github.com/hyperledger/iroha.git?rev=7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb#7014f535d41ff3f2ebe96bae4c8d5bd1b49de5fb"
 dependencies = [
  "darling",
  "manyhow",
@@ -886,7 +886,6 @@ dependencies = [
  "manyhow-macros",
  "proc-macro2",
  "quote",
- "syn 1.0.109",
  "syn 2.0.50",
 ]
 

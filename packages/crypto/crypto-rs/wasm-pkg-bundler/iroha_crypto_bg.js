@@ -413,12 +413,12 @@ export class KeyPair {
     * @param {PrivateKey} private_key
     * @returns {KeyPair}
     */
-    static from_raw_parts(public_key, private_key) {
+    static from_parts(public_key, private_key) {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             _assertClass(public_key, PublicKey);
             _assertClass(private_key, PrivateKey);
-            wasm.keypair_from_raw_parts(retptr, public_key.__wbg_ptr, private_key.__wbg_ptr);
+            wasm.keypair_from_parts(retptr, public_key.__wbg_ptr, private_key.__wbg_ptr);
             var r0 = getInt32Memory0()[retptr / 4 + 0];
             var r1 = getInt32Memory0()[retptr / 4 + 1];
             var r2 = getInt32Memory0()[retptr / 4 + 2];

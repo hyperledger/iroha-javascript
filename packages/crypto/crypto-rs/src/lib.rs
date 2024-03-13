@@ -290,10 +290,9 @@ impl KeyPair {
     ///
     /// # Errors
     /// If public and private keys don’t match, i.e. if they don’t make a pair
-    pub fn from_raw_parts(public_key: &PublicKey, private_key: &PrivateKey) -> JsResult<KeyPair> {
-        let inner =
-            iroha_crypto::KeyPair::from_raw_parts(public_key.0.clone(), private_key.0.clone())
-                .wrap_js_error()?;
+    pub fn from_parts(public_key: &PublicKey, private_key: &PrivateKey) -> JsResult<KeyPair> {
+        let inner = iroha_crypto::KeyPair::new(public_key.0.clone(), private_key.0.clone())
+            .wrap_js_error()?;
         Ok(Self(inner))
     }
 
