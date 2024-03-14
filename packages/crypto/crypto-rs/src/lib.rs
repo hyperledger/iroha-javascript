@@ -1,294 +1,460 @@
 //! This module contains structures and implementations related to the cryptographic parts of the Iroha.
 //! But in WebAssembly-compatible manner.
-//!
-//! TODO rustfmt & clippy
-#![no_std]
-#![allow(clippy::module_name_repetitions)]
+#![cfg(target_arch = "wasm32")]
+#![allow(clippy::must_use_candidate)]
 
 extern crate alloc;
 
-mod algorithm;
-mod hash;
-mod keys;
-mod multihash;
-mod signature;
 mod utils;
-mod varint;
 
 use alloc::string::ToString;
-use alloc::{borrow::ToOwned, format, string::String, vec::Vec};
-use core::{fmt, str::FromStr};
+use alloc::{format, string::String, vec::Vec};
+use core::str::FromStr;
 
-pub use crate::algorithm::*;
-use crate::hash::HashOf;
-pub use crate::keys::*;
-pub use crate::multihash::{DigestFunction as MultihashDigestFunction, Multihash, *};
-use crate::signature::SignatureOf;
-use crate::utils::JsErrorWrap;
+use crate::utils::{BytesJs, JsErrorResultExt};
 
-use derive_more::{DebugCustom, Display, From};
-use iroha_primitives::conststr::ConstString;
-use parity_scale_codec::{Decode, Encode, Error as ScaleError};
-use serde::{Deserialize, Serialize};
-use ursa::{
-    keys::{KeyGenOption as UrsaKeyGenOption, PrivateKey as UrsaPrivateKey},
-    signatures::{
-        bls::{normal::Bls as BlsNormal, small::Bls as BlsSmall},
-        ed25519::Ed25519Sha512,
-        secp256k1::EcdsaSecp256k1Sha256,
-        SignatureScheme,
-    },
-};
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen(start)]
-pub fn main() {
-    utils::set_panic_hook();
+type JsResult<T> = Result<T, JsError>;
+
+// FIXME generate some pieces with a proc macro?
+// Note: it is moved separately from TS_TYPES for tests
+#[wasm_bindgen(typescript_custom_section)]
+const TS_SECTION_ALGORITHM: &str = r"
+export type Algorithm =
+    | 'ed25519'
+    | 'secp256k1'
+    | 'bls_normal'
+    | 'bls_small'
+";
+
+#[wasm_bindgen(typescript_custom_section)]
+const TS_TYPES: &str = r#"    
+export interface PrivateKeyJson {
+    algorithm: string
+    /** Hex-encoded bytes */
+    payload: string
 }
 
-/// Error when dealing with cryptographic functions
-#[derive(Debug, Display)]
-pub enum Error {
-    /// Returned when trying to create an algorithm which does not exist
-    #[display(fmt = "Algorithm doesn't exist")] // TODO: which algorithm
-    NoSuchAlgorithm,
-    /// Occurs during deserialization of a private or public key
-    #[display(fmt = "Key could not be parsed. {_0}")]
-    Parse(String),
-    /// Returned when an error occurs during the signing process
-    #[display(fmt = "Signing failed. {_0}")]
-    Signing(String),
-    /// Returned when an error occurs during key generation
-    #[display(fmt = "Key generation failed. {_0}")]
-    KeyGen(String),
-    /// Returned when an error occurs during digest generation
-    #[display(fmt = "Digest generation failed. {_0}")]
-    DigestGen(String),
-    /// A General purpose error message that doesn't fit in any category
-    #[display(fmt = "General error. {_0}")]
-    // This is going to cause a headache
-    Other(String),
+export interface KeyPairJson {
+    public_key: string
+    private_key: PrivateKeyJson
 }
 
-impl From<ursa::CryptoError> for Error {
-    fn from(source: ursa::CryptoError) -> Self {
-        match source {
-            ursa::CryptoError::NoSuchAlgorithm(_) => Self::NoSuchAlgorithm,
-            ursa::CryptoError::ParseError(source) => Self::Parse(source),
-            ursa::CryptoError::SigningError(source) => Self::Signing(source),
-            ursa::CryptoError::KeyGenError(source) => Self::KeyGen(source),
-            ursa::CryptoError::DigestGenError(source) => Self::DigestGen(source),
-            ursa::CryptoError::GeneralError(source) => Self::Other(source),
+export interface SignatureJson {
+    public_key: string
+    /** Hex-encoded bytes */
+    payload: string
+}
+
+export type VerifyResult =
+    | { t: 'ok' }
+    | { t: 'err', error: string }
+"#;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "Algorithm")]
+    pub type AlgorithmJsStr;
+}
+
+impl TryFrom<AlgorithmJsStr> for iroha_crypto::Algorithm {
+    type Error = JsError;
+
+    fn try_from(value: AlgorithmJsStr) -> Result<Self, Self::Error> {
+        let value = Self::from_str(
+            &value
+                .as_string()
+                .ok_or_else(|| JsError::new("Passed value is not a string"))?,
+        )
+        .wrap_js_error()?;
+        Ok(value)
+    }
+}
+
+impl From<iroha_crypto::Algorithm> for AlgorithmJsStr {
+    fn from(value: iroha_crypto::Algorithm) -> Self {
+        AlgorithmJsStr {
+            obj: value.to_string().into(),
         }
     }
 }
-impl From<NoSuchAlgorithm> for Error {
-    fn from(_: NoSuchAlgorithm) -> Self {
-        Self::NoSuchAlgorithm
+
+#[wasm_bindgen]
+pub fn algorithm_default() -> AlgorithmJsStr {
+    iroha_crypto::Algorithm::default().into()
+}
+
+#[wasm_bindgen]
+pub struct Hash(iroha_crypto::Hash);
+
+#[wasm_bindgen]
+impl Hash {
+    /// Construct zeroed hash
+    pub fn zeroed() -> Self {
+        Self(iroha_crypto::Hash::prehashed(
+            [0; iroha_crypto::Hash::LENGTH],
+        ))
+    }
+
+    /// Hash the given bytes.
+    ///
+    /// # Errors
+    /// If failed to parse bytes input
+    #[wasm_bindgen(constructor)]
+    pub fn new(payload: BytesJs) -> JsResult<Hash> {
+        let bytes: Vec<_> = payload.try_into()?;
+        let hash = iroha_crypto::Hash::new(bytes);
+        Ok(Self(hash))
+    }
+
+    pub fn bytes(&self) -> Vec<u8> {
+        self.0.as_ref().into()
+    }
+
+    pub fn bytes_hex(&self) -> String {
+        hex::encode(self.bytes())
     }
 }
 
-#[cfg(test)]
-mod tests {
-    #![allow(clippy::restriction)]
+/// Public Key used in signatures.
+#[derive(Debug, Clone)]
+#[wasm_bindgen]
+pub struct PublicKey(pub(crate) iroha_crypto::PublicKey);
 
-    use alloc::string::ToString;
-
-    use super::*;
-
-    #[test]
-    fn key_pair_match() {
-        assert!(KeyPair::new("ed012059c8a4da1ebb5380f74aba51f502714652fdcce9611fafb9904e4a3c4d382774"
-            .parse()
-            .expect("Public key not in mulithash format"),
-        PrivateKey::from_hex(
-            Algorithm::Ed25519,
-            "93ca389fc2979f3f7d2a7f8b76c70de6d5eaf5fa58d4f93cb8b0fb298d398acc59c8a4da1ebb5380f74aba51f502714652fdcce9611fafb9904e4a3c4d382774"
-        ).expect("Private key not hex encoded")).is_ok());
-
-        assert!(KeyPair::new("ea0161040fcfade2fc5d9104a9acf9665ea545339ddf10ae50343249e01af3b8f885cd5d52956542cce8105db3a2ec4006e637a7177faaea228c311f907daafc254f22667f1a1812bb710c6f4116a1415275d27bb9fb884f37e8ef525cc31f3945e945fa"
-            .parse()
-            .expect("Public key not in mulithash format"),
-        PrivateKey::from_hex(
-            Algorithm::BlsNormal,
-            "0000000000000000000000000000000049bf70187154c57b97af913163e8e875733b4eaf1f3f0689b31ce392129493e9"
-        ).expect("Private key not hex encoded")).is_ok());
+#[wasm_bindgen]
+impl PublicKey {
+    /// # Errors
+    /// Fails if multihash parsing fails
+    pub fn from_multihash_hex(multihash: &str) -> JsResult<PublicKey> {
+        let inner = iroha_crypto::PublicKey::from_str(multihash).wrap_js_error()?;
+        Ok(Self(inner))
     }
 
-    #[test]
-    fn key_pair_mismatch() {
-        assert!(KeyPair::new("ed012059c8a4da1ebb5380f74aba51f502714652fdcce9611fafb9904e4a3c4d382774"
-            .parse()
-            .expect("Public key not in mulithash format"),
-        PrivateKey::from_hex(
-            Algorithm::Ed25519,
-            "0000000000000000000000000000000049bf70187154c57b97af913163e8e875733b4eaf1f3f0689b31ce392129493e9"
-        ).expect("Private key not hex encoded")).is_err());
-
-        assert!(KeyPair::new("ea0161040fcfade2fc5d9104a9acf9665ea545339ddf10ae50343249e01af3b8f885cd5d52956542cce8105db3a2ec4006e637a7177faaea228c311f907daafc254f22667f1a1812bb710c6f4116a1415275d27bb9fb884f37e8ef525cc31f3945e945fa"
-            .parse()
-            .expect("Public key not in mulithash format"),
-        PrivateKey::from_hex(
-            Algorithm::BlsNormal,
-            "93ca389fc2979f3f7d2a7f8b76c70de6d5eaf5fa58d4f93cb8b0fb298d398acc59c8a4da1ebb5380f74aba51f502714652fdcce9611fafb9904e4a3c4d382774"
-        ).expect("Private key not hex encoded")).is_err());
+    /// # Errors
+    /// Fails if parsing of algorithm or payload byte input fails
+    pub fn from_bytes(algorithm: AlgorithmJsStr, payload: BytesJs) -> JsResult<PublicKey> {
+        let payload: Vec<u8> = payload.try_into()?;
+        let inner =
+            iroha_crypto::PublicKey::from_bytes(algorithm.try_into()?, &payload).wrap_js_error()?;
+        Ok(Self(inner))
     }
 
-    #[test]
-    fn display_public_key() {
-        assert_eq!(
-            format!(
-                "{}",
-                PublicKey {
-                    digest_function: Algorithm::Ed25519.to_string().into(),
-                    payload: hex::decode(
-                        "1509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4"
-                    )
-                    .expect("Failed to decode public key.")
-                }
-            ),
-            "ed01201509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4"
-        );
-        assert_eq!(
-            format!(
-                "{}",
-                PublicKey {
-                    digest_function: Algorithm::Secp256k1.to_string().into(),
-                    payload: hex::decode(
-                        "0312273e8810581e58948d3fb8f9e8ad53aaa21492ebb8703915bbb565a21b7fcc"
-                    )
-                    .expect("Failed to decode public key.")
-                }
-            ),
-            "e701210312273e8810581e58948d3fb8f9e8ad53aaa21492ebb8703915bbb565a21b7fcc"
-        );
-        assert_eq!(
-            format!(
-                "{}",
-                PublicKey {
-                    digest_function: Algorithm::BlsNormal.to_string().into(),
-                    payload: hex::decode(
-                        "04175b1e79b15e8a2d5893bf7f8933ca7d0863105d8bac3d6f976cb043378a0e4b885c57ed14eb85fc2fabc639adc7de7f0020c70c57acc38dee374af2c04a6f61c11de8df9034b12d849c7eb90099b0881267d0e1507d4365d838d7dcc31511e7"
-                    )
-                    .expect("Failed to decode public key.")
-                }
-            ),
-            "ea016104175b1e79b15e8a2d5893bf7f8933ca7d0863105d8bac3d6f976cb043378a0e4b885c57ed14eb85fc2fabc639adc7de7f0020c70c57acc38dee374af2c04a6f61c11de8df9034b12d849c7eb90099b0881267d0e1507d4365d838d7dcc31511e7"
-        );
-        assert_eq!(
-            format!(
-                "{}",
-                PublicKey {
-                    digest_function: Algorithm::BlsSmall.to_string().into(),
-                    payload: hex::decode(
-                        "040cb3231f601e7245a6ec9a647b450936f707ca7dc347ed258586c1924941d8bc38576473a8ba3bb2c37e3e121130ab67103498a96d0d27003e3ad960493da79209cf024e2aa2ae961300976aeee599a31a5e1b683eaa1bcffc47b09757d20f21123c594cf0ee0baf5e1bdd272346b7dc98a8f12c481a6b28174076a352da8eae881b90911013369d7fa960716a5abc5314307463fa2285a5bf2a5b5c6220d68c2d34101a91dbfc531c5b9bbfb2245ccc0c50051f79fc6714d16907b1fc40e0c0"
-                    )
-                    .expect("Failed to decode public key.")
-                }
-            ),
-            "eb01c1040cb3231f601e7245a6ec9a647b450936f707ca7dc347ed258586c1924941d8bc38576473a8ba3bb2c37e3e121130ab67103498a96d0d27003e3ad960493da79209cf024e2aa2ae961300976aeee599a31a5e1b683eaa1bcffc47b09757d20f21123c594cf0ee0baf5e1bdd272346b7dc98a8f12c481a6b28174076a352da8eae881b90911013369d7fa960716a5abc5314307463fa2285a5bf2a5b5c6220d68c2d34101a91dbfc531c5b9bbfb2245ccc0c50051f79fc6714d16907b1fc40e0c0"
-        );
+    pub fn from_private_key(key: &PrivateKey) -> PublicKey {
+        let inner = iroha_crypto::PublicKey::from(key.0.clone());
+        Self(inner)
     }
 
-    #[derive(Debug, PartialEq, Deserialize)]
-    struct TestJson {
-        public_key: PublicKey,
-        private_key: PrivateKey,
+    pub fn to_multihash_hex(&self) -> String {
+        format!("{}", self.0)
     }
 
-    #[test]
-    fn deserialize_keys() {
-        assert_eq!(
-            serde_json::from_str::<'_, TestJson>("{
-                \"public_key\": \"ed01201509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4\",
-                \"private_key\": {
-                    \"digest_function\": \"ed25519\",
-                    \"payload\": \"3a7991af1abb77f3fd27cc148404a6ae4439d095a63591b77c788d53f708a02a1509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4\"
-                }
-            }").expect("Failed to deserialize."),
-            TestJson {
-                public_key: PublicKey {
-                    digest_function: Algorithm::Ed25519.to_string().into(),
-                    payload: hex::decode(
-                        "1509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4"
-                    )
-                    .expect("Failed to decode public key.")
-                },
-                private_key: PrivateKey {
-                    digest_function: Algorithm::Ed25519.to_string().into(),
-                    payload: hex::decode("3a7991af1abb77f3fd27cc148404a6ae4439d095a63591b77c788d53f708a02a1509a611ad6d97b01d871e58ed00c8fd7c3917b6ca61a8c2833a19e000aac2e4")
-                    .expect("Failed to decode private key"),
-                }
-            }
-        );
-        assert_eq!(
-            serde_json::from_str::<'_, TestJson>("{
-                \"public_key\": \"e701210312273e8810581e58948d3fb8f9e8ad53aaa21492ebb8703915bbb565a21b7fcc\",
-                \"private_key\": {
-                    \"digest_function\": \"secp256k1\",
-                    \"payload\": \"4df4fca10762d4b529fe40a2188a60ca4469d2c50a825b5f33adc2cb78c69445\"
-                }
-            }").expect("Failed to deserialize."),
-            TestJson {
-                public_key: PublicKey {
-                    digest_function: Algorithm::Secp256k1.to_string().into(),
-                    payload: hex::decode(
-                        "0312273e8810581e58948d3fb8f9e8ad53aaa21492ebb8703915bbb565a21b7fcc"
-                    )
-                    .expect("Failed to decode public key.")
-                },
-                private_key: PrivateKey {
-                    digest_function: Algorithm::Secp256k1.to_string().into(),
-                    payload: hex::decode("4df4fca10762d4b529fe40a2188a60ca4469d2c50a825b5f33adc2cb78c69445")
-                    .expect("Failed to decode private key"),
-                }
-            }
-        );
-        assert_eq!(
-            serde_json::from_str::<'_, TestJson>("{
-                \"public_key\": \"ea016104175b1e79b15e8a2d5893bf7f8933ca7d0863105d8bac3d6f976cb043378a0e4b885c57ed14eb85fc2fabc639adc7de7f0020c70c57acc38dee374af2c04a6f61c11de8df9034b12d849c7eb90099b0881267d0e1507d4365d838d7dcc31511e7\",
-                \"private_key\": {
-                    \"digest_function\": \"bls_normal\",
-                    \"payload\": \"000000000000000000000000000000002f57460183837efbac6aa6ab3b8dbb7cffcfc59e9448b7860a206d37d470cba3\"
-                }
-            }").expect("Failed to deserialize."),
-            TestJson {
-                public_key: PublicKey {
-                    digest_function: Algorithm::BlsNormal.to_string().into(),
-                    payload: hex::decode(
-                        "04175b1e79b15e8a2d5893bf7f8933ca7d0863105d8bac3d6f976cb043378a0e4b885c57ed14eb85fc2fabc639adc7de7f0020c70c57acc38dee374af2c04a6f61c11de8df9034b12d849c7eb90099b0881267d0e1507d4365d838d7dcc31511e7"
-                    )
-                    .expect("Failed to decode public key.")
-                },
-                private_key: PrivateKey {
-                    digest_function: Algorithm::BlsNormal.to_string().into(),
-                    payload: hex::decode("000000000000000000000000000000002f57460183837efbac6aa6ab3b8dbb7cffcfc59e9448b7860a206d37d470cba3")
-                    .expect("Failed to decode private key"),
-                }
-            }
-        );
-        assert_eq!(
-            serde_json::from_str::<'_, TestJson>("{
-                \"public_key\": \"eb01c1040cb3231f601e7245a6ec9a647b450936f707ca7dc347ed258586c1924941d8bc38576473a8ba3bb2c37e3e121130ab67103498a96d0d27003e3ad960493da79209cf024e2aa2ae961300976aeee599a31a5e1b683eaa1bcffc47b09757d20f21123c594cf0ee0baf5e1bdd272346b7dc98a8f12c481a6b28174076a352da8eae881b90911013369d7fa960716a5abc5314307463fa2285a5bf2a5b5c6220d68c2d34101a91dbfc531c5b9bbfb2245ccc0c50051f79fc6714d16907b1fc40e0c0\",
-                \"private_key\": {
-                    \"digest_function\": \"bls_small\",
-                    \"payload\": \"0000000000000000000000000000000060f3c1ac9addbbed8db83bc1b2ef22139fb049eecb723a557a41ca1a4b1fed63\"
-                }
-            }").expect("Failed to deserialize."),
-            TestJson {
-                public_key: PublicKey {
-                    digest_function: Algorithm::BlsSmall.to_string().into(),
-                    payload: hex::decode(
-                        "040cb3231f601e7245a6ec9a647b450936f707ca7dc347ed258586c1924941d8bc38576473a8ba3bb2c37e3e121130ab67103498a96d0d27003e3ad960493da79209cf024e2aa2ae961300976aeee599a31a5e1b683eaa1bcffc47b09757d20f21123c594cf0ee0baf5e1bdd272346b7dc98a8f12c481a6b28174076a352da8eae881b90911013369d7fa960716a5abc5314307463fa2285a5bf2a5b5c6220d68c2d34101a91dbfc531c5b9bbfb2245ccc0c50051f79fc6714d16907b1fc40e0c0"
-                    )
-                    .expect("Failed to decode public key.")
-                },
-                private_key: PrivateKey {
-                    digest_function: Algorithm::BlsSmall.to_string().into(),
-                    payload: hex::decode("0000000000000000000000000000000060f3c1ac9addbbed8db83bc1b2ef22139fb049eecb723a557a41ca1a4b1fed63")
-                    .expect("Failed to decode private key"),
-                }
-            }
-        );
+    /// Equivalent to [`Self::to_multihash_hex`]
+    pub fn to_json(&self) -> String {
+        todo!()
     }
+
+    #[wasm_bindgen(getter)]
+    pub fn algorithm(&self) -> AlgorithmJsStr {
+        self.0.algorithm().into()
+    }
+
+    pub fn payload(&self) -> Vec<u8> {
+        self.0.to_bytes().1
+    }
+
+    pub fn payload_hex(&self) -> String {
+        hex::encode(self.payload())
+    }
+}
+
+/// Private Key used in signatures.
+#[derive(Debug, Clone)]
+#[wasm_bindgen]
+pub struct PrivateKey(pub(crate) iroha_crypto::PrivateKey);
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "PrivateKeyJson")]
+    pub type PrivateKeyJson;
+}
+
+impl TryFrom<PrivateKeyJson> for PrivateKey {
+    type Error = JsError;
+
+    fn try_from(value: PrivateKeyJson) -> Result<Self, Self::Error> {
+        let inner: iroha_crypto::PrivateKey = serde_wasm_bindgen::from_value(value.obj)?;
+        Ok(Self(inner))
+    }
+}
+
+impl TryFrom<&PrivateKey> for PrivateKeyJson {
+    type Error = JsError;
+
+    fn try_from(value: &PrivateKey) -> Result<Self, Self::Error> {
+        Ok(PrivateKeyJson {
+            obj: serde_wasm_bindgen::to_value(&value.0)?,
+        })
+    }
+}
+
+#[wasm_bindgen]
+impl PrivateKey {
+    /// # Errors
+    /// Fails if serialization fails
+    pub fn from_json(value: PrivateKeyJson) -> JsResult<PrivateKey> {
+        Self::try_from(value)
+    }
+
+    /// # Errors
+    /// Fails if parsing of digest function or payload byte input fails
+    pub fn from_bytes(algorithm: AlgorithmJsStr, payload: BytesJs) -> JsResult<PrivateKey> {
+        let payload: Vec<u8> = payload.try_into()?;
+        let inner = iroha_crypto::PrivateKey::from_bytes(algorithm.try_into()?, &payload)
+            .wrap_js_error()?;
+        Ok(Self(inner))
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn algorithm(&self) -> AlgorithmJsStr {
+        self.0.algorithm().into()
+    }
+
+    pub fn payload(&self) -> Vec<u8> {
+        self.0.to_bytes().1
+    }
+
+    pub fn payload_hex(&self) -> String {
+        hex::encode(self.payload())
+    }
+
+    /// # Errors
+    /// Fails is serialisation fails
+    pub fn to_json(&self) -> JsResult<PrivateKeyJson> {
+        self.try_into()
+    }
+}
+
+/// Pair of Public and Private keys.
+#[derive(Debug, Clone)]
+#[wasm_bindgen]
+pub struct KeyPair(iroha_crypto::KeyPair);
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "KeyPairJson")]
+    pub type KeyPairJson;
+}
+
+impl TryFrom<&KeyPair> for KeyPairJson {
+    type Error = JsError;
+
+    fn try_from(value: &KeyPair) -> Result<Self, Self::Error> {
+        Ok(KeyPairJson {
+            obj: serde_wasm_bindgen::to_value(&value.0)?,
+        })
+    }
+}
+
+impl TryFrom<KeyPairJson> for KeyPair {
+    type Error = JsError;
+
+    fn try_from(value: KeyPairJson) -> Result<Self, Self::Error> {
+        let inner: iroha_crypto::KeyPair = serde_wasm_bindgen::from_value(value.obj)?;
+        Ok(Self(inner))
+    }
+}
+
+#[wasm_bindgen]
+impl KeyPair {
+    /// # Errors
+    /// Fails if deserialization fails
+    pub fn from_json(value: KeyPairJson) -> JsResult<KeyPair> {
+        Self::try_from(value)
+    }
+
+    /// Generate a random key pair
+    ///
+    /// # Errors
+    /// If passed algorithm is not valid.
+    pub fn random(algorithm: Option<AlgorithmJsStr>) -> JsResult<KeyPair> {
+        let algorithm = algorithm
+            .map(iroha_crypto::Algorithm::try_from)
+            .transpose()?
+            .unwrap_or_default();
+        let inner = iroha_crypto::KeyPair::random_with_algorithm(algorithm);
+        Ok(Self(inner))
+    }
+
+    /// Construct a key pair from its components
+    ///
+    /// # Errors
+    /// If public and private keys don’t match, i.e. if they don’t make a pair
+    pub fn from_parts(public_key: &PublicKey, private_key: &PrivateKey) -> JsResult<KeyPair> {
+        let inner = iroha_crypto::KeyPair::new(public_key.0.clone(), private_key.0.clone())
+            .wrap_js_error()?;
+        Ok(Self(inner))
+    }
+
+    pub fn derive_from_seed(seed: BytesJs, algorithm: Option<AlgorithmJsStr>) -> JsResult<KeyPair> {
+        let algorithm = algorithm
+            .map(iroha_crypto::Algorithm::try_from)
+            .transpose()?
+            .unwrap_or_default();
+        let inner = iroha_crypto::KeyPair::from_seed(seed.try_into()?, algorithm);
+        Ok(Self(inner))
+    }
+
+    pub fn derive_from_private_key(key: &PrivateKey) -> JsResult<KeyPair> {
+        let inner = iroha_crypto::KeyPair::from(key.0.clone());
+        Ok(Self(inner))
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn algorithm(&self) -> AlgorithmJsStr {
+        self.0.algorithm().into()
+    }
+
+    pub fn public_key(&self) -> PublicKey {
+        let inner = self.0.public_key().clone();
+        PublicKey(inner)
+    }
+
+    pub fn private_key(&self) -> PrivateKey {
+        let inner = self.0.private_key().clone();
+        PrivateKey(inner)
+    }
+
+    /// # Errors
+    /// Fails if serialisation fails
+    pub fn to_json(&self) -> JsResult<KeyPairJson> {
+        self.try_into()
+    }
+}
+
+/// Represents the signature of the data
+#[derive(Debug, Clone)]
+#[wasm_bindgen]
+pub struct Signature(iroha_crypto::Signature);
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "SignatureJson")]
+    pub type SignatureJson;
+}
+
+impl TryFrom<SignatureJson> for Signature {
+    type Error = JsError;
+
+    fn try_from(value: SignatureJson) -> Result<Self, Self::Error> {
+        let inner: iroha_crypto::Signature = serde_wasm_bindgen::from_value(value.obj)?;
+        Ok(Self(inner))
+    }
+}
+
+impl TryFrom<&Signature> for SignatureJson {
+    type Error = JsError;
+
+    fn try_from(value: &Signature) -> Result<Self, Self::Error> {
+        Ok(SignatureJson {
+            obj: serde_wasm_bindgen::to_value(&value.0)?,
+        })
+    }
+}
+
+#[wasm_bindgen]
+impl Signature {
+    /// # Errors
+    /// If failed to deserialise JSON
+    pub fn from_json(value: SignatureJson) -> JsResult<Signature> {
+        Self::try_from(value)
+    }
+
+    /// Construct the signature from raw components received from elsewhere
+    ///
+    /// # Errors
+    /// - Invalid bytes input
+    pub fn from_bytes(public_key: &PublicKey, payload: BytesJs) -> JsResult<Signature> {
+        let payload: Vec<u8> = payload.try_into()?;
+        let inner = iroha_crypto::Signature::from_bytes(public_key.0.clone(), &payload);
+        Ok(Self(inner))
+    }
+
+    /// Creates new signature by signing the payload via the key pair's private key.
+    ///
+    /// # Errors
+    /// If parsing bytes input fails
+    #[wasm_bindgen(constructor)]
+    pub fn new(key_pair: &KeyPair, payload: BytesJs) -> JsResult<Signature> {
+        let payload: Vec<u8> = payload.try_into()?;
+        let inner = iroha_crypto::Signature::new(&key_pair.0, &payload);
+        Ok(Self(inner))
+    }
+
+    /// Verify `payload` using signed data and the signature's public key
+    ///
+    /// # Errors
+    /// - If parsing of bytes input fails
+    /// - If failed to construct verify error
+    pub fn verify(&self, payload: BytesJs) -> JsResult<VerifyResultJs> {
+        let payload: Vec<_> = payload.try_into()?;
+        let result = self.0.verify(&payload).try_into()?;
+        Ok(result)
+    }
+
+    pub fn public_key(&self) -> PublicKey {
+        let inner = self.0.public_key().clone();
+        PublicKey(inner)
+    }
+
+    pub fn payload(&self) -> Vec<u8> {
+        self.0.payload().to_vec()
+    }
+
+    pub fn payload_hex(&self) -> String {
+        hex::encode(self.0.payload())
+    }
+
+    /// # Errors
+    /// If conversion fails
+    pub fn to_json(&self) -> JsResult<SignatureJson> {
+        self.try_into()
+    }
+}
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(typescript_type = "VerifyResult")]
+    pub type VerifyResultJs;
+}
+
+impl TryFrom<Result<(), iroha_crypto::error::Error>> for VerifyResultJs {
+    type Error = serde_wasm_bindgen::Error;
+
+    fn try_from(value: Result<(), iroha_crypto::error::Error>) -> Result<Self, Self::Error> {
+        #[derive(serde::Serialize)]
+        #[serde(tag = "t")]
+        enum VerifyResultSer {
+            #[serde(rename(serialize = "ok"))]
+            Ok,
+            #[serde(rename(serialize = "err"))]
+            Err { error: String },
+        }
+
+        let serializable = match value {
+            Ok(()) => VerifyResultSer::Ok,
+            Err(error) => VerifyResultSer::Err {
+                error: error.to_string(),
+            },
+        };
+
+        let js_value = serde_wasm_bindgen::to_value(&serializable)?;
+
+        Ok(Self { obj: js_value })
+    }
+}
+
+#[wasm_bindgen(start)]
+pub fn main_js() {
+    utils::set_panic_hook();
 }

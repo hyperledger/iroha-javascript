@@ -56,7 +56,7 @@ export async function runCargoBuild(crate: string): Promise<void> {
     env: {
       // Temporary workaround until https://github.com/hyperledger/iroha/pull/4015
       // is not backported into `iroha2-stable`
-      RUSTFLAGS: '-A missing-docs',
+      RUSTFLAGS: '-A missing-docs -A unused',
     },
   })
   consola.debug(`Spawn %o`, process.spawnargs)

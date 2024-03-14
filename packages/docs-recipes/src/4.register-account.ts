@@ -1,5 +1,5 @@
 import { Client, ToriiRequirementsForApiHttp, getCryptoAnyway } from '@iroha2/client'
-import { freeScope } from '@iroha2/crypto-core'
+import { Bytes, freeScope } from '@iroha2/crypto-core'
 import { sugar } from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 
@@ -11,7 +11,7 @@ const crypto = getCryptoAnyway()
 
 // generating the key pair
 const accountKeyPair = freeScope((scope) => {
-  const pair = crypto.KeyGenConfiguration.default().useSeed('hex', 'abcd1122').generate()
+  const pair = crypto.KeyPair.deriveFromSeed(Bytes.hex('abcd1122'))
   scope.forget(pair)
   return pair
 })

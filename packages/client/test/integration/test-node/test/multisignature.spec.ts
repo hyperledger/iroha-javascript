@@ -10,7 +10,7 @@ import {
   makeSignedTransaction,
   makeTransactionPayload,
 } from '@iroha2/client'
-import { freeScope } from '@iroha2/crypto-core'
+import { freeScope, Bytes } from '@iroha2/crypto-core'
 import { datamodel, sugar } from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 import { produce } from 'immer'
@@ -32,8 +32,8 @@ describe('MST (Multi-Signature Transaction)', () => {
 
     const KEYS = freeScope((scope) => {
       const keys = [
-        crypto.KeyGenConfiguration.default().useSeed('hex', '001122').generate(),
-        crypto.KeyGenConfiguration.default().useSeed('hex', '332211').generate(),
+        crypto.KeyPair.deriveFromSeed(Bytes.hex('001122')),
+        crypto.KeyPair.deriveFromSeed(Bytes.hex('332211')),
       ] as const
 
       for (const x of keys) scope.forget(x)
@@ -116,7 +116,7 @@ describe('MST (Multi-Signature Transaction)', () => {
       'V1',
       datamodel.SignedTransactionV1({
         payload: mintTransactionPayload,
-        signatures: datamodel.SortedVecSignature([signer1.sign('array', txHash)]),
+        signatures: datamodel.SortedVecSignature([signer1.sign(Bytes.array(txHash))]),
       }),
     )
 
@@ -156,7 +156,7 @@ describe('MST (Multi-Signature Transaction)', () => {
       // we use `produce` from `immer` library
       // it allows us to produce a new value from `tx1` without touching it in a declarative way
       produce(tx1, (draft) => {
-        draft.enum.content.signatures.push(signer2.sign('array', txHash))
+        draft.enum.content.signatures.push(signer2.sign(Bytes.array(txHash)))
       })
 
     await blocks.wait(async () => {

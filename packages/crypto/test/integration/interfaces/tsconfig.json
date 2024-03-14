@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "skipLibCheck": false,
+    "skipLibCheck": true, // there is too much fragility out of our control
     "skipDefaultLibCheck": true
   },
   "include": ["test"]
