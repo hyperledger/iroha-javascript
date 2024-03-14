@@ -1,57 +1,14 @@
-import { Torii, type ToriiRequirementsForApiHttp, setCrypto } from '@iroha2/client'
-import { FREE_HEAP } from '@iroha2/crypto-core'
-import { crypto } from '@iroha2/crypto-target-node'
-import { type RustResult, Logger as ScaleLogger, datamodel, sugar, variant } from '@iroha2/data-model'
-import * as TestPeer from '@iroha2/test-peer'
+import { Torii } from '@iroha2/client'
+import { type RustResult, datamodel, sugar, variant } from '@iroha2/data-model'
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { Seq } from 'immutable'
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest'
-import { delay } from '../../util'
-import { clientFactory, keyPair } from './test-util'
+import { describe, expect, test } from 'vitest'
+import { clientFactory, setupPeerTestsLifecycle } from './util'
 import { pipe } from 'fp-ts/function'
 
-// for debugging convenience
-new ScaleLogger().mount()
-setCrypto(crypto)
+setupPeerTestsLifecycle()
 
-let startedPeer: TestPeer.StartPeerReturn | null = null
-
-async function killStartedPeer() {
-  await startedPeer?.kill()
-  startedPeer = null
-}
-
-async function waitForGenesisCommitted(pre: ToriiRequirementsForApiHttp) {
-  while (true) {
-    const { blocks } = await Torii.getStatus(pre)
-    if (blocks >= 1) return
-    await delay(50)
-  }
-}
-
-// and now tests...
-
-beforeAll(async () => {
-  await TestPeer.clearAll()
-  await TestPeer.prepareConfiguration()
-})
-
-beforeEach(async () => {
-  await TestPeer.clearPeerStorage()
-  startedPeer = await TestPeer.startPeer()
-  await waitForGenesisCommitted(clientFactory().pre)
-})
-
-afterEach(async () => {
-  await killStartedPeer()
-})
-
-afterAll(async () => {
-  keyPair.free()
-  expect(FREE_HEAP.size).toEqual(0)
-})
-
-// Actually it is already tested within `@iroha2/test-peer`
+// Actually, it is already tested within `@iroha2/test-peer`
 test('Peer is healthy', async () => {
   const { pre } = clientFactory()
 
@@ -207,10 +164,6 @@ test('When querying for not existing domain, returns FindError', async () => {
 
   expect(result.tag === 'Err').toBe(true)
   expect(result.as('Err').enum.as('QueryFailed').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
-})
-
-test('Multisignature', async () => {
-  await import('./multisignature')
 })
 
 describe('Events API', () => {
