@@ -18,8 +18,12 @@ setupPeerTestsLifecycle()
 describe('Compatibility Matrix tests', () => {
   // Based on https://github.com/AlexStroke/iroha-java/blob/007a9ac55991cd8a2b519e62a10144156d9f8301/modules/client/src/test/kotlin/jp/co/soramitsu/iroha2/InstructionsTest.kt#L134
   test('register domain', async (ctx) => {
-    await allure.feature(ctx, 'Domains')
-    await allure.story(ctx, 'Account registers a domain')
+    await allure.owner(ctx, "dulger");
+    await allure.label(ctx, "feature", "Domains");
+    await allure.label(ctx, "permission", "no_permission_required");
+    await allure.label(ctx, "sdk", "Java Script");
+    await allure.label(ctx, "sdk_test_id", "register_domain");
+    await allure.label(ctx, "story", "Account registers a domain");
     // TODO: add more Allure context
 
     const DOMAIN_NAME = 'new_domain_name'

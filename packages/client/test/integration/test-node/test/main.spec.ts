@@ -8,13 +8,6 @@ import { pipe } from 'fp-ts/function'
 
 setupPeerTestsLifecycle()
 
-// Actually, it is already tested within `@iroha2/test-peer`
-test('Peer is healthy', async () => {
-  const { pre } = clientFactory()
-
-  expect(await Torii.getHealth(pre)).toEqual(variant('Ok', null) as RustResult<null, any>)
-})
-
 test('AddAsset instruction with name length more than limit is not committed', async () => {
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
