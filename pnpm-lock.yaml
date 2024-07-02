@@ -3,6 +3,13 @@ lockfileVersion: '6.0'
 importers:
 
   .:
+    dependencies:
+      '@iroha2/client':
+        specifier: workspace:^
+        version: link:packages/client
+      '@iroha2/crypto-target-web':
+        specifier: workspace:^
+        version: link:packages/crypto/packages/target-web
     devDependencies:
       '@changesets/cli':
         specifier: ^2.26.2
@@ -4812,7 +4819,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /jsprim@2.0.2:
