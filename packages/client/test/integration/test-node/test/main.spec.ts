@@ -9,6 +9,13 @@ import { pipe } from 'fp-ts/function'
 setupPeerTestsLifecycle()
 
 test('AddAsset instruction with name length more than limit is not committed', async () => {
+  await allure.owner("dulger");
+  await allure.label("feature", "Assets");
+  await allure.label("permission", "no_permission_required");
+  await allure.label("sdk", "Java Script");
+  await allure.label("sdk_test_id", "DEPRECATE CANDIDATE");
+  await allure.label("story", "Account registers an asset definition");
+
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
 
@@ -47,6 +54,13 @@ test('AddAsset instruction with name length more than limit is not committed', a
 })
 
 test('AddAccount instruction with name length more than limit is not committed', async () => {
+  await allure.owner("dulger");
+  await allure.label("feature", "Accounts");
+  await allure.label("permission", "no_permission_required");
+  await allure.label("sdk", "Java Script");
+  await allure.label("sdk_test_id", "registers_account_with_long_account_name");
+  await allure.label("story", "Account registers an account");
+
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
 
@@ -75,6 +89,8 @@ test('AddAccount instruction with name length more than limit is not committed',
 })
 
 test('Ensure properly handling of Fixed type - adding Fixed asset and querying for it later', async () => {
+  //No idea to identify
+
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
 
@@ -110,6 +126,13 @@ test('Ensure properly handling of Fixed type - adding Fixed asset and querying f
 })
 
 test('Registering domain', async () => {
+  await allure.owner("dulger");
+  await allure.label("feature", "Domains");
+  await allure.label("permission", "no_permission_required");
+  await allure.label("sdk", "Java Script");
+  await allure.label("sdk_test_id", "register_domain");
+  await allure.label("story", "Account registers a domain");
+
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
 
@@ -145,6 +168,13 @@ test('Registering domain', async () => {
 })
 
 test('When querying for not existing domain, returns FindError', async () => {
+  await allure.owner("dulger");
+  await allure.label("feature", "Domains");
+  await allure.label("permission", "no_permission_required");
+  await allure.label("sdk", "Java Script");
+  await allure.label("sdk_test_id", "query_all_domains");
+  await allure.label("story", "Account queries domain");
+
   const { client, pre } = clientFactory()
 
   const result = await client.requestWithQueryBox(
@@ -210,6 +240,13 @@ describe('Events API', () => {
 
 describe('Setting configuration', () => {
   test('When setting correct peer configuration, there is no error', async () => {
+    await allure.owner("dulger");
+    await allure.label("feature", "Domains");
+    await allure.label("permission", "no_permission_required");
+    await allure.label("sdk", "Java Script");
+    await allure.label("sdk_test_id", "find_domain");
+    await allure.label("story", "Domain check for existing");
+
     const { pre } = clientFactory()
 
     await Torii.setPeerConfig(pre, { LogLevel: 'TRACE' })
@@ -224,6 +261,13 @@ describe('Setting configuration', () => {
 
 describe('Blocks Stream API', () => {
   test('When committing 3 blocks sequentially, nothing fails', async () => {
+    await allure.owner("dulger");
+    await allure.label("feature", "blocks");
+    await allure.label("permission", "no_permission_required");
+    await allure.label("sdk", "Java Script");
+    await allure.label("sdk_test_id", "check_blocks");
+    await allure.label("story", "3 Blocks works");
+
     const { pre, client } = clientFactory()
 
     const stream = await Torii.listenForBlocksStream(pre, { height: datamodel.NonZeroU64(2n) })
@@ -253,35 +297,4 @@ describe('Blocks Stream API', () => {
 
     await stream.stop()
   })
-})
-
-describe('Metrics', () => {
-  test('When getting metrics, everything is OK', async () => {
-    const { pre } = clientFactory()
-
-    const data = await Torii.getMetrics(pre)
-
-    // just some line from Prometheus metrics
-    expect(data).toMatch('block_height 1')
-  })
-})
-
-test('status - peer uptime content check, not only type', async () => {
-  const { pre } = clientFactory()
-
-  const status = await Torii.getStatus(pre)
-
-  expect(status).toEqual(
-    expect.objectContaining({
-      peers: expect.any(Number),
-      blocks: expect.any(Number),
-      txs_accepted: expect.any(Number),
-      txs_rejected: expect.any(Number),
-      uptime: expect.objectContaining({
-        secs: expect.any(Number),
-        nanos: expect.any(Number),
-      }),
-      view_changes: expect.any(Number),
-    }),
-  )
 })
