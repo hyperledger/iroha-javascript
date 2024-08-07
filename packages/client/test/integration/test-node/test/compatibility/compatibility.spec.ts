@@ -5,7 +5,7 @@
 
 import * as allure from 'allure-vitest'
 import { pipe } from 'fp-ts/function'
-import { beforeEach, describe, expect, test } from 'vitest'
+import { beforeEach, describe, expect, TaskContext, test } from 'vitest'
 import { clientFactory, setupPeerTestsLifecycle } from '../util'
 import { datamodel, sugar } from '@iroha2/data-model'
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
@@ -13,21 +13,31 @@ import { Seq } from 'immutable'
 
 setupPeerTestsLifecycle()
 
-// TODO: consider adding shared context for tests?
-// beforeEach(() => { ... })
 beforeEach(async (ctx) => {
   await allure.owner(ctx, 'dulger')
   await allure.label(ctx, 'permission', 'no_permission_required')
   await allure.label(ctx, 'sdk', 'Java Script')
 })
+
+async function assignAllureAttributes(
+    ctx: TaskContext,
+    attrs: { id: string, feature: string, sdkTestId: string, story: string }
+) {
+  await allure.label(ctx, 'allureId', String(attrs.id))
+  await allure.label(ctx, 'feature', attrs.feature)
+  await allure.label(ctx, 'sdk_test_id', attrs.sdkTestId)
+  await allure.label(ctx, 'story', attrs.story)
+}
 // Read Allure API: https://allurereport.org/docs/vitest-reference/
 describe('Compatibility Matrix tests', () => {
   // Based on https://github.com/AlexStroke/iroha-java/blob/007a9ac55991cd8a2b519e62a10144156d9f8301/modules/client/src/test/kotlin/jp/co/soramitsu/iroha2/InstructionsTest.kt#L134
   test('Register domain', async (ctx) => {
-    await allure.allureId(ctx, '4075')
-    await allure.label(ctx, 'feature', 'Domains')
-    await allure.label(ctx, 'sdk_test_id', 'register_domain')
-    await allure.label(ctx, 'story', 'Account registers a domain')
+    await assignAllureAttributes(ctx, {
+      id: '4075',
+      feature: 'Domain',
+      story: 'Account registers a domain',
+      sdkTestId: 'register_domain',
+    })
 
     const DOMAIN_NAME = 'new_domain_name'
     let result
@@ -68,10 +78,12 @@ describe('Compatibility Matrix tests', () => {
 })
 
 test('Register asset with too long type', async (ctx) => {
-  await allure.allureId(ctx, '3739')
-  await allure.label(ctx, 'feature', 'Assets')
-  await allure.label(ctx, 'sdk_test_id', 'register_asset_with_too_long_type')
-  await allure.label(ctx, 'story', 'Account registers an asset with too long type')
+  await assignAllureAttributes(ctx, {
+    id: '3739',
+    feature: 'Assets',
+    story: 'Account registers an asset with too long type',
+    sdkTestId: 'register_asset_with_too_long_type',
+  })
 
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
@@ -123,10 +135,12 @@ test('Register asset with too long type', async (ctx) => {
 })
 
 test('Register an account with long account name', async (ctx) => {
-  await allure.allureId(ctx, '4077')
-  await allure.label(ctx, 'feature', 'Account')
-  await allure.label(ctx, 'sdk_test_id', 'register_account_with_long_account_name')
-  await allure.label(ctx, 'story', 'Register an account with long name')
+  await assignAllureAttributes(ctx, {
+    id: '4077',
+    feature: 'Account',
+    story: 'Register an account with long name',
+    sdkTestId: 'register_account_with_long_account_name',
+  })
 
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
@@ -162,9 +176,12 @@ test('Register an account with long account name', async (ctx) => {
 })
 
 test('Mint fixed asset', async (ctx) => {
-  await allure.label(ctx, 'feature', 'Asset')
-  await allure.label(ctx, 'sdk_test_id', 'mint_fixed_asset')
-  await allure.label(ctx, 'story', 'Mint a fixed asset')
+  await assignAllureAttributes(ctx, {
+    id: '4683',
+    feature: 'Asset',
+    story: 'Mint a fixed asset',
+    sdkTestId: 'mint_fixed_asset',
+  })
 
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
@@ -201,10 +218,12 @@ test('Mint fixed asset', async (ctx) => {
 })
 
 test('Query not existing domain', async (ctx) => {
-  await allure.allureId(ctx, '4076')
-  await allure.label(ctx, 'feature', 'Domain')
-  await allure.label(ctx, 'sdk_test_id', 'query_not_existing_domain')
-  await allure.label(ctx, 'story', 'Query not existing domain')
+  await assignAllureAttributes(ctx, {
+    id: '4076',
+    feature: 'Domain',
+    story: 'Query not existing domain',
+    sdkTestId: 'query_not_existing_domain',
+  })
 
   const { client, pre } = clientFactory()
   let result

@@ -14,7 +14,9 @@ beforeEach(async (ctx) => {
 })
 
 describe('Blocks Stream API', () => {
-  test('When committing 3 blocks sequentially, nothing fails', async () => {
+  test('When committing 3 blocks sequentially, nothing fails', async (ctx) => {
+    await allure.allureId(ctx, '4607')
+
     const { pre, client } = clientFactory()
 
     const stream = await Torii.listenForBlocksStream(pre, { height: datamodel.NonZeroU64(2n) })
@@ -47,7 +49,9 @@ describe('Blocks Stream API', () => {
 })
 
 describe('Events API', () => {
-  test('transaction-committed event is triggered after AddAsset instruction has been committed', async () => {
+  test('transaction-committed event is triggered after AddAsset instruction has been committed', async (ctx) => {
+    await allure.allureId(ctx, '4608')
+
     const { pre, client } = clientFactory()
 
     const filter = sugar.filter.pipeline({
