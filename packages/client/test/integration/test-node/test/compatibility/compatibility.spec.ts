@@ -5,7 +5,7 @@
 
 import * as allure from 'allure-vitest'
 import { pipe } from 'fp-ts/function'
-import { beforeEach, describe, expect, TaskContext, test } from 'vitest'
+import { describe, expect, TaskContext, test } from 'vitest'
 import { clientFactory, setupPeerTestsLifecycle } from '../util'
 import { datamodel, sugar } from '@iroha2/data-model'
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
@@ -13,27 +13,24 @@ import { Seq } from 'immutable'
 
 setupPeerTestsLifecycle()
 
-beforeEach(async (ctx) => {
-  await allure.owner(ctx, 'dulger')
-  await allure.label(ctx, 'permission', 'no_permission_required')
-  await allure.label(ctx, 'sdk', 'Java Script')
-})
-
-async function assignAllureAttributes(
+async function annotateAllure(
     ctx: TaskContext,
-    attrs: { id: string, feature: string, sdkTestId: string, story: string }
+    attrs: { id: number, feature: string, sdkTestId: string, story: string }
 ) {
   await allure.label(ctx, 'allureId', String(attrs.id))
   await allure.label(ctx, 'feature', attrs.feature)
   await allure.label(ctx, 'sdk_test_id', attrs.sdkTestId)
   await allure.label(ctx, 'story', attrs.story)
+  await allure.owner(ctx, 'dulger')
+  await allure.label(ctx, 'permission', 'no_permission_required')
+  await allure.label(ctx, 'sdk', 'Java Script')
 }
 // Read Allure API: https://allurereport.org/docs/vitest-reference/
 describe('Compatibility Matrix tests', () => {
   // Based on https://github.com/AlexStroke/iroha-java/blob/007a9ac55991cd8a2b519e62a10144156d9f8301/modules/client/src/test/kotlin/jp/co/soramitsu/iroha2/InstructionsTest.kt#L134
   test('Register domain', async (ctx) => {
-    await assignAllureAttributes(ctx, {
-      id: '4075',
+    await annotateAllure(ctx, {
+      id: 4075,
       feature: 'Domain',
       story: 'Account registers a domain',
       sdkTestId: 'register_domain',
@@ -78,8 +75,8 @@ describe('Compatibility Matrix tests', () => {
 })
 
 test('Register asset with too long type', async (ctx) => {
-  await assignAllureAttributes(ctx, {
-    id: '3739',
+  await annotateAllure(ctx, {
+    id: 3739,
     feature: 'Assets',
     story: 'Account registers an asset with too long type',
     sdkTestId: 'register_asset_with_too_long_type',
@@ -135,8 +132,8 @@ test('Register asset with too long type', async (ctx) => {
 })
 
 test('Register an account with long account name', async (ctx) => {
-  await assignAllureAttributes(ctx, {
-    id: '4077',
+  await annotateAllure(ctx, {
+    id: 4077,
     feature: 'Account',
     story: 'Register an account with long name',
     sdkTestId: 'register_account_with_long_account_name',
@@ -176,8 +173,8 @@ test('Register an account with long account name', async (ctx) => {
 })
 
 test('Mint fixed asset', async (ctx) => {
-  await assignAllureAttributes(ctx, {
-    id: '4683',
+  await annotateAllure(ctx, {
+    id: 4683,
     feature: 'Asset',
     story: 'Mint a fixed asset',
     sdkTestId: 'mint_fixed_asset',
@@ -218,8 +215,8 @@ test('Mint fixed asset', async (ctx) => {
 })
 
 test('Query not existing domain', async (ctx) => {
-  await assignAllureAttributes(ctx, {
-    id: '4076',
+  await annotateAllure(ctx, {
+    id: 4076,
     feature: 'Domain',
     story: 'Query not existing domain',
     sdkTestId: 'query_not_existing_domain',
