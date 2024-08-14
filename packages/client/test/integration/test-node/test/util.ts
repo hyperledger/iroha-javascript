@@ -1,10 +1,9 @@
-import { CLIENT_CONFIG } from '@iroha2/test-configuration'
-import { Client, Signer, Torii, type ToriiRequirementsForApiHttp } from '@iroha2/client'
+import { Client } from '@iroha2/client'
 import { adapter as WS } from '@iroha2/client/web-socket/node'
-import { crypto } from '@iroha2/crypto-target-node'
-import { Free } from '@iroha2/crypto-core'
-import { datamodel } from '@iroha2/data-model'
-import { afterEach, beforeAll, beforeEach, onTestFinished } from 'vitest'
+import { ACCOUNT_KEY_PAIR, CHAIN, DOMAIN } from '@iroha2/test-configuration'
+import { type Free, KeyPair, PrivateKey, PublicKey } from '@iroha2/crypto-core'
+import type { datamodel } from '@iroha2/data-model'
+import { onTestFinished } from 'vitest'
 import { delay } from '../../util'
 import * as TestPeer from '@iroha2/test-peer'
 
@@ -13,72 +12,32 @@ export function freeOnTestFinished<T extends Free>(object: T): T {
   return object
 }
 
-/**
- * Sets up Vitest hooks to run a clean Iroha peer
- * for each test.
- */
-export function setupPeerTestsLifecycle() {
-  let startedPeer: TestPeer.StartPeerReturn | null = null
-
-  async function killStartedPeer() {
-    await startedPeer?.kill()
-    startedPeer = null
+async function waitForGenesisCommitted(f: () => Promise<datamodel.Status>) {
+  while (true) {
+    const { blocks } = await f()
+    if (blocks >= 1) return
+    await delay(50)
   }
-
-  async function waitForGenesisCommitted(pre: ToriiRequirementsForApiHttp) {
-    while (true) {
-      const { blocks } = await Torii.getStatus(pre)
-      if (blocks >= 1) return
-      await delay(50)
-    }
-  }
-
-  beforeAll(async () => {
-    await TestPeer.clearAll()
-    await TestPeer.prepareConfiguration()
-  })
-
-  beforeEach(async () => {
-    await TestPeer.clearPeerStorage()
-    startedPeer = await TestPeer.startPeer()
-    await waitForGenesisCommitted(clientFactory().pre)
-  })
-
-  afterEach(async () => {
-    await killStartedPeer()
-  })
 }
 
-/**
- * Expected to be called within a test suite
- */
-export function clientFactory() {
-  const keyPair = freeOnTestFinished(crypto.KeyPair.fromJSON(CLIENT_CONFIG.keyPair))
+export async function usePeer() {
+  const { kill, toriiURL } = await TestPeer.startPeer()
+  onTestFinished(kill)
 
-  const { accountId } = CLIENT_CONFIG
+  const accountPublicKey = freeOnTestFinished(PublicKey.fromMultihash(ACCOUNT_KEY_PAIR.publicKey))
+  const accountPrivateKey = freeOnTestFinished(PrivateKey.fromMultihash(ACCOUNT_KEY_PAIR.privateKey))
+  const accountKeyPair = freeOnTestFinished(KeyPair.fromParts(accountPublicKey, accountPrivateKey))
+  const client = new Client({
+    toriiURL,
+    http: fetch,
+    ws: WS,
+    chain: CHAIN,
+    accountDomain: DOMAIN,
+    accountKeyPair,
+  })
 
-  const signer = new Signer(accountId, keyPair)
+  await waitForGenesisCommitted(() => client.getStatus())
 
-  const pre = { ...CLIENT_CONFIG.torii, ws: WS, fetch }
-
-  const client = new Client({ signer })
-
-  const getBlocksListener = async () => {
-    const stream = await Torii.listenForBlocksStream(pre, {
-      // 1 is genesis block, which is committed before each test
-      height: datamodel.NonZeroU64(2n),
-    })
-
-    return {
-      /**
-       * Do an operation that should trigger a block commit, and wait until the block
-       * is emitted
-       */
-      async wait(fn: () => Promise<void>) {
-        await Promise.all([stream.ee.once('block'), fn()])
-      },
-    }
-  }
-
-  return { signer, pre, client, accountId, keyPair, getBlocksListener }
+  // TODO: export more?
+  return { client }
 }

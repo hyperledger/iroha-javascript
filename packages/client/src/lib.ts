@@ -1,357 +1,288 @@
 /**
+ * @module @iroha2/client
+ */
+
+/**
  * @packageDocumentation
  *
  * Client library to interact with Iroha v2 Peer. Library implements Transactions, Queries,
  * Events, Status & Health check.
  */
 
-import { Bytes, cryptoTypes, freeScope } from '@iroha2/crypto-core'
-import { RustResult, datamodel, variant } from '@iroha2/data-model'
-import { Except } from 'type-fest'
-import { SetupBlocksStreamParams, SetupBlocksStreamReturn, setupBlocksStream } from './blocks-stream'
+import type { KeyPair } from '@iroha2/crypto-core'
+import { freeScope } from '@iroha2/crypto-core'
+import { datamodel, signTransaction, transactionHash } from '@iroha2/data-model'
+import type { Except } from 'type-fest'
+import type { SetupBlocksStreamParams } from './blocks-stream'
+import { setupBlocksStream } from './blocks-stream'
 import {
   ENDPOINT_CONFIGURATION,
   ENDPOINT_HEALTH,
   ENDPOINT_METRICS,
-  ENDPOINT_QUERY,
   ENDPOINT_STATUS,
   ENDPOINT_TRANSACTION,
   HEALTHY_RESPONSE,
 } from './const'
-import { SetupEventsParams, SetupEventsReturn, setupEvents } from './events'
-import { cryptoHash, parseJsonWithBigInts } from './util'
-import { IsomorphicWebSocketAdapter } from './web-socket/types'
+import type { SetupEventsParams } from './events'
+import { setupEvents } from './events'
+import type { IsomorphicWebSocketAdapter } from './web-socket/types'
+import defer from 'p-defer'
+import type { z } from 'zod'
+import { doQuery, type QueryOutput, type QueryPayload } from './query'
 
 type Fetch = typeof fetch
 
-type KeyPair = cryptoTypes.KeyPair
-
 export interface SetPeerConfigParams {
-  LogLevel?: 'WARN' | 'ERROR' | 'INFO' | 'DEBUG' | 'TRACE'
-}
-
-export class Signer {
-  public readonly keyPair: KeyPair
-  public readonly accountId: datamodel.AccountId
-
-  public constructor(accountId: datamodel.AccountId, keyPair: KeyPair) {
-    this.accountId = accountId
-    this.keyPair = keyPair
-  }
-
-  public sign(message: Bytes): datamodel.Signature {
-    return freeScope(() => {
-      const signature = this.keyPair.sign(message)
-      const publicKey = signature.publicKey().toDataModel()
-
-      return datamodel.Signature({
-        public_key: publicKey,
-        payload: signature.payload(),
-      })
-    })
+  logger: {
+    level: datamodel.LogLevel
   }
 }
 
-// #region Transaction helpers
-
-export interface MakeTransactionPayloadParams {
-  accountId: datamodel.AccountId
-  executable: datamodel.Executable
-  ttl?: datamodel.NonZeroU64
-  /**
-   * @default Date.now()
-   */
-  creationTime?: bigint
-  /**
-   * @default // none
-   */
-  nonce?: datamodel.NonZeroU32
-  metadata?: datamodel.SortedMapNameValue
-}
-
-export function makeTransactionPayload(params: MakeTransactionPayloadParams): datamodel.TransactionPayload {
-  return datamodel.TransactionPayload({
-    authority: params.accountId,
-    instructions: params.executable,
-    time_to_live_ms: params.ttl ? datamodel.OptionNonZeroU64('Some', params.ttl) : datamodel.OptionNonZeroU64('None'),
-    nonce: params?.nonce ? datamodel.OptionNonZeroU32('Some', params.nonce) : datamodel.OptionNonZeroU32('None'),
-    metadata: params?.metadata ?? datamodel.SortedMapNameValue(new Map()),
-    creation_time_ms: params.creationTime ?? BigInt(Date.now()),
-  })
-}
-
-export function computeTransactionHash(payload: datamodel.TransactionPayload): Uint8Array {
-  return cryptoHash(Bytes.array(datamodel.TransactionPayload.toBuffer(payload)))
-}
-
-export function signTransaction(payload: datamodel.TransactionPayload, signer: Signer): datamodel.Signature {
-  const hash = computeTransactionHash(payload)
-  return signer.sign(Bytes.array(hash))
-}
-
-export function makeSignedTransaction(
-  payload: datamodel.TransactionPayload,
-  signer: Signer,
-): datamodel.SignedTransaction {
-  const signature = signTransaction(payload, signer)
-  return datamodel.SignedTransaction(
-    'V1',
-    datamodel.SignedTransactionV1({
-      payload,
-      signatures: datamodel.SortedVecSignature([signature]),
-    }),
-  )
-}
-
-export function executableIntoSignedTransaction(params: {
-  signer: Signer
-  executable: datamodel.Executable
-  payloadParams?: Except<MakeTransactionPayloadParams, 'accountId' | 'executable'>
-}): datamodel.SignedTransaction {
-  return makeSignedTransaction(
-    makeTransactionPayload({
-      executable: params.executable,
-      accountId: params.signer.accountId,
-      ...params.payloadParams,
-    }),
-    params.signer,
-  )
-}
-
-// #endregion
-
-// #region Query helpers
-
-interface MakeQueryPayloadParams {
-  accountId: datamodel.AccountId
-  query: datamodel.QueryBox
-  /**
-   * @default PredicateBox('Raw', Predicate('Pass'))
-   */
-  filter?: datamodel.PredicateBox
-  timestampMs?: bigint
-}
-
-export function makeQueryPayload(params: MakeQueryPayloadParams): datamodel.QueryPayload {
-  return datamodel.QueryPayload({
-    authority: params.accountId,
-    query: params.query,
-    filter: params?.filter ?? datamodel.PredicateBox('Raw', datamodel.ValuePredicate('Pass')),
-  })
-}
-
-export function computeQueryHash(payload: datamodel.QueryPayload): Uint8Array {
-  return cryptoHash(Bytes.array(datamodel.QueryPayload.toBuffer(payload)))
-}
-
-export function signQuery(payload: datamodel.QueryPayload, signer: Signer): datamodel.Signature {
-  const hash = computeQueryHash(payload)
-  return signer.sign(Bytes.array(hash))
-}
-
-export function makeSignedQuery(payload: datamodel.QueryPayload, signer: Signer): datamodel.SignedQuery {
-  const signature = signQuery(payload, signer)
-  return datamodel.SignedQuery('V1', datamodel.SignedQueryV1({ payload, signature }))
-}
-
-export function queryBoxIntoSignedQuery(params: {
-  query: datamodel.QueryBox
-  signer: Signer
-  payloadParams?: Except<MakeQueryPayloadParams, 'accountId' | 'query'>
-}): datamodel.SignedQuery {
-  return makeSignedQuery(
-    makeQueryPayload({
-      query: params.query,
-      accountId: params.signer.accountId,
-      ...params.payloadParams,
-    }),
-    params.signer,
-  )
-}
-
-// #endregion
-
-// #region TORII
-
-export interface PeerStatus {
-  peers: bigint | number
-  blocks: bigint | number
-  txs_accepted: bigint | number
-  txs_rejected: bigint | number
-  uptime: {
-    secs: bigint | number
-    nanos: number
-  }
-  view_changes: bigint | number
-  queue_size: bigint | number
-}
-
-export interface ToriiRequirementsPartUrlApi {
-  apiURL: string
-}
-
-export interface ToriiRequirementsPartHttp {
-  fetch: Fetch
-}
-
-export interface ToriiRequirementsPartWebSocket {
+export interface CreateClientParams {
+  http: Fetch
   ws: IsomorphicWebSocketAdapter
+  toriiURL: string
+  chain: z.input<typeof datamodel.ChainId$schema>
+  accountDomain: z.input<typeof datamodel.DomainId$schema>
+  accountKeyPair: KeyPair
 }
 
-export type ToriiRequirementsForApiHttp = ToriiRequirementsPartUrlApi & ToriiRequirementsPartHttp
-
-export type ToriiRequirementsForApiWebSocket = ToriiRequirementsPartUrlApi & ToriiRequirementsPartWebSocket
-
-export type ToriiQueryResult = RustResult<datamodel.BatchedResponseV1Value, datamodel.ValidationFail>
-
-export interface ToriiApiHttp {
-  submit: (prerequisites: ToriiRequirementsForApiHttp, tx: datamodel.SignedTransaction) => Promise<void>
-  request: (prerequisites: ToriiRequirementsForApiHttp, query: datamodel.SignedQuery) => Promise<ToriiQueryResult>
-  getHealth: (prerequisites: ToriiRequirementsForApiHttp) => Promise<RustResult<null, string>>
-  setPeerConfig: (prerequisites: ToriiRequirementsForApiHttp, params: SetPeerConfigParams) => Promise<void>
-  getStatus: (prerequisites: ToriiRequirementsForApiHttp) => Promise<PeerStatus>
-  getMetrics: (prerequisites: ToriiRequirementsForApiHttp) => Promise<string>
-}
-
-export interface ToriiApiWebSocket {
-  listenForEvents: (
-    prerequisites: ToriiRequirementsForApiWebSocket,
-    params: Pick<SetupEventsParams, 'filter'>,
-  ) => Promise<SetupEventsReturn>
-  listenForBlocksStream: (
-    prerequisites: ToriiRequirementsForApiWebSocket,
-    params: Pick<SetupBlocksStreamParams, 'height'>,
-  ) => Promise<SetupBlocksStreamReturn>
-}
-
-export type ToriiOmnibus = ToriiApiHttp & ToriiApiWebSocket
-
-export const Torii: ToriiOmnibus = {
-  async submit(pre, tx) {
-    const body = datamodel.SignedTransaction.toBuffer(tx)
-
-    const response = await pre.fetch(pre.apiURL + ENDPOINT_TRANSACTION, {
-      body,
-      method: 'POST',
-    })
-
-    ResponseError.throwIfStatusIsNot(response, 200)
-  },
-
-  async request(pre, query) {
-    const queryBytes = datamodel.SignedQuery.toBuffer(query)
-    const response = await pre
-      .fetch(pre.apiURL + ENDPOINT_QUERY, {
-        method: 'POST',
-        body: queryBytes!,
-      })
-      .then()
-
-    const bytes = new Uint8Array(await response.arrayBuffer())
-
-    if (response.status === 200) {
-      // OK
-      const value: datamodel.BatchedResponseV1Value = datamodel.BatchedResponseValue.fromBuffer(bytes).enum.content
-      return variant('Ok', value)
-    } else {
-      // ERROR
-      const error = datamodel.ValidationFail.fromBuffer(bytes)
-      return variant('Err', error)
-    }
-  },
-
-  async getHealth(pre) {
-    let response: Response
-    try {
-      response = await pre.fetch(pre.apiURL + ENDPOINT_HEALTH)
-    } catch (err) {
-      return variant('Err', `Network error: ${String(err)}`)
-    }
-
-    ResponseError.throwIfStatusIsNot(response, 200)
-
-    const text = await response.text()
-    if (text !== HEALTHY_RESPONSE) {
-      return variant('Err', `Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`)
-    }
-
-    return variant('Ok', null)
-  },
-
-  async listenForEvents(pre, params: Pick<SetupEventsParams, 'filter'>) {
-    return setupEvents({
-      filter: params.filter,
-      toriiApiURL: pre.apiURL,
-      adapter: pre.ws,
-    })
-  },
-
-  async listenForBlocksStream(pre, params: Pick<SetupBlocksStreamParams, 'height'>) {
-    return setupBlocksStream({
-      height: params.height,
-      toriiApiURL: pre.apiURL,
-      adapter: pre.ws,
-    })
-  },
-
-  async getStatus(pre): Promise<PeerStatus> {
-    const response = await pre.fetch(pre.apiURL + ENDPOINT_STATUS)
-    ResponseError.throwIfStatusIsNot(response, 200)
-    return response.text().then(parseJsonWithBigInts)
-  },
-
-  async getMetrics(pre) {
-    return pre.fetch(pre.apiURL + ENDPOINT_METRICS).then((response) => {
-      ResponseError.throwIfStatusIsNot(response, 200)
-      return response.text()
-    })
-  },
-
-  async setPeerConfig(pre, params: SetPeerConfigParams) {
-    const response = await pre.fetch(pre.apiURL + ENDPOINT_CONFIGURATION, {
-      method: 'POST',
-      body: JSON.stringify(params),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    ResponseError.throwIfStatusIsNot(response, 200)
-  },
+export interface SubmitParams {
+  /**
+   * Whether to wait for the transaction to be accepted/rejected/expired.
+   * @default false
+   */
+  verify?: boolean
+  verifyAbort?: AbortSignal
+  payload?: Except<z.input<typeof datamodel.TransactionPayload$schema>, 'chain' | 'authority' | 'instructions'>
 }
 
 export class ResponseError extends Error {
-  public static throwIfStatusIsNot(response: Response, status: number) {
-    if (response.status !== status) throw new ResponseError(response)
+  public static async assertStatus(response: Response, status: number) {
+    if (response.status !== status) {
+      let message = 'got an error response'
+      if (/text\/plain/.test(response.headers.get('content-type') ?? '')) {
+        message = await response.text()
+      }
+      throw new ResponseError(response, message)
+    }
   }
 
-  public constructor(response: Response) {
-    super(`${response.status}: ${response.statusText}`)
+  public constructor(response: Response, message: string) {
+    super(`${response.status} (${response.statusText}): ${message}`)
   }
 }
 
-// #endregion
+export class TransactionRejectedError extends Error {
+  public reason: datamodel.TransactionRejectionReason
 
-// #region Client
+  public constructor(reason: datamodel.TransactionRejectionReason) {
+    // TODO: parse reason into a specific message
+    super('Transaction rejected')
+    this.reason = reason
+  }
+}
+
+export class TransactionExpiredError extends Error {
+  public constructor() {
+    super('Transaction expired')
+  }
+}
+
+export class QueryValidationError extends Error {
+  public reason: datamodel.ValidationFail
+
+  public constructor(reason: datamodel.ValidationFail) {
+    super('Query validation failed')
+    this.reason = reason
+  }
+}
 
 export class Client {
-  public readonly signer: Signer
+  public params: CreateClientParams
+  // public readonly signer: Signer
 
-  public constructor(params: { signer: Signer }) {
-    this.signer = params.signer
+  public constructor(params: CreateClientParams) {
+    this.params = params
   }
 
-  public async submitExecutable(pre: ToriiRequirementsForApiHttp, executable: datamodel.Executable) {
-    return Torii.submit(pre, executableIntoSignedTransaction({ executable, signer: this.signer }))
+  public accountId(): datamodel.AccountId {
+    return freeScope(() =>
+      datamodel.AccountId({
+        domain: this.params.accountDomain,
+        signatory: this.params.accountKeyPair.publicKey(),
+      }),
+    )
   }
 
-  public async requestWithQueryBox(pre: ToriiRequirementsForApiHttp, query: datamodel.QueryBox) {
-    return Torii.request(pre, queryBoxIntoSignedQuery({ query, signer: this.signer }))
+  public async submit(instructions: z.input<typeof datamodel.Executable$schema>, params?: SubmitParams) {
+    const payload = datamodel.TransactionPayload({
+      chain: this.params.chain,
+      authority: this.accountId(),
+      instructions,
+      ...params?.payload,
+    })
+    const tx = freeScope(() => signTransaction(payload, this.params.accountKeyPair.privateKey()))
+
+    if (params?.verify) {
+      const hash = freeScope(() => transactionHash(tx).payload())
+      const stream = await this.eventsStream({
+        filters: [
+          // TODO: include "status" when Iroha API is fixed about it
+          datamodel.EventFilterBox({
+            t: 'Pipeline',
+            value: {
+              t: 'Transaction',
+              value: {
+                // FIXME: fix data model, allow `null | Hash`
+                hash: { Some: hash },
+                // TODO: specify `status`, but now it requires `reason` which is Iroha API design problem
+              },
+            },
+          }),
+        ],
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+      const deferred = defer<void>()
+      stream.ee.on('event', (event) => {
+        if (event.t === 'Pipeline' && event.value.t === 'Transaction') {
+          const txEvent = event.value.value
+          if (txEvent.status.t === 'Approved') deferred.resolve()
+          else if (txEvent.status.t === 'Rejected') deferred.reject(new TransactionRejectedError(txEvent.status.value))
+          else if (txEvent.status.t === 'Expired') deferred.reject(new TransactionExpiredError())
+        }
+      })
+      stream.ee.on('close', () => {
+        deferred.reject(new Error('Events stream was unexpectedly closed'))
+      })
+
+      const abortPromise = new Promise<void>((resolve, reject) => {
+        // FIXME: can this lead to a memory leak?
+        params.verifyAbort?.addEventListener('abort', () => {
+          reject(new Error('Aborted'))
+        })
+        stream.ee.once('close').then(() => resolve())
+      })
+
+      await Promise.all([
+        await submitTransaction(this.toriiRequestRequirements, tx),
+        deferred.promise.finally(() => {
+          stream.stop()
+        }),
+        abortPromise,
+      ])
+    } else {
+      await submitTransaction(this.toriiRequestRequirements, tx)
+    }
+  }
+
+  public query<
+    Q extends keyof datamodel.QueryOutputMap | keyof datamodel.SingularQueryOutputMap,
+    P extends QueryPayload<Q>,
+  >(query: Q, params: P): QueryOutput<Q> {
+    return doQuery(query, {
+      ...params,
+      authority: this.accountId(),
+      // FIXME
+      authorityPrivateKey: this.params.accountKeyPair.privateKey(),
+      toriiURL: this.params.toriiURL,
+    } /* FIXME */ as any)
+  }
+
+  public async getHealth(): Promise<HealthResult> {
+    return getHealth(this.toriiRequestRequirements)
+  }
+
+  public async eventsStream(params?: Except<SetupEventsParams, 'adapter' | 'toriiURL'>) {
+    return setupEvents({
+      filters: params?.filters,
+      toriiURL: this.params.toriiURL,
+      adapter: this.params.ws,
+    })
+  }
+
+  public async blocksStream(params?: Except<SetupBlocksStreamParams, 'adapter' | 'toriiURL'>) {
+    return setupBlocksStream({
+      fromBlockHeight: params?.fromBlockHeight,
+      toriiURL: this.params.toriiURL,
+      adapter: this.params.ws,
+    })
+  }
+
+  public async getStatus(): Promise<datamodel.Status> {
+    return getStatus(this.toriiRequestRequirements)
+  }
+
+  public async getMetrics() {
+    return getMetrics(this.toriiRequestRequirements)
+  }
+
+  public async setPeerConfig(params: SetPeerConfigParams) {
+    return setPeerConfig(this.toriiRequestRequirements, params)
+  }
+
+  private get toriiRequestRequirements() {
+    return { http: this.params.http, toriiURL: this.params.toriiURL }
   }
 }
 
-// #endregion
+export interface ToriiHttpParams {
+  http: Fetch
+  toriiURL: string
+}
+
+export type HealthResult = { t: 'ok' } | { t: 'err'; err: unknown }
+
+export async function getHealth({ http, toriiURL }: ToriiHttpParams): Promise<HealthResult> {
+  let response: Response
+  try {
+    response = await http(toriiURL + ENDPOINT_HEALTH)
+  } catch (err) {
+    return { t: 'err', err }
+  }
+
+  ResponseError.assertStatus(response, 200)
+
+  const text = await response.text()
+  if (text !== HEALTHY_RESPONSE) {
+    return { t: 'err', err: new Error(`Expected '${HEALTHY_RESPONSE}' response; got: '${text}'`) }
+  }
+
+  return { t: 'ok' }
+}
+
+export async function getStatus({ http, toriiURL }: ToriiHttpParams): Promise<datamodel.Status> {
+  const response = await http(toriiURL + ENDPOINT_STATUS, {
+    headers: { accept: 'application/x-parity-scale' },
+  })
+  await ResponseError.assertStatus(response, 200)
+  return response.arrayBuffer().then((buffer) => datamodel.Status$codec.decode(new Uint8Array(buffer)))
+}
+
+export async function getMetrics({ http, toriiURL }: ToriiHttpParams) {
+  const response = await http(toriiURL + ENDPOINT_METRICS)
+  await ResponseError.assertStatus(response, 200)
+  return response.text()
+}
+
+export async function setPeerConfig({ http, toriiURL }: ToriiHttpParams, params: SetPeerConfigParams) {
+  const response = await http(toriiURL + ENDPOINT_CONFIGURATION, {
+    method: 'POST',
+    body: JSON.stringify(params),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+  await ResponseError.assertStatus(response, 202 /* ACCEPTED */)
+}
+
+export async function submitTransaction({ http, toriiURL }: ToriiHttpParams, tx: datamodel.SignedTransaction) {
+  const body = datamodel.SignedTransaction$codec.encode(tx)
+  const response = await http(toriiURL + ENDPOINT_TRANSACTION, { body, method: 'POST' })
+  await ResponseError.assertStatus(response, 200)
+}
 
 export * from './events'
 export * from './blocks-stream'
-export * from './crypto-singleton'
 export * from './web-socket/types'
