@@ -54,7 +54,7 @@ describe('Compatibility Matrix tests', () => {
       )
     })
 
-    await allure.step(ctx, 'Ensure domain is regis', async () => {
+    await allure.step(ctx, 'Ensure domain is registered', async () => {
       result!.as('Ok').batch.enum.as('Identifiable').enum.as('Domain')
 
       final = result!.__c[0].batch.enum.__c[0].enum.__c[0].id.name
