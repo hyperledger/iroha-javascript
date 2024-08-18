@@ -5,26 +5,15 @@
 
 import * as allure from 'allure-vitest'
 import { pipe } from 'fp-ts/function'
-import { describe, expect, TaskContext, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { clientFactory, setupPeerTestsLifecycle } from '../util'
+import { annotateAllure } from "./util";
 import { datamodel, sugar } from '@iroha2/data-model'
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { Seq } from 'immutable'
 
 setupPeerTestsLifecycle()
 
-async function annotateAllure(
-    ctx: TaskContext,
-    attrs: { id: number, feature: string, sdkTestId: string, story: string }
-) {
-  await allure.label(ctx, 'allureId', String(attrs.id))
-  await allure.label(ctx, 'feature', attrs.feature)
-  await allure.label(ctx, 'sdk_test_id', attrs.sdkTestId)
-  await allure.label(ctx, 'story', attrs.story)
-  await allure.owner(ctx, 'dulger')
-  await allure.label(ctx, 'permission', 'no_permission_required')
-  await allure.label(ctx, 'sdk', 'Java Script')
-}
 // Read Allure API: https://allurereport.org/docs/vitest-reference/
 describe('Compatibility Matrix tests', () => {
   // Based on https://github.com/AlexStroke/iroha-java/blob/007a9ac55991cd8a2b519e62a10144156d9f8301/modules/client/src/test/kotlin/jp/co/soramitsu/iroha2/InstructionsTest.kt#L134
@@ -42,7 +31,7 @@ describe('Compatibility Matrix tests', () => {
 
     const { pre, client, getBlocksListener } = clientFactory()
     const blocks = await getBlocksListener()
-    await allure.step(ctx, "Account registers a new domain with name 'new_domain_name'", async () => {
+    await allure.step(ctx, "Submit transaction to register a new domain", async () => {
       await blocks.wait(async () => {
         await client.submitExecutable(
           pre,
@@ -50,7 +39,7 @@ describe('Compatibility Matrix tests', () => {
         )
       })
     })
-    await allure.step(ctx, "Creating 'result' variable wich consist DomainId of created domain", async () => {
+    await allure.step(ctx, "Query domain by `FindDomainById`", async () => {
       result = await client.requestWithQueryBox(
         pre,
         datamodel.QueryBox(
@@ -65,7 +54,7 @@ describe('Compatibility Matrix tests', () => {
       )
     })
 
-    await allure.step(ctx, 'The domain is registered', async () => {
+    await allure.step(ctx, 'Ensure domain is regis', async () => {
       result!.as('Ok').batch.enum.as('Identifiable').enum.as('Domain')
 
       final = result!.__c[0].batch.enum.__c[0].enum.__c[0].id.name
@@ -74,7 +63,7 @@ describe('Compatibility Matrix tests', () => {
   })
 })
 
-test('Register asset with too long type', async (ctx) => {
+test('Register asset with a too long name', async (ctx) => {
   await annotateAllure(ctx, {
     id: 3739,
     feature: 'Assets',
@@ -89,17 +78,12 @@ test('Register asset with too long type', async (ctx) => {
   let tooLongAssetName
   let invalidAssetDefinitionId
 
-  await allure.step(ctx, 'Given an assent with normal name', async() =>{
-    normalAssetDefinitionId = sugar.assetDefinitionId('xor', 'wonderland')
-  })
+  normalAssetDefinitionId = sugar.assetDefinitionId('xor', 'wonderland')
 
+  tooLongAssetName = '0'.repeat(2 ** 14)
+  invalidAssetDefinitionId = sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
 
-  await allure.step(ctx, 'Given an asset with long asset name', async () => {
-    tooLongAssetName = '0'.repeat(2 ** 14)
-    invalidAssetDefinitionId = sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
-  })
-
-  await allure.step(ctx, 'Account register transaction with 2 instructions', async () => {
+  await allure.step(ctx, 'Submit a transaction registering 2 assets (valid and invalid)', async () => {
     await blocks.wait(async () => {
       await Promise.all(
         // we should register these assets as separate transactions, because the invalid
@@ -118,7 +102,7 @@ test('Register asset with too long type', async (ctx) => {
       )
     })
   })
-  await allure.step(ctx, 'The normal asset is registered', async () => {
+  await allure.step(ctx, 'Ensure that only the valid one is registered', async () => {
     const queryResult = await client.requestWithQueryBox(pre, sugar.find.allAssetsDefinitions())
 
     const existingDefinitions: datamodel.AssetDefinitionId[] = queryResult
@@ -148,7 +132,7 @@ test('Register an account with long account name', async (ctx) => {
   normal = sugar.accountId('bob', 'wonderland')
   incorrect = sugar.accountId('0'.repeat(2 ** 14), 'wonderland')
 
-  await allure.step(ctx, 'Register new account', async () => {
+  await allure.step(ctx, 'Submit a transaction registering 2 accounts (valid and invalid)', async () => {
     await blocks.wait(async () => {
       await client.submitExecutable(
         pre,
@@ -159,7 +143,7 @@ test('Register an account with long account name', async (ctx) => {
       )
     })
   })
-  await allure.step(ctx, 'Account with the normal name is registered', async () => {
+  await allure.step(ctx, 'Ensure that only the valid one is registered', async () => {
     const queryResult = await client.requestWithQueryBox(pre, sugar.find.allAccounts())
 
     const existingAccounts: datamodel.AccountId[] = queryResult
@@ -225,7 +209,7 @@ test('Query not existing domain', async (ctx) => {
   const { client, pre } = clientFactory()
   let result
 
-  await allure.step(ctx, 'Account queries for a not existing domain', async () => {
+  await allure.step(ctx, 'Submit transaction to find domain', async () => {
     result = await client.requestWithQueryBox(
       pre,
       pipe(
@@ -235,7 +219,7 @@ test('Query not existing domain', async (ctx) => {
     )
   })
 
-  await allure.step(ctx, "Domain haven't been found", async () => {
+  await allure.step(ctx, "Ensure domain is not found", async () => {
     expect(result!.tag === 'Err').toBe(true)
     expect(result!.as('Err').enum.as('QueryFailed').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
   })

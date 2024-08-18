@@ -1,17 +1,11 @@
 import { Torii } from '@iroha2/client'
 import { datamodel, sugar } from '@iroha2/data-model'
-import { beforeEach, describe, test } from 'vitest'
+import { describe, test } from 'vitest'
 import {clientFactory, setupPeerTestsLifecycle} from '../util'
 import { pipe } from 'fp-ts/function'
 import * as allure from "allure-vitest";
 
 setupPeerTestsLifecycle()
-
-beforeEach(async (ctx) => {
-  await allure.owner(ctx, 'dulger')
-  await allure.label(ctx, 'permission', 'no_permission_required')
-  await allure.label(ctx, 'sdk', 'Java Script')
-})
 
 describe('Blocks Stream API', () => {
   test('When committing 3 blocks sequentially, nothing fails', async (ctx) => {

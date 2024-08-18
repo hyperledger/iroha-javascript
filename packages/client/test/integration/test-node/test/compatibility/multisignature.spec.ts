@@ -14,17 +14,11 @@ import { Bytes, freeScope } from '@iroha2/crypto-core'
 import { datamodel, sugar } from '@iroha2/data-model'
 import { pipe } from 'fp-ts/function'
 import { produce } from 'immer'
-import {beforeEach, describe, expect, test} from 'vitest'
+import { describe, expect, test} from 'vitest'
 import { clientFactory, freeOnTestFinished, setupPeerTestsLifecycle } from '../util'
 import * as allure from "allure-vitest";
 
 setupPeerTestsLifecycle()
-
-beforeEach(async (ctx) => {
-  await allure.owner(ctx, 'dulger')
-  await allure.label(ctx, 'permission', 'no_permission_required')
-  await allure.label(ctx, 'sdk', 'Java Script')
-})
 
 describe('MST (Multi-Signature Transaction)', () => {
   test('e2e scenario works as expected', async (ctx) => {

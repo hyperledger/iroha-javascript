@@ -4,7 +4,7 @@ import { adapter as WS } from '@iroha2/client/web-socket/node'
 import { crypto } from '@iroha2/crypto-target-node'
 import { Free } from '@iroha2/crypto-core'
 import { datamodel } from '@iroha2/data-model'
-import { afterEach, beforeAll, beforeEach, onTestFinished } from 'vitest'
+import {afterEach, beforeAll, beforeEach, onTestFinished } from 'vitest'
 import { delay } from '../../util'
 import * as TestPeer from '@iroha2/test-peer'
 
@@ -17,6 +17,7 @@ export function freeOnTestFinished<T extends Free>(object: T): T {
  * Sets up Vitest hooks to run a clean Iroha peer
  * for each test.
  */
+
 export function setupPeerTestsLifecycle() {
   let startedPeer: TestPeer.StartPeerReturn | null = null
 
