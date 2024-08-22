@@ -26,11 +26,10 @@ describe('Compatibility Matrix tests', () => {
     })
 
     const DOMAIN_NAME = 'new_domain_name'
-    let result
-    let final
-
     const { pre, client, getBlocksListener } = clientFactory()
     const blocks = await getBlocksListener()
+    let result
+
     await allure.step(ctx, "Submit transaction to register a new domain", async () => {
       await blocks.wait(async () => {
         await client.submitExecutable(
@@ -38,9 +37,7 @@ describe('Compatibility Matrix tests', () => {
           pipe(sugar.identifiable.newDomain(DOMAIN_NAME), sugar.instruction.register, sugar.executable.instructions),
         )
       })
-    })
-    await allure.step(ctx, "Query domain by `FindDomainById`", async () => {
-      result = await client.requestWithQueryBox(
+        result = await client.requestWithQueryBox(
         pre,
         datamodel.QueryBox(
           'FindDomainById',
@@ -57,7 +54,7 @@ describe('Compatibility Matrix tests', () => {
     await allure.step(ctx, 'Ensure domain is registered', async () => {
       result!.as('Ok').batch.enum.as('Identifiable').enum.as('Domain')
 
-      final = result!.__c[0].batch.enum.__c[0].enum.__c[0].id.name
+      const final = result!.__c[0].batch.enum.__c[0].enum.__c[0].id.name
       expect(final).toEqual(DOMAIN_NAME)
     })
   })
@@ -74,14 +71,10 @@ test('Register asset with a too long name', async (ctx) => {
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
 
-  let normalAssetDefinitionId
-  let tooLongAssetName
-  let invalidAssetDefinitionId
+  let normalAssetDefinitionId = sugar.assetDefinitionId('xor', 'wonderland')
 
-  normalAssetDefinitionId = sugar.assetDefinitionId('xor', 'wonderland')
-
-  tooLongAssetName = '0'.repeat(2 ** 14)
-  invalidAssetDefinitionId = sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
+  let tooLongAssetName = '0'.repeat(2 ** 14)
+  let invalidAssetDefinitionId = sugar.assetDefinitionId(tooLongAssetName, 'wonderland')
 
   await allure.step(ctx, 'Submit a transaction registering 2 assets (valid and invalid)', async () => {
     await blocks.wait(async () => {
@@ -126,11 +119,8 @@ test('Register an account with long account name', async (ctx) => {
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
 
-  let normal
-  let incorrect
-
-  normal = sugar.accountId('bob', 'wonderland')
-  incorrect = sugar.accountId('0'.repeat(2 ** 14), 'wonderland')
+  let normal = sugar.accountId('bob', 'wonderland')
+  let incorrect = sugar.accountId('0'.repeat(2 ** 14), 'wonderland')
 
   await allure.step(ctx, 'Submit a transaction registering 2 accounts (valid and invalid)', async () => {
     await blocks.wait(async () => {
@@ -166,36 +156,36 @@ test('Mint fixed asset', async (ctx) => {
 
   const { client, pre, getBlocksListener } = clientFactory()
   const blocks = await getBlocksListener()
-
-  // Creating asset by definition
-  const ASSET_DEFINITION_ID = sugar.assetDefinitionId('xor', 'wonderland')
-
-  const registerAsset = pipe(
-    sugar.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, datamodel.AssetValueType('Fixed'), {
-      mintable: datamodel.Mintable('Infinitely'),
-    }),
-    sugar.instruction.register,
-  )
-
+  let ASSET_DEFINITION_ID
   const DECIMAL = '512.5881'
-  const mintAsset = sugar.instruction.mint(
-    sugar.value.numericFixed(datamodel.FixedPointI64(DECIMAL)),
-    datamodel.IdBox('AssetId', sugar.assetId(CLIENT_CONFIG.accountId, ASSET_DEFINITION_ID)),
-  )
 
-  await blocks.wait(async () => {
-    await client.submitExecutable(pre, pipe([registerAsset, mintAsset], sugar.executable.instructions))
+  await  allure.step(ctx,'Submit a transaction registering mint asset by definition', async () => {
+    ASSET_DEFINITION_ID = sugar.assetDefinitionId('xor', 'wonderland')
+
+    const registerAsset = pipe(
+      sugar.identifiable.newAssetDefinition(ASSET_DEFINITION_ID, datamodel.AssetValueType('Fixed'), {
+        mintable: datamodel.Mintable('Infinitely'),
+      }),
+      sugar.instruction.register,
+    )
+
+    const mintAsset = sugar.instruction.mint(
+      sugar.value.numericFixed(datamodel.FixedPointI64(DECIMAL)),
+      datamodel.IdBox('AssetId', sugar.assetId(CLIENT_CONFIG.accountId, ASSET_DEFINITION_ID)),
+    )
+
+    await blocks.wait(async () => {
+      await client.submitExecutable(pre, pipe([registerAsset, mintAsset], sugar.executable.instructions))
+    })
   })
-
-  // Checking added asset via query
+  await allure.step(ctx, 'Ensure mint asset registered and asserted', async () => {
   const result = await client.requestWithQueryBox(pre, sugar.find.assetsByAccountId(CLIENT_CONFIG.accountId))
-
-  // Assert
   const asset = Seq(result.as('Ok').batch.enum.as('Vec'))
     .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
-    .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID.name)
+    .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID!.name)
 
   expect(asset?.value).toEqual(datamodel.AssetValue('Fixed', datamodel.FixedPointI64(DECIMAL)))
+  })
 })
 
 test('Query not existing domain', async (ctx) => {
