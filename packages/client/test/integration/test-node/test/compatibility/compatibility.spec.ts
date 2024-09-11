@@ -3,11 +3,13 @@
  * Allure context tags.
  */
 
+/* eslint-disable max-nested-callbacks */
+
 import * as allure from 'allure-vitest'
 import { pipe } from 'fp-ts/function'
 import { describe, expect, test } from 'vitest'
 import { clientFactory, setupPeerTestsLifecycle } from '../util'
-import { annotateAllure } from "./util";
+import { annotateAllure } from './util'
 import { datamodel, sugar } from '@iroha2/data-model'
 import { CLIENT_CONFIG } from '@iroha2/test-configuration'
 import { Seq } from 'immutable'
@@ -28,16 +30,18 @@ describe('Compatibility Matrix tests', () => {
     const DOMAIN_NAME = 'new_domain_name'
     const { pre, client, getBlocksListener } = clientFactory()
     const blocks = await getBlocksListener()
-    let result
 
-    await allure.step(ctx, "Submit transaction to register a new domain", async () => {
+    await allure.step(ctx, 'Submit transaction to register a new domain', async () => {
       await blocks.wait(async () => {
         await client.submitExecutable(
           pre,
           pipe(sugar.identifiable.newDomain(DOMAIN_NAME), sugar.instruction.register, sugar.executable.instructions),
         )
       })
-        result = await client.requestWithQueryBox(
+    })
+
+    await allure.step(ctx, 'Ensure domain is registered', async () => {
+      const result = await client.requestWithQueryBox(
         pre,
         datamodel.QueryBox(
           'FindDomainById',
@@ -49,13 +53,8 @@ describe('Compatibility Matrix tests', () => {
           }),
         ),
       )
-    })
 
-    await allure.step(ctx, 'Ensure domain is registered', async () => {
-      result!.as('Ok').batch.enum.as('Identifiable').enum.as('Domain')
-
-      const final = result!.__c[0].batch.enum.__c[0].enum.__c[0].id.name
-      expect(final).toEqual(DOMAIN_NAME)
+      expect(result.as('Ok').batch.enum.as('Identifiable').enum.as('Domain').id.name).toEqual(DOMAIN_NAME)
     })
   })
 })
@@ -159,7 +158,7 @@ test('Mint fixed asset', async (ctx) => {
   let ASSET_DEFINITION_ID
   const DECIMAL = '512.5881'
 
-  await  allure.step(ctx,'Submit a transaction registering mint asset by definition', async () => {
+  await allure.step(ctx, 'Submit a transaction registering mint asset by definition', async () => {
     ASSET_DEFINITION_ID = sugar.assetDefinitionId('xor', 'wonderland')
 
     const registerAsset = pipe(
@@ -179,38 +178,35 @@ test('Mint fixed asset', async (ctx) => {
     })
   })
   await allure.step(ctx, 'Ensure mint asset registered and asserted', async () => {
-  const result = await client.requestWithQueryBox(pre, sugar.find.assetsByAccountId(CLIENT_CONFIG.accountId))
-  const asset = Seq(result.as('Ok').batch.enum.as('Vec'))
-    .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
-    .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID!.name)
+    const result = await client.requestWithQueryBox(pre, sugar.find.assetsByAccountId(CLIENT_CONFIG.accountId))
+    const asset = Seq(result.as('Ok').batch.enum.as('Vec'))
+      .map((x) => x.enum.as('Identifiable').enum.as('Asset'))
+      .find((x) => x.id.definition_id.name === ASSET_DEFINITION_ID!.name)
 
-  expect(asset?.value).toEqual(datamodel.AssetValue('Fixed', datamodel.FixedPointI64(DECIMAL)))
+    expect(asset?.value).toEqual(datamodel.AssetValue('Fixed', datamodel.FixedPointI64(DECIMAL)))
   })
 })
 
-test('Query not existing domain', async (ctx) => {
+test('Query a non-existing domain', async (ctx) => {
   await annotateAllure(ctx, {
     id: 4076,
     feature: 'Domain',
-    story: 'Query not existing domain',
+    story: 'Query a non-existing domain',
     sdkTestId: 'query_not_existing_domain',
   })
 
   const { client, pre } = clientFactory()
-  let result
 
-  await allure.step(ctx, 'Submit transaction to find domain', async () => {
-    result = await client.requestWithQueryBox(
+  await allure.step(ctx, 'Ensure domain is not found', async () => {
+    const result = await client.requestWithQueryBox(
       pre,
       pipe(
         sugar.assetId(sugar.accountId('alice', 'wonderland'), sugar.assetDefinitionId('XOR', 'wonderland')),
         sugar.find.assetById,
       ),
     )
-  })
 
-  await allure.step(ctx, "Ensure domain is not found", async () => {
-    expect(result!.tag === 'Err').toBe(true)
-    expect(result!.as('Err').enum.as('QueryFailed').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
+    expect(result.tag === 'Err').toBe(true)
+    expect(result.as('Err').enum.as('QueryFailed').enum.as('Find').enum.as('AssetDefinition').name).toBe('XOR')
   })
 })
